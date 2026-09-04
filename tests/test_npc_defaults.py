@@ -566,7 +566,7 @@ class SyntheticGame:
         self.override = self.root / "override"
         self.override.mkdir()
         self.bif = write_marker_key_and_bif(self.root)
-        self.lang_tlk = self.root / "lang/en_US/dialog.tlk"
+        self.lang_tlk = self.root / "lang/en_us/dialog.tlk"
         self.lang_tlk.parent.mkdir(parents=True)
         self.lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
         self.root_tlk = self.root / "dialog.tlk"
@@ -641,7 +641,7 @@ class SyntheticViconiaPublicGame(SyntheticGame):
                 "--language",
                 "0",
                 "--use-lang",
-                "en_US",
+                "en_us",
                 "--no-exit-pause",
                 "--quick-log",
             ],
@@ -714,7 +714,7 @@ class SyntheticSharTeelPublicGame(SyntheticSharTeelGame):
                 "--language",
                 "0",
                 "--use-lang",
-                "en_US",
+                "en_us",
                 "--no-exit-pause",
                 "--quick-log",
             ],
@@ -797,7 +797,7 @@ class ViconiaTests(unittest.TestCase):
                     "--language",
                     "0",
                     "--use-lang",
-                    "en_US",
+                    "en_us",
                     "--no-exit-pause",
                     "--quick-log",
                 ],
@@ -1420,7 +1420,7 @@ class SharTeelTests(unittest.TestCase):
                     "--language",
                     "0",
                     "--use-lang",
-                    "en_US",
+                    "en_us",
                     "--no-exit-pause",
                     "--quick-log",
                 ],

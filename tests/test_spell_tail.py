@@ -296,7 +296,7 @@ class SyntheticSpellGame:
         self.override.mkdir()
         (self.root / "WeiDU.log").write_text("", encoding="ascii")
         self.bif = write_marker_key_and_bif(self.root)
-        self.lang_tlk = self.root / "lang/en_US/dialog.tlk"
+        self.lang_tlk = self.root / "lang/en_us/dialog.tlk"
         self.lang_tlk.parent.mkdir(parents=True)
         self.lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
         self.root_tlk = self.root / "dialog.tlk"
@@ -333,7 +333,7 @@ class SyntheticSpellGame:
                 "--language",
                 "0",
                 "--use-lang",
-                "en_US",
+                "en_us",
                 "--no-exit-pause",
                 "--quick-log",
             ],

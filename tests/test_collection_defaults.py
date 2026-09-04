@@ -309,7 +309,7 @@ class SyntheticGame:
         # payload is irrelevant to a known-spell-list insertion.
         (self.override / f"{haste_resref}.SPL").write_bytes(b"synthetic spell")
         self.bif = write_marker_key_and_bif(root)
-        lang_tlk = root / "lang/en_US/dialog.tlk"
+        lang_tlk = root / "lang/en_us/dialog.tlk"
         lang_tlk.parent.mkdir(parents=True)
         lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
         (root / "dialog.tlk").write_bytes(ONE_EMPTY_STRING_TLK)
@@ -361,7 +361,7 @@ class CollectionDefaultsTests(unittest.TestCase):
                     "--language",
                     "0",
                     "--use-lang",
-                    "en_US",
+                    "en_us",
                     "--no-exit-pause",
                     "--quick-log",
                 ],
@@ -695,7 +695,7 @@ class CollectionDefaultsTests(unittest.TestCase):
                 "--language",
                 "0",
                 "--use-lang",
-                "en_US",
+                "en_us",
                 "--no-exit-pause",
                 "--quick-log",
             ],
