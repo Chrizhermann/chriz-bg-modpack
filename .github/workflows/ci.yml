@@ -1,0 +1,76 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  parse-check:
+    name: WeiDU 249 / generated-fixture and package suite
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install WeiDU
+        run: |
+          WEIDU_VERSION="249.00"
+          WEIDU_SHORT="249"
+          WEIDU_ZIP_SHA256="812da3eedd141ada27bb91469ff5da78a2709732949777b37b9ead9b67f89af0"
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output weidu.zip \
+            "https://github.com/WeiDUorg/weidu/releases/download/v${WEIDU_VERSION}/WeiDU-Linux-${WEIDU_SHORT}-amd64.zip"
+          echo "${WEIDU_ZIP_SHA256}  weidu.zip" | sha256sum --check --strict
+          unzip -q weidu.zip
+          WEIDU_BIN="WeiDU-Linux/weidu"
+          test -f "$WEIDU_BIN"
+          chmod +x "$WEIDU_BIN"
+          sudo mv "$WEIDU_BIN" /usr/local/bin/weidu
+
+      - name: Verify WeiDU binary
+        run: |
+          test "$(weidu --version 2>&1 | sed -n 's/.*WeiDU version \([0-9][0-9]*\).*/\1/p' | head -1)" = "24900"
+
+      - name: Parse-check tp2
+        run: weidu --noautoupdate --nogame --parse-check TP2 setup-chriz-bg-modpack.tp2
+
+      - name: Parse-check every WeiDU library
+        run: |
+          while IFS= read -r library; do
+            weidu --noautoupdate --nogame --parse-check TPA "$library"
+          done < <(find chriz-bg-modpack/lib -type f -name '*.tpa' -print | LC_ALL=C sort)
+
+      - name: Run game-free regression tests
+        env:
+          WEIDU_BIN: /usr/local/bin/weidu
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Build the production archive reproducibly
+        run: |
+          WINDOWS_WEIDU_URL="https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip"
+          WINDOWS_WEIDU_SHA256="b156910cbec69359fc2e42f6739aa959d49047d6fd3dc172f6bed88ffad8f927"
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output weidu-windows.zip "$WINDOWS_WEIDU_URL"
+          echo "${WINDOWS_WEIDU_SHA256}  weidu-windows.zip" | sha256sum --check --strict
+          python3 -m tools.build_release --output dist-one --weidu-archive weidu-windows.zip
+          python3 -m tools.build_release --output dist-two --weidu-archive weidu-windows.zip
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          cmp "dist-one/chriz-bg-modpack-${VERSION}.zip" \
+              "dist-two/chriz-bg-modpack-${VERSION}.zip"
+
+      - name: Test install and uninstall from the extracted archive
+        run: |
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          WEIDU_BIN=/usr/local/bin/weidu \
+          CBM_RELEASE_ARCHIVE="dist-one/chriz-bg-modpack-${VERSION}.zip" \
+            python3 -m unittest tests.test_release_archive -v

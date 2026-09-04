@@ -1,0 +1,27 @@
+# WeiDU artifacts
+*.DEBUG
+*.BACKUP
+*.tbk
+weidu_external/
+weidu.log
+
+# WeiDU binaries (download per-install)
+setup-*.exe
+WeiDU.exe
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Python test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local release output
+dist/

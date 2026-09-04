@@ -1,0 +1,10 @@
+BACKUP ~weidu-backup~
+AUTHOR ~chriz-bg-modpack tests~
+
+// argv[0]/argv[1] are first-party BAF sources. Compile them directly into
+// the BG1NPC resource names without publishing copied third-party source.
+BEGIN ~Priority NPC: Kivan dialogue-phase guards~ DESIGNATED 1
+COPY ~%argv[0]%~ ~override/X#SAHA01.BCS~
+  COMPILE_BAF_TO_BCS
+COPY ~%argv[1]%~ ~override/X#SAHA02.BCS~
+  COMPILE_BAF_TO_BCS

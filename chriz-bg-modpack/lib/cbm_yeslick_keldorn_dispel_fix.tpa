@@ -1,0 +1,157 @@
+// Hostile-only NPC dispels. Yeslick's legacy single-ability spell must use
+// explicit per-level dispel values because opcode 58 has no multiplier mode.
+// Keldorn already has per-level values (possibly reshaped by SCS), so those
+// effects are validated and preserved byte-for-byte while only projectiles
+// are retargeted.
+
+ACTION_IF NOT (FILE_EXISTS_IN_GAME ~SPIN112.SPL~) BEGIN
+  FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL is missing~
+END
+ACTION_IF NOT (FILE_EXISTS_IN_GAME ~SPCL231.SPL~) BEGIN
+  FAIL ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL is missing~
+END
+
+COPY_EXISTING ~SPCL231.SPL~ ~override~
+  READ_ASCII 0x00 cbm_keldorn_signature (8)
+  PATCH_IF NOT (~%cbm_keldorn_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL is not SPL V1.0~
+  END
+  READ_SHORT 0x68 cbm_keldorn_ability_count
+  PATCH_IF (cbm_keldorn_ability_count < 1) OR (cbm_keldorn_ability_count > 40) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL has an unexpected ability count~
+  END
+
+  SET cbm_keldorn_seen = 0
+  GET_OFFSET_ARRAY cbm_keldorn_headers SPL_V10_HEADERS
+  PHP_EACH cbm_keldorn_headers AS cbm_keldorn_header_index => cbm_keldorn_header BEGIN
+    SET cbm_keldorn_header_dispels = 0
+    GET_OFFSET_ARRAY2 cbm_keldorn_effects cbm_keldorn_header SPL_V10_HEAD_EFFECTS
+    PHP_EACH cbm_keldorn_effects AS cbm_keldorn_effect_index => cbm_keldorn_effect BEGIN
+      READ_SHORT cbm_keldorn_effect cbm_keldorn_opcode
+      PATCH_IF (cbm_keldorn_opcode = 58) BEGIN
+        SET cbm_keldorn_header_dispels += 1
+        SET cbm_keldorn_seen += 1
+        READ_LONG (cbm_keldorn_effect + 0x04) cbm_keldorn_level
+        READ_LONG (cbm_keldorn_effect + 0x08) cbm_keldorn_flags
+        SET cbm_keldorn_mode = cbm_keldorn_flags BAND 3
+        PATCH_IF (cbm_keldorn_level < 1) OR NOT (cbm_keldorn_mode = 2) BEGIN
+          PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL has unexpected opcode 58 scaling semantics~
+        END
+      END
+    END
+    PATCH_IF NOT (cbm_keldorn_header_dispels = 1) BEGIN
+      PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: every SPCL231.SPL ability must contain exactly one opcode 58~
+    END
+    WRITE_SHORT (cbm_keldorn_header + 0x26) 177
+  END
+  PATCH_IF NOT (cbm_keldorn_seen = cbm_keldorn_ability_count) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL ability topology is ambiguous~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~SPIN112.SPL~ ~override~
+  READ_ASCII 0x00 cbm_yeslick_signature (8)
+  PATCH_IF NOT (~%cbm_yeslick_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL is not SPL V1.0~
+  END
+  READ_LONG 0x64 cbm_yeslick_ability_offset
+  READ_SHORT 0x68 cbm_yeslick_ability_count
+  READ_LONG 0x6a cbm_yeslick_effect_offset
+  READ_SHORT 0x6e cbm_yeslick_casting_first
+  READ_SHORT 0x70 cbm_yeslick_casting_count
+  SET cbm_yeslick_built_from_legacy = 0
+
+  PATCH_IF NOT ((cbm_yeslick_ability_count = 1) OR (cbm_yeslick_ability_count = 40)) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL must have one legacy ability or the exact 40-level replacement~
+  END
+  PATCH_IF NOT (cbm_yeslick_effect_offset = cbm_yeslick_ability_offset + (cbm_yeslick_ability_count * 0x28)) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL has a noncanonical ability/effect layout~
+  END
+
+  READ_SHORT (cbm_yeslick_ability_offset + 0x1e) cbm_yeslick_effect_count
+  READ_SHORT (cbm_yeslick_ability_offset + 0x20) cbm_yeslick_first_effect
+  PATCH_IF (cbm_yeslick_effect_count < 1) OR NOT (cbm_yeslick_first_effect = 0) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL has an unexpected first ability slice~
+  END
+  PATCH_IF (cbm_yeslick_casting_count > 0) AND NOT (cbm_yeslick_casting_first = (cbm_yeslick_ability_count * cbm_yeslick_effect_count)) BEGIN
+    PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL casting features overlap its ability effects~
+  END
+
+  PATCH_IF (cbm_yeslick_ability_count = 1) BEGIN
+    SET cbm_yeslick_base_dispels = 0
+    FOR (cbm_yeslick_fx_index = 0; cbm_yeslick_fx_index < cbm_yeslick_effect_count; ++cbm_yeslick_fx_index) BEGIN
+      SET cbm_yeslick_fx = cbm_yeslick_effect_offset + (cbm_yeslick_fx_index * 0x30)
+      READ_SHORT cbm_yeslick_fx cbm_yeslick_opcode
+      PATCH_IF (cbm_yeslick_opcode = 58) BEGIN
+        SET cbm_yeslick_base_dispels += 1
+      END
+    END
+    PATCH_IF NOT (cbm_yeslick_base_dispels = 1) BEGIN
+      PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: legacy SPIN112.SPL must contain exactly one opcode 58~
+    END
+
+    SET cbm_yeslick_extra_header_bytes = 39 * 0x28
+    INSERT_BYTES cbm_yeslick_effect_offset cbm_yeslick_extra_header_bytes
+    SET cbm_yeslick_effect_offset += cbm_yeslick_extra_header_bytes
+    WRITE_LONG 0x6a cbm_yeslick_effect_offset
+
+    FOR (cbm_yeslick_level = 2; cbm_yeslick_level <= 40; ++cbm_yeslick_level) BEGIN
+      SET cbm_yeslick_new_header = cbm_yeslick_ability_offset + ((cbm_yeslick_level - 1) * 0x28)
+      FOR (cbm_yeslick_byte = 0; cbm_yeslick_byte < 0x28; ++cbm_yeslick_byte) BEGIN
+        READ_BYTE (cbm_yeslick_ability_offset + cbm_yeslick_byte) cbm_yeslick_value
+        WRITE_BYTE (cbm_yeslick_new_header + cbm_yeslick_byte) cbm_yeslick_value
+      END
+    END
+
+    SET cbm_yeslick_slice_bytes = cbm_yeslick_effect_count * 0x30
+    SET cbm_yeslick_extra_effect_bytes = 39 * cbm_yeslick_slice_bytes
+    SET cbm_yeslick_insert_effects_at = cbm_yeslick_effect_offset + cbm_yeslick_slice_bytes
+    INSERT_BYTES cbm_yeslick_insert_effects_at cbm_yeslick_extra_effect_bytes
+
+    FOR (cbm_yeslick_level = 2; cbm_yeslick_level <= 40; ++cbm_yeslick_level) BEGIN
+      SET cbm_yeslick_new_slice = cbm_yeslick_effect_offset + ((cbm_yeslick_level - 1) * cbm_yeslick_slice_bytes)
+      FOR (cbm_yeslick_byte = 0; cbm_yeslick_byte < cbm_yeslick_slice_bytes; ++cbm_yeslick_byte) BEGIN
+        READ_BYTE (cbm_yeslick_effect_offset + cbm_yeslick_byte) cbm_yeslick_value
+        WRITE_BYTE (cbm_yeslick_new_slice + cbm_yeslick_byte) cbm_yeslick_value
+      END
+    END
+
+    WRITE_SHORT 0x68 40
+    PATCH_IF (cbm_yeslick_casting_count > 0) BEGIN
+      WRITE_SHORT 0x6e (40 * cbm_yeslick_effect_count)
+    END
+    SET cbm_yeslick_ability_count = 40
+    SET cbm_yeslick_built_from_legacy = 1
+  END
+
+  FOR (cbm_yeslick_level = 1; cbm_yeslick_level <= 40; ++cbm_yeslick_level) BEGIN
+    SET cbm_yeslick_header = cbm_yeslick_ability_offset + ((cbm_yeslick_level - 1) * 0x28)
+    PATCH_IF cbm_yeslick_built_from_legacy BEGIN
+      WRITE_SHORT (cbm_yeslick_header + 0x20) ((cbm_yeslick_level - 1) * cbm_yeslick_effect_count)
+    END
+    READ_SHORT (cbm_yeslick_header + 0x1e) cbm_yeslick_header_effect_count
+    READ_SHORT (cbm_yeslick_header + 0x20) cbm_yeslick_header_first
+    PATCH_IF NOT (cbm_yeslick_header_effect_count = cbm_yeslick_effect_count) OR NOT (cbm_yeslick_header_first = ((cbm_yeslick_level - 1) * cbm_yeslick_effect_count)) BEGIN
+      PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL has an ambiguous per-level effect layout~
+    END
+
+    WRITE_SHORT (cbm_yeslick_header + 0x10) cbm_yeslick_level
+    WRITE_SHORT (cbm_yeslick_header + 0x26) 177
+    SET cbm_yeslick_level_dispels = 0
+    FOR (cbm_yeslick_fx_index = 0; cbm_yeslick_fx_index < cbm_yeslick_effect_count; ++cbm_yeslick_fx_index) BEGIN
+      SET cbm_yeslick_fx = cbm_yeslick_effect_offset + ((((cbm_yeslick_level - 1) * cbm_yeslick_effect_count) + cbm_yeslick_fx_index) * 0x30)
+      READ_SHORT cbm_yeslick_fx cbm_yeslick_opcode
+      PATCH_IF (cbm_yeslick_opcode = 58) BEGIN
+        SET cbm_yeslick_level_dispels += 1
+        SET cbm_yeslick_dispel_level = (cbm_yeslick_level * 3) / 2
+        WRITE_LONG (cbm_yeslick_fx + 0x04) cbm_yeslick_dispel_level
+        WRITE_LONG (cbm_yeslick_fx + 0x08) 2
+      END
+    END
+    PATCH_IF NOT (cbm_yeslick_level_dispels = 1) BEGIN
+      PATCH_FAIL ~cbm_yeslick_keldorn_dispel_fix: every SPIN112.SPL ability must contain exactly one opcode 58~
+    END
+  END
+BUT_ONLY
+
+PRINT ~[cbm_yeslick_keldorn_dispel_fix] Yeslick uses 40 hostile-only 1.5x dispel levels; Keldorn is hostile-only with installed scaling preserved.~

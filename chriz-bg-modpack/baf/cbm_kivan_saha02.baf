@@ -1,0 +1,7 @@
+// Companion guard for the second sahuagin resource in the same encounter.
+IF
+  Global("X#KivanSea","GLOBAL",3)
+THEN
+  RESPONSE #100
+    NoAction()
+END

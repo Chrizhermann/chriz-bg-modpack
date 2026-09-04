@@ -1,0 +1,28 @@
+// Isolated synthetic-game harness for component 192's production patch code.
+// argv[0] = production TPA, argv[1] = source CRE, argv[2] = output CRE.
+// CLASS.IDS, XPLEVEL.2DA, MXSPLPRS.2DA, SAVEPRS.2DA, SAVEROG.2DA, and LORE.2DA are
+// resolved from the synthetic game supplied through --game, exactly as they
+// are by the public component.
+
+BACKUP ~weidu-backup~
+AUTHOR ~chriz-bg-modpack tests~
+
+BEGIN ~Viconia Cleric/Thief patch harness~ DESIGNATED 1
+INCLUDE ~%argv[0]%~
+LAF cbm_viconia_load_context
+  RET
+    cbm_viconia_cleric_class = cbm_viconia_cleric_class
+    cbm_viconia_cleric_thief_class = cbm_viconia_cleric_thief_class
+    cbm_viconia_cleric_lore_rate = cbm_viconia_cleric_lore_rate
+    cbm_viconia_thief_lore_rate = cbm_viconia_thief_lore_rate
+  RET_ARRAY
+    cbm_viconia_cleric_xp = cbm_viconia_cleric_xp
+    cbm_viconia_thief_xp = cbm_viconia_thief_xp
+    cbm_viconia_priest_slots = cbm_viconia_priest_slots
+    cbm_viconia_priest_saves = cbm_viconia_priest_saves
+    cbm_viconia_rogue_saves = cbm_viconia_rogue_saves
+    cbm_viconia_cleric_thac0 = cbm_viconia_cleric_thac0
+    cbm_viconia_thief_thac0 = cbm_viconia_thief_thac0
+END
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_viconia_make_cleric_thief END

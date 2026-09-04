@@ -1,0 +1,81 @@
+// Synthetic-game harness for the public collection-default patch library.
+// argv[0] = production TPA, argv[1] = source CRE, argv[2] = output CRE,
+// argv[3] = expected death variable for the explicit resource under test.
+
+BACKUP ~weidu-backup~
+AUTHOR ~chriz-bg-modpack tests~
+
+BEGIN ~Kagain Dwarven Defender harness~ DESIGNATED 1
+INCLUDE ~%argv[0]%~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~FIGHTER~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword = kit_dword END
+OUTER_SET source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~DWARVEN_DEFENDER~ RET kit_dword = kit_dword END
+OUTER_SET target_kit = kit_dword
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_collection_make_kagain_dwarven_defender
+    INT_VAR expected_class = class_id source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%argv[3]%~
+  END
+
+BEGIN ~Skie Swashbuckler harness~ DESIGNATED 2
+INCLUDE ~%argv[0]%~
+INCLUDE ~%argv[4]%~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~THIEF~ RET class_id END
+LAF cbm_skie_load_context
+  RET
+    cbm_skie_thief_class = cbm_skie_thief_class
+    cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_kit
+END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword = kit_dword END
+OUTER_SET source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~SWASHBUCKLER~ RET kit_dword = kit_dword END
+OUTER_SET target_kit = kit_dword
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_collection_make_skie_swashbuckler
+    INT_VAR expected_class = class_id source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%argv[3]%~
+  END
+  LPF cbm_skie_move_stealth_to_locks
+    INT_VAR
+      cbm_skie_thief_class = cbm_skie_thief_class
+      cbm_skie_swashbuckler_kit = target_kit
+  END
+
+BEGIN ~Faldorn Avenger harness~ DESIGNATED 3
+INCLUDE ~%argv[0]%~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~DRUID~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword = kit_dword END
+OUTER_SET source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~BEASTFRIEND~ RET kit_dword = kit_dword END
+OUTER_SET target_kit = kit_dword
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_collection_make_faldorn_avenger
+    INT_VAR expected_class = class_id source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%argv[3]%~
+  END
+
+BEGIN ~Dynaheir Haste harness~ DESIGNATED 4
+INCLUDE ~%argv[0]%~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~MAGE~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~MAGESCHOOL_INVOKER~ RET kit_dword = kit_dword END
+OUTER_SET expected_kit = kit_dword
+LAF cbm_collection_resolve_wizard_spell STR_VAR symbol = ~WIZARD_HASTE~ RET spell_resref END
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_collection_add_dynaheir_haste
+    INT_VAR expected_class = class_id expected_kit = expected_kit
+    STR_VAR expected_dv = ~%argv[3]%~ haste_resref = ~%spell_resref%~
+  END
+
+BEGIN ~Kivan Archer harness~ DESIGNATED 5
+INCLUDE ~%argv[0]%~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~RANGER~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword = kit_dword END
+OUTER_SET source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~FERALAN~ RET kit_dword = kit_dword END
+OUTER_SET target_kit = kit_dword
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_collection_make_kivan_archer
+    INT_VAR expected_class = class_id source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%argv[3]%~
+  END

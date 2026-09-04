@@ -1,0 +1,69 @@
+// =====================================================================
+// cbm_mazzy_prof_fix (component @140)
+// Move Mazzy's fifth Short Bow pip to Short Sword exactly once
+// =====================================================================
+
+DEFINE_PATCH_FUNCTION cbm_mazzy_move_bow_pip BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: truncated CRE~
+  END
+  READ_ASCII 0x00 cbm_mazzy_signature (8)
+  READ_BYTE 0x33 cbm_mazzy_effect_version
+  READ_ASCII 0x280 cbm_mazzy_dv (32) NULL
+  READ_LONG 0x18 cbm_mazzy_xp
+  PATCH_IF NOT (~%cbm_mazzy_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: expected a CRE V1.0 resource~
+  END
+  PATCH_IF (cbm_mazzy_effect_version != 1) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: expected embedded EFF V2 effects~
+  END
+  PATCH_IF NOT (~%cbm_mazzy_dv%~ STRING_EQUAL_CASE ~MAZZY~) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: expected death variable MAZZY~
+  END
+
+  PATCH_IF (cbm_mazzy_xp = 400000) BEGIN
+    SET cbm_mazzy_source_sword = 2
+    SET cbm_mazzy_target_sword = 3
+  END ELSE PATCH_IF ((cbm_mazzy_xp = 161000)
+                  OR (cbm_mazzy_xp = 1200000)
+                  OR (cbm_mazzy_xp = 2500000)) BEGIN
+    SET cbm_mazzy_source_sword = 3
+    SET cbm_mazzy_target_sword = 4
+  END ELSE BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: unsupported Mazzy XP profile~
+  END
+
+  READ_LONG 0x2c4 cbm_mazzy_effect_offset
+  READ_LONG 0x2c8 cbm_mazzy_effect_count
+  PATCH_IF ((cbm_mazzy_effect_count > 10000)
+         OR (cbm_mazzy_effect_offset < 0x2d4)
+         OR ((cbm_mazzy_effect_offset + (cbm_mazzy_effect_count * 0x108)) > SOURCE_SIZE)) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: invalid embedded effect table~
+  END
+  SET cbm_mazzy_seen_bow = 0
+  SET cbm_mazzy_seen_sword = 0
+  SET cbm_mazzy_bow = 0
+  SET cbm_mazzy_sword = 0
+  FOR (cbm_mazzy_i = 0; cbm_mazzy_i < cbm_mazzy_effect_count; cbm_mazzy_i += 1) BEGIN
+    SET cbm_mazzy_effect = cbm_mazzy_effect_offset + (cbm_mazzy_i * 0x108)
+    READ_LONG (cbm_mazzy_effect + 0x08) cbm_mazzy_opcode
+    PATCH_IF (cbm_mazzy_opcode = 233) BEGIN
+      READ_LONG (cbm_mazzy_effect + 0x18) cbm_mazzy_stat
+      PATCH_IF (cbm_mazzy_stat = 105) BEGIN
+        SET cbm_mazzy_seen_bow += 1
+        READ_LONG (cbm_mazzy_effect + 0x14) cbm_mazzy_bow
+      END ELSE PATCH_IF (cbm_mazzy_stat = 91) BEGIN
+        SET cbm_mazzy_seen_sword += 1
+        READ_LONG (cbm_mazzy_effect + 0x14) cbm_mazzy_sword
+      END
+    END
+  END
+  PATCH_IF ((cbm_mazzy_seen_bow != 1) OR (cbm_mazzy_seen_sword != 1)
+         OR NOT (((cbm_mazzy_bow = 5) AND (cbm_mazzy_sword = cbm_mazzy_source_sword))
+              OR ((cbm_mazzy_bow = 4) AND (cbm_mazzy_sword = cbm_mazzy_target_sword)))) BEGIN
+    PATCH_FAIL ~cbm_mazzy_prof_fix: unexpected Mazzy proficiency state~
+  END
+
+  SET_BG2_PROFICIENCY 105 4
+  SET_BG2_PROFICIENCY 91 cbm_mazzy_target_sword
+END

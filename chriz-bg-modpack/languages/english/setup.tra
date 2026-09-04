@@ -1,0 +1,24 @@
+// chriz-bg-modpack public alpha - English strings
+
+@1100 = ~chriz-bg-modpack: NPC fixes and collection defaults~
+@1400 = ~chriz-bg-modpack: Spell and compatibility fixes~
+
+@110 = ~Fade: complete Fighter/Thief conversion, proficiencies, and amulet usability~
+@130 = ~BG1NPC Kivan sea-elf quest: SCS dialogue-phase guard~
+@140 = ~Mazzy: move the fifth Short Bow pip to Short Sword~
+@160 = ~Skie Swashbuckler: move unusable Move Silently points to Open Locks~
+@170 = ~Xan Eldritch Knight: reconcile the EET XAN4/XAN6/TTXAN variants~
+@190 = ~Sarah: Archer conversion and exact proficiencies (recommended collection default)~
+@192 = ~Viconia: permanent Cleric/Thief conversion (recommended collection default)~
+@193 = ~Shar-Teel: Wizard Slayer kit (recommended collection default)~
+@194 = ~Kagain: Dwarven Defender kit (recommended collection default)~
+@195 = ~Skie: Swashbuckler kit and compatible thief skills (recommended collection default)~
+@196 = ~Faldorn: Avenger kit (recommended collection default)~
+@197 = ~Dynaheir: learn the installed Haste spell (recommended collection default)~
+@198 = ~Kivan: Archer kit (recommended collection default)~
+
+@400 = ~Branwen Spiritual Hammer: repair magical-weapon charges~
+@410 = ~Yeslick and Keldorn Dispel Magic: hostile-only, correctly scaled dispels~
+@430 = ~Use Any Item: fair fixed caster level for non-caster scroll use~
+@440 = ~Ascension Improved Slayer Transformation: repair EE Fixpack subspell links~
+@450 = ~SCS shapechange spells: repair the EE Fixpack interaction~

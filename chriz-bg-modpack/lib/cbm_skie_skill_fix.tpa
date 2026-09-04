@@ -1,0 +1,83 @@
+// =====================================================================
+// cbm_skie_skill_fix (component @160, also called by @195)
+// Move Skie's unusable Move Silently points to Open Locks exactly once
+// =====================================================================
+
+DEFINE_ACTION_FUNCTION cbm_skie_load_context
+  RET
+    cbm_skie_thief_class
+    cbm_skie_swashbuckler_kit
+BEGIN
+  OUTER_SET cbm_skie_thief_class = IDS_OF_SYMBOL (~class~ ~THIEF~)
+  ACTION_IF ((cbm_skie_thief_class <= 0) OR (cbm_skie_thief_class > 255)) BEGIN
+    FAIL ~cbm_skie_skill_fix: CLASS.IDS has an invalid THIEF value~
+  END
+  OUTER_SET cbm_skie_swashbuckler_id = IDS_OF_SYMBOL (~kit~ ~SWASHBUCKLER~)
+  ACTION_IF ((cbm_skie_swashbuckler_id <= 0)
+          OR (cbm_skie_swashbuckler_id > 0x7fff)
+          OR (cbm_skie_swashbuckler_id = 0x4000)) BEGIN
+    FAIL ~cbm_skie_skill_fix: KIT.IDS has an invalid SWASHBUCKLER value~
+  END
+  OUTER_SET cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_id * 0x10000
+END
+
+// Component 160 is meaningful only for a Swashbuckler: Move Silently remains
+// usable on a true-class Thief. Component 195 sets SWASHBUCKLER and then calls
+// this function in the same COPY_EXISTING transaction.
+DEFINE_PATCH_FUNCTION cbm_skie_move_stealth_to_locks
+  INT_VAR
+    cbm_skie_thief_class = 0
+    cbm_skie_swashbuckler_kit = 0
+BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: truncated CRE~
+  END
+  READ_ASCII 0x00 cbm_skie_signature (8)
+  READ_ASCII 0x280 cbm_skie_dv (32) NULL
+  READ_LONG 0x18 cbm_skie_xp
+  READ_BYTE 0x273 cbm_skie_class
+  READ_LONG 0x244 cbm_skie_kit
+  READ_BYTE 0x67 cbm_skie_locks
+  READ_BYTE 0x68 cbm_skie_move
+  PATCH_IF NOT (~%cbm_skie_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: expected a CRE V1.0 resource~
+  END
+  PATCH_IF (cbm_skie_class != cbm_skie_thief_class) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: expected Thief class~
+  END
+  PATCH_IF (cbm_skie_swashbuckler_kit <= 0)
+        OR (cbm_skie_kit != cbm_skie_swashbuckler_kit) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: expected installed Swashbuckler kit~
+  END
+
+  PATCH_IF ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~) AND (cbm_skie_xp = 5098)) BEGIN
+    SET cbm_skie_source_locks = 20
+    SET cbm_skie_source_move = 25
+    SET cbm_skie_target_locks = 45
+  END ELSE PATCH_IF ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~) AND (cbm_skie_xp = 20056)) BEGIN
+    SET cbm_skie_source_locks = 30
+    SET cbm_skie_source_move = 35
+    SET cbm_skie_target_locks = 65
+  END ELSE PATCH_IF (((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIE~)
+                   OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIED~))
+                  AND (cbm_skie_xp = 64000)) BEGIN
+    SET cbm_skie_source_locks = 35
+    SET cbm_skie_source_move = 35
+    SET cbm_skie_target_locks = 70
+  END ELSE BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: unsupported Skie XP/death-variable profile~
+  END
+
+  PATCH_IF NOT (((cbm_skie_locks = cbm_skie_source_locks)
+              AND (cbm_skie_move = cbm_skie_source_move))
+             OR ((cbm_skie_locks = cbm_skie_target_locks)
+              AND (cbm_skie_move = 0))) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: unexpected Skie skill state~
+  END
+  PATCH_IF ((cbm_skie_source_locks + cbm_skie_source_move) != cbm_skie_target_locks) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: internal Skie skill-budget mismatch~
+  END
+
+  WRITE_BYTE 0x67 cbm_skie_target_locks
+  WRITE_BYTE 0x68 0
+END

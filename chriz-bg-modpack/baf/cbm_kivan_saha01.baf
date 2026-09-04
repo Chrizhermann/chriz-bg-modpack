@@ -1,0 +1,9 @@
+// First-party SCS compatibility guard for BG1NPC's Kivan sea-elf dialogue.
+// The override block wins over generated lower-priority combat AI only while
+// the encounter is in its authored dialogue phase.
+IF
+  Global("X#KivanSea","GLOBAL",3)
+THEN
+  RESPONSE #100
+    NoAction()
+END

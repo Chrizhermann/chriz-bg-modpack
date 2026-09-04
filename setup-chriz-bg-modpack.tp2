@@ -1,0 +1,367 @@
+BACKUP ~weidu_external/backup/chriz-bg-modpack~
+AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
+VERSION ~v0.2.0-alpha.1~
+
+AUTO_TRA ~chriz-bg-modpack/languages/%s~
+LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
+
+// Public alpha: every advertised component below contains installable source.
+// Deferred and private component numbers are not exposed.
+
+// =====================================================================
+// NPC fixes and optional collection defaults (100-199)
+// =====================================================================
+
+// Convert both shipped Fade profiles to Fighter/Thief, reconcile their split
+// levels and authored build, and allow the converted class to use her amulet.
+// This complete component supersedes the former component 120.
+BEGIN @110 DESIGNATED 110 GROUP @1100 LABEL ~cbm_fade_ft_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~E3FADE13.CRE~
+    ~cbm_fade_ft_fix: E3FADE13.CRE is missing - install Fade first.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~E3FADE25.CRE~
+    ~cbm_fade_ft_fix: E3FADE25.CRE is missing - the Fade installation is incomplete.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~E3AMUL01.ITM~
+    ~cbm_fade_ft_fix: E3AMUL01.ITM is missing - the Fade installation is incomplete.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_fade_ft_fix.tpa~
+LAF cbm_fade_load_context
+  RET
+    cbm_fade_thief_class = cbm_fade_thief_class
+    cbm_fade_fighter_thief_class = cbm_fade_fighter_thief_class
+  RET_ARRAY
+    cbm_fade_fighter_xp = cbm_fade_fighter_xp
+    cbm_fade_thief_xp = cbm_fade_thief_xp
+END
+ACTION_FOR_EACH cbm_fade_cre IN ~E3FADE13~ ~E3FADE25~ BEGIN
+  COPY_EXISTING ~%cbm_fade_cre%.CRE~ ~override~
+    LPF cbm_fade_make_fighter_thief
+      INT_VAR
+        cbm_fade_thief_class = cbm_fade_thief_class
+        cbm_fade_fighter_thief_class = cbm_fade_fighter_thief_class
+    END
+  BUT_ONLY
+END
+COPY_EXISTING ~E3AMUL01.ITM~ ~override~
+  LPF cbm_fade_allow_fighter_thief END
+BUT_ONLY
+
+// Compile first-party override guards for the two BG1NPC Kivan quest
+// sahuagin so SCS combat AI cannot pre-empt their dialogue phase.
+BEGIN @130 DESIGNATED 130 GROUP @1100 LABEL ~cbm_kivan_quest_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~X#SAHA01.CRE~
+    ~cbm_kivan_quest_fix: X#SAHA01.CRE is missing - install the BG1NPC Kivan quest first.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~X#SAHA02.CRE~
+    ~cbm_kivan_quest_fix: X#SAHA02.CRE is missing - the BG1NPC Kivan quest is incomplete.~
+COPY ~chriz-bg-modpack/baf/cbm_kivan_saha01.baf~ ~override/X#SAHA01.BCS~
+  COMPILE_BAF_TO_BCS
+COPY ~chriz-bg-modpack/baf/cbm_kivan_saha02.baf~ ~override/X#SAHA02.BCS~
+  COMPILE_BAF_TO_BCS
+
+// Move Mazzy's illegal fifth Short Bow pip to Short Sword across all five
+// shipped BG2 variants.
+BEGIN @140 DESIGNATED 140 GROUP @1100 LABEL ~cbm_mazzy_prof_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY8.CRE~ ~cbm_mazzy_prof_fix: MAZZY8.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY9.CRE~ ~cbm_mazzy_prof_fix: MAZZY9.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY11.CRE~ ~cbm_mazzy_prof_fix: MAZZY11.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY12.CRE~ ~cbm_mazzy_prof_fix: MAZZY12.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY15.CRE~ ~cbm_mazzy_prof_fix: MAZZY15.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_mazzy_prof_fix.tpa~
+ACTION_FOR_EACH cbm_mazzy_cre IN ~MAZZY8~ ~MAZZY9~ ~MAZZY11~ ~MAZZY12~ ~MAZZY15~ BEGIN
+  COPY_EXISTING ~%cbm_mazzy_cre%.CRE~ ~override~
+    LPF cbm_mazzy_move_bow_pip END
+  BUT_ONLY
+END
+
+// Standalone form of Skie's post-Swashbuckler skill repair. It is also invoked
+// atomically by the recommended Swashbuckler default at component 195.
+BEGIN @160 DESIGNATED 160 GROUP @1100 LABEL ~cbm_skie_skill_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SKIE.CRE~ ~cbm_skie_skill_fix: SKIE.CRE is missing - expected EET resources.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SKIE6.CRE~ ~cbm_skie_skill_fix: SKIE6.CRE is missing - expected EET resources.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~BDSKIE.CRE~ ~cbm_skie_skill_fix: BDSKIE.CRE is missing - expected EET resources.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~BDSKIED.CRE~ ~cbm_skie_skill_fix: BDSKIED.CRE is missing - expected EET resources.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_skie_skill_fix.tpa~
+LAF cbm_skie_load_context
+  RET
+    cbm_skie_thief_class = cbm_skie_thief_class
+    cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_kit
+END
+ACTION_FOR_EACH cbm_skie_cre IN ~SKIE~ ~SKIE6~ ~BDSKIE~ ~BDSKIED~ BEGIN
+  COPY_EXISTING ~%cbm_skie_cre%.CRE~ ~override~
+    LPF cbm_skie_move_stealth_to_locks
+      INT_VAR
+        cbm_skie_thief_class = cbm_skie_thief_class
+        cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_kit
+    END
+  BUT_ONLY
+END
+
+// Artisan's Xan component handles XAN_ itself. Reconcile only the three EET
+// variants it does not patch, retaining their installed THAC0 values.
+BEGIN @170 DESIGNATED 170 GROUP @1100 LABEL ~cbm_xan_ek_fix~
+  REQUIRE_PREDICATE (GAME_IS ~eet~) ~cbm_xan_ek_fix: this component is for EET only.~
+  REQUIRE_COMPONENT ~ArtisansKitpack/ArtisansKitpack.tp2~ ~20000~
+    ~cbm_xan_ek_fix: install Artisan's Eldritch Knight kit component 20000 first.~
+  REQUIRE_COMPONENT ~ArtisansKitpack_npc/ArtisansKitpack_npc.tp2~ ~20002~
+    ~cbm_xan_ek_fix: install Artisan's Xan Eldritch Knight component 20002 first.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XAN4.CRE~ ~cbm_xan_ek_fix: XAN4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XAN6.CRE~ ~cbm_xan_ek_fix: XAN6.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~TTXAN.CRE~ ~cbm_xan_ek_fix: TTXAN.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_xan_ek_fix.tpa~
+LAF cbm_xan_load_context
+  RET
+    cbm_xan_mage_class = cbm_xan_mage_class
+    cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
+    cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
+    cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
+  RET_ARRAY
+    cbm_xan_fighter_xp = cbm_xan_fighter_xp
+    cbm_xan_mage_xp = cbm_xan_mage_xp
+END
+ACTION_FOR_EACH cbm_xan_cre IN ~XAN4~ ~XAN6~ ~TTXAN~ BEGIN
+  COPY_EXISTING ~%cbm_xan_cre%.CRE~ ~override~
+    LPF cbm_xan_make_eldritch_knight
+      INT_VAR
+        cbm_xan_mage_class = cbm_xan_mage_class
+        cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
+        cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
+        cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
+    END
+  BUT_ONLY
+END
+
+// Optional Sarah ToB v8 conversion. The collection selects this by default,
+// but users may omit it to keep Sarah's normal kit and proficiencies.
+BEGIN @190 DESIGNATED 190 GROUP @1100 LABEL ~cbm_sarah_archer~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~K#SARAH.CRE~ ~cbm_sarah_archer: K#SARAH.CRE is missing - install Sarah ToB v8 first.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~K#SARAH1.CRE~ ~cbm_sarah_archer: K#SARAH1.CRE is missing - the Sarah installation is incomplete.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_sarah_archer.tpa~
+ACTION_FOR_EACH cbm_sarah_cre IN ~K#SARAH~ ~K#SARAH1~ BEGIN
+  COPY_EXISTING ~%cbm_sarah_cre%.CRE~ ~override~
+    LPF cbm_sarah_make_archer END
+  BUT_ONLY
+END
+PRINT ~[cbm_sarah_archer] Sarah converted to Archer with Long Bow 3, Long Sword 1, Short Bow 2, and Two-Weapon Style 2.~
+
+// Component 191 is reserved for a private portrait overlay and intentionally
+// absent from this public installer.
+
+// Convert the ten explicit EET Viconia resources to a permanent true-class
+// Cleric/Thief using the installed progression tables.
+BEGIN @192 DESIGNATED 192 GROUP @1100 LABEL ~cbm_viconia_cleric_thief~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI.CRE~ ~cbm_viconia_cleric_thief: VICONI.CRE is missing - expected EET resources.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI4.CRE~ ~cbm_viconia_cleric_thief: VICONI4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI6_.CRE~ ~cbm_viconia_cleric_thief: VICONI6_.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI6.CRE~ ~cbm_viconia_cleric_thief: VICONI6.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI7.CRE~ ~cbm_viconia_cleric_thief: VICONI7.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI8.CRE~ ~cbm_viconia_cleric_thief: VICONI8.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI9.CRE~ ~cbm_viconia_cleric_thief: VICONI9.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI11.CRE~ ~cbm_viconia_cleric_thief: VICONI11.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI13.CRE~ ~cbm_viconia_cleric_thief: VICONI13.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~VICONI16.CRE~ ~cbm_viconia_cleric_thief: VICONI16.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_viconia_cleric_thief.tpa~
+LAF cbm_viconia_load_context
+  RET
+    cbm_viconia_cleric_class = cbm_viconia_cleric_class
+    cbm_viconia_cleric_thief_class = cbm_viconia_cleric_thief_class
+    cbm_viconia_cleric_lore_rate = cbm_viconia_cleric_lore_rate
+    cbm_viconia_thief_lore_rate = cbm_viconia_thief_lore_rate
+  RET_ARRAY
+    cbm_viconia_cleric_xp = cbm_viconia_cleric_xp
+    cbm_viconia_thief_xp = cbm_viconia_thief_xp
+    cbm_viconia_priest_slots = cbm_viconia_priest_slots
+    cbm_viconia_priest_saves = cbm_viconia_priest_saves
+    cbm_viconia_rogue_saves = cbm_viconia_rogue_saves
+    cbm_viconia_cleric_thac0 = cbm_viconia_cleric_thac0
+    cbm_viconia_thief_thac0 = cbm_viconia_thief_thac0
+END
+ACTION_FOR_EACH cbm_viconia_cre IN
+  ~VICONI~ ~VICONI4~ ~VICONI6_~ ~VICONI6~ ~VICONI7~
+  ~VICONI8~ ~VICONI9~ ~VICONI11~ ~VICONI13~ ~VICONI16~
+BEGIN
+  COPY_EXISTING ~%cbm_viconia_cre%.CRE~ ~override~
+    LPF cbm_viconia_make_cleric_thief END
+  BUT_ONLY
+END
+PRINT ~[cbm_viconia_cleric_thief] Ten Viconia variants converted with installed-table THAC0, Lore, saves, and priest slots.~
+
+// Kit-only Wizard Slayer default for joinable Shar-Teel resources.
+BEGIN @193 DESIGNATED 193 GROUP @1100 LABEL ~cbm_sharteel_wizard_slayer~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SHARTE.CRE~ ~cbm_sharteel_wizard_slayer: SHARTE.CRE is missing - expected EET resources.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SHARTE4.CRE~ ~cbm_sharteel_wizard_slayer: SHARTE4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SHARTE6.CRE~ ~cbm_sharteel_wizard_slayer: SHARTE6.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_sharteel_wizard_slayer.tpa~
+LAF cbm_sharteel_load_context RET cbm_sharteel_wizard_slayer_kit = cbm_sharteel_wizard_slayer_kit END
+ACTION_FOR_EACH cbm_sharteel_cre IN ~SHARTE~ ~SHARTE4~ ~SHARTE6~ BEGIN
+  COPY_EXISTING ~%cbm_sharteel_cre%.CRE~ ~override~
+    LPF cbm_sharteel_make_wizard_slayer
+      INT_VAR cbm_sharteel_wizard_slayer_kit = cbm_sharteel_wizard_slayer_kit
+    END
+  BUT_ONLY
+END
+
+// Kit-only Dwarven Defender default for Kagain. The collection is responsible
+// for ordering Artisan's Shield Bash correction before this component.
+BEGIN @194 DESIGNATED 194 GROUP @1100 LABEL ~cbm_kagain_dwarven_defender~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KAGAIN.CRE~ ~cbm_kagain_dwarven_defender: KAGAIN.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KAGAIN2.CRE~ ~cbm_kagain_dwarven_defender: KAGAIN2.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KAGAIN4.CRE~ ~cbm_kagain_dwarven_defender: KAGAIN4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KAGAIN6.CRE~ ~cbm_kagain_dwarven_defender: KAGAIN6.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~FIGHTER~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
+OUTER_SET cbm_kagain_source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~DWARVEN_DEFENDER~ RET kit_dword END
+OUTER_SET cbm_kagain_target_kit = kit_dword
+ACTION_FOR_EACH cbm_kagain_cre IN ~KAGAIN~ ~KAGAIN2~ ~KAGAIN4~ ~KAGAIN6~ BEGIN
+  COPY_EXISTING ~%cbm_kagain_cre%.CRE~ ~override~
+    LPF cbm_collection_make_kagain_dwarven_defender
+      INT_VAR expected_class = class_id source_kit = cbm_kagain_source_kit target_kit = cbm_kagain_target_kit
+      STR_VAR expected_dv = ~KAGAIN~
+    END
+  BUT_ONLY
+END
+
+// Atomic Swashbuckler default: each CRE receives the kit and the component
+// 160 skill redistribution in the same COPY transaction.
+BEGIN @195 DESIGNATED 195 GROUP @1100 LABEL ~cbm_skie_swashbuckler~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SKIE.CRE~ ~cbm_skie_swashbuckler: SKIE.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SKIE6.CRE~ ~cbm_skie_swashbuckler: SKIE6.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~BDSKIE.CRE~ ~cbm_skie_swashbuckler: BDSKIE.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~BDSKIED.CRE~ ~cbm_skie_swashbuckler: BDSKIED.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+INCLUDE ~chriz-bg-modpack/lib/cbm_skie_skill_fix.tpa~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~THIEF~ RET class_id END
+LAF cbm_skie_load_context
+  RET
+    cbm_skie_thief_class = cbm_skie_thief_class
+    cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_kit
+END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
+OUTER_SET cbm_skie_source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~SWASHBUCKLER~ RET kit_dword END
+OUTER_SET cbm_skie_target_kit = kit_dword
+ACTION_FOR_EACH cbm_skie_cre IN ~SKIE~ ~SKIE6~ ~BDSKIE~ ~BDSKIED~ BEGIN
+  OUTER_SPRINT cbm_skie_expected_dv ~%cbm_skie_cre%~
+  ACTION_IF (~%cbm_skie_cre%~ STRING_EQUAL_CASE ~SKIE6~) BEGIN
+    OUTER_SPRINT cbm_skie_expected_dv ~SKIE~
+  END
+  COPY_EXISTING ~%cbm_skie_cre%.CRE~ ~override~
+    LPF cbm_collection_make_skie_swashbuckler
+      INT_VAR expected_class = class_id source_kit = cbm_skie_source_kit target_kit = cbm_skie_target_kit
+      STR_VAR expected_dv = ~%cbm_skie_expected_dv%~
+    END
+    LPF cbm_skie_move_stealth_to_locks
+      INT_VAR
+        cbm_skie_thief_class = cbm_skie_thief_class
+        cbm_skie_swashbuckler_kit = cbm_skie_target_kit
+    END
+  BUT_ONLY
+END
+
+// Kit-only Avenger default for Faldorn.
+BEGIN @196 DESIGNATED 196 GROUP @1100 LABEL ~cbm_faldorn_avenger~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~FALDOR.CRE~ ~cbm_faldorn_avenger: FALDOR.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~FALDOR5.CRE~ ~cbm_faldorn_avenger: FALDOR5.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~DRUID~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
+OUTER_SET cbm_faldorn_source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~BEASTFRIEND~ RET kit_dword END
+OUTER_SET cbm_faldorn_target_kit = kit_dword
+ACTION_FOR_EACH cbm_faldorn_cre IN ~FALDOR~ ~FALDOR5~ BEGIN
+  COPY_EXISTING ~%cbm_faldorn_cre%.CRE~ ~override~
+    LPF cbm_collection_make_faldorn_avenger
+      INT_VAR expected_class = class_id source_kit = cbm_faldorn_source_kit target_kit = cbm_faldorn_target_kit
+      STR_VAR expected_dv = ~FALDORN~
+    END
+  BUT_ONLY
+END
+
+// Add the effective installed WIZARD_HASTE spell to Dynaheir once.
+BEGIN @197 DESIGNATED 197 GROUP @1100 LABEL ~cbm_dynaheir_haste~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE.CRE~ ~cbm_dynaheir_haste: DYNAHE.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE2.CRE~ ~cbm_dynaheir_haste: DYNAHE2.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE4.CRE~ ~cbm_dynaheir_haste: DYNAHE4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE6.CRE~ ~cbm_dynaheir_haste: DYNAHE6.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE7.CRE~ ~cbm_dynaheir_haste: DYNAHE7.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~MAGE~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~MAGESCHOOL_INVOKER~ RET kit_dword END
+OUTER_SET cbm_dynaheir_kit = kit_dword
+LAF cbm_collection_resolve_wizard_spell STR_VAR symbol = ~WIZARD_HASTE~ RET spell_resref END
+ACTION_FOR_EACH cbm_dynaheir_cre IN ~DYNAHE~ ~DYNAHE2~ ~DYNAHE4~ ~DYNAHE6~ ~DYNAHE7~ BEGIN
+  OUTER_SPRINT cbm_dynaheir_dv ~Dynaheir~
+  ACTION_IF (~%cbm_dynaheir_cre%~ STRING_EQUAL_CASE ~DYNAHE7~) BEGIN
+    OUTER_SPRINT cbm_dynaheir_dv ~DYNAHEIR~
+  END
+  COPY_EXISTING ~%cbm_dynaheir_cre%.CRE~ ~override~
+    LPF cbm_collection_add_dynaheir_haste
+      INT_VAR expected_class = class_id expected_kit = cbm_dynaheir_kit
+      STR_VAR expected_dv = ~%cbm_dynaheir_dv%~ haste_resref = ~%spell_resref%~
+    END
+  BUT_ONLY
+END
+
+// Kit-only Archer default for Kivan.
+BEGIN @198 DESIGNATED 198 GROUP @1100 LABEL ~cbm_kivan_archer~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KIVAN.CRE~ ~cbm_kivan_archer: KIVAN.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KIVAN4.CRE~ ~cbm_kivan_archer: KIVAN4.CRE is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~KIVAN6.CRE~ ~cbm_kivan_archer: KIVAN6.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+LAF cbm_collection_resolve_class STR_VAR symbol = ~RANGER~ RET class_id END
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
+OUTER_SET cbm_kivan_source_kit = kit_dword
+LAF cbm_collection_resolve_kit STR_VAR symbol = ~FERALAN~ RET kit_dword END
+OUTER_SET cbm_kivan_target_kit = kit_dword
+ACTION_FOR_EACH cbm_kivan_cre IN ~KIVAN~ ~KIVAN4~ ~KIVAN6~ BEGIN
+  COPY_EXISTING ~%cbm_kivan_cre%.CRE~ ~override~
+    LPF cbm_collection_make_kivan_archer
+      INT_VAR expected_class = class_id source_kit = cbm_kivan_source_kit target_kit = cbm_kivan_target_kit
+      STR_VAR expected_dv = ~KIVAN~
+    END
+  BUT_ONLY
+END
+
+// Component 199 is reserved and intentionally unavailable in this alpha.
+
+// =====================================================================
+// Spell and compatibility fixes (400-499)
+// =====================================================================
+
+BEGIN @400 DESIGNATED 400 GROUP @1400 LABEL ~cbm_branwen_hammer_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPIN113.SPL~ ~cbm_branwen_hammer_fix: SPIN113.SPL is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa~
+
+BEGIN @410 DESIGNATED 410 GROUP @1400 LABEL ~cbm_yeslick_keldorn_dispel_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPIN112.SPL~ ~cbm_yeslick_keldorn_dispel_fix: SPIN112.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPCL231.SPL~ ~cbm_yeslick_keldorn_dispel_fix: SPCL231.SPL is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~
+
+BEGIN @430 DESIGNATED 430 GROUP @1400 LABEL ~cbm_uai_caster_level~
+INCLUDE ~chriz-bg-modpack/lib/cbm_uai_caster_level.tpa~
+
+// Transformation-only repair for Ascension's three upgraded Slayer spells.
+BEGIN @440 DESIGNATED 440 GROUP @1400 LABEL ~cbm_ascension_slayer_eefp_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER2.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER2.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER3.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER3.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER4.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER4.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER2A.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER2A.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER3A.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER3A.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SLAYER4A.SPL~ ~cbm_ascension_slayer_eefp_fix: SLAYER4A.SPL is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_ascension_slayer_eefp_fix.tpa~
+
+BEGIN @450 DESIGNATED 450 GROUP @1400 LABEL ~cbm_scs_shapechange_eefp_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPWI495.SPL~ ~cbm_scs_shapechange_eefp_fix: SPWI495.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPWI496.SPL~ ~cbm_scs_shapechange_eefp_fix: SPWI496.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPIN152.SPL~ ~cbm_scs_shapechange_eefp_fix: SPIN152.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPIN153.SPL~ ~cbm_scs_shapechange_eefp_fix: SPIN153.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~SPIN154.SPL~ ~cbm_scs_shapechange_eefp_fix: SPIN154.SPL is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~PLYJELLY.ITM~ ~cbm_scs_shapechange_eefp_fix: PLYJELLY.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~PLYSPID.ITM~ ~cbm_scs_shapechange_eefp_fix: PLYSPID.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~TROLLALL.ITM~ ~cbm_scs_shapechange_eefp_fix: TROLLALL.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~CDGOLIRO.ITM~ ~cbm_scs_shapechange_eefp_fix: CDGOLIRO.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~CDMINDFL.ITM~ ~cbm_scs_shapechange_eefp_fix: CDMINDFL.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-SSBAI.ITM~ ~cbm_scs_shapechange_eefp_fix: DW-SSBAI.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-PSHHI.ITM~ ~cbm_scs_shapechange_eefp_fix: DW-PSHHI.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-PSRTI.ITM~ ~cbm_scs_shapechange_eefp_fix: DW-PSRTI.ITM is missing.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-SSRA.SPL~ ~cbm_scs_shapechange_eefp_fix: DW-SSRA.SPL is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa~

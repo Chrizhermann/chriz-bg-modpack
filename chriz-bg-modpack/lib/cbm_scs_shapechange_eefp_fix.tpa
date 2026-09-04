@@ -1,0 +1,130 @@
+// Repair the interaction between SCS form spells and EE Fixpack polymorph
+// cleanup. The transformation is expressed as three small, shape-checked
+// edits over installed resources; no upstream binary or hotfix source is
+// bundled.
+
+DEFINE_PATCH_FUNCTION cbm_shapechange_repair_form BEGIN
+  READ_ASCII 0x00 cbm_shape_signature (8)
+  PATCH_IF NOT (~%cbm_shape_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: form resource is not SPL V1.0~
+  END
+
+  SET cbm_shape_revert_count = 0
+  SET cbm_shape_weapon_count = 0
+  SET cbm_shape_pair_count = 0
+  SET cbm_shape_weapon_effect = 0
+  GET_OFFSET_ARRAY cbm_shape_headers SPL_V10_HEADERS
+  PHP_EACH cbm_shape_headers AS cbm_shape_header_index => cbm_shape_header BEGIN
+    SET cbm_shape_header_revert_count = 0
+    SET cbm_shape_header_weapon_count = 0
+    SET cbm_shape_header_weapon_effect = 0
+    GET_OFFSET_ARRAY2 cbm_shape_effects cbm_shape_header SPL_V10_HEAD_EFFECTS
+    PHP_EACH cbm_shape_effects AS cbm_shape_effect_index => cbm_shape_effect BEGIN
+      READ_SHORT cbm_shape_effect cbm_shape_opcode
+      READ_ASCII (cbm_shape_effect + 0x14) cbm_shape_resource (8) NULL
+      PATCH_IF (cbm_shape_opcode = 146)
+            AND (~%cbm_shape_resource%~ STRING_EQUAL_CASE ~SPINHUMR~) BEGIN
+        SET cbm_shape_revert_count += 1
+        SET cbm_shape_header_revert_count += 1
+      END
+      PATCH_IF (cbm_shape_opcode = 111) BEGIN
+        SET cbm_shape_weapon_count += 1
+        SET cbm_shape_header_weapon_count += 1
+        SET cbm_shape_header_weapon_effect = cbm_shape_effect
+      END
+    END
+    PATCH_IF (cbm_shape_header_revert_count = 1)
+          AND (cbm_shape_header_weapon_count = 1) BEGIN
+      SET cbm_shape_pair_count += 1
+      SET cbm_shape_weapon_effect = cbm_shape_header_weapon_effect
+    END
+  END
+  PATCH_IF (cbm_shape_revert_count != 1)
+        OR (cbm_shape_weapon_count != 1)
+        OR (cbm_shape_pair_count != 1) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: form spell lacks the unique SPINHUMR/opcode-111 collision shape~
+  END
+  WRITE_BYTE (cbm_shape_weapon_effect + 0x0c) 4
+  WRITE_LONG (cbm_shape_weapon_effect + 0x0e) 0
+END
+
+DEFINE_PATCH_FUNCTION cbm_shapechange_disable_equipped_natural_form BEGIN
+  READ_ASCII 0x00 cbm_shape_signature (8)
+  PATCH_IF NOT (~%cbm_shape_signature%~ STRING_EQUAL_CASE ~ITM V1  ~) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: polymorph weapon is not ITM V1.0~
+  END
+  READ_LONG 0x6a cbm_shape_effect_offset
+  READ_SHORT 0x6e cbm_shape_first_equipped
+  READ_SHORT 0x70 cbm_shape_equipped_count
+  SET cbm_shape_natural_form_count = 0
+  FOR (cbm_shape_index = 0; cbm_shape_index < cbm_shape_equipped_count; ++cbm_shape_index) BEGIN
+    SET cbm_shape_effect = cbm_shape_effect_offset + ((cbm_shape_first_equipped + cbm_shape_index) * 0x30)
+    READ_SHORT cbm_shape_effect cbm_shape_opcode
+    READ_ASCII (cbm_shape_effect + 0x14) cbm_shape_resource (8) NULL
+    PATCH_IF (cbm_shape_opcode = 335)
+          AND ((~%cbm_shape_resource%~ STRING_EQUAL_CASE ~SPINHUM~)
+            OR (~%cbm_shape_resource%~ STRING_EQUAL_CASE ~SPIN974~)) BEGIN
+      SET cbm_shape_natural_form_count += 1
+      WRITE_BYTE (cbm_shape_effect + 0x12) 0
+      WRITE_BYTE (cbm_shape_effect + 0x13) 100
+    END
+  END
+  PATCH_IF (cbm_shape_natural_form_count < 1) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: polymorph weapon has no equipped SPINHUM/SPIN974 opcode 335 to disable~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_shapechange_preserve_revert_visual BEGIN
+  READ_ASCII 0x00 cbm_shape_signature (8)
+  PATCH_IF NOT (~%cbm_shape_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: DW-SSRA.SPL is not SPL V1.0~
+  END
+  SET cbm_shape_remove_count = 0
+  GET_OFFSET_ARRAY cbm_shape_headers SPL_V10_HEADERS
+  PHP_EACH cbm_shape_headers AS cbm_shape_header_index => cbm_shape_header BEGIN
+    GET_OFFSET_ARRAY2 cbm_shape_effects cbm_shape_header SPL_V10_HEAD_EFFECTS
+    PHP_EACH cbm_shape_effects AS cbm_shape_effect_index => cbm_shape_effect BEGIN
+      READ_SHORT cbm_shape_effect cbm_shape_opcode
+      READ_ASCII (cbm_shape_effect + 0x14) cbm_shape_resource (8) NULL
+      PATCH_IF (cbm_shape_opcode = 321) AND ((~%cbm_shape_resource%~ STRING_EQUAL_CASE ~SPINHUMR~) OR (~%cbm_shape_resource%~ STRING_EQUAL_CASE ~spinhumr~)) BEGIN
+        SET cbm_shape_remove_count += 1
+        WRITE_BYTE (cbm_shape_effect + 0x12) 0
+        WRITE_BYTE (cbm_shape_effect + 0x13) 100
+      END
+    END
+  END
+  PATCH_IF NOT (cbm_shape_remove_count = 1) BEGIN
+    PATCH_FAIL ~cbm_scs_shapechange_eefp_fix: DW-SSRA.SPL lacks the unique ability opcode-321 SPINHUMR effect~
+  END
+END
+
+ACTION_FOR_EACH cbm_shape_required IN
+  ~SPWI495.SPL~ ~SPWI496.SPL~ ~SPIN152.SPL~ ~SPIN153.SPL~ ~SPIN154.SPL~
+  ~PLYJELLY.ITM~ ~PLYSPID.ITM~ ~TROLLALL.ITM~ ~CDGOLIRO.ITM~ ~CDMINDFL.ITM~
+  ~DW-SSBAI.ITM~ ~DW-PSHHI.ITM~ ~DW-PSRTI.ITM~ ~DW-SSRA.SPL~
+BEGIN
+  ACTION_IF NOT (FILE_EXISTS_IN_GAME ~%cbm_shape_required%~) BEGIN
+    FAIL ~cbm_scs_shapechange_eefp_fix: required SCS/EEFP resource %cbm_shape_required% is missing~
+  END
+END
+
+ACTION_FOR_EACH cbm_shape_form IN ~SPWI495~ ~SPWI496~ ~SPIN152~ ~SPIN153~ ~SPIN154~ BEGIN
+  COPY_EXISTING ~%cbm_shape_form%.SPL~ ~override~
+    LPF cbm_shapechange_repair_form END
+  BUT_ONLY
+END
+
+ACTION_FOR_EACH cbm_shape_weapon IN
+  ~PLYJELLY~ ~PLYSPID~ ~TROLLALL~ ~CDGOLIRO~ ~CDMINDFL~
+  ~DW-SSBAI~ ~DW-PSHHI~ ~DW-PSRTI~
+BEGIN
+  COPY_EXISTING ~%cbm_shape_weapon%.ITM~ ~override~
+    LPF cbm_shapechange_disable_equipped_natural_form END
+  BUT_ONLY
+END
+
+COPY_EXISTING ~DW-SSRA.SPL~ ~override~
+  LPF cbm_shapechange_preserve_revert_visual END
+BUT_ONLY
+
+PRINT ~[cbm_scs_shapechange_eefp_fix] five form spells, eight polymorph weapons, and the revert visual were repaired structurally.~

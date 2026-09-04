@@ -1,0 +1,7 @@
+BACKUP ~weidu-backup~
+AUTHOR ~chriz-bg-modpack tests~
+
+BEGIN ~Sarah Archer patch harness~ DESIGNATED 1
+INCLUDE ~%argv[0]%~
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_sarah_make_archer END

@@ -1,0 +1,261 @@
+// =====================================================================
+//  cbm_collection_defaults   (components @194-@198)
+//  Narrow, fail-closed helpers for the collection's optional NPC defaults
+// =====================================================================
+
+// Resolve installed IDS symbols in the action phase. Callers pass the
+// returned values into patch functions, keeping those functions usable in
+// isolated harnesses and avoiding assumptions about numeric IDS allocations.
+DEFINE_ACTION_FUNCTION cbm_collection_resolve_class
+  STR_VAR
+    symbol = ~~
+  RET
+    class_id
+BEGIN
+  OUTER_SPRINT cbm_collection_class_symbol EVALUATE_BUFFER ~%symbol%~
+  ACTION_IF (~%cbm_collection_class_symbol%~ STRING_EQUAL ~~) BEGIN
+    FAIL ~cbm_collection_defaults: empty CLASS.IDS symbol~
+  END
+  OUTER_SET class_id = IDS_OF_SYMBOL (~class~ ~%cbm_collection_class_symbol%~)
+  ACTION_IF ((class_id <= 0) OR (class_id > 0xff)) BEGIN
+    FAIL ~cbm_collection_defaults: CLASS.IDS symbol %cbm_collection_class_symbol% resolved outside the CRE byte range~
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_collection_resolve_kit
+  STR_VAR
+    symbol = ~~
+  RET
+    kit_dword
+BEGIN
+  OUTER_SPRINT cbm_collection_kit_symbol EVALUATE_BUFFER ~%symbol%~
+  ACTION_IF (~%cbm_collection_kit_symbol%~ STRING_EQUAL ~~) BEGIN
+    FAIL ~cbm_collection_defaults: empty KIT.IDS symbol~
+  END
+  OUTER_SET cbm_collection_kit_id = IDS_OF_SYMBOL (~kit~ ~%cbm_collection_kit_symbol%~)
+  ACTION_IF ((cbm_collection_kit_id <= 0) OR (cbm_collection_kit_id > 0x7fff)) BEGIN
+    FAIL ~cbm_collection_defaults: KIT.IDS symbol %cbm_collection_kit_symbol% has an invalid CRE kit value~
+  END
+  OUTER_SET kit_dword = cbm_collection_kit_id * 0x10000
+END
+
+// SPELL.IDS is authoritative after spell-system mods. WIZARD_HASTE can point
+// away from its vanilla slot, so derive the effective SPWI resref rather than
+// baking SPWI305 into the patch.
+DEFINE_ACTION_FUNCTION cbm_collection_resolve_wizard_spell
+  STR_VAR
+    symbol = ~~
+  RET
+    spell_resref
+BEGIN
+  OUTER_SPRINT cbm_collection_spell_symbol EVALUATE_BUFFER ~%symbol%~
+  ACTION_IF (~%cbm_collection_spell_symbol%~ STRING_EQUAL ~~) BEGIN
+    FAIL ~cbm_collection_defaults: empty SPELL.IDS symbol~
+  END
+  OUTER_SET cbm_collection_spell_id = IDS_OF_SYMBOL (~spell~ ~%cbm_collection_spell_symbol%~)
+  ACTION_IF ((cbm_collection_spell_id < 2100)
+          OR (cbm_collection_spell_id > 2999)) BEGIN
+    FAIL ~cbm_collection_defaults: SPELL.IDS symbol %cbm_collection_spell_symbol% is not a wizard spell slot~
+  END
+  OUTER_SET cbm_collection_spell_slot = cbm_collection_spell_id - 2000
+  OUTER_SPRINT spell_resref ~SPWI%cbm_collection_spell_slot%~
+  ACTION_IF NOT (FILE_EXISTS_IN_GAME ~%spell_resref%.SPL~) BEGIN
+    FAIL ~cbm_collection_defaults: resolved spell %spell_resref%.SPL is missing~
+  END
+END
+
+// Shared kit-only transformation. The explicit component controls which CREs
+// enter this function and supplies that resource's exact death variable.
+DEFINE_PATCH_FUNCTION cbm_collection_set_npc_kit
+  INT_VAR
+    expected_class = 0
+    source_kit = 0
+    target_kit = 0
+  STR_VAR
+    expected_dv = ~~
+    patch_name = ~NPC kit patch~
+BEGIN
+  SPRINT cbm_collection_expected_dv EVALUATE_BUFFER ~%expected_dv%~
+  SPRINT cbm_collection_patch_name EVALUATE_BUFFER ~%patch_name%~
+
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: truncated CRE (smaller than the V1.0 header)~
+  END
+  PATCH_IF ((expected_class <= 0) OR (expected_class > 0xff)) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: invalid installed class context~
+  END
+  PATCH_IF ((source_kit <= 0) OR (target_kit <= 0) OR (source_kit = target_kit)) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: invalid installed kit context~
+  END
+  PATCH_IF (~%cbm_collection_expected_dv%~ STRING_EQUAL ~~) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: empty expected death variable~
+  END
+
+  READ_ASCII 0x00 cbm_collection_signature (8)
+  READ_ASCII 0x280 cbm_collection_dv (32) NULL
+  READ_BYTE  0x273 cbm_collection_class
+  READ_LONG  0x244 cbm_collection_kit
+
+  PATCH_IF NOT (~%cbm_collection_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: expected a CRE V1.0 signature~
+  END
+  PATCH_IF NOT (~%cbm_collection_dv%~ STRING_EQUAL_CASE ~%cbm_collection_expected_dv%~) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected death variable %cbm_collection_dv%; expected %cbm_collection_expected_dv%~
+  END
+  PATCH_IF (cbm_collection_class != expected_class) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected class %cbm_collection_class%; expected installed class %expected_class%~
+  END
+  PATCH_IF ((cbm_collection_kit != source_kit)
+         AND (cbm_collection_kit != target_kit)) BEGIN
+    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected kit %cbm_collection_kit%; expected source or already-target kit~
+  END
+
+  // All preconditions have passed. No CRE field other than the kit dword is
+  // touched; in particular, THAC0 at 0x52 is deliberately preserved.
+  WRITE_LONG 0x244 target_kit
+END
+
+DEFINE_PATCH_FUNCTION cbm_collection_make_kagain_dwarven_defender
+  INT_VAR expected_class = 0 source_kit = 0 target_kit = 0
+  STR_VAR expected_dv = ~~
+BEGIN
+  SPRINT cbm_collection_kagain_dv EVALUATE_BUFFER ~%expected_dv%~
+  LPF cbm_collection_set_npc_kit
+    INT_VAR expected_class = expected_class source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%cbm_collection_kagain_dv%~ patch_name = ~Kagain Dwarven Defender~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_collection_make_skie_swashbuckler
+  INT_VAR expected_class = 0 source_kit = 0 target_kit = 0
+  STR_VAR expected_dv = ~~
+BEGIN
+  SPRINT cbm_collection_skie_dv EVALUATE_BUFFER ~%expected_dv%~
+  LPF cbm_collection_set_npc_kit
+    INT_VAR expected_class = expected_class source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%cbm_collection_skie_dv%~ patch_name = ~Skie Swashbuckler~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_collection_make_faldorn_avenger
+  INT_VAR expected_class = 0 source_kit = 0 target_kit = 0
+  STR_VAR expected_dv = ~~
+BEGIN
+  SPRINT cbm_collection_faldorn_dv EVALUATE_BUFFER ~%expected_dv%~
+  LPF cbm_collection_set_npc_kit
+    INT_VAR expected_class = expected_class source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%cbm_collection_faldorn_dv%~ patch_name = ~Faldorn Avenger~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_collection_make_kivan_archer
+  INT_VAR expected_class = 0 source_kit = 0 target_kit = 0
+  STR_VAR expected_dv = ~~
+BEGIN
+  SPRINT cbm_collection_kivan_dv EVALUATE_BUFFER ~%expected_dv%~
+  LPF cbm_collection_set_npc_kit
+    INT_VAR expected_class = expected_class source_kit = source_kit target_kit = target_kit
+    STR_VAR expected_dv = ~%cbm_collection_kivan_dv%~ patch_name = ~Kivan Archer~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_collection_add_dynaheir_haste
+  INT_VAR
+    expected_class = 0
+    expected_kit = 0
+  STR_VAR
+    expected_dv = ~~
+    haste_resref = ~~
+BEGIN
+  SPRINT cbm_collection_expected_dv EVALUATE_BUFFER ~%expected_dv%~
+  SPRINT cbm_collection_haste_resref EVALUATE_BUFFER ~%haste_resref%~
+
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: truncated CRE (smaller than the V1.0 header)~
+  END
+  PATCH_IF ((expected_class <= 0) OR (expected_class > 0xff)
+         OR (expected_kit <= 0)) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: invalid installed class or kit context~
+  END
+  PATCH_IF (~%cbm_collection_expected_dv%~ STRING_EQUAL ~~) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: empty expected death variable~
+  END
+  PATCH_IF (~%cbm_collection_haste_resref%~ STRING_EQUAL ~~) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: empty resolved Haste resref~
+  END
+
+  READ_ASCII 0x00 cbm_collection_signature (8)
+  READ_ASCII 0x280 cbm_collection_dv (32) NULL
+  READ_BYTE  0x273 cbm_collection_class
+  READ_LONG  0x244 cbm_collection_kit
+
+  PATCH_IF NOT (~%cbm_collection_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: expected a CRE V1.0 signature~
+  END
+  PATCH_IF NOT (~%cbm_collection_dv%~ STRING_EQUAL_CASE ~%cbm_collection_expected_dv%~) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: unexpected death variable %cbm_collection_dv%; expected %cbm_collection_expected_dv%~
+  END
+  PATCH_IF (cbm_collection_class != expected_class) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: unexpected class %cbm_collection_class%; expected installed Mage class %expected_class%~
+  END
+  PATCH_IF (cbm_collection_kit != expected_kit) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: unexpected kit %cbm_collection_kit%; expected installed Invoker kit~
+  END
+
+  READ_LONG 0x2a0 cbm_collection_known_offset
+  READ_LONG 0x2a4 cbm_collection_known_count
+  PATCH_IF ((cbm_collection_known_offset < 0x2d4)
+         OR (cbm_collection_known_offset > SOURCE_SIZE)) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: malformed known-spell table offset~
+  END
+  PATCH_IF (cbm_collection_known_count > ((SOURCE_SIZE - cbm_collection_known_offset) / 12)) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: malformed known-spell table count~
+  END
+
+  SET cbm_collection_haste_count = 0
+  FOR (cbm_collection_i = 0;
+       cbm_collection_i < cbm_collection_known_count;
+       cbm_collection_i += 1) BEGIN
+    SET cbm_collection_known_record = cbm_collection_known_offset + (cbm_collection_i * 12)
+    READ_ASCII cbm_collection_known_record cbm_collection_known_resref (8) NULL
+    PATCH_IF (~%cbm_collection_known_resref%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~) BEGIN
+      READ_SHORT (cbm_collection_known_record + 0x08) cbm_collection_known_level
+      READ_SHORT (cbm_collection_known_record + 0x0a) cbm_collection_known_type
+      PATCH_IF ((cbm_collection_known_level != 2)
+             OR (cbm_collection_known_type != 1)) BEGIN
+        PATCH_FAIL ~Dynaheir Haste: existing Haste entry has unexpected level or spell-type metadata~
+      END
+      SET cbm_collection_haste_count += 1
+    END
+  END
+
+  PATCH_IF (cbm_collection_haste_count > 1) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: duplicate Haste entries found; expected exactly once~
+  END
+  PATCH_IF (cbm_collection_haste_count = 0) BEGIN
+    ADD_KNOWN_SPELL ~%cbm_collection_haste_resref%~ #2 ~wizard~
+  END
+
+  // Prove the mutation's semantic postcondition before publishing the copy.
+  READ_LONG 0x2a0 cbm_collection_known_offset
+  READ_LONG 0x2a4 cbm_collection_known_count
+  SET cbm_collection_haste_count = 0
+  FOR (cbm_collection_i = 0;
+       cbm_collection_i < cbm_collection_known_count;
+       cbm_collection_i += 1) BEGIN
+    SET cbm_collection_known_record = cbm_collection_known_offset + (cbm_collection_i * 12)
+    READ_ASCII cbm_collection_known_record cbm_collection_known_resref (8) NULL
+    PATCH_IF (~%cbm_collection_known_resref%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~) BEGIN
+      READ_SHORT (cbm_collection_known_record + 0x08) cbm_collection_known_level
+      READ_SHORT (cbm_collection_known_record + 0x0a) cbm_collection_known_type
+      PATCH_IF ((cbm_collection_known_level != 2)
+             OR (cbm_collection_known_type != 1)) BEGIN
+        PATCH_FAIL ~Dynaheir Haste: Haste postcondition has invalid metadata~
+      END
+      SET cbm_collection_haste_count += 1
+    END
+  END
+  PATCH_IF (cbm_collection_haste_count != 1) BEGIN
+    PATCH_FAIL ~Dynaheir Haste: failed to establish exactly one known Haste spell~
+  END
+END

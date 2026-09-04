@@ -1,0 +1,54 @@
+// =====================================================================
+//  cbm_sharteel_wizard_slayer   (component @193)
+//  Convert joinable Shar-Teel CREs to the installed Wizard Slayer kit
+// =====================================================================
+
+// Resolve and validate immutable game context once before any CRE write.
+// KIT.IDS stores the high word used by the CRE kit dword.
+DEFINE_ACTION_FUNCTION cbm_sharteel_load_context
+  RET
+    cbm_sharteel_wizard_slayer_kit
+BEGIN
+  OUTER_SET cbm_sharteel_wizard_slayer_id = IDS_OF_SYMBOL (~kit~ ~WIZARDSLAYER~)
+  ACTION_IF ((cbm_sharteel_wizard_slayer_id <= 0)
+          OR (cbm_sharteel_wizard_slayer_id > 0x7fff)
+          OR (cbm_sharteel_wizard_slayer_id = 0x4000)) BEGIN
+    FAIL ~cbm_sharteel_wizard_slayer: KIT.IDS has an invalid WIZARDSLAYER value~
+  END
+  OUTER_SET cbm_sharteel_wizard_slayer_kit = cbm_sharteel_wizard_slayer_id * 0x10000
+END
+
+DEFINE_PATCH_FUNCTION cbm_sharteel_make_wizard_slayer
+  INT_VAR
+    cbm_sharteel_wizard_slayer_kit = 0
+BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: truncated CRE (smaller than the V1.0 header)~
+  END
+
+  READ_ASCII 0x00 cbm_sharteel_signature (8)
+  READ_ASCII 0x280 cbm_sharteel_dv (32) NULL
+  READ_BYTE  0x273 cbm_sharteel_class
+  READ_LONG  0x244 cbm_sharteel_kit
+
+  PATCH_IF NOT (~%cbm_sharteel_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: expected a CRE V1.0 signature~
+  END
+  PATCH_IF NOT (~%cbm_sharteel_dv%~ STRING_EQUAL_CASE ~SHARTEEL~) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: expected death variable SHARTEEL~
+  END
+  PATCH_IF (cbm_sharteel_class != 2) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: unexpected class %cbm_sharteel_class%; expected Fighter~
+  END
+  PATCH_IF ((cbm_sharteel_wizard_slayer_kit <= 0)
+         OR (cbm_sharteel_wizard_slayer_kit = 0x40000000)) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: invalid Wizard Slayer kit context~
+  END
+  PATCH_IF ((cbm_sharteel_kit != 0x40000000)
+         AND (cbm_sharteel_kit != cbm_sharteel_wizard_slayer_kit)) BEGIN
+    PATCH_FAIL ~cbm_sharteel_wizard_slayer: unexpected kit %cbm_sharteel_kit%; expected true-class or Wizard Slayer~
+  END
+
+  // All guards have passed. No CRE field other than the kit dword is touched.
+  WRITE_LONG 0x244 cbm_sharteel_wizard_slayer_kit
+END

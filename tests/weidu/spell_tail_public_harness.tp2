@@ -1,0 +1,17 @@
+BACKUP ~weidu-backup/spell-tail-public~
+AUTHOR ~chriz-bg-modpack tests~
+
+BEGIN ~Branwen Spiritual Hammer structural patch~ DESIGNATED 400
+INCLUDE ~chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa~
+
+BEGIN ~Yeslick and Keldorn Dispel Magic structural patch~ DESIGNATED 410
+INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~
+
+BEGIN ~Use Any Item scroll caster-level patch~ DESIGNATED 430
+INCLUDE ~chriz-bg-modpack/lib/cbm_uai_caster_level.tpa~
+
+BEGIN ~Ascension Slayer EE Fixpack compatibility patch~ DESIGNATED 440
+INCLUDE ~chriz-bg-modpack/lib/cbm_ascension_slayer_eefp_fix.tpa~
+
+BEGIN ~SCS shapechange EE Fixpack compatibility patch~ DESIGNATED 450
+INCLUDE ~chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa~

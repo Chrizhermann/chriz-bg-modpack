@@ -1,0 +1,256 @@
+// =====================================================================
+// cbm_fade_ft_fix (component @110)
+// Convert Fade to Fighter/Thief and subsume the old proficiency/amulet fix
+// =====================================================================
+
+DEFINE_ACTION_FUNCTION cbm_fade_load_context
+  RET
+    cbm_fade_thief_class
+    cbm_fade_fighter_thief_class
+  RET_ARRAY
+    cbm_fade_fighter_xp
+    cbm_fade_thief_xp
+BEGIN
+  OUTER_SET cbm_fade_thief_class = IDS_OF_SYMBOL (~class~ ~THIEF~)
+  OUTER_SET cbm_fade_fighter_thief_class = IDS_OF_SYMBOL (~class~ ~FIGHTER_THIEF~)
+  ACTION_IF ((cbm_fade_thief_class <= 0) OR (cbm_fade_thief_class > 255)
+          OR (cbm_fade_fighter_thief_class <= 0) OR (cbm_fade_fighter_thief_class > 255)
+          OR (cbm_fade_thief_class = cbm_fade_fighter_thief_class)) BEGIN
+    FAIL ~cbm_fade_ft_fix: CLASS.IDS has invalid THIEF/FIGHTER_THIEF values~
+  END
+
+  ACTION_CLEAR_ARRAY cbm_fade_fighter_xp
+  ACTION_CLEAR_ARRAY cbm_fade_thief_xp
+  COPY_EXISTING ~XPLEVEL.2DA~ ~override~
+    COUNT_2DA_COLS cbm_fade_xp_cols
+    PATCH_IF (cbm_fade_xp_cols != 52) BEGIN
+      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA must contain a class label plus levels 1..51~
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_fade_xp_wide 51
+    PATCH_IF (cbm_fade_xp_wide < 3) BEGIN
+      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA is missing its header or class rows~
+    END
+    FOR (cbm_fade_col = 0; cbm_fade_col < 51; cbm_fade_col += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_fade_xp_wide 0 cbm_fade_col cbm_fade_header
+      PATCH_IF (!(IS_AN_INT ~%cbm_fade_header%~)
+             OR (cbm_fade_header != (cbm_fade_col + 1))) BEGIN
+        PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA level header must be 1 through 51~
+      END
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_fade_xp_rows 52
+    SET cbm_fade_found_fighter = 0
+    SET cbm_fade_found_thief = 0
+    FOR (cbm_fade_row = 0; cbm_fade_row < cbm_fade_xp_rows; cbm_fade_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_fade_xp_rows cbm_fade_row 0 cbm_fade_label
+      PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~)
+            OR (~%cbm_fade_label%~ STRING_EQUAL_CASE ~THIEF~) BEGIN
+        PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
+          SET cbm_fade_found_fighter += 1
+        END ELSE BEGIN
+          SET cbm_fade_found_thief += 1
+        END
+        SET cbm_fade_previous = 0
+        FOR (cbm_fade_level = 1; cbm_fade_level <= 51; cbm_fade_level += 1) BEGIN
+          READ_2DA_ENTRY_FORMER cbm_fade_xp_rows cbm_fade_row cbm_fade_level cbm_fade_cell
+          PATCH_IF (!(IS_AN_INT ~%cbm_fade_cell%~)) BEGIN
+            PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP thresholds must be integers~
+          END
+          SET cbm_fade_threshold = cbm_fade_cell
+          PATCH_IF (cbm_fade_level = 51) BEGIN
+            PATCH_IF (cbm_fade_threshold != (0 - 1)) BEGIN
+              PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP rows must end with -1 at level 51~
+            END
+          END ELSE BEGIN
+            PATCH_IF ((cbm_fade_threshold < 0)
+                   OR ((cbm_fade_level = 1) AND (cbm_fade_threshold != 0))
+                   OR ((cbm_fade_level > 1) AND (cbm_fade_threshold <= cbm_fade_previous))) BEGIN
+              PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP rows must be complete and strictly increasing~
+            END
+            PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
+              SET $cbm_fade_fighter_xp(~%cbm_fade_level%~) = cbm_fade_threshold
+            END ELSE BEGIN
+              SET $cbm_fade_thief_xp(~%cbm_fade_level%~) = cbm_fade_threshold
+            END
+            SET cbm_fade_previous = cbm_fade_threshold
+          END
+        END
+      END
+    END
+    PATCH_IF ((cbm_fade_found_fighter != 1) OR (cbm_fade_found_thief != 1)) BEGIN
+      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA needs exactly one FIGHTER and one THIEF row~
+    END
+  BUT_ONLY
+END
+
+DEFINE_PATCH_FUNCTION cbm_fade_make_fighter_thief
+  INT_VAR
+    cbm_fade_thief_class = 0
+    cbm_fade_fighter_thief_class = 0
+BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: truncated CRE~
+  END
+  READ_ASCII 0x00 cbm_fade_signature (8)
+  READ_BYTE 0x33 cbm_fade_effect_version
+  READ_ASCII 0x280 cbm_fade_dv (32) NULL
+  READ_LONG 0x18 cbm_fade_total_xp
+  READ_BYTE 0x273 cbm_fade_class
+  READ_LONG 0x244 cbm_fade_kit
+  READ_BYTE 0x234 cbm_fade_level1
+  READ_BYTE 0x235 cbm_fade_level2
+  READ_BYTE 0x236 cbm_fade_level3
+  READ_BYTE 0x45 cbm_fade_hide
+  READ_BYTE 0x67 cbm_fade_locks
+  READ_BYTE 0x68 cbm_fade_move
+  READ_BYTE 0x69 cbm_fade_find
+
+  PATCH_IF NOT (~%cbm_fade_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected a CRE V1.0 resource~
+  END
+  PATCH_IF (cbm_fade_effect_version != 1) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected embedded EFF V2 effects~
+  END
+  PATCH_IF NOT (~%cbm_fade_dv%~ STRING_EQUAL_CASE ~E3FADE~) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected death variable E3FADE~
+  END
+  PATCH_IF ((cbm_fade_thief_class <= 0) OR (cbm_fade_fighter_thief_class <= 0)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: invalid class context~
+  END
+  PATCH_IF (cbm_fade_kit != 0x40000000) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected Fade to remain true-class~
+  END
+  PATCH_IF ((cbm_fade_total_xp != 660000) AND (cbm_fade_total_xp != 2500000)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: unsupported Fade XP profile~
+  END
+
+  SET cbm_fade_class_xp = cbm_fade_total_xp / 2
+  SET cbm_fade_fighter_level = 0
+  SET cbm_fade_thief_level = 0
+  FOR (cbm_fade_level = 1; cbm_fade_level <= 50; cbm_fade_level += 1) BEGIN
+    PATCH_IF ($cbm_fade_fighter_xp(~%cbm_fade_level%~) <= cbm_fade_class_xp) BEGIN
+      SET cbm_fade_fighter_level = cbm_fade_level
+    END
+    PATCH_IF ($cbm_fade_thief_xp(~%cbm_fade_level%~) <= cbm_fade_class_xp) BEGIN
+      SET cbm_fade_thief_level = cbm_fade_level
+    END
+  END
+  PATCH_IF ((cbm_fade_total_xp = 660000)
+         AND ((cbm_fade_fighter_level != 9) OR (cbm_fade_thief_level != 11))) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: installed XPLEVEL.2DA does not yield Fade F9/T11~
+  END
+  PATCH_IF ((cbm_fade_total_xp = 2500000)
+         AND ((cbm_fade_fighter_level != 13) OR (cbm_fade_thief_level != 15))) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: installed XPLEVEL.2DA does not yield Fade F13/T15~
+  END
+
+  // Reconcile the 340-point level-13 distribution to the level-11 budget:
+  // 40 creation points + 10 level-ups * 25 = 290. Each source share is
+  // scaled to 290; flooring before five-point rounding deliberately breaks
+  // Hide's exact half-boundary downward. The result is 70/70/70/80 = 290.
+  SET cbm_fade_skill_budget = 40 + (25 * (cbm_fade_thief_level - 1))
+  PATCH_IF (cbm_fade_thief_level = 11) BEGIN
+    SET cbm_fade_target_hide = (((85 * cbm_fade_skill_budget / 340) + 2) / 5) * 5
+    SET cbm_fade_target_locks = (((80 * cbm_fade_skill_budget / 340) + 2) / 5) * 5
+    SET cbm_fade_target_move = (((80 * cbm_fade_skill_budget / 340) + 2) / 5) * 5
+    SET cbm_fade_target_find = (((95 * cbm_fade_skill_budget / 340) + 2) / 5) * 5
+  END ELSE BEGIN
+    // The ToB resource gains thief levels; retain the authored distribution.
+    SET cbm_fade_target_hide = 85
+    SET cbm_fade_target_locks = 80
+    SET cbm_fade_target_move = 80
+    SET cbm_fade_target_find = 95
+  END
+  PATCH_IF ((cbm_fade_thief_level = 11)
+         AND ((cbm_fade_target_hide + cbm_fade_target_locks
+             + cbm_fade_target_move + cbm_fade_target_find) != cbm_fade_skill_budget)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: internal Fade thief-skill budget mismatch~
+  END
+
+  PATCH_IF (cbm_fade_total_xp = 660000) BEGIN
+    // Fighter 9 carries six total pips: retain the four unrelated source
+    // pips and move the one new pip into Short Sword.
+    SET cbm_fade_target_short_sword = 2
+    SET cbm_fade_target_two_weapon = 1
+  END ELSE BEGIN
+    // Fighter 13 carries eight total pips: Short Sword 2 / Two-Weapon 3.
+    SET cbm_fade_target_short_sword = 2
+    SET cbm_fade_target_two_weapon = 3
+  END
+
+  READ_LONG 0x2c4 cbm_fade_effect_offset
+  READ_LONG 0x2c8 cbm_fade_effect_count
+  PATCH_IF ((cbm_fade_effect_count > 10000)
+         OR (cbm_fade_effect_offset < 0x2d4)
+         OR ((cbm_fade_effect_offset + (cbm_fade_effect_count * 0x108)) > SOURCE_SIZE)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: invalid embedded effect table~
+  END
+  SET cbm_fade_seen_short_sword = 0
+  SET cbm_fade_seen_two_weapon = 0
+  SET cbm_fade_short_sword = 0
+  SET cbm_fade_two_weapon = 0
+  FOR (cbm_fade_i = 0; cbm_fade_i < cbm_fade_effect_count; cbm_fade_i += 1) BEGIN
+    SET cbm_fade_effect = cbm_fade_effect_offset + (cbm_fade_i * 0x108)
+    READ_LONG (cbm_fade_effect + 0x08) cbm_fade_opcode
+    PATCH_IF (cbm_fade_opcode = 233) BEGIN
+      READ_LONG (cbm_fade_effect + 0x18) cbm_fade_stat
+      PATCH_IF (cbm_fade_stat = 91) BEGIN
+        SET cbm_fade_seen_short_sword += 1
+        READ_LONG (cbm_fade_effect + 0x14) cbm_fade_short_sword
+      END ELSE PATCH_IF (cbm_fade_stat = 114) BEGIN
+        SET cbm_fade_seen_two_weapon += 1
+        READ_LONG (cbm_fade_effect + 0x14) cbm_fade_two_weapon
+      END
+    END
+  END
+  PATCH_IF ((cbm_fade_seen_short_sword != 1) OR (cbm_fade_seen_two_weapon != 1)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected one Short Sword and one Two-Weapon proficiency record~
+  END
+
+  SET cbm_fade_source_state = 0
+  PATCH_IF ((cbm_fade_class = cbm_fade_thief_class)
+         AND (cbm_fade_level1 = 13) AND (cbm_fade_level2 = 0) AND (cbm_fade_level3 = 0)
+         AND (cbm_fade_hide = 85) AND (cbm_fade_locks = 80)
+         AND (cbm_fade_move = 80) AND (cbm_fade_find = 95)
+         AND (cbm_fade_short_sword = 1) AND (cbm_fade_two_weapon = 1)) BEGIN
+    SET cbm_fade_source_state = 1
+  END
+  SET cbm_fade_target_state = 0
+  PATCH_IF ((cbm_fade_class = cbm_fade_fighter_thief_class)
+         AND (cbm_fade_level1 = cbm_fade_fighter_level)
+         AND (cbm_fade_level2 = cbm_fade_thief_level) AND (cbm_fade_level3 = 0)
+         AND (cbm_fade_hide = cbm_fade_target_hide)
+         AND (cbm_fade_locks = cbm_fade_target_locks)
+         AND (cbm_fade_move = cbm_fade_target_move)
+         AND (cbm_fade_find = cbm_fade_target_find)
+         AND (cbm_fade_short_sword = cbm_fade_target_short_sword)
+         AND (cbm_fade_two_weapon = cbm_fade_target_two_weapon)) BEGIN
+    SET cbm_fade_target_state = 1
+  END
+  PATCH_IF ((cbm_fade_source_state = 0) AND (cbm_fade_target_state = 0)) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: unexpected Fade source state; refusing a partial overwrite~
+  END
+
+  WRITE_BYTE 0x273 cbm_fade_fighter_thief_class
+  WRITE_BYTE 0x234 cbm_fade_fighter_level
+  WRITE_BYTE 0x235 cbm_fade_thief_level
+  WRITE_BYTE 0x236 0
+  WRITE_BYTE 0x45 cbm_fade_target_hide
+  WRITE_BYTE 0x67 cbm_fade_target_locks
+  WRITE_BYTE 0x68 cbm_fade_target_move
+  WRITE_BYTE 0x69 cbm_fade_target_find
+  SET_BG2_PROFICIENCY 91 cbm_fade_target_short_sword
+  SET_BG2_PROFICIENCY 114 cbm_fade_target_two_weapon
+END
+
+DEFINE_PATCH_FUNCTION cbm_fade_allow_fighter_thief BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x72) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: truncated Fade amulet ITM~
+  END
+  READ_ASCII 0x00 cbm_fade_item_signature (8)
+  PATCH_IF NOT (~%cbm_fade_item_signature%~ STRING_EQUAL ~ITM V1  ~) BEGIN
+    PATCH_FAIL ~cbm_fade_ft_fix: expected an ITM V1 resource~
+  END
+  WRITE_BYTE 0x20 ((BYTE_AT 0x20) BAND 0xfd)
+END

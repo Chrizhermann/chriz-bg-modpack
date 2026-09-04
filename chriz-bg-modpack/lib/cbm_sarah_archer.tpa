@@ -1,0 +1,115 @@
+// =====================================================================
+//  cbm_sarah_archer   (component @190)
+//  Convert Sarah ToB v8 to Archer with the owner's chosen proficiencies
+// =====================================================================
+
+DEFINE_PATCH_FUNCTION cbm_sarah_make_archer BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: truncated CRE (smaller than the V1.0 header)~
+  END
+
+  READ_ASCII 0x00 cbm_sarah_signature (8)
+  READ_BYTE  0x33 cbm_sarah_effect_version
+  READ_BYTE  0x273 cbm_sarah_class
+  READ_SHORT 0x246 cbm_sarah_kit_high
+
+  PATCH_IF NOT (~%cbm_sarah_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: expected a CRE V1.0 resource~
+  END
+  PATCH_IF (cbm_sarah_effect_version != 1) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: expected embedded EFF V2 effects~
+  END
+  PATCH_IF (cbm_sarah_class != 12) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: expected Ranger class (12), found %cbm_sarah_class%~
+  END
+  PATCH_IF ((cbm_sarah_kit_high != 0x4000) AND (cbm_sarah_kit_high != 0x4007)) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: unexpected Ranger kit value %cbm_sarah_kit_high%; refusing to overwrite it~
+  END
+
+  READ_LONG 0x2c4 cbm_sarah_effect_offset
+  READ_LONG 0x2c8 cbm_sarah_effect_count
+  PATCH_IF ((cbm_sarah_effect_count > 10000)
+         OR (cbm_sarah_effect_offset < 0x2d4)
+         OR ((cbm_sarah_effect_offset + (cbm_sarah_effect_count * 0x108)) > SOURCE_SIZE)) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: invalid embedded effect table~
+  END
+
+  // The core Archer kit is the high word 0x4007 of the CRE kit dword.
+  WRITE_SHORT 0x246 0x4007
+
+  // Clear the complete standard BG2 proficiency range before installing the
+  // exact eight-pip build. Numeric stat IDs keep this function testable under
+  // WeiDU --nogame without loading STATS.IDS.
+  SET_BG2_PROFICIENCY 89 0
+  SET_BG2_PROFICIENCY 90 0
+  SET_BG2_PROFICIENCY 91 0
+  SET_BG2_PROFICIENCY 92 0
+  SET_BG2_PROFICIENCY 93 0
+  SET_BG2_PROFICIENCY 94 0
+  SET_BG2_PROFICIENCY 95 0
+  SET_BG2_PROFICIENCY 96 0
+  SET_BG2_PROFICIENCY 97 0
+  SET_BG2_PROFICIENCY 98 0
+  SET_BG2_PROFICIENCY 99 0
+  SET_BG2_PROFICIENCY 100 0
+  SET_BG2_PROFICIENCY 101 0
+  SET_BG2_PROFICIENCY 102 0
+  SET_BG2_PROFICIENCY 103 0
+  SET_BG2_PROFICIENCY 104 0
+  SET_BG2_PROFICIENCY 105 0
+  SET_BG2_PROFICIENCY 106 0
+  SET_BG2_PROFICIENCY 107 0
+  SET_BG2_PROFICIENCY 108 0
+  SET_BG2_PROFICIENCY 109 0
+  SET_BG2_PROFICIENCY 110 0
+  SET_BG2_PROFICIENCY 111 0
+  SET_BG2_PROFICIENCY 112 0
+  SET_BG2_PROFICIENCY 113 0
+  SET_BG2_PROFICIENCY 114 0
+  SET_BG2_PROFICIENCY 115 0
+
+  SET_BG2_PROFICIENCY 90  1 // Long Sword
+  SET_BG2_PROFICIENCY 104 3 // Long Bow
+  SET_BG2_PROFICIENCY 105 2 // Short Bow
+  SET_BG2_PROFICIENCY 114 2 // Two-Weapon Style (intentional under Artisan too)
+
+  // Postcondition gate: exactly the four selected proficiency effects must
+  // remain in the standard range, with no duplicate or stray values.
+  SET cbm_sarah_bad_prof = 0
+  SET cbm_sarah_seen_90 = 0
+  SET cbm_sarah_seen_104 = 0
+  SET cbm_sarah_seen_105 = 0
+  SET cbm_sarah_seen_114 = 0
+  FOR (cbm_sarah_i = 0; cbm_sarah_i < cbm_sarah_effect_count; cbm_sarah_i += 1) BEGIN
+    SET cbm_sarah_effect = cbm_sarah_effect_offset + (cbm_sarah_i * 0x108)
+    READ_LONG (cbm_sarah_effect + 0x08) cbm_sarah_opcode
+    PATCH_IF (cbm_sarah_opcode = 233) BEGIN
+      READ_LONG (cbm_sarah_effect + 0x14) cbm_sarah_value
+      READ_LONG (cbm_sarah_effect + 0x18) cbm_sarah_stat
+      PATCH_IF ((cbm_sarah_stat >= 89) AND (cbm_sarah_stat <= 115)) BEGIN
+        PATCH_IF (cbm_sarah_stat = 90) BEGIN
+          SET cbm_sarah_seen_90 += 1
+          PATCH_IF (cbm_sarah_value != 1) BEGIN SET cbm_sarah_bad_prof = 1 END
+        END ELSE PATCH_IF (cbm_sarah_stat = 104) BEGIN
+          SET cbm_sarah_seen_104 += 1
+          PATCH_IF (cbm_sarah_value != 3) BEGIN SET cbm_sarah_bad_prof = 1 END
+        END ELSE PATCH_IF (cbm_sarah_stat = 105) BEGIN
+          SET cbm_sarah_seen_105 += 1
+          PATCH_IF (cbm_sarah_value != 2) BEGIN SET cbm_sarah_bad_prof = 1 END
+        END ELSE PATCH_IF (cbm_sarah_stat = 114) BEGIN
+          SET cbm_sarah_seen_114 += 1
+          PATCH_IF (cbm_sarah_value != 2) BEGIN SET cbm_sarah_bad_prof = 1 END
+        END ELSE BEGIN
+          SET cbm_sarah_bad_prof = 1
+        END
+      END
+    END
+  END
+  PATCH_IF ((cbm_sarah_bad_prof != 0)
+         OR (cbm_sarah_seen_90 != 1)
+         OR (cbm_sarah_seen_104 != 1)
+         OR (cbm_sarah_seen_105 != 1)
+         OR (cbm_sarah_seen_114 != 1)) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: proficiency postcondition failed~
+  END
+END

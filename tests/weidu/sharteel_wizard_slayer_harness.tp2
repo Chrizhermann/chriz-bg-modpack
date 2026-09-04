@@ -1,0 +1,16 @@
+// Isolated synthetic-game harness for component 193's production patch code.
+// argv[0] = production TPA, argv[1] = source CRE, argv[2] = output CRE.
+// KIT.IDS is resolved from the synthetic game supplied through --game.
+
+BACKUP ~weidu-backup~
+AUTHOR ~chriz-bg-modpack tests~
+
+BEGIN ~Shar-Teel Wizard Slayer patch harness~ DESIGNATED 1
+INCLUDE ~%argv[0]%~
+OUTER_SET cbm_sharteel_wizard_slayer_id = IDS_OF_SYMBOL (~kit~ ~WIZARDSLAYER~)
+OUTER_SET cbm_sharteel_wizard_slayer_kit = cbm_sharteel_wizard_slayer_id * 0x10000
+COPY ~%argv[1]%~ ~%argv[2]%~
+  LPF cbm_sharteel_make_wizard_slayer
+    INT_VAR
+      cbm_sharteel_wizard_slayer_kit = cbm_sharteel_wizard_slayer_kit
+  END

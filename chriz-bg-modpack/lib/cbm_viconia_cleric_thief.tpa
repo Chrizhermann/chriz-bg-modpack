@@ -1,0 +1,568 @@
+// =====================================================================
+//  cbm_viconia_cleric_thief   (component @192)
+//  Convert Viconia to a dynamically levelled true-class Cleric/Thief
+// =====================================================================
+
+DEFINE_ACTION_FUNCTION cbm_viconia_load_save_table
+  STR_VAR
+    cbm_viconia_save_resource = ~~
+  RET_ARRAY
+    cbm_viconia_loaded_saves
+BEGIN
+  ACTION_CLEAR_ARRAY cbm_viconia_loaded_saves
+  COPY_EXISTING ~%cbm_viconia_save_resource%~ ~override~
+    COUNT_2DA_COLS cbm_viconia_save_cols
+    PATCH_IF (cbm_viconia_save_cols != 51) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: save table must contain a row label plus levels 1 through 50~
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_save_wide 50
+    PATCH_IF (cbm_viconia_save_wide < 1) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: save table is missing its level header~
+    END
+    FOR (cbm_viconia_level = 1; cbm_viconia_level <= 50; cbm_viconia_level += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_save_wide 0 (cbm_viconia_level - 1) cbm_viconia_save_header
+      PATCH_IF (!(IS_AN_INT ~%cbm_viconia_save_header%~)
+             OR (cbm_viconia_save_header != cbm_viconia_level)) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: save-table level header must be ordered 1 through 50~
+      END
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_save_rows 51
+    PATCH_IF (cbm_viconia_save_rows != 5) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: save table must contain exactly five saving-throw rows~
+    END
+    SET cbm_viconia_found_death = 0
+    SET cbm_viconia_found_wands = 0
+    SET cbm_viconia_found_poly = 0
+    SET cbm_viconia_found_breath = 0
+    SET cbm_viconia_found_spell = 0
+    FOR (cbm_viconia_row = 0; cbm_viconia_row < cbm_viconia_save_rows; cbm_viconia_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_save_rows cbm_viconia_row 0 cbm_viconia_save_label
+      PATCH_IF (~%cbm_viconia_save_label%~ STRING_EQUAL_CASE ~DEATH~) BEGIN
+        SET cbm_viconia_found_death += 1
+      END ELSE PATCH_IF (~%cbm_viconia_save_label%~ STRING_EQUAL_CASE ~WANDS~) BEGIN
+        SET cbm_viconia_found_wands += 1
+      END ELSE PATCH_IF (~%cbm_viconia_save_label%~ STRING_EQUAL_CASE ~POLY~) BEGIN
+        SET cbm_viconia_found_poly += 1
+      END ELSE PATCH_IF (~%cbm_viconia_save_label%~ STRING_EQUAL_CASE ~BREATH~) BEGIN
+        SET cbm_viconia_found_breath += 1
+      END ELSE PATCH_IF (~%cbm_viconia_save_label%~ STRING_EQUAL_CASE ~SPELL~) BEGIN
+        SET cbm_viconia_found_spell += 1
+      END ELSE BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: save table contains an unexpected row~
+      END
+
+      FOR (cbm_viconia_level = 1; cbm_viconia_level <= 50; cbm_viconia_level += 1) BEGIN
+        READ_2DA_ENTRY_FORMER cbm_viconia_save_rows cbm_viconia_row cbm_viconia_level cbm_viconia_save_cell
+        PATCH_IF (!(IS_AN_INT ~%cbm_viconia_save_cell%~)
+               OR (cbm_viconia_save_cell < 0)
+               OR (cbm_viconia_save_cell > 20)) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: saving throws must be integers from 0 through 20~
+        END
+        SET $cbm_viconia_loaded_saves(~%cbm_viconia_save_label%_%cbm_viconia_level%~) = cbm_viconia_save_cell
+      END
+    END
+
+    PATCH_IF ((cbm_viconia_found_death != 1)
+           OR (cbm_viconia_found_wands != 1)
+           OR (cbm_viconia_found_poly != 1)
+           OR (cbm_viconia_found_breath != 1)
+           OR (cbm_viconia_found_spell != 1)) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: save-table row labels must be unique and complete~
+    END
+  BUT_ONLY
+END
+
+// Load immutable game context once before any CRE is patched. XPLEVEL.2DA is
+// class-row oriented: column 0 is the class label, columns 1..51 are the
+// level thresholds, and level 51 is the terminal -1 cell.
+DEFINE_ACTION_FUNCTION cbm_viconia_load_context
+  RET
+    cbm_viconia_cleric_class
+    cbm_viconia_cleric_thief_class
+    cbm_viconia_cleric_lore_rate
+    cbm_viconia_thief_lore_rate
+  RET_ARRAY
+    cbm_viconia_cleric_xp
+    cbm_viconia_thief_xp
+    cbm_viconia_priest_slots
+    cbm_viconia_priest_saves
+    cbm_viconia_rogue_saves
+    cbm_viconia_cleric_thac0
+    cbm_viconia_thief_thac0
+BEGIN
+  OUTER_SET cbm_viconia_cleric_class = IDS_OF_SYMBOL (~class~ ~CLERIC~)
+  OUTER_SET cbm_viconia_cleric_thief_class = IDS_OF_SYMBOL (~class~ ~CLERIC_THIEF~)
+
+  ACTION_IF ((cbm_viconia_cleric_class < 0)
+          OR (cbm_viconia_cleric_class > 255)
+          OR (cbm_viconia_cleric_thief_class < 0)
+          OR (cbm_viconia_cleric_thief_class > 255)
+          OR (cbm_viconia_cleric_class = cbm_viconia_cleric_thief_class)) BEGIN
+    FAIL ~cbm_viconia_cleric_thief: CLASS.IDS has invalid CLERIC/CLERIC_THIEF values~
+  END
+
+  ACTION_CLEAR_ARRAY cbm_viconia_cleric_xp
+  ACTION_CLEAR_ARRAY cbm_viconia_thief_xp
+  ACTION_CLEAR_ARRAY cbm_viconia_priest_slots
+  ACTION_CLEAR_ARRAY cbm_viconia_priest_saves
+  ACTION_CLEAR_ARRAY cbm_viconia_rogue_saves
+  ACTION_CLEAR_ARRAY cbm_viconia_cleric_thac0
+  ACTION_CLEAR_ARRAY cbm_viconia_thief_thac0
+
+  // Lore gains are installation data, not constants: mods may alter the
+  // per-level rates. Resolve the two component classes once and fail closed
+  // on malformed or ambiguous tables.
+  COPY_EXISTING ~LORE.2DA~ ~override~
+    COUNT_2DA_COLS cbm_viconia_lore_cols
+    PATCH_IF (cbm_viconia_lore_cols != 2) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: LORE.2DA must contain a class label plus RATE~
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_lore_rows 2
+    SET cbm_viconia_found_cleric_lore = 0
+    SET cbm_viconia_found_thief_lore = 0
+    FOR (cbm_viconia_row = 0; cbm_viconia_row < cbm_viconia_lore_rows; cbm_viconia_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_lore_rows cbm_viconia_row 0 cbm_viconia_lore_class
+      PATCH_IF (~%cbm_viconia_lore_class%~ STRING_EQUAL_CASE ~CLERIC~)
+            OR (~%cbm_viconia_lore_class%~ STRING_EQUAL_CASE ~THIEF~) BEGIN
+        READ_2DA_ENTRY_FORMER cbm_viconia_lore_rows cbm_viconia_row 1 cbm_viconia_lore_cell
+        PATCH_IF (!(IS_AN_INT ~%cbm_viconia_lore_cell%~)
+               OR (cbm_viconia_lore_cell < 0)
+               OR (cbm_viconia_lore_cell > 255)) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: LORE.2DA CLERIC/THIEF rates must be nonnegative bytes~
+        END
+        PATCH_IF (~%cbm_viconia_lore_class%~ STRING_EQUAL_CASE ~CLERIC~) BEGIN
+          SET cbm_viconia_found_cleric_lore += 1
+          SET cbm_viconia_cleric_lore_rate = cbm_viconia_lore_cell
+        END ELSE BEGIN
+          SET cbm_viconia_found_thief_lore += 1
+          SET cbm_viconia_thief_lore_rate = cbm_viconia_lore_cell
+        END
+      END
+    END
+    PATCH_IF ((cbm_viconia_found_cleric_lore != 1)
+           OR (cbm_viconia_found_thief_lore != 1)) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: LORE.2DA must contain exactly one CLERIC and one THIEF row~
+    END
+  BUT_ONLY
+
+  // Component 192 writes final Cleric/Thief split levels directly into each
+  // CRE. Recruitment therefore cannot be relied on to repair a single-class
+  // source THAC0. Read only the two installed progressions needed here and
+  // fail closed if their shape is ambiguous.
+  COPY_EXISTING ~THAC0.2DA~ ~override~
+    COUNT_2DA_COLS cbm_viconia_thac0_cols
+    PATCH_IF (cbm_viconia_thac0_cols != 51) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: THAC0.2DA must contain a class label plus levels 1 through 50~
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_thac0_wide 50
+    PATCH_IF (cbm_viconia_thac0_wide < 1) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: THAC0.2DA is missing its level header~
+    END
+    FOR (cbm_viconia_level = 1; cbm_viconia_level <= 50; cbm_viconia_level += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_thac0_wide 0 (cbm_viconia_level - 1) cbm_viconia_thac0_header
+      PATCH_IF (!(IS_AN_INT ~%cbm_viconia_thac0_header%~)
+             OR (cbm_viconia_thac0_header != cbm_viconia_level)) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: THAC0.2DA level header must be ordered 1 through 50~
+      END
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_thac0_rows 51
+    SET cbm_viconia_found_cleric_thac0 = 0
+    SET cbm_viconia_found_thief_thac0 = 0
+    FOR (cbm_viconia_row = 0; cbm_viconia_row < cbm_viconia_thac0_rows; cbm_viconia_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_thac0_rows cbm_viconia_row 0 cbm_viconia_thac0_class
+      PATCH_IF (~%cbm_viconia_thac0_class%~ STRING_EQUAL_CASE ~CLERIC~)
+            OR (~%cbm_viconia_thac0_class%~ STRING_EQUAL_CASE ~THIEF~) BEGIN
+        PATCH_IF (~%cbm_viconia_thac0_class%~ STRING_EQUAL_CASE ~CLERIC~) BEGIN
+          SET cbm_viconia_found_cleric_thac0 += 1
+        END ELSE BEGIN
+          SET cbm_viconia_found_thief_thac0 += 1
+        END
+
+        FOR (cbm_viconia_level = 1; cbm_viconia_level <= 50; cbm_viconia_level += 1) BEGIN
+          READ_2DA_ENTRY_FORMER cbm_viconia_thac0_rows cbm_viconia_row cbm_viconia_level cbm_viconia_thac0_cell
+          PATCH_IF (!(IS_AN_INT ~%cbm_viconia_thac0_cell%~)
+                 OR (cbm_viconia_thac0_cell < 0)
+                 OR (cbm_viconia_thac0_cell > 255)) BEGIN
+            PATCH_FAIL ~cbm_viconia_cleric_thief: THAC0.2DA CLERIC/THIEF values must be integers from 0 through 255~
+          END
+          PATCH_IF (~%cbm_viconia_thac0_class%~ STRING_EQUAL_CASE ~CLERIC~) BEGIN
+            SET $cbm_viconia_cleric_thac0(~%cbm_viconia_level%~) = cbm_viconia_thac0_cell
+          END ELSE BEGIN
+            SET $cbm_viconia_thief_thac0(~%cbm_viconia_level%~) = cbm_viconia_thac0_cell
+          END
+        END
+      END
+    END
+    PATCH_IF ((cbm_viconia_found_cleric_thac0 != 1)
+           OR (cbm_viconia_found_thief_thac0 != 1)) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: THAC0.2DA must contain exactly one CLERIC row and one THIEF row~
+    END
+  BUT_ONLY
+
+  COPY_EXISTING ~XPLEVEL.2DA~ ~override~
+    COUNT_2DA_COLS cbm_viconia_xp_cols
+    PATCH_IF (cbm_viconia_xp_cols != 52) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA must contain class labels plus level columns 1..51~
+    END
+
+    // The 51-token view starts with the level-header row. Validate its
+    // orientation rather than accidentally accepting a transposed table.
+    READ_2DA_ENTRIES_NOW cbm_viconia_xp_wide 51
+    PATCH_IF (cbm_viconia_xp_wide < 3) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA is missing its level header or class rows~
+    END
+    FOR (cbm_viconia_col = 0; cbm_viconia_col < 51; cbm_viconia_col += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_xp_wide 0 cbm_viconia_col cbm_viconia_header_cell
+      PATCH_IF (!(IS_AN_INT ~%cbm_viconia_header_cell%~)
+             OR (cbm_viconia_header_cell != (cbm_viconia_col + 1))) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA level header must be 1 through 51~
+      END
+    END
+
+    // The 52-token view contains only data rows. Validate and retain only the
+    // two class progressions this component consumes; unrelated rows remain
+    // outside the component's compatibility surface.
+    READ_2DA_ENTRIES_NOW cbm_viconia_xp_rows 52
+    SET cbm_viconia_found_cleric = 0
+    SET cbm_viconia_found_thief = 0
+    FOR (cbm_viconia_row = 0; cbm_viconia_row < cbm_viconia_xp_rows; cbm_viconia_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_xp_rows cbm_viconia_row 0 cbm_viconia_class_label
+      PATCH_IF (~%cbm_viconia_class_label%~ STRING_EQUAL_CASE ~CLERIC~)
+            OR (~%cbm_viconia_class_label%~ STRING_EQUAL_CASE ~THIEF~) BEGIN
+        PATCH_IF (~%cbm_viconia_class_label%~ STRING_EQUAL_CASE ~CLERIC~) BEGIN
+          SET cbm_viconia_found_cleric += 1
+        END ELSE BEGIN
+          SET cbm_viconia_found_thief += 1
+        END
+
+        SET cbm_viconia_previous_threshold = 0
+        FOR (cbm_viconia_level = 1; cbm_viconia_level <= 51; cbm_viconia_level += 1) BEGIN
+          READ_2DA_ENTRY_FORMER cbm_viconia_xp_rows cbm_viconia_row cbm_viconia_level cbm_viconia_threshold_cell
+          PATCH_IF (!(IS_AN_INT ~%cbm_viconia_threshold_cell%~)) BEGIN
+            PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA CLERIC/THIEF thresholds must be integers~
+          END
+          SET cbm_viconia_threshold = cbm_viconia_threshold_cell
+
+          PATCH_IF (cbm_viconia_level = 51) BEGIN
+            PATCH_IF (cbm_viconia_threshold != (0 - 1)) BEGIN
+              PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA CLERIC/THIEF rows must end with -1 at level 51~
+            END
+          END ELSE BEGIN
+            PATCH_IF ((cbm_viconia_threshold < 0)
+                   OR ((cbm_viconia_level = 1) AND (cbm_viconia_threshold != 0))
+                   OR ((cbm_viconia_level > 1) AND (cbm_viconia_threshold <= cbm_viconia_previous_threshold))) BEGIN
+              PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA CLERIC/THIEF thresholds must be complete and strictly increasing~
+            END
+
+            PATCH_IF (~%cbm_viconia_class_label%~ STRING_EQUAL_CASE ~CLERIC~) BEGIN
+              SET $cbm_viconia_cleric_xp(~%cbm_viconia_level%~) = cbm_viconia_threshold
+            END ELSE BEGIN
+              SET $cbm_viconia_thief_xp(~%cbm_viconia_level%~) = cbm_viconia_threshold
+            END
+            SET cbm_viconia_previous_threshold = cbm_viconia_threshold
+          END
+        END
+      END
+    END
+
+    PATCH_IF ((cbm_viconia_found_cleric != 1) OR (cbm_viconia_found_thief != 1)) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: XPLEVEL.2DA must contain exactly one CLERIC row and one THIEF row~
+    END
+  BUT_ONLY
+
+  // Resolve the base priest spell slots for the derived Cleric level from
+  // this installation. The CRE's existing after-effects delta is retained
+  // later, so permanent Wisdom/item/kit bonuses are not erased.
+  COPY_EXISTING ~MXSPLPRS.2DA~ ~override~
+    COUNT_2DA_COLS cbm_viconia_priest_cols
+    PATCH_IF (cbm_viconia_priest_cols != 8) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA must contain a level label plus seven priest spell levels~
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_priest_wide 7
+    PATCH_IF (cbm_viconia_priest_wide < 1) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA is missing its spell-level header~
+    END
+    FOR (cbm_viconia_spell_level = 1; cbm_viconia_spell_level <= 7; cbm_viconia_spell_level += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_priest_wide 0 (cbm_viconia_spell_level - 1) cbm_viconia_priest_header
+      PATCH_IF (!(IS_AN_INT ~%cbm_viconia_priest_header%~)
+             OR (cbm_viconia_priest_header != cbm_viconia_spell_level)) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA spell-level header must be 1 through 7~
+      END
+    END
+
+    READ_2DA_ENTRIES_NOW cbm_viconia_priest_rows 8
+    PATCH_IF (cbm_viconia_priest_rows != 50) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA must contain exactly Cleric levels 1 through 50~
+    END
+    FOR (cbm_viconia_row = 0; cbm_viconia_row < cbm_viconia_priest_rows; cbm_viconia_row += 1) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_viconia_priest_rows cbm_viconia_row 0 cbm_viconia_priest_level_cell
+      PATCH_IF (!(IS_AN_INT ~%cbm_viconia_priest_level_cell%~)
+             OR (cbm_viconia_priest_level_cell != (cbm_viconia_row + 1))) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA level labels must be complete and ordered 1 through 50~
+      END
+      FOR (cbm_viconia_spell_level = 1; cbm_viconia_spell_level <= 7; cbm_viconia_spell_level += 1) BEGIN
+        READ_2DA_ENTRY_FORMER cbm_viconia_priest_rows cbm_viconia_row cbm_viconia_spell_level cbm_viconia_priest_slot_cell
+        PATCH_IF (!(IS_AN_INT ~%cbm_viconia_priest_slot_cell%~)
+               OR (cbm_viconia_priest_slot_cell < 0)
+               OR (cbm_viconia_priest_slot_cell > 65535)) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: MXSPLPRS.2DA priest slot counts must be nonnegative words~
+        END
+        SET $cbm_viconia_priest_slots(~%cbm_viconia_priest_level_cell%_%cbm_viconia_spell_level%~) = cbm_viconia_priest_slot_cell
+      END
+    END
+  BUT_ONLY
+
+  LAF cbm_viconia_load_save_table
+    STR_VAR
+      cbm_viconia_save_resource = ~SAVEPRS.2DA~
+    RET_ARRAY
+      cbm_viconia_priest_saves = cbm_viconia_loaded_saves
+  END
+  LAF cbm_viconia_load_save_table
+    STR_VAR
+      cbm_viconia_save_resource = ~SAVEROG.2DA~
+    RET_ARRAY
+      cbm_viconia_rogue_saves = cbm_viconia_loaded_saves
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
+  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: truncated CRE (smaller than the V1.0 header)~
+  END
+
+  READ_ASCII 0x00 cbm_viconia_signature (8)
+  READ_ASCII 0x280 cbm_viconia_dv (32) NULL
+  READ_BYTE  0x273 cbm_viconia_class
+  READ_LONG  0x244 cbm_viconia_kit
+  READ_LONG  0x18 cbm_viconia_total_xp
+
+  PATCH_IF NOT (~%cbm_viconia_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: expected a CRE V1.0 signature~
+  END
+  PATCH_IF NOT (~%cbm_viconia_dv%~ STRING_EQUAL_CASE ~VICONIA~) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: expected death variable VICONIA~
+  END
+  PATCH_IF ((cbm_viconia_class != cbm_viconia_cleric_class)
+         AND (cbm_viconia_class != cbm_viconia_cleric_thief_class)) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: unexpected class %cbm_viconia_class%; expected CLERIC or CLERIC_THIEF~
+  END
+  PATCH_IF (cbm_viconia_kit != 0x40000000) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: unexpected kit %cbm_viconia_kit%; expected true-class~
+  END
+
+  // Multiclass characters split total XP equally; WeiDU integer division is
+  // the engine-compatible floor operation for odd totals.
+  SET cbm_viconia_class_xp = cbm_viconia_total_xp / 2
+  SET cbm_viconia_cleric_level = 0
+  SET cbm_viconia_thief_level = 0
+  FOR (cbm_viconia_level = 1; cbm_viconia_level <= 50; cbm_viconia_level += 1) BEGIN
+    PATCH_IF ($cbm_viconia_cleric_xp(~%cbm_viconia_level%~) <= cbm_viconia_class_xp) BEGIN
+      SET cbm_viconia_cleric_level = cbm_viconia_level
+    END
+    PATCH_IF ($cbm_viconia_thief_xp(~%cbm_viconia_level%~) <= cbm_viconia_class_xp) BEGIN
+      SET cbm_viconia_thief_level = cbm_viconia_level
+    END
+  END
+
+  PATCH_IF ((cbm_viconia_cleric_level < 1)
+         OR (cbm_viconia_thief_level < 1)
+         OR (cbm_viconia_cleric_level > 50)
+         OR (cbm_viconia_thief_level > 15)) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: derived CLERIC/THIEF level is outside the supported range (Thief 1..15)~
+  END
+
+  // Multiclass THAC0 uses the better (lower) installed class progression at
+  // the exact split levels this component serializes.
+  SET cbm_viconia_thac0 = $cbm_viconia_cleric_thac0(~%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_thac0 = $cbm_viconia_thief_thac0(~%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_thac0 < cbm_viconia_thac0) BEGIN
+    SET cbm_viconia_thac0 = cbm_viconia_rogue_thac0
+  END
+
+  // Treat the level-1 40 points and every later 25-point pool alike: invest
+  // only in Find Traps and Open Locks, split evenly in five-point chunks.
+  // When the budget contains an odd chunk, Find Traps receives it.
+  SET cbm_viconia_skill_budget = 40 + (25 * (cbm_viconia_thief_level - 1))
+  SET cbm_viconia_hide = 0
+  SET cbm_viconia_move = 0
+  SET cbm_viconia_find = ((cbm_viconia_skill_budget + 5) / 10) * 5
+  SET cbm_viconia_locks = cbm_viconia_skill_budget - cbm_viconia_find
+
+  PATCH_IF ((cbm_viconia_hide + cbm_viconia_move + cbm_viconia_find + cbm_viconia_locks)
+         != cbm_viconia_skill_budget) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: internal thief-skill budget mismatch~
+  END
+  PATCH_IF ((cbm_viconia_find < cbm_viconia_locks)
+         OR ((cbm_viconia_find - cbm_viconia_locks) > 5)
+         OR (cbm_viconia_find > 255)
+         OR (cbm_viconia_locks > 255)) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: derived Find Traps/Open Locks allocation is invalid~
+  END
+
+  // Raw Lore is cumulative across both multiclass progressions. Saving throws
+  // use the better (lower) installed class value for each category.
+  SET cbm_viconia_lore = (cbm_viconia_cleric_lore_rate * cbm_viconia_cleric_level) + (cbm_viconia_thief_lore_rate * cbm_viconia_thief_level)
+  PATCH_IF (cbm_viconia_lore > 255) BEGIN
+    PATCH_FAIL ~cbm_viconia_cleric_thief: derived Lore exceeds the CRE byte field~
+  END
+
+  SET cbm_viconia_save_death = $cbm_viconia_priest_saves(~DEATH_%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_save = $cbm_viconia_rogue_saves(~DEATH_%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_save < cbm_viconia_save_death) BEGIN
+    SET cbm_viconia_save_death = cbm_viconia_rogue_save
+  END
+  SET cbm_viconia_save_wands = $cbm_viconia_priest_saves(~WANDS_%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_save = $cbm_viconia_rogue_saves(~WANDS_%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_save < cbm_viconia_save_wands) BEGIN
+    SET cbm_viconia_save_wands = cbm_viconia_rogue_save
+  END
+  SET cbm_viconia_save_poly = $cbm_viconia_priest_saves(~POLY_%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_save = $cbm_viconia_rogue_saves(~POLY_%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_save < cbm_viconia_save_poly) BEGIN
+    SET cbm_viconia_save_poly = cbm_viconia_rogue_save
+  END
+  SET cbm_viconia_save_breath = $cbm_viconia_priest_saves(~BREATH_%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_save = $cbm_viconia_rogue_saves(~BREATH_%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_save < cbm_viconia_save_breath) BEGIN
+    SET cbm_viconia_save_breath = cbm_viconia_rogue_save
+  END
+  SET cbm_viconia_save_spell = $cbm_viconia_priest_saves(~SPELL_%cbm_viconia_cleric_level%~)
+  SET cbm_viconia_rogue_save = $cbm_viconia_rogue_saves(~SPELL_%cbm_viconia_thief_level%~)
+  PATCH_IF (cbm_viconia_rogue_save < cbm_viconia_save_spell) BEGIN
+    SET cbm_viconia_save_spell = cbm_viconia_rogue_save
+  END
+
+  // Validate the existing spellbook before changing any byte. Real EE
+  // Viconia resources contain one priest memorization row for each level
+  // 1..7. Empty spellbooks remain accepted for minimal synthetic/mod-tool
+  // resources, but any present spellbook must be structurally complete.
+  READ_LONG 0x2a8 cbm_viconia_meminfo_offset
+  READ_LONG 0x2ac cbm_viconia_meminfo_count
+  READ_LONG 0x2b0 cbm_viconia_memorized_offset
+  READ_LONG 0x2b4 cbm_viconia_memorized_count
+  PATCH_IF (cbm_viconia_meminfo_count > 0) BEGIN
+    PATCH_IF ((cbm_viconia_meminfo_count > 1024)
+           OR (cbm_viconia_meminfo_offset < 0x2d4)
+           OR ((cbm_viconia_meminfo_offset + (cbm_viconia_meminfo_count * 16)) > SOURCE_SIZE)
+           OR (cbm_viconia_memorized_count > 100000)
+           OR (cbm_viconia_memorized_offset < 0x2d4)
+           OR ((cbm_viconia_memorized_offset + (cbm_viconia_memorized_count * 12)) > SOURCE_SIZE)) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: invalid spell memorization table bounds~
+    END
+
+    SET cbm_viconia_priest_entries = 0
+    FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
+      SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
+      READ_SHORT (cbm_viconia_info_entry + 0x00) cbm_viconia_info_level
+      READ_SHORT (cbm_viconia_info_entry + 0x02) cbm_viconia_old_base_slots
+      READ_SHORT (cbm_viconia_info_entry + 0x04) cbm_viconia_old_effective_slots
+      READ_SHORT (cbm_viconia_info_entry + 0x06) cbm_viconia_info_type
+      READ_LONG  (cbm_viconia_info_entry + 0x08) cbm_viconia_first_memorized
+      READ_LONG  (cbm_viconia_info_entry + 0x0c) cbm_viconia_level_memorized_count
+
+      PATCH_IF (cbm_viconia_info_type > 2) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: invalid spell memorization type~
+      END
+      PATCH_IF ((cbm_viconia_first_memorized > cbm_viconia_memorized_count)
+             OR (cbm_viconia_level_memorized_count > (cbm_viconia_memorized_count - cbm_viconia_first_memorized))) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: spell memorization row points outside the memorized-spell table~
+      END
+
+      PATCH_IF (cbm_viconia_info_type = 0) BEGIN
+        SET cbm_viconia_priest_entries += 1
+        PATCH_IF ((cbm_viconia_info_level < 0)
+               OR (cbm_viconia_info_level > 6)
+               OR (cbm_viconia_old_effective_slots < cbm_viconia_old_base_slots)) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: invalid priest spell memorization row~
+        END
+        SET cbm_viconia_spell_level = cbm_viconia_info_level + 1
+        SET cbm_viconia_new_base_slots = $cbm_viconia_priest_slots(~%cbm_viconia_cleric_level%_%cbm_viconia_spell_level%~)
+        SET cbm_viconia_slot_bonus = cbm_viconia_old_effective_slots - cbm_viconia_old_base_slots
+        SET cbm_viconia_new_effective_slots = cbm_viconia_new_base_slots + cbm_viconia_slot_bonus
+        PATCH_IF (cbm_viconia_new_effective_slots > 65535) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: derived priest spell slots exceed the CRE word field~
+        END
+
+        FOR (cbm_viconia_mem_index = 0; cbm_viconia_mem_index < cbm_viconia_level_memorized_count; cbm_viconia_mem_index += 1) BEGIN
+          SET cbm_viconia_mem_entry = cbm_viconia_memorized_offset + ((cbm_viconia_first_memorized + cbm_viconia_mem_index) * 12)
+          READ_LONG (cbm_viconia_mem_entry + 0x08) cbm_viconia_mem_flags
+          PATCH_IF ((cbm_viconia_mem_flags BAND 0xfffffffc) != 0) BEGIN
+            PATCH_FAIL ~cbm_viconia_cleric_thief: invalid memorized-spell flags~
+          END
+        END
+      END
+    END
+
+    PATCH_IF (cbm_viconia_priest_entries != 7) BEGIN
+      PATCH_FAIL ~cbm_viconia_cleric_thief: expected exactly seven priest spell memorization rows~
+    END
+    FOR (cbm_viconia_expected_level = 0; cbm_viconia_expected_level < 7; cbm_viconia_expected_level += 1) BEGIN
+      SET cbm_viconia_level_matches = 0
+      FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
+        SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
+        READ_SHORT (cbm_viconia_info_entry + 0x00) cbm_viconia_info_level
+        READ_SHORT (cbm_viconia_info_entry + 0x06) cbm_viconia_info_type
+        PATCH_IF ((cbm_viconia_info_type = 0) AND (cbm_viconia_info_level = cbm_viconia_expected_level)) BEGIN
+          SET cbm_viconia_level_matches += 1
+        END
+      END
+      PATCH_IF (cbm_viconia_level_matches != 1) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: priest spell memorization levels must be unique and complete 1 through 7~
+      END
+    END
+  END
+
+  // All validation is complete. Mutate class/levels, table-derived THAC0,
+  // the seven thief skill bytes, and size-preserving priest slot fields only.
+  // Memorized records and their flags remain byte-identical because live
+  // Wisdom bonuses are not represented by these serialized effective-slot
+  // words.
+  WRITE_BYTE 0x273 cbm_viconia_cleric_thief_class
+  WRITE_BYTE 0x234 cbm_viconia_cleric_level
+  WRITE_BYTE 0x235 cbm_viconia_thief_level
+  WRITE_BYTE 0x236 0
+  WRITE_BYTE 0x52 cbm_viconia_thac0
+
+  WRITE_BYTE 0x54 cbm_viconia_save_death
+  WRITE_BYTE 0x55 cbm_viconia_save_wands
+  WRITE_BYTE 0x56 cbm_viconia_save_poly
+  WRITE_BYTE 0x57 cbm_viconia_save_breath
+  WRITE_BYTE 0x58 cbm_viconia_save_spell
+  WRITE_BYTE 0x66 cbm_viconia_lore
+
+  WRITE_BYTE 0x45 cbm_viconia_hide
+  WRITE_BYTE 0x64 0
+  WRITE_BYTE 0x65 0
+  WRITE_BYTE 0x67 cbm_viconia_locks
+  WRITE_BYTE 0x68 cbm_viconia_move
+  WRITE_BYTE 0x69 cbm_viconia_find
+  WRITE_BYTE 0x6a 0
+
+  PATCH_IF (cbm_viconia_meminfo_count > 0) BEGIN
+    FOR (cbm_viconia_expected_level = 0; cbm_viconia_expected_level < 7; cbm_viconia_expected_level += 1) BEGIN
+      FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
+        SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
+        READ_SHORT (cbm_viconia_info_entry + 0x00) cbm_viconia_info_level
+        READ_SHORT (cbm_viconia_info_entry + 0x06) cbm_viconia_info_type
+        PATCH_IF ((cbm_viconia_info_type = 0) AND (cbm_viconia_info_level = cbm_viconia_expected_level)) BEGIN
+          READ_SHORT (cbm_viconia_info_entry + 0x02) cbm_viconia_old_base_slots
+          READ_SHORT (cbm_viconia_info_entry + 0x04) cbm_viconia_old_effective_slots
+          SET cbm_viconia_spell_level = cbm_viconia_info_level + 1
+          SET cbm_viconia_new_base_slots = $cbm_viconia_priest_slots(~%cbm_viconia_cleric_level%_%cbm_viconia_spell_level%~)
+          SET cbm_viconia_slot_bonus = cbm_viconia_old_effective_slots - cbm_viconia_old_base_slots
+          SET cbm_viconia_new_effective_slots = cbm_viconia_new_base_slots + cbm_viconia_slot_bonus
+
+          WRITE_SHORT (cbm_viconia_info_entry + 0x02) cbm_viconia_new_base_slots
+          WRITE_SHORT (cbm_viconia_info_entry + 0x04) cbm_viconia_new_effective_slots
+        END
+      END
+    END
+  END
+END

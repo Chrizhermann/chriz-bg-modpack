@@ -1,0 +1,82 @@
+name: release-package
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Build and accept Windows release ZIP
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Verify tagged version
+        if: github.event_name == 'push'
+        shell: pwsh
+        run: |
+          $expected = (Get-Content -LiteralPath VERSION -Raw).Trim()
+          if ($env:GITHUB_REF_NAME -ne $expected) {
+            throw "Tag $env:GITHUB_REF_NAME does not match VERSION $expected"
+          }
+
+      - name: Install pinned WeiDU 249
+        shell: pwsh
+        run: |
+          $url = 'https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip'
+          $expected = 'b156910cbec69359fc2e42f6739aa959d49047d6fd3dc172f6bed88ffad8f927'
+          curl.exe --fail --location --proto '=https' --tlsv1.2 --output weidu-windows.zip $url
+          $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath weidu-windows.zip).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw "WeiDU archive hash mismatch: $actual" }
+          Expand-Archive -LiteralPath weidu-windows.zip -DestinationPath . -Force
+          $version = (& .\WeiDU-Windows\weidu.exe --version 2>&1 | Out-String)
+          if ($version -notmatch 'WeiDU version 24900') { throw "Unexpected WeiDU version: $version" }
+          "$env:GITHUB_WORKSPACE\WeiDU-Windows" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Parse-check installer and libraries
+        shell: pwsh
+        run: |
+          weidu.exe --noautoupdate --nogame --parse-check TP2 setup-chriz-bg-modpack.tp2
+          if ($LASTEXITCODE -ne 0) { throw "Main TP2 parse-check failed" }
+          Get-ChildItem -LiteralPath chriz-bg-modpack\lib -Filter *.tpa | Sort-Object Name | ForEach-Object {
+            weidu.exe --noautoupdate --nogame --parse-check TPA $_.FullName
+            if ($LASTEXITCODE -ne 0) { throw "Parse-check failed: $($_.FullName)" }
+          }
+
+      - name: Run generated-fixture regression tests
+        shell: pwsh
+        env:
+          WEIDU_BIN: weidu.exe
+        run: python -m unittest discover -s tests -v
+
+      - name: Build deterministic release twice
+        shell: pwsh
+        run: |
+          python -m tools.build_release --output dist --weidu-archive weidu-windows.zip
+          python -m tools.build_release --output dist-second --weidu-archive weidu-windows.zip
+          $version = (Get-Content -LiteralPath VERSION -Raw).Trim()
+          $first = (Get-FileHash -Algorithm SHA256 -LiteralPath "dist\chriz-bg-modpack-$version.zip").Hash
+          $second = (Get-FileHash -Algorithm SHA256 -LiteralPath "dist-second\chriz-bg-modpack-$version.zip").Hash
+          if ($first -ne $second) { throw "Release builds are not byte-reproducible" }
+
+      - name: Test the bundled installer from the extracted archive
+        shell: pwsh
+        run: |
+          $version = (Get-Content -LiteralPath VERSION -Raw).Trim()
+          $env:CBM_RELEASE_ARCHIVE = "dist\chriz-bg-modpack-$version.zip"
+          $env:CBM_USE_BUNDLED_WEIDU = '1'
+          python -m unittest tests.test_release_archive -v
+
+      - name: Upload verified release files
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: chriz-bg-modpack-${{ github.ref_name }}
+          path: dist/*
+          if-no-files-found: error
+          compression-level: 0

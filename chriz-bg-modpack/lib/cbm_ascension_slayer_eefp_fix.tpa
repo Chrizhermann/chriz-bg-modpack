@@ -1,0 +1,81 @@
+// Repair only Ascension's broken EE Fixpack transformation links. The three
+// upgraded Slayer spells must each contain exactly one old FINSLAYn link or
+// exactly one already-correct SLAYERnA link. Door scripts are deliberately
+// outside this component's scope.
+
+ACTION_FOR_EACH cbm_slayer_required IN
+  ~SLAYER2.SPL~ ~SLAYER2A.SPL~
+  ~SLAYER3.SPL~ ~SLAYER3A.SPL~
+  ~SLAYER4.SPL~ ~SLAYER4A.SPL~
+BEGIN
+  ACTION_IF NOT (FILE_EXISTS_IN_GAME ~%cbm_slayer_required%~) BEGIN
+    FAIL ~cbm_ascension_slayer_eefp_fix: required Ascension resource %cbm_slayer_required% is missing~
+  END
+END
+
+OUTER_FOR (cbm_slayer_number = 2; cbm_slayer_number <= 4; cbm_slayer_number += 1) BEGIN
+  COPY_EXISTING ~SLAYER%cbm_slayer_number%.SPL~ ~override~
+    READ_ASCII 0x00 cbm_slayer_signature (8)
+    PATCH_IF NOT (~%cbm_slayer_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+      PATCH_FAIL ~cbm_ascension_slayer_eefp_fix: SLAYER%cbm_slayer_number%.SPL is not SPL V1.0~
+    END
+
+    SET cbm_slayer_old_count = 0
+    SET cbm_slayer_fixed_count = 0
+    GET_OFFSET_ARRAY cbm_slayer_headers SPL_V10_HEADERS
+    PHP_EACH cbm_slayer_headers AS cbm_slayer_header_index => cbm_slayer_header BEGIN
+      GET_OFFSET_ARRAY2 cbm_slayer_effects cbm_slayer_header SPL_V10_HEAD_EFFECTS
+      PHP_EACH cbm_slayer_effects AS cbm_slayer_effect_index => cbm_slayer_effect BEGIN
+        READ_SHORT cbm_slayer_effect cbm_slayer_opcode
+        READ_ASCII (cbm_slayer_effect + 0x14) cbm_slayer_resource (8) NULL
+        PATCH_IF (cbm_slayer_opcode = 146)
+              AND (~%cbm_slayer_resource%~ STRING_EQUAL_CASE ~FINSLAY%cbm_slayer_number%~) BEGIN
+          SET cbm_slayer_old_count += 1
+        END
+        PATCH_IF (cbm_slayer_opcode = 146)
+              AND (~%cbm_slayer_resource%~ STRING_EQUAL_CASE ~SLAYER%cbm_slayer_number%A~) BEGIN
+          SET cbm_slayer_fixed_count += 1
+        END
+      END
+    END
+
+    PATCH_IF ((cbm_slayer_old_count + cbm_slayer_fixed_count) != 1) BEGIN
+      PATCH_FAIL ~cbm_ascension_slayer_eefp_fix: SLAYER%cbm_slayer_number%.SPL must contain exactly one FINSLAY%cbm_slayer_number% or SLAYER%cbm_slayer_number%A opcode-146 link~
+    END
+
+    PATCH_IF (cbm_slayer_old_count = 1) BEGIN
+      LPF ALTER_EFFECT
+        INT_VAR
+          match_opcode = 146
+          silent = 1
+        STR_VAR
+          match_resource = EVAL ~FINSLAY%cbm_slayer_number%~
+          resource = EVAL ~slayer%cbm_slayer_number%a~
+      END
+    END
+
+    SET cbm_slayer_old_count = 0
+    SET cbm_slayer_fixed_count = 0
+    GET_OFFSET_ARRAY cbm_slayer_headers SPL_V10_HEADERS
+    PHP_EACH cbm_slayer_headers AS cbm_slayer_header_index => cbm_slayer_header BEGIN
+      GET_OFFSET_ARRAY2 cbm_slayer_effects cbm_slayer_header SPL_V10_HEAD_EFFECTS
+      PHP_EACH cbm_slayer_effects AS cbm_slayer_effect_index => cbm_slayer_effect BEGIN
+        READ_SHORT cbm_slayer_effect cbm_slayer_opcode
+        READ_ASCII (cbm_slayer_effect + 0x14) cbm_slayer_resource (8) NULL
+        PATCH_IF (cbm_slayer_opcode = 146)
+              AND (~%cbm_slayer_resource%~ STRING_EQUAL_CASE ~FINSLAY%cbm_slayer_number%~) BEGIN
+          SET cbm_slayer_old_count += 1
+        END
+        PATCH_IF (cbm_slayer_opcode = 146)
+              AND (~%cbm_slayer_resource%~ STRING_EQUAL_CASE ~SLAYER%cbm_slayer_number%A~) BEGIN
+          SET cbm_slayer_fixed_count += 1
+        END
+      END
+    END
+    PATCH_IF (cbm_slayer_old_count != 0) OR (cbm_slayer_fixed_count != 1) BEGIN
+      PATCH_FAIL ~cbm_ascension_slayer_eefp_fix: SLAYER%cbm_slayer_number%.SPL postcondition failed~
+    END
+  BUT_ONLY
+END
+
+PRINT ~[cbm_ascension_slayer_eefp_fix] repaired the three upgraded Slayer transformation links.~
