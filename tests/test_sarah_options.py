@@ -135,6 +135,11 @@ def file_tree(root: Path) -> dict[str, bytes]:
     }
 
 
+def resource_path(root: Path, name: str) -> Path:
+    """Return the lowercase on-disk path WeiDU uses on case-sensitive hosts."""
+    return root / name.lower()
+
+
 def write_marker_key_and_bif(game_root: Path) -> Path:
     """Create the smallest KEY/BIFF pair needed for BG2EE game detection."""
     payload = b"synthetic BG2EE marker"
@@ -188,11 +193,15 @@ class SyntheticSarahGame:
 
         shutil.copy2(TP2, self.root / TP2.name)
         shutil.copytree(ROOT / "chriz-bg-modpack", self.root / "chriz-bg-modpack")
-        (self.override / "K#SARAH.CRE").write_bytes(make_sarah_cre(1))
+        resource_path(self.override, "K#SARAH.CRE").write_bytes(make_sarah_cre(1))
         if complete:
-            (self.override / "K#SARAH1.CRE").write_bytes(make_sarah_cre(2))
+            resource_path(self.override, "K#SARAH1.CRE").write_bytes(
+                make_sarah_cre(2)
+            )
         for filename in STOCK_PORTRAIT_NAMES:
-            (self.override / filename).write_bytes(f"stock sentinel {filename}".encode())
+            resource_path(self.override, filename).write_bytes(
+                f"stock sentinel {filename}".encode()
+            )
 
         self.bif = write_marker_key_and_bif(self.root)
         self.lang_tlk = self.root / "lang/en_us/dialog.tlk"
@@ -239,7 +248,7 @@ class SyntheticSarahGame:
         return result.stdout + result.stderr
 
     def active_log(self) -> str:
-        log = self.root / "WeiDU.log"
+        log = self.root / "weidu.log"
         if not log.exists():
             return ""
         return "\n".join(
@@ -386,12 +395,14 @@ class SarahPublicInstallerTests(unittest.TestCase):
         archer_install = game.run(self.weidu, "--force-install-list", 190)
         self.assert_installed(game, archer_install, 190)
         for filename in ("K#SARAH.CRE", "K#SARAH1.CRE"):
-            transformed = (game.override / filename).read_bytes()
+            transformed = resource_path(game.override, filename).read_bytes()
             self.assertEqual(0x40070000, u32(transformed, 0x244))
             self.assertEqual(EXPECTED_PROFICIENCIES, proficiency_map(transformed))
         for filename, sentinel in game.initial_override.items():
             if filename.endswith(".BMP"):
-                self.assertEqual(sentinel, (game.override / filename).read_bytes())
+                self.assertEqual(
+                    sentinel, resource_path(game.override, filename).read_bytes()
+                )
 
         archer_uninstall = game.run(self.weidu, "--force-uninstall-list", 190)
         self.assertEqual(0, archer_uninstall.returncode, game.transcript(archer_uninstall))

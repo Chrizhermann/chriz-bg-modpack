@@ -238,6 +238,11 @@ def file_tree(root: Path) -> dict[str, bytes]:
     }
 
 
+def resource_path(root: Path, name: str) -> Path:
+    """Return the lowercase on-disk path WeiDU uses on case-sensitive hosts."""
+    return root / name.lower()
+
+
 def find_weidu() -> str | None:
     configured = os.environ.get("WEIDU_BIN")
     if configured and Path(configured).is_file():
@@ -299,15 +304,17 @@ class SyntheticGame:
         class_text = "IDS\n" + "".join(
             f"{value} {symbol}\n" for symbol, value in CLASS_IDS.items()
         )
-        (self.override / "KIT.IDS").write_text(kit_text, encoding="ascii")
-        (self.override / "CLASS.IDS").write_text(class_text, encoding="ascii")
-        (self.override / "SPELL.IDS").write_text(
+        resource_path(self.override, "KIT.IDS").write_text(kit_text, encoding="ascii")
+        resource_path(self.override, "CLASS.IDS").write_text(class_text, encoding="ascii")
+        resource_path(self.override, "SPELL.IDS").write_text(
             f"IDS\n{haste_id} WIZARD_HASTE\n", encoding="ascii"
         )
         haste_resref = f"SPWI{haste_id - 2000}"
         # Presence is validated by the production context resolver. The spell
         # payload is irrelevant to a known-spell-list insertion.
-        (self.override / f"{haste_resref}.SPL").write_bytes(b"synthetic spell")
+        resource_path(self.override, f"{haste_resref}.SPL").write_bytes(
+            b"synthetic spell"
+        )
         self.bif = write_marker_key_and_bif(root)
         lang_tlk = root / "lang/en_us/dialog.tlk"
         lang_tlk.parent.mkdir(parents=True)
@@ -713,7 +720,7 @@ class CollectionDefaultsTests(unittest.TestCase):
         if component == 197:
             resources = list(DYNAHEIR_RESOURCES)
             for index, (resref, dv) in enumerate(resources):
-                (game.override / f"{resref}.CRE").write_bytes(
+                resource_path(game.override, f"{resref}.CRE").write_bytes(
                     make_cre(
                         class_id=CLASS_IDS["MAGE"],
                         kit=KIT_IDS["MAGESCHOOL_INVOKER"] << 16,
@@ -738,7 +745,7 @@ class CollectionDefaultsTests(unittest.TestCase):
                     "move_silently": move,
                 }
                 expected_skills[resref] = target_locks
-            (game.override / f"{resref}.CRE").write_bytes(
+            resource_path(game.override, f"{resref}.CRE").write_bytes(
                 make_cre(
                     class_id=CLASS_IDS[spec.class_symbol],
                     kit=KIT_IDS[spec.source_kit_symbol] << 16,
@@ -769,7 +776,9 @@ class CollectionDefaultsTests(unittest.TestCase):
                 self.assertEqual(0, install.returncode, transcript)
                 self.assertIn("SUCCESSFULLY INSTALLED", transcript)
                 for resref in resources:
-                    transformed = (game.override / f"{resref}.CRE").read_bytes()
+                    transformed = resource_path(
+                        game.override, f"{resref}.CRE"
+                    ).read_bytes()
                     if component == 197:
                         haste = [
                             row
@@ -812,7 +821,7 @@ class CollectionDefaultsTests(unittest.TestCase):
                 )
                 resources, _ = self._stage_public_component(game, component)
                 missing = resources[-1]
-                (game.override / f"{missing}.CRE").unlink()
+                resource_path(game.override, f"{missing}.CRE").unlink()
                 before = file_tree(game.override)
                 install = self._run_public(game, "--force-install-list", component)
                 transcript = self.transcript(install)

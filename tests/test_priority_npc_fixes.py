@@ -160,6 +160,11 @@ def find_weidu() -> str | None:
     return shutil.which("weidu") or shutil.which("weidu.exe")
 
 
+def resource_path(root: Path, name: str) -> Path:
+    """Return the lowercase on-disk path WeiDU uses on case-sensitive hosts."""
+    return root / name.lower()
+
+
 def xplevel_row(label: str, values: list[int]) -> str:
     if len(values) != 50:
         raise ValueError("XPLEVEL rows need levels 1 through 50")
@@ -239,26 +244,26 @@ class SyntheticGame:
         self.lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
         self.root_tlk = self.root / "dialog.tlk"
         self.root_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
-        (self.override / "CLASS.IDS").write_text(
+        resource_path(self.override, "CLASS.IDS").write_text(
             "IDS V1.0\n1 MAGE\n2 FIGHTER\n4 THIEF\n7 FIGHTER_MAGE\n"
             "9 FIGHTER_THIEF\n",
             encoding="ascii",
         )
-        (self.override / "KIT.IDS").write_text(
+        resource_path(self.override, "KIT.IDS").write_text(
             "IDS V1.0\n0x0200 ENCHANTER\n0x4000 TRUECLASS\n"
             f"0x{ELDRITCH_KNIGHT_KIT_ID:04X} C0EK\n"
             f"0x{SWASHBUCKLER_KIT_ID:04X} SWASHBUCKLER\n",
             encoding="ascii",
         )
-        (self.override / "XPLEVEL.2DA").write_bytes(make_xplevel())
-        (self.override / "TRIGGER.IDS").write_text(
+        resource_path(self.override, "XPLEVEL.2DA").write_bytes(make_xplevel())
+        resource_path(self.override, "TRIGGER.IDS").write_text(
             "IDS V1.0\n0x400F Global(S:Name*,S:Area*,I:Value*)\n",
             encoding="ascii",
         )
-        (self.override / "ACTION.IDS").write_text(
+        resource_path(self.override, "ACTION.IDS").write_text(
             "IDS V1.0\n0 NoAction()\n", encoding="ascii"
         )
-        (self.override / "OBJECT.IDS").write_text(
+        resource_path(self.override, "OBJECT.IDS").write_text(
             "IDS V1.0\n1 Myself\n", encoding="ascii"
         )
         self.stable_paths = (
@@ -266,12 +271,12 @@ class SyntheticGame:
             self.bif,
             self.lang_tlk,
             self.root_tlk,
-            self.override / "CLASS.IDS",
-            self.override / "KIT.IDS",
-            self.override / "XPLEVEL.2DA",
-            self.override / "TRIGGER.IDS",
-            self.override / "ACTION.IDS",
-            self.override / "OBJECT.IDS",
+            resource_path(self.override, "CLASS.IDS"),
+            resource_path(self.override, "KIT.IDS"),
+            resource_path(self.override, "XPLEVEL.2DA"),
+            resource_path(self.override, "TRIGGER.IDS"),
+            resource_path(self.override, "ACTION.IDS"),
+            resource_path(self.override, "OBJECT.IDS"),
         )
         self.stable_hashes = {
             path: hashlib.sha256(path.read_bytes()).hexdigest()
@@ -841,7 +846,11 @@ class KivanGuardTests(unittest.TestCase):
         )
         transcript = result.stdout + result.stderr
         self.assertEqual(0, result.returncode, transcript)
-        candidates = list(decompile_dir.glob("*.BAF"))
+        candidates = [
+            path
+            for path in decompile_dir.iterdir()
+            if path.is_file() and path.suffix.lower() == ".baf"
+        ]
         self.assertEqual(1, len(candidates), transcript)
         return candidates[0].read_text(encoding="utf-8", errors="replace")
 
@@ -858,7 +867,7 @@ class KivanGuardTests(unittest.TestCase):
                     "X#SAHA02.BCS": b"preexisting saha02 script",
                 }
                 for name, payload in sentinels.items():
-                    (game.override / name).write_bytes(payload)
+                    resource_path(game.override, name).write_bytes(payload)
 
                 install = self.run_harness(
                     game, ["--force-install-list", "1"]
@@ -867,12 +876,15 @@ class KivanGuardTests(unittest.TestCase):
                 self.assertEqual(0, install.returncode, transcript)
                 self.assertIn("SUCCESSFULLY INSTALLED", transcript)
                 first = {
-                    name: (game.override / name).read_bytes() for name in sentinels
+                    name: resource_path(game.override, name).read_bytes()
+                    for name in sentinels
                 }
                 self.assertEqual(first["X#SAHA01.BCS"], first["X#SAHA02.BCS"])
                 self.assertNotEqual(sentinels["X#SAHA01.BCS"], first["X#SAHA01.BCS"])
 
-                text = self.decompile(game, game.override / "X#SAHA01.BCS")
+                text = self.decompile(
+                    game, resource_path(game.override, "X#SAHA01.BCS")
+                )
                 compact = "".join(text.split()).upper()
                 self.assertIn('GLOBAL("X#KIVANSEA","GLOBAL",3)', compact)
                 self.assertIn("NOACTION()", compact)
@@ -889,7 +901,10 @@ class KivanGuardTests(unittest.TestCase):
                 self.assertEqual(0, reinstall.returncode, transcript)
                 self.assertEqual(
                     first,
-                    {name: (game.override / name).read_bytes() for name in sentinels},
+                    {
+                        name: resource_path(game.override, name).read_bytes()
+                        for name in sentinels
+                    },
                 )
 
                 uninstall = self.run_harness(
@@ -898,7 +913,9 @@ class KivanGuardTests(unittest.TestCase):
                 transcript = uninstall.stdout + uninstall.stderr
                 self.assertEqual(0, uninstall.returncode, transcript)
                 for name, payload in sentinels.items():
-                    self.assertEqual(payload, (game.override / name).read_bytes())
+                    self.assertEqual(
+                        payload, resource_path(game.override, name).read_bytes()
+                    )
                 game.assert_context_unchanged(self)
                 self.assertFalse(
                     any(path.name.lower().startswith("cbm_kivan") for path in game.override.iterdir())

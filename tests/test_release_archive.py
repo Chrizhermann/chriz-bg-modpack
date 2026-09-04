@@ -63,7 +63,7 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 self.assertEqual(0, install.returncode, transcript)
                 self.assertIn("SUCCESSFULLY INSTALLED", transcript)
                 for filename in ("K#SARAH.CRE", "K#SARAH1.CRE"):
-                    transformed = (game.override / filename).read_bytes()
+                    transformed = (game.override / filename.lower()).read_bytes()
                     self.assertEqual(0x40070000, u32(transformed, 0x244))
                     self.assertEqual(EXPECTED_PROFICIENCIES, proficiency_map(transformed))
 

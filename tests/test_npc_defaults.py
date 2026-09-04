@@ -236,6 +236,11 @@ def file_tree(root: Path) -> dict[str, bytes]:
     }
 
 
+def resource_path(root: Path, name: str) -> Path:
+    """Return the lowercase on-disk path WeiDU uses on case-sensitive hosts."""
+    return root / name.lower()
+
+
 def tp2_component_block(source: str, component: int) -> str:
     start = re.search(rf"(?m)^[ \t]*BEGIN\s+@{component}\b", source)
     if start is None:
@@ -562,7 +567,7 @@ class SyntheticGame:
     ) -> None:
         self.root = root
         self.root.mkdir(parents=True)
-        (self.root / "WeiDU.log").write_text("", encoding="ascii")
+        (self.root / "weidu.log").write_text("", encoding="ascii")
         self.override = self.root / "override"
         self.override.mkdir()
         self.bif = write_marker_key_and_bif(self.root)
@@ -571,28 +576,30 @@ class SyntheticGame:
         self.lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
         self.root_tlk = self.root / "dialog.tlk"
         self.root_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
-        (self.override / "CLASS.IDS").write_text(class_ids_text(), encoding="ascii")
-        (self.override / "XPLEVEL.2DA").write_text(
+        resource_path(self.override, "CLASS.IDS").write_text(
+            class_ids_text(), encoding="ascii"
+        )
+        resource_path(self.override, "XPLEVEL.2DA").write_text(
             xplevel_text() if table_text is None else table_text,
             encoding="ascii",
         )
-        (self.override / "MXSPLPRS.2DA").write_text(
+        resource_path(self.override, "MXSPLPRS.2DA").write_text(
             mxsplprs_text() if priest_slots_text is None else priest_slots_text,
             encoding="ascii",
         )
-        (self.override / "SAVEPRS.2DA").write_text(
+        resource_path(self.override, "SAVEPRS.2DA").write_text(
             saveprs_text() if priest_saves_text is None else priest_saves_text,
             encoding="ascii",
         )
-        (self.override / "SAVEROG.2DA").write_text(
+        resource_path(self.override, "SAVEROG.2DA").write_text(
             saverog_text() if rogue_saves_text is None else rogue_saves_text,
             encoding="ascii",
         )
-        (self.override / "LORE.2DA").write_text(
+        resource_path(self.override, "LORE.2DA").write_text(
             lore_text() if lore_rates_text is None else lore_rates_text,
             encoding="ascii",
         )
-        (self.override / "THAC0.2DA").write_text(
+        resource_path(self.override, "THAC0.2DA").write_text(
             thac0_text() if thac0_table_text is None else thac0_table_text,
             encoding="ascii",
         )
@@ -618,7 +625,7 @@ class SyntheticViconiaPublicGame(SyntheticGame):
         for index, (resref, (xp, _, _)) in enumerate(VICONIA_VARIANTS.items()):
             if resref == missing:
                 continue
-            (self.override / f"{resref}.CRE").write_bytes(
+            resource_path(self.override, f"{resref}.CRE").write_bytes(
                 make_viconia_cre(
                     xp,
                     dv=dv_spellings[index % len(dv_spellings)],
@@ -656,7 +663,7 @@ class SyntheticViconiaPublicGame(SyntheticGame):
         return result.stdout + result.stderr
 
     def active_log(self) -> str:
-        log = self.root / "WeiDU.log"
+        log = self.root / "weidu.log"
         if not log.exists():
             return ""
         return "\n".join(
@@ -672,7 +679,9 @@ class SyntheticViconiaPublicGame(SyntheticGame):
 class SyntheticSharTeelGame(SyntheticGame):
     def __init__(self, root: Path) -> None:
         super().__init__(root)
-        (self.override / "KIT.IDS").write_text(kit_ids_text(), encoding="ascii")
+        resource_path(self.override, "KIT.IDS").write_text(
+            kit_ids_text(), encoding="ascii"
+        )
 
 
 class SyntheticSharTeelPublicGame(SyntheticSharTeelGame):
@@ -685,7 +694,7 @@ class SyntheticSharTeelPublicGame(SyntheticSharTeelGame):
         for index, resref in enumerate(SHARTEEL_VARIANTS):
             if resref == missing:
                 continue
-            (self.override / f"{resref}.CRE").write_bytes(
+            resource_path(self.override, f"{resref}.CRE").write_bytes(
                 make_sharteel_cre(
                     dv=dv_spellings[index],
                     xp=32_123 + (index * 41_111),
@@ -695,7 +704,7 @@ class SyntheticSharTeelPublicGame(SyntheticSharTeelGame):
 
         # SHARTD is the nonjoinable duel creature. It deliberately has no
         # Shar-Teel DV and acts as a byte-exact exclusion sentinel.
-        (self.override / f"{SHARTEEL_DUEL_RESOURCE}.CRE").write_bytes(
+        resource_path(self.override, f"{SHARTEEL_DUEL_RESOURCE}.CRE").write_bytes(
             make_sharteel_cre(dv="", xp=777, seed=191)
         )
         self.initial_override = file_tree(self.override)
@@ -729,7 +738,7 @@ class SyntheticSharTeelPublicGame(SyntheticSharTeelGame):
         return result.stdout + result.stderr
 
     def active_log(self) -> str:
-        log = self.root / "WeiDU.log"
+        log = self.root / "weidu.log"
         if not log.exists():
             return ""
         return "\n".join(
@@ -773,9 +782,9 @@ class ViconiaTests(unittest.TestCase):
                 thac0_table_text=thac0_table_text,
             )
             initial_context = file_tree(game.override)
-            (run_dir / "WeiDU.log").write_text("", encoding="ascii")
+            (run_dir / "weidu.log").write_text("", encoding="ascii")
             harness = run_dir / VICONIA_HARNESS.name
-            source_path = run_dir / source_name
+            source_path = run_dir / source_name.lower()
             output_path = run_dir / "output.cre"
             shutil.copy2(VICONIA_HARNESS, harness)
             source_path.write_bytes(source)
@@ -1297,12 +1306,14 @@ class ViconiaTests(unittest.TestCase):
             ):
                 self.assertEqual(
                     game.initial_override[context_resource],
-                    (game.override / context_resource).read_bytes(),
+                    resource_path(game.override, context_resource).read_bytes(),
                 )
 
             for resref, (xp, cleric_level, thief_level) in VICONIA_VARIANTS.items():
                 source = game.initial_override[f"{resref}.CRE"]
-                transformed = (game.override / f"{resref}.CRE").read_bytes()
+                transformed = resource_path(
+                    game.override, f"{resref}.CRE"
+                ).read_bytes()
                 self.assertEqual(xp, u32(transformed, 0x18))
                 self.assert_conversion(
                     source,
@@ -1396,9 +1407,9 @@ class SharTeelTests(unittest.TestCase):
             run_dir = Path(raw_temp)
             game = SyntheticSharTeelGame(run_dir / "game")
             initial_context = file_tree(game.override)
-            (run_dir / "WeiDU.log").write_text("", encoding="ascii")
+            (run_dir / "weidu.log").write_text("", encoding="ascii")
             harness = run_dir / SHARTEEL_HARNESS.name
-            source_path = run_dir / source_name
+            source_path = run_dir / source_name.lower()
             output_path = run_dir / "output.cre"
             shutil.copy2(SHARTEEL_HARNESS, harness)
             source_path.write_bytes(source)
@@ -1531,7 +1542,9 @@ class SharTeelTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="cbm-sharteel-public-") as raw_temp:
             game = SyntheticSharTeelPublicGame(Path(raw_temp) / "game")
             for viconia_resref in VICONIA_VARIANTS:
-                self.assertFalse((game.override / f"{viconia_resref}.CRE").exists())
+                self.assertFalse(
+                    resource_path(game.override, f"{viconia_resref}.CRE").exists()
+                )
 
             install = game.run(self.weidu, "--force-install-list")
             transcript = game.transcript(install)
@@ -1541,18 +1554,20 @@ class SharTeelTests(unittest.TestCase):
             game.assert_stable_inputs(self)
             self.assertEqual(
                 game.initial_override["KIT.IDS"],
-                (game.override / "KIT.IDS").read_bytes(),
+                resource_path(game.override, "KIT.IDS").read_bytes(),
             )
 
             for resref in SHARTEEL_VARIANTS:
                 source = game.initial_override[f"{resref}.CRE"]
-                transformed = (game.override / f"{resref}.CRE").read_bytes()
+                transformed = resource_path(
+                    game.override, f"{resref}.CRE"
+                ).read_bytes()
                 self.assert_conversion(source, transformed)
 
             duel_name = f"{SHARTEEL_DUEL_RESOURCE}.CRE"
             self.assertEqual(
                 game.initial_override[duel_name],
-                (game.override / duel_name).read_bytes(),
+                resource_path(game.override, duel_name).read_bytes(),
                 "SHARTD is a nonjoinable duel resource and must not be patched",
             )
 

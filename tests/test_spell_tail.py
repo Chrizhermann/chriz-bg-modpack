@@ -42,6 +42,11 @@ def file_tree(root: Path) -> dict[str, bytes]:
     }
 
 
+def resource_path(root: Path, name: str) -> Path:
+    """Return the lowercase on-disk path WeiDU uses on case-sensitive hosts."""
+    return root / name.lower()
+
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -294,7 +299,7 @@ class SyntheticSpellGame:
         self.root.mkdir(parents=True)
         self.override = self.root / "override"
         self.override.mkdir()
-        (self.root / "WeiDU.log").write_text("", encoding="ascii")
+        (self.root / "weidu.log").write_text("", encoding="ascii")
         self.bif = write_marker_key_and_bif(self.root)
         self.lang_tlk = self.root / "lang/en_us/dialog.tlk"
         self.lang_tlk.parent.mkdir(parents=True)
@@ -309,7 +314,7 @@ class SyntheticSpellGame:
             if source.is_file():
                 shutil.copy2(source, destination_lib / source.name)
         for name, payload in resources.items():
-            (self.override / name).write_bytes(payload)
+            resource_path(self.override, name).write_bytes(payload)
 
         self.initial_override = file_tree(self.override)
         self.initial_stable = {
@@ -581,7 +586,7 @@ class SpellTailTests(unittest.TestCase):
             source = branwen_resources()
             game = SyntheticSpellGame(Path(raw) / "game", source)
             self.install(game, 400)
-            transformed = (game.override / "SPIN113.SPL").read_bytes()
+            transformed = resource_path(game.override, "SPIN113.SPL").read_bytes()
             source_rows = spl_abilities(source["SPIN113.SPL"])
             rows = spl_abilities(transformed)
             self.assertEqual(len(source_rows), len(rows))
@@ -617,7 +622,7 @@ class SpellTailTests(unittest.TestCase):
             game = SyntheticSpellGame(Path(raw) / "game", source)
             self.install(game, 410)
 
-            yeslick = (game.override / "SPIN112.SPL").read_bytes()
+            yeslick = resource_path(game.override, "SPIN112.SPL").read_bytes()
             yeslick_rows = spl_abilities(yeslick)
             self.assertEqual(40, len(yeslick_rows))
             source_effects = spl_abilities(source["SPIN112.SPL"])[0]["effects"]
@@ -637,7 +642,7 @@ class SpellTailTests(unittest.TestCase):
             self.assertEqual(casting_effects(source["SPIN112.SPL"]), casting_effects(yeslick))
             self.assertTrue(yeslick.endswith(b"YESLICK-FOOTER"))
 
-            keldorn = (game.override / "SPCL231.SPL").read_bytes()
+            keldorn = resource_path(game.override, "SPCL231.SPL").read_bytes()
             source_rows = spl_abilities(source["SPCL231.SPL"])
             keldorn_rows = spl_abilities(keldorn)
             self.assertEqual(len(source_rows), len(keldorn_rows))
@@ -708,7 +713,7 @@ class SpellTailTests(unittest.TestCase):
             patched: dict[str, bytes] = {}
             for number in (2, 3, 4):
                 name = f"SLAYER{number}.SPL"
-                transformed = (game.override / name).read_bytes()
+                transformed = resource_path(game.override, name).read_bytes()
                 before_rows = spl_abilities(source[name])[0]["effects"]
                 after_rows = spl_abilities(transformed)[0]["effects"]
                 for before, after in zip(before_rows, after_rows):
@@ -721,7 +726,9 @@ class SpellTailTests(unittest.TestCase):
                 self.assertEqual(casting_effects(source[name]), casting_effects(transformed))
                 patched[name] = transformed
                 subspell = f"SLAYER{number}A.SPL"
-                self.assertEqual(source[subspell], (game.override / subspell).read_bytes())
+                self.assertEqual(
+                    source[subspell], resource_path(game.override, subspell).read_bytes()
+                )
                 patched[subspell] = source[subspell]
             self.uninstall(game, 440)
         self.assert_already_patched_is_stable(440, patched)
@@ -788,7 +795,7 @@ class SpellTailTests(unittest.TestCase):
 
             for name in FORM_SPELLS:
                 filename = f"{name}.SPL"
-                transformed = (game.override / filename).read_bytes()
+                transformed = resource_path(game.override, filename).read_bytes()
                 before_rows = spl_abilities(source[filename])[0]["effects"]
                 after_rows = spl_abilities(transformed)[0]["effects"]
                 for before, after in zip(before_rows, after_rows):
@@ -804,7 +811,7 @@ class SpellTailTests(unittest.TestCase):
 
             for name in POLY_ITEMS:
                 filename = f"{name}.ITM"
-                transformed = (game.override / filename).read_bytes()
+                transformed = resource_path(game.override, filename).read_bytes()
                 before_equipped = itm_effects(source[filename], equipped=True)
                 after_equipped = itm_effects(transformed, equipped=True)
                 for before, after in zip(before_equipped, after_equipped):
@@ -821,7 +828,7 @@ class SpellTailTests(unittest.TestCase):
                 )
                 patched[filename] = transformed
 
-            revert = (game.override / "DW-SSRA.SPL").read_bytes()
+            revert = resource_path(game.override, "DW-SSRA.SPL").read_bytes()
             before_rows = spl_abilities(source["DW-SSRA.SPL"])[0]["effects"]
             after_rows = spl_abilities(revert)[0]["effects"]
             for before, after in zip(before_rows, after_rows):
