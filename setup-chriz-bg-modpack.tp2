@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.4~
+VERSION ~v0.2.0-alpha.5~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~

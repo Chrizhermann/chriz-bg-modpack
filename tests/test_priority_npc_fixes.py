@@ -233,7 +233,9 @@ def write_marker_key_and_bif(game_root: Path) -> Path:
 
 
 class SyntheticGame:
-    def __init__(self, temporary: tempfile.TemporaryDirectory[str]):
+    def __init__(
+        self, temporary: tempfile.TemporaryDirectory[str], *, kit_ids: str | None = None,
+    ):
         self.root = Path(temporary.name) / "game"
         self.root.mkdir()
         self.override = self.root / "override"
@@ -250,9 +252,11 @@ class SyntheticGame:
             encoding="ascii",
         )
         resource_path(self.override, "KIT.IDS").write_text(
-            "IDS V1.0\n0x0200 ENCHANTER\n0x4000 TRUECLASS\n"
-            f"0x{ELDRITCH_KNIGHT_KIT_ID:04X} C0EK\n"
-            f"0x{SWASHBUCKLER_KIT_ID:04X} SWASHBUCKLER\n",
+            kit_ids if kit_ids is not None else (
+                "IDS V1.0\n0x0200 MAGESCHOOL_ENCHANTER\n0x4000 TRUECLASS\n"
+                f"0x{ELDRITCH_KNIGHT_KIT_ID:04X} C0EK\n"
+                f"0x{SWASHBUCKLER_KIT_ID:04X} SWASHBUCKLER\n"
+            ),
             encoding="ascii",
         )
         resource_path(self.override, "XPLEVEL.2DA").write_bytes(make_xplevel())
@@ -312,13 +316,14 @@ class PriorityNpcHarnessTests(unittest.TestCase):
         *,
         suffix: str = ".cre",
         expect_success: bool = True,
+        kit_ids: str | None = None,
     ) -> tuple[bytes | None, str]:
         if self.weidu is None:
             self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
         with tempfile.TemporaryDirectory(prefix="cbm-priority-npc-") as raw_temp:
             temporary = tempfile.TemporaryDirectory(dir=raw_temp)
             try:
-                game = SyntheticGame(temporary)
+                game = SyntheticGame(temporary, kit_ids=kit_ids)
                 harness = game.root / PATCH_HARNESS.name
                 shutil.copy2(PATCH_HARNESS, harness)
                 source_path = game.root / f"source{suffix}"
@@ -770,6 +775,111 @@ class PriorityNpcHarnessTests(unittest.TestCase):
         )
         _, transcript = self.transform(XAN_TPA, 5, xan_base, expect_success=False)
         self.assertIn("unsupported Xan XP/DV profile", transcript)
+
+    def test_xan_uses_the_canonical_school_symbol_and_installed_eldritch_knight_id(self):
+        source = make_cre(
+            death_variable="XAN", xp=10_042, class_id=1, kit=0x02000000,
+            levels=(4, 1, 1), hp=(11, 16), proficiencies={96: 1},
+        )
+        kit_ids = (
+            "IDS V1.0\n0x0200 MAGESCHOOL_ENCHANTER\n0x4033 C0EK\n"
+            "0x0100 ENCHANTER\n0x4000 TRUECLASS\n"
+        )
+        transformed, _ = self.transform(XAN_TPA, 5, source, kit_ids=kit_ids)
+        assert transformed is not None
+        self.assertEqual(0x40330000, u32(transformed, 0x244))
+        self.assertEqual(7, transformed[0x273])
+        self.assertEqual((3, 3, 0), tuple(transformed[0x234:0x237]))
+        self.assert_cre_state_preserved(source, transformed)
+
+    def test_xan_rejects_missing_or_invalid_canonical_school_before_writes(self):
+        source = make_cre(
+            death_variable="XAN", xp=10_042, class_id=1, kit=0x02000000,
+            levels=(4, 1, 1), hp=(11, 16), proficiencies={96: 1},
+        )
+        for school in ("", "0x4000 MAGESCHOOL_ENCHANTER\n"):
+            with self.subTest(school=school):
+                _, transcript = self.transform(
+                    XAN_TPA, 5, source, expect_success=False,
+                    kit_ids="IDS V1.0\n0x0200 ENCHANTER\n0x4033 C0EK\n" + school,
+                )
+                self.assertIn("invalid MAGESCHOOL_ENCHANTER/C0EK values", transcript)
+
+    def test_xan_public_component_with_canonical_kit_table_scopes_changes_and_uninstalls(self):
+        if self.weidu is None:
+            self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
+        with tempfile.TemporaryDirectory(prefix="cbm-xan-public-") as raw_temp:
+            temporary = tempfile.TemporaryDirectory(dir=raw_temp)
+            with temporary:
+                game = SyntheticGame(temporary, kit_ids=(
+                    "IDS V1.0\n0x0200 MAGESCHOOL_ENCHANTER\n"
+                    "0x4000 TRUECLASS\n0x4033 C0EK\n"
+                ))
+                shutil.copy2(ROOT / "setup-chriz-bg-modpack.tp2", game.root)
+                shutil.copytree(ROOT / "chriz-bg-modpack", game.root / "chriz-bg-modpack")
+                resource_path(game.override, "EET.FLAG").write_bytes(b"synthetic EET marker")
+                (game.root / "weidu.log").write_text(
+                    "~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ #0 #20000 // prerequisite\n"
+                    "~ARTISANSKITPACK_NPC/ARTISANSKITPACK_NPC.TP2~ #0 #20002 // prerequisite\n",
+                    encoding="ascii",
+                )
+                profiles = (
+                    ("XAN4", "XAN", 10_042, (4, 1, 1), (11, 16), (3, 3, 0), (18, 21)),
+                    ("XAN6", "XAN", 41_549, (6, 1, 1), (17, 24), (5, 5, 0), (30, 35)),
+                    ("TTXAN", "TTXAN", 41_549, (6, 1, 1), (24, 24), (5, 5, 0), (35, 35)),
+                )
+                for name, dv, xp, levels, hp, _, _ in profiles:
+                    resource_path(game.override, name + ".CRE").write_bytes(make_cre(
+                        death_variable=dv, xp=xp, class_id=1, kit=0x02000000,
+                        levels=levels, hp=hp, thac0=17, proficiencies={96: 1},
+                    ))
+                resource_path(game.override, "XAN_.CRE").write_bytes(b"unrelated base Xan sentinel")
+
+                def override_files():
+                    files = {}
+                    for path in game.override.iterdir():
+                        if path.is_file():
+                            self.assertNotIn(path.name.lower(), files)
+                            files[path.name.lower()] = path.read_bytes()
+                    return files
+
+                before = override_files()
+                common = [
+                    self.weidu, "setup-chriz-bg-modpack.tp2", "--noautoupdate",
+                    "--no-exit-pause", "--game", str(game.root),
+                    "--use-lang", "en_us", "--language", "0",
+                ]
+                install = subprocess.run(
+                    common + ["--force-install-list", "170"], cwd=game.root,
+                    capture_output=True, text=True, timeout=45, check=False,
+                )
+                transcript = install.stdout + install.stderr
+                self.assertEqual(0, install.returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                after = override_files()
+                self.assertEqual(
+                    {name.lower() + ".cre" for name, *_ in profiles},
+                    {name for name in set(before) | set(after) if before.get(name) != after.get(name)},
+                )
+                for name, _, xp, _, _, levels, hp in profiles:
+                    original = before[name.lower() + ".cre"]
+                    creature = after[name.lower() + ".cre"]
+                    self.assertEqual(7, creature[0x273])
+                    self.assertEqual(0x40330000, u32(creature, 0x244))
+                    self.assertEqual(xp, u32(creature, 0x18))
+                    self.assertEqual(levels, tuple(creature[0x234:0x237]))
+                    self.assertEqual(hp, (u16(creature, 0x24), u16(creature, 0x26)))
+                    self.assertEqual({96: 1, 90: 2, 113: 1}, proficiency_map(creature))
+                    self.assert_cre_state_preserved(original, creature)
+                uninstall = subprocess.run(
+                    common + ["--force-uninstall-list", "170"], cwd=game.root,
+                    capture_output=True, text=True, timeout=45, check=False,
+                )
+                transcript = uninstall.stdout + uninstall.stderr
+                self.assertEqual(0, uninstall.returncode, transcript)
+                self.assertIn("SUCCESSFULLY REMOVED", transcript)
+                self.assertEqual(before, override_files())
+                game.assert_context_unchanged(self)
 
     def test_xan_rejects_wrong_source_kit_and_partial_conversion(self):
         source = make_cre(

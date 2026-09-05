@@ -3,7 +3,7 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.4`
+**Release:** `v0.2.0-alpha.5`
 
 This is a public alpha. Its installer and focused behavior are tested against
 generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
@@ -88,6 +88,10 @@ installation, progression and compatibility details.
   correction atomically.
 - `170` requires Artisan's Kitpack component `20000` and Artisan's NPC component
   `20002` to be installed first.
+- `192` preserves Viconia's existing memorized spells, including when an earlier
+  mod left a stale count on the final populated priest spell level. It corrects
+  only unambiguous trailing metadata; other stale layouts with overlapping or gapped ranges
+  remain installation errors.
 - When the collection uses Artisan's Kitpack with `194`, install Artisan's corrected
   `v1.3.1` release before this component so the Dwarven Defender Shield Bash grant is
   present.

@@ -25,14 +25,15 @@ BEGIN
     FAIL ~cbm_xan_ek_fix: CLASS.IDS has invalid MAGE/FIGHTER_MAGE values~
   END
 
-  OUTER_SET cbm_xan_enchanter_id = IDS_OF_SYMBOL (~kit~ ~ENCHANTER~)
+  // The engine's KIT.IDS uses the school-prefixed symbol for specialists.
+  OUTER_SET cbm_xan_enchanter_id = IDS_OF_SYMBOL (~kit~ ~MAGESCHOOL_ENCHANTER~)
   OUTER_SET cbm_xan_eldritch_knight_id = IDS_OF_SYMBOL (~kit~ ~C0EK~)
   ACTION_IF ((cbm_xan_enchanter_id <= 0) OR (cbm_xan_enchanter_id > 0x7fff)
           OR (cbm_xan_eldritch_knight_id <= 0) OR (cbm_xan_eldritch_knight_id > 0x7fff)
           OR (cbm_xan_enchanter_id = cbm_xan_eldritch_knight_id)
           OR (cbm_xan_enchanter_id = 0x4000)
           OR (cbm_xan_eldritch_knight_id = 0x4000)) BEGIN
-    FAIL ~cbm_xan_ek_fix: KIT.IDS has invalid ENCHANTER/C0EK values~
+    FAIL ~cbm_xan_ek_fix: KIT.IDS has invalid MAGESCHOOL_ENCHANTER/C0EK values~
   END
   OUTER_SET cbm_xan_enchanter_kit = cbm_xan_enchanter_id * 0x10000
   OUTER_SET cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_id * 0x10000
