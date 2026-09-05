@@ -2,6 +2,7 @@
 
 @1100 = ~chriz-bg-modpack: NPC fixes and collection defaults~
 @1400 = ~chriz-bg-modpack: Spell and compatibility fixes~
+@1600 = ~chriz-bg-modpack: Gameplay tweaks~
 
 @110 = ~Fade: complete Fighter/Thief conversion, proficiencies, and amulet usability~
 @130 = ~BG1NPC Kivan sea-elf quest: SCS dialogue-phase guard~
@@ -22,3 +23,9 @@
 @430 = ~Use Any Item: fair fixed caster level for non-caster scroll use~
 @440 = ~Ascension Improved Slayer Transformation: repair EE Fixpack subspell links~
 @450 = ~SCS shapechange spells: repair the EE Fixpack interaction~
+
+@610 = ~Progressive XP for locks, traps and spell scribing (multiclass/dual-class aware; requires EEex)~
+@1610 = ~Progressive utility XP requires BG2:EE or EET.~
+@1611 = ~Progressive utility XP requires EEex. Install EEex first and launch through InfinityLoader.~
+@1612 = ~Progressive utility XP requires XPBONUS.2DA and XPLEVEL.2DA.~
+@1613 = ~[CBM utility XP] Installed. Edit override/CBMUXPC.lua to tune rewards, then restart the game. See docs/utility-xp.md.~

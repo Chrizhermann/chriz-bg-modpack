@@ -1,0 +1,9 @@
+// Runtime normalization is needed: XPBONUS alone cannot distinguish a retired
+// thief from a low-level thief, or use character progression when scribing.
+// No replacement XPBONUS is installed. Normal WeiDU backups own these files.
+COPY ~chriz-bg-modpack/utility-xp/m_cbmuxp.lua~ ~override/M_CBMUXP.lua~
+     ~chriz-bg-modpack/utility-xp/cbmuxp.lua~   ~override/CBMUXP.lua~
+     ~chriz-bg-modpack/utility-xp/cbmuxrt.lua~  ~override/CBMUXRT.lua~
+     ~chriz-bg-modpack/utility-xp/cbmuxpc.lua~  ~override/CBMUXPC.lua~
+     ~chriz-bg-modpack/utility-xp/cbmuxp.menu~  ~override/CBMUXP.menu~
+PRINT @1613

@@ -1,0 +1,9 @@
+menu
+{
+    name "CBM_UtilityXP_Tick"
+    ignoreEsc
+    label
+    {
+        enabled "CBM_UtilityXP_Runtime.Refresh()"
+    }
+}

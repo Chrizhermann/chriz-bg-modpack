@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.1~
+VERSION ~v0.2.0-alpha.2~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -365,3 +365,15 @@ BEGIN @450 DESIGNATED 450 GROUP @1400 LABEL ~cbm_scs_shapechange_eefp_fix~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-PSRTI.ITM~ ~cbm_scs_shapechange_eefp_fix: DW-PSRTI.ITM is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-SSRA.SPL~ ~cbm_scs_shapechange_eefp_fix: DW-SSRA.SPL is missing.~
 INCLUDE ~chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa~
+
+// =====================================================================
+// Gameplay tweaks (600-699)
+// =====================================================================
+
+// Shared progression for locks, traps and scribing, independent of the acting
+// character's class-level slots. Configurable; requires the EEex runtime.
+BEGIN @610 DESIGNATED 610 GROUP @1600 LABEL ~cbm_utility_xp~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1610
+  REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1611
+  REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~XPBONUS.2DA~ AND FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~) @1612
+INCLUDE ~chriz-bg-modpack/lib/cbm_utility_xp.tpa~

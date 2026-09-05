@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.2.0-alpha.2 - 2026-09-05
+
+### Added
+
+- Component `610`, progressive XP for lockpicking, trap disarming and spell
+  learning in BG2EE/EET. It keeps early rewards small and approaches native BG2
+  rewards using the protagonist's total XP plus a retired dual class's level
+  threshold. Multiclass, triple-class and both dual directions share that scale.
+- Scribing reaches 1,000 XP per spell level at 440,000 progression XP, including
+  low-level catch-up spells learned by newly recruited mages and bards.
+- Editable anchors, category multipliers and rounding in `CBMUXPC.lua`; settings
+  apply to existing saves after a restart. Final party awards round up to 10 XP
+  by default (the tested 732 XP scribing example becomes 740).
+- Lua 5.1/LuaJIT regression tests and real WeiDU synthetic install/uninstall
+  checks, plus component 610 acceptance from the extracted release package.
+
+### Compatibility and verification
+
+- Component 610 requires EEex. Install after other utility-XP tweaks and launch
+  through InfinityLoader. Native XP sharing and caps remain in force.
+- In a disposable EET installation, startup, load/save and an actual scribing
+  award passed. The maintainer confirmed the test worked. The later rounding
+  adjustment is covered by automated tests; live lock/trap awards and the full
+  class matrix were not exhaustively tested.
+- The native adapter preserves trailing unnamed XPBONUS padding columns and
+  rejects interior gaps before writing. The included `docs/utility-xp.md` explains
+  the curve, settings, sources and validation limits.
+
 ## v0.2.0-alpha.1 - 2026-09-04
 
 First public alpha.
