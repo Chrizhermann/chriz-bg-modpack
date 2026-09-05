@@ -206,7 +206,9 @@ class SyntheticGame:
         return subprocess.run(
             [
                 str(WEIDU),
-                str(self.root / SETUP_NAME),
+                # WeiDU records this argument between ~ delimiters in its log.
+                # A Windows short temp path (RUNNER~1) must not enter that field.
+                SETUP_NAME,
                 "--game",
                 str(self.root),
                 "--force-uninstall-list" if uninstall else "--force-install-list",
@@ -298,6 +300,13 @@ class UtilityXPPublicInstallerTests(unittest.TestCase):
         game = self._make_game()
         self._assert_installed(game)
         self._assert_uninstalled(game)
+
+    def test_uninstall_survives_tilde_in_parent_directory(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm~utility-xp-installer-") as temporary:
+            game = SyntheticGame(Path(temporary) / "game")
+            self._assert_installed(game)
+            self.assertIn("~SETUP-CHRIZ-BG-MODPACK.TP2~", game.active_log().upper())
+            self._assert_uninstalled(game)
 
     def test_eet_installs_and_uninstalls_without_changing_effective_override_tables(self) -> None:
         game = self._make_game(game="eet", table_location="override")
