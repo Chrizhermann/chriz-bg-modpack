@@ -427,6 +427,7 @@ def make_viconia_spellbook_cre(
     base_slots: tuple[int, ...],
     effective_slots: tuple[int, ...] | None = None,
     memorized_flags: tuple[tuple[int, ...], ...] | None = None,
+    include_innate_row: bool = False,
     seed: int = 211,
 ) -> bytes:
     """Build a tiled CRE with seven priest and nine wizard meminfo rows."""
@@ -470,6 +471,8 @@ def make_viconia_spellbook_cre(
     # unrelated sentinels here and must remain byte-identical.
     for spell_level in range(9):
         meminfo.extend(struct.pack("<HHHHII", spell_level, 0, 0, 1, memorized_index, 0))
+    if include_innate_row:
+        meminfo.extend(struct.pack("<HHHHII", 0, 0, 0, 2, memorized_index, 0))
 
     meminfo_offset = 0x2D4
     memorized_offset = meminfo_offset + len(meminfo)
@@ -480,7 +483,7 @@ def make_viconia_spellbook_cre(
     struct.pack_into("<I", data, 0x2A0, meminfo_offset)
     struct.pack_into("<I", data, 0x2A4, 0)
     struct.pack_into("<I", data, 0x2A8, meminfo_offset)
-    struct.pack_into("<I", data, 0x2AC, 16)
+    struct.pack_into("<I", data, 0x2AC, len(meminfo) // 16)
     struct.pack_into("<I", data, 0x2B0, memorized_offset)
     struct.pack_into("<I", data, 0x2B4, memorized_index)
     struct.pack_into("<I", data, 0x2B8, slots_offset)
@@ -488,6 +491,25 @@ def make_viconia_spellbook_cre(
     struct.pack_into("<I", data, 0x2C0, 0)
     struct.pack_into("<I", data, 0x2C4, end_offset)
     struct.pack_into("<I", data, 0x2C8, 0)
+    return bytes(data)
+
+
+def make_viconia_stale_meminfo_cre(*, larger: bool = False) -> bytes:
+    """Authored records with the two observed R5 metadata shapes; no game bytes."""
+    counts = (5, 5, 1, 0, 0, 0, 0) if larger else (4, 3, 0, 0, 0, 0, 0)
+    data = bytearray(make_viconia_spellbook_cre(
+        32_926,
+        base_slots=(3, 3, 2, 0, 0, 0, 0),
+        memorized_flags=tuple(tuple(i % 4 for i in range(n)) for n in counts),
+        include_innate_row=True,
+    ))
+    info = u32(data, 0x2A8)
+    last = 2 if larger else 1
+    missing = 2 if larger else 1
+    struct.pack_into("<I", data, info + last * 16 + 12, counts[last] + missing)
+    declared = sum(counts) + missing
+    for index in range(last + 1, u32(data, 0x2AC)):
+        struct.pack_into("<I", data, info + index * 16 + 8, declared)
     return bytes(data)
 
 
@@ -1174,6 +1196,72 @@ class ViconiaTests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode, transcript)
         self.assertIsNone(output, transcript)
         self.assertRegex(transcript.lower(), r"memorization|priest|spell")
+
+    def test_stale_terminal_priest_ranges_preserve_every_existing_record(self):
+        for larger in (False, True):
+            with self.subTest(larger=larger):
+                source = make_viconia_stale_meminfo_cre(larger=larger)
+                transformed = self.transform(source)
+                expected = bytearray(source)
+                total = u32(source, 0x2B4)
+                info = u32(source, 0x2A8)
+                for index in range(u32(source, 0x2AC)):
+                    row = info + index * 16
+                    first = min(u32(source, row + 8), total)
+                    count = min(u32(source, row + 12), total - first)
+                    struct.pack_into("<II", expected, row + 8, first, count)
+                # Permit only the separately specified metadata correction plus
+                # the existing gameplay patch; records and all other bytes stay exact.
+                self.assert_conversion_with_spellbook(
+                    bytes(expected), transformed, cleric_level=5, thief_level=5
+                )
+                self.assertEqual(transformed, self.transform(transformed))
+                self.assertEqual(17, u32(transformed, 0x2AC))
+                self.assertEqual((total, 0), struct.unpack_from("<II", transformed, info + 16 * 16 + 8))
+
+    def test_ambiguous_stale_ranges_fail_before_output(self):
+        base = make_viconia_stale_meminfo_cre()
+        info = u32(base, 0x2A8)
+        for name, offset, value in (
+            ("overlap", info + 16 + 8, 3),
+            ("gap", info + 16 + 8, 5),
+            ("unreferenced_record", info + 12, 3),
+            ("nonempty_missing_group", info + 32 + 12, 1),
+            ("empty_cursor_disagrees", info + 32 + 8, 9),
+            ("overflow", info + 16 + 12, 0xFFFFFFFF),
+            ("last_record_flags", u32(base, 0x2B0) + 6 * 12 + 8, 4),
+            ("table_overlap", 0x2B0, info),
+            ("physical_bounds", 0x2B0, len(base) - 1),
+        ):
+            with self.subTest(name=name):
+                source = bytearray(base)
+                struct.pack_into("<I", source, offset, value)
+                self.assert_failed_closed(bytes(source), expected_pattern=r"memor|spell")
+
+        # A neighboring section may start before the spell table yet overlap it.
+        source = bytearray(base)
+        struct.pack_into("<II", source, 0x2A0, u32(base, 0x2B0) - 12, 2)
+        self.assert_failed_closed(bytes(source), expected_pattern=r"overlaps.*memorized")
+
+    def test_public_component_reconciles_stale_ranges_and_restores_them_on_uninstall(self):
+        if self.weidu is None:
+            self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
+        with tempfile.TemporaryDirectory(prefix="cbm-viconia-stale-public-") as raw:
+            game = SyntheticViconiaPublicGame(Path(raw) / "game")
+            for name, larger in (("VICONI4.CRE", False), ("VICONI6_.CRE", True)):
+                resource_path(game.override, name).write_bytes(make_viconia_stale_meminfo_cre(larger=larger))
+            before = file_tree(game.override)
+            install = game.run(self.weidu, "--force-install-list")
+            self.assertEqual(0, install.returncode, game.transcript(install))
+            self.assertRegex(game.active_log(), r"(?m)#0\s+#192\b")
+            for name in ("VICONI4.CRE", "VICONI6_.CRE"):
+                source = before[name]
+                data = resource_path(game.override, name).read_bytes()
+                self.assertEqual(self.transform(source), data)
+            uninstall = game.run(self.weidu, "--force-uninstall-list")
+            self.assertEqual(0, uninstall.returncode, game.transcript(uninstall))
+            self.assertEqual(before, file_tree(game.override))
+            game.assert_stable_inputs(self)
 
     def test_same_resref_changes_levels_only_when_xp_changes(self):
         low_source = make_viconia_cre(VICONIA_VARIANTS["VICONI4"][0], seed=101)

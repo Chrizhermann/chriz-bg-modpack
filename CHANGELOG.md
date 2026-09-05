@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.2.0-alpha.5 - 2026-09-06
+
+### Fixed
+
+- Component `170` resolves Xan's source Enchanter kit through the canonical
+  `MAGESCHOOL_ENCHANTER` symbol in installed `KIT.IDS`. The Eldritch Knight
+  conversion and CRE kit encoding are unchanged.
+- Component `192` accepts a stale count on Viconia's final populated priest
+  memorization row when the declared ranges form an unambiguous contiguous
+  prefix. It corrects that row and following empty indices to the actual table
+  length, preserving every existing memorized spell and flag. Ambiguous ranges
+  still fail; class, skill, proficiency, ability and spell-slot policy is unchanged.
+- Authored regressions cover both observed stale-range shapes, invalid metadata,
+  canonical kit symbols, install scope and byte-exact uninstall restoration.
+
 ## v0.2.0-alpha.4 - 2026-09-05
 
 ### Added

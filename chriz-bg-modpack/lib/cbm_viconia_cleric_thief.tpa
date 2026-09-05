@@ -447,6 +447,7 @@ DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
   READ_LONG 0x2ac cbm_viconia_meminfo_count
   READ_LONG 0x2b0 cbm_viconia_memorized_offset
   READ_LONG 0x2b4 cbm_viconia_memorized_count
+  SET cbm_viconia_reconcile_meminfo = 0
   PATCH_IF (cbm_viconia_meminfo_count > 0) BEGIN
     PATCH_IF ((cbm_viconia_meminfo_count > 1024)
            OR (cbm_viconia_meminfo_offset < 0x2d4)
@@ -455,6 +456,81 @@ DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
            OR (cbm_viconia_memorized_offset < 0x2d4)
            OR ((cbm_viconia_memorized_offset + (cbm_viconia_memorized_count * 12)) > SOURCE_SIZE)) BEGIN
       PATCH_FAIL ~cbm_viconia_cleric_thief: invalid spell memorization table bounds~
+    END
+
+    // Some installed CREs retain a stale count on their last populated priest
+    // row. Reconcile only an ordered, contiguous declaration with one terminal
+    // row crossing the actual table end; later rows must be empty. The header
+    // count remains authoritative: never read following effects as extra spells.
+    SET cbm_viconia_declared_end = 0
+    SET cbm_viconia_ranges_contiguous = 1
+    SET cbm_viconia_crossing_rows = 0
+    SET cbm_viconia_missing_rows = 0
+    FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
+      SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
+      READ_SHORT (cbm_viconia_info_entry + 0x06) cbm_viconia_info_type
+      READ_LONG (cbm_viconia_info_entry + 0x08) cbm_viconia_first_memorized
+      READ_LONG (cbm_viconia_info_entry + 0x0c) cbm_viconia_level_memorized_count
+      PATCH_IF ((cbm_viconia_first_memorized < 0) OR (cbm_viconia_first_memorized > 100000)
+             OR (cbm_viconia_level_memorized_count < 0) OR (cbm_viconia_level_memorized_count > 100000)) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: invalid spell memorization range~
+      END
+      PATCH_IF (cbm_viconia_first_memorized != cbm_viconia_declared_end) BEGIN
+        SET cbm_viconia_ranges_contiguous = 0
+      END
+      SET cbm_viconia_declared_end = cbm_viconia_first_memorized + cbm_viconia_level_memorized_count
+      PATCH_IF (cbm_viconia_declared_end > cbm_viconia_memorized_count) BEGIN
+        SET cbm_viconia_reconcile_meminfo = 1
+        PATCH_IF (cbm_viconia_level_memorized_count > 0) BEGIN
+          PATCH_IF ((cbm_viconia_first_memorized < cbm_viconia_memorized_count) AND (cbm_viconia_info_type = 0)) BEGIN
+            SET cbm_viconia_crossing_rows += 1
+          END ELSE BEGIN
+            SET cbm_viconia_missing_rows += 1
+          END
+        END
+      END
+    END
+    PATCH_IF cbm_viconia_reconcile_meminfo BEGIN
+      PATCH_IF ((cbm_viconia_ranges_contiguous != 1) OR (cbm_viconia_crossing_rows != 1)
+             OR (cbm_viconia_missing_rows != 0)) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: ambiguous spell memorization ranges; cannot reconcile a terminal priest row~
+      END
+      PATCH_IF ((cbm_viconia_meminfo_offset + cbm_viconia_meminfo_count * 16) > cbm_viconia_memorized_offset) BEGIN
+        PATCH_FAIL ~cbm_viconia_cleric_thief: overlapping spell memorization tables~
+      END
+      PATCH_FOR_EACH cbm_viconia_section_field IN 0x2a0 0x2b8 0x2bc 0x2c4 BEGIN
+        READ_LONG cbm_viconia_section_field cbm_viconia_section_offset
+        PATCH_IF (cbm_viconia_section_field = 0x2b8) BEGIN
+          SET cbm_viconia_section_count = 1
+          SET cbm_viconia_section_stride = 0x50
+        END ELSE BEGIN
+          READ_LONG (cbm_viconia_section_field + 4) cbm_viconia_section_count
+          PATCH_IF (cbm_viconia_section_field = 0x2a0) BEGIN
+            SET cbm_viconia_section_stride = 12
+          END ELSE PATCH_IF (cbm_viconia_section_field = 0x2bc) BEGIN
+            SET cbm_viconia_section_stride = 20
+          END ELSE BEGIN
+            READ_BYTE 0x33 cbm_viconia_effect_version
+            PATCH_IF (cbm_viconia_effect_version > 1) BEGIN
+              PATCH_FAIL ~cbm_viconia_cleric_thief: invalid effect layout beside the memorized-spell table~
+            END
+            SET cbm_viconia_section_stride = (cbm_viconia_effect_version = 0) ? 0x30 : 0x108
+          END
+        END
+        PATCH_IF ((cbm_viconia_section_count < 0) OR (cbm_viconia_section_count > 100000)) BEGIN
+          PATCH_FAIL ~cbm_viconia_cleric_thief: invalid section count beside the memorized-spell table~
+        END
+        PATCH_IF (cbm_viconia_section_count > 0) BEGIN
+          PATCH_IF ((cbm_viconia_section_offset < 0x2d4) OR (cbm_viconia_section_offset > SOURCE_SIZE)
+                 OR (cbm_viconia_section_count > ((SOURCE_SIZE - cbm_viconia_section_offset) / cbm_viconia_section_stride))) BEGIN
+            PATCH_FAIL ~cbm_viconia_cleric_thief: invalid section bounds beside the memorized-spell table~
+          END
+          PATCH_IF ((cbm_viconia_section_offset < (cbm_viconia_memorized_offset + cbm_viconia_memorized_count * 12))
+                 AND ((cbm_viconia_section_offset + cbm_viconia_section_count * cbm_viconia_section_stride) > cbm_viconia_memorized_offset)) BEGIN
+            PATCH_FAIL ~cbm_viconia_cleric_thief: another CRE section overlaps the memorized-spell table~
+          END
+        END
+      END
     END
 
     SET cbm_viconia_priest_entries = 0
@@ -470,9 +546,13 @@ DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
       PATCH_IF (cbm_viconia_info_type > 2) BEGIN
         PATCH_FAIL ~cbm_viconia_cleric_thief: invalid spell memorization type~
       END
-      PATCH_IF ((cbm_viconia_first_memorized > cbm_viconia_memorized_count)
-             OR (cbm_viconia_level_memorized_count > (cbm_viconia_memorized_count - cbm_viconia_first_memorized))) BEGIN
-        PATCH_FAIL ~cbm_viconia_cleric_thief: spell memorization row points outside the memorized-spell table~
+      PATCH_IF cbm_viconia_reconcile_meminfo BEGIN
+        PATCH_IF (cbm_viconia_first_memorized > cbm_viconia_memorized_count) BEGIN
+          SET cbm_viconia_first_memorized = cbm_viconia_memorized_count
+        END
+        PATCH_IF (cbm_viconia_level_memorized_count > (cbm_viconia_memorized_count - cbm_viconia_first_memorized)) BEGIN
+          SET cbm_viconia_level_memorized_count = cbm_viconia_memorized_count - cbm_viconia_first_memorized
+        END
       END
 
       PATCH_IF (cbm_viconia_info_type = 0) BEGIN
@@ -520,7 +600,7 @@ DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
   END
 
   // All validation is complete. Mutate class/levels, table-derived THAC0,
-  // the seven thief skill bytes, and size-preserving priest slot fields only.
+  // the seven thief skill bytes, and size-preserving spellbook metadata only.
   // Memorized records and their flags remain byte-identical because live
   // Wisdom bonuses are not represented by these serialized effective-slot
   // words.
@@ -546,6 +626,22 @@ DEFINE_PATCH_FUNCTION cbm_viconia_make_cleric_thief BEGIN
   WRITE_BYTE 0x6a 0
 
   PATCH_IF (cbm_viconia_meminfo_count > 0) BEGIN
+    PATCH_IF cbm_viconia_reconcile_meminfo BEGIN
+      FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
+        SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
+        READ_LONG (cbm_viconia_info_entry + 0x08) cbm_viconia_first_memorized
+        READ_LONG (cbm_viconia_info_entry + 0x0c) cbm_viconia_level_memorized_count
+        PATCH_IF (cbm_viconia_first_memorized > cbm_viconia_memorized_count) BEGIN
+          SET cbm_viconia_first_memorized = cbm_viconia_memorized_count
+        END
+        PATCH_IF (cbm_viconia_level_memorized_count > (cbm_viconia_memorized_count - cbm_viconia_first_memorized)) BEGIN
+          SET cbm_viconia_level_memorized_count = cbm_viconia_memorized_count - cbm_viconia_first_memorized
+        END
+        WRITE_LONG (cbm_viconia_info_entry + 0x08) cbm_viconia_first_memorized
+        WRITE_LONG (cbm_viconia_info_entry + 0x0c) cbm_viconia_level_memorized_count
+      END
+      PATCH_PRINT ~[cbm_viconia_cleric_thief] %SOURCE_FILE%: reconciled trailing memorization metadata; all %cbm_viconia_memorized_count% existing spell records preserved.~
+    END
     FOR (cbm_viconia_expected_level = 0; cbm_viconia_expected_level < 7; cbm_viconia_expected_level += 1) BEGIN
       FOR (cbm_viconia_info_index = 0; cbm_viconia_info_index < cbm_viconia_meminfo_count; cbm_viconia_info_index += 1) BEGIN
         SET cbm_viconia_info_entry = cbm_viconia_meminfo_offset + (cbm_viconia_info_index * 16)
