@@ -65,12 +65,12 @@ jobs:
           WEIDU: weidu.exe
         run: python -m unittest discover -s tests -v
 
-      - name: Test utility XP under Lua 5.1 and LuaJIT
+      - name: Test utility XP runtimes and companion class choices
         shell: pwsh
         env:
           WEIDU_BIN: weidu.exe
           WEIDU: weidu.exe
-        run: python -m pytest tests/test_utility_xp.py -q
+        run: python -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py -q
 
       - name: Build deterministic release twice
         shell: pwsh

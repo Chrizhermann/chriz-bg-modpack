@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.3~
+VERSION ~v0.2.0-alpha.4~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -322,6 +322,37 @@ ACTION_FOR_EACH cbm_kivan_cre IN ~KIVAN~ ~KIVAN4~ ~KIVAN6~ BEGIN
 END
 
 // Component 199 is reserved and intentionally unavailable in this alpha.
+
+// =====================================================================
+// Optional companion class choices (220-223)
+// =====================================================================
+
+BEGIN @220 DESIGNATED 220 GROUP @1100 LABEL ~cbm_yoshimo_swashbuckler~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~YOSHI7.CRE~ @1191
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
+LAF cbm_companion_class STR_VAR npc = ~YOSHIMO~ kit = ~SWASHBUCKLER~ END
+
+BEGIN @221 DESIGNATED 221 GROUP @1100 LABEL ~cbm_hexxat_shadowdancer~
+  SUBCOMPONENT @1194
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
+LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~SHADOWDANCER~ END
+
+BEGIN @222 DESIGNATED 222 GROUP @1100 LABEL ~cbm_hexxat_fighter_thief~
+  SUBCOMPONENT @1194
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
+LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~FIGHTER_THIEF~ END
+
+BEGIN @223 DESIGNATED 223 GROUP @1100 LABEL ~cbm_hexxat_assassin~
+  SUBCOMPONENT @1194
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
+LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~ASSASIN~ END
 
 // =====================================================================
 // Spell and compatibility fixes (400-499)
