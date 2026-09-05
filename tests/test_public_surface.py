@@ -33,6 +33,7 @@ PUBLIC_COMPONENTS = {
     430,
     440,
     450,
+    610,
 }
 
 
@@ -82,6 +83,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "LICENSE",
             "THIRD_PARTY_NOTICES.md",
             "setup-chriz-bg-modpack.tp2",
+            "docs/utility-xp.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
@@ -90,12 +92,16 @@ class PublicSurfaceTests(unittest.TestCase):
             "snapshot",
             "save",
             "handover",
-            "docs/",
             "tests/",
         )
         for path in files:
             with self.subTest(path=path):
                 self.assertFalse(any(fragment in path.lower() for fragment in forbidden_fragments))
+        self.assertEqual(
+            {"docs/utility-xp.md"},
+            {path for path in files if path.startswith("docs/")},
+            "Only the public utility-XP user guide belongs in release docs",
+        )
 
 
 if __name__ == "__main__":

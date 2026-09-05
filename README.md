@@ -3,11 +3,12 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.1`
+**Release:** `v0.2.0-alpha.2`
 
 This is a public alpha. Its installer and focused behavior are tested against
-generated fixtures and synthetic BG2EE/EET-shaped games. A complete live-game
-acceptance pass has not yet been performed.
+generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
+startup, load/save and scribing checks in a disposable EET install. A complete
+live-game acceptance pass across all components has not yet been performed.
 
 ## Installation
 
@@ -42,6 +43,7 @@ writing; missing prerequisites are reported by the installer.
 | 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
+| 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
 
 Components `191`, `199`, and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
@@ -84,14 +86,25 @@ Artisan's Kitpack component `99001` directly.
   changes.
 - Install `440` after Ascension's Improved Slayer Transformation and EE Fixpack.
   Install `450` after the SCS shapechange-spell tweak and EE Fixpack.
+- Install `610` after EEex, EET finalization and other utility-XP tweaks, then
+  launch through `InfinityLoader.exe`. It uses the protagonist's total XP plus
+  the retired class's level threshold for dual classes, giving all thieves and
+  spell learners the same progression scale. Scribing reaches native BG2 rates
+  at 440,000 progression XP, including low-level spells learned by new companions.
+  Rewards round up to 10 XP by default. Edit `override/CBMUXPC.lua` and restart
+  to adjust the anchors, multipliers or rounding. See the included
+  [utility-XP guide](docs/utility-xp.md) for values, class coverage and limits.
 
 ## Testing status
 
 The automated suite covers guarded transformation behavior, malformed-input
 rejection, idempotence, public installer paths, and byte-exact uninstall restoration
 on generated fixtures and synthetic games. That evidence does not substitute for
-live play: recruitment, combat, spell visuals, and save-game behavior remain to be
-accepted in BG2EE/EET.
+live play: recruitment, combat and spell visuals remain to be accepted across the
+collection. Component 610's native smoke test covered startup, load/save and one
+paused-inventory scribing award; the maintainer confirmed the throwaway test
+worked. The final rounding adjustment is covered by automated tests. Live
+lock/trap awards and the full class matrix were not exhaustively tested.
 
 ## License
 

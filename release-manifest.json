@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.1",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.1",
+  "version": "v0.2.0-alpha.2",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.2",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -29,9 +29,16 @@
     "chriz-bg-modpack/lib/cbm_sharteel_wizard_slayer.tpa",
     "chriz-bg-modpack/lib/cbm_skie_skill_fix.tpa",
     "chriz-bg-modpack/lib/cbm_uai_caster_level.tpa",
+    "chriz-bg-modpack/lib/cbm_utility_xp.tpa",
     "chriz-bg-modpack/lib/cbm_viconia_cleric_thief.tpa",
     "chriz-bg-modpack/lib/cbm_xan_ek_fix.tpa",
     "chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa",
+    "chriz-bg-modpack/utility-xp/CBMUXP.lua",
+    "chriz-bg-modpack/utility-xp/CBMUXP.menu",
+    "chriz-bg-modpack/utility-xp/CBMUXPC.lua",
+    "chriz-bg-modpack/utility-xp/CBMUXRT.lua",
+    "chriz-bg-modpack/utility-xp/M_CBMUXP.lua",
+    "docs/utility-xp.md",
     "setup-chriz-bg-modpack.tp2"
   ]
 }
