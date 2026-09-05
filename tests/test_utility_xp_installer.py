@@ -165,7 +165,7 @@ class SyntheticGame:
         shutil.copytree(ROOT / MOD_NAME, root / MOD_NAME)
         self.source_dir = root / MOD_NAME / "utility-xp"
         if custom_config is not None:
-            (self.source_dir / "CBMUXPC.lua").write_bytes(custom_config)
+            (self.source_dir / "cbmuxpc.lua").write_bytes(custom_config)
 
         # WeiDU GAME_IS uses resource existence, so stub ARE bytes suffice.
         # EET additionally needs eet.flag; OH6000 alone selects BG2EE, not EET.
@@ -242,10 +242,11 @@ class SyntheticGame:
 
 class UtilityXPResourceNamesTests(unittest.TestCase):
     def test_all_published_engine_resources_have_at_most_eight_character_resrefs(self) -> None:
+        actual_names = {path.name for path in SOURCE_DIR.iterdir()}
         for name in PUBLICATIONS:
             with self.subTest(resource=name):
                 self.assertLessEqual(len(Path(name).stem), 8)
-                self.assertTrue((SOURCE_DIR / name).is_file(), f"missing source: {name}")
+                self.assertIn(name.lower(), actual_names, "Linux WeiDU needs lowercase source paths")
 
 
 @unittest.skipUnless(WEIDU, "WeiDU unavailable; set WEIDU or put weidu on PATH")
@@ -259,7 +260,7 @@ class UtilityXPPublicInstallerTests(unittest.TestCase):
         expected = dict(game.before)
         if installed:
             for name in PUBLICATIONS:
-                expected[f"OVERRIDE/{name.upper()}"] = (game.source_dir / name).read_bytes()
+                expected[f"OVERRIDE/{name.upper()}"] = (game.source_dir / name.lower()).read_bytes()
         actual = _file_tree(game.root)
         actual = {name: data for name, data in actual.items() if not _is_weidu_artifact(name)}
         self.assertEqual(set(expected), set(actual), "installer wrote outside its allowlist")

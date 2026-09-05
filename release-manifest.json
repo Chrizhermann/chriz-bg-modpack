@@ -33,11 +33,11 @@
     "chriz-bg-modpack/lib/cbm_viconia_cleric_thief.tpa",
     "chriz-bg-modpack/lib/cbm_xan_ek_fix.tpa",
     "chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa",
-    "chriz-bg-modpack/utility-xp/CBMUXP.lua",
-    "chriz-bg-modpack/utility-xp/CBMUXP.menu",
-    "chriz-bg-modpack/utility-xp/CBMUXPC.lua",
-    "chriz-bg-modpack/utility-xp/CBMUXRT.lua",
-    "chriz-bg-modpack/utility-xp/M_CBMUXP.lua",
+    "chriz-bg-modpack/utility-xp/cbmuxp.lua",
+    "chriz-bg-modpack/utility-xp/cbmuxp.menu",
+    "chriz-bg-modpack/utility-xp/cbmuxpc.lua",
+    "chriz-bg-modpack/utility-xp/cbmuxrt.lua",
+    "chriz-bg-modpack/utility-xp/m_cbmuxp.lua",
     "docs/utility-xp.md",
     "setup-chriz-bg-modpack.tp2"
   ]

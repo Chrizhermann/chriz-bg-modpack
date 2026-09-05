@@ -48,7 +48,7 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
             ):
                 self.assertNotIn(excluded, lowered)
             payloads = {
-                name: archive.read("chriz-bg-modpack/utility-xp/" + name)
+                name: archive.read("chriz-bg-modpack/utility-xp/" + name.lower())
                 for name in utility_installer.PUBLICATIONS
             }
             archive.extractall(game_root)

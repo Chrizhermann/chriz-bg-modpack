@@ -121,7 +121,7 @@ of this component on an English game:
 .\weidu.exe setup-chriz-bg-modpack.tp2 --language 0 --use-lang en_US --force-install-list 610 --no-exit-pause
 ```
 
-Edit `chriz-bg-modpack/utility-xp/CBMUXPC.lua` before installing. Afterwards,
+Edit `chriz-bg-modpack/utility-xp/cbmuxpc.lua` before installing. Afterwards,
 edit the installed `override/CBMUXPC.lua` and restart the game. Changes apply
 to existing saves; **no reinstall is needed for balance adjustments**. Keep a
 copy of custom settings before replacing the mod with a newer distribution.

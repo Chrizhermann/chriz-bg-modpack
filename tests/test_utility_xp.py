@@ -11,7 +11,7 @@ SOURCE = Path(__file__).resolve().parents[1] / "chriz-bg-modpack/utility-xp"
 def lua(request):
     runtime = import_module("lupa." + request.param).LuaRuntime(unpack_returned_tuples=True)
     for name in ("CBMUXPC.lua", "CBMUXP.lua"):
-        runtime.execute((SOURCE / name).read_text(encoding="utf-8"))
+        runtime.execute((SOURCE / name.lower()).read_text(encoding="utf-8"))
     runtime.globals().CBM_UtilityXP.Validate(runtime.globals().CBM_UtilityXP_Config)
     return runtime
 
@@ -232,7 +232,7 @@ EngineGlobals = { g_pBaldurChitin = {m_pObjectGame = game} }
 
 def start_adapter(lua):
     lua.execute(ENGINE_DOUBLE)
-    lua.execute((SOURCE / "CBMUXRT.lua").read_text(encoding="utf-8"))
+    lua.execute((SOURCE / "cbmuxrt.lua").read_text(encoding="utf-8"))
     return lua.globals()
 
 
@@ -315,7 +315,7 @@ def test_paused_inventory_callback_refreshes_scribing_after_xp_changes(lua):
     g.CBM_UtilityXP_Runtime.Refresh()
     g.hero.m_baseStats.m_xp = 440000
     # The actual .menu enabled callback is independent of world/AI ticks.
-    menu = (SOURCE / "CBMUXP.menu").read_text(encoding="utf-8")
+    menu = (SOURCE / "cbmuxp.menu").read_text(encoding="utf-8")
     callback = menu.split('enabled "', 1)[1].split('"', 1)[0]
     assert lua.eval(callback) is False
     assert g.game.m_ruleTables.m_tXPBonus.cells[108].value == "9000"
@@ -417,12 +417,12 @@ def test_bootstrap_reports_unavailable_runtime_or_bad_config_without_publishing(
         g.EEex_Menu_AddAfterMainFileLoadedListener = None
 
     def include(name):
-        lua.execute((SOURCE / (name + ".lua")).read_text(encoding="utf-8"))
+        lua.execute((SOURCE / (name.lower() + ".lua")).read_text(encoding="utf-8"))
         if mode == "invalid_config" and name == "CBMUXPC":
             lua.execute("CBM_UtilityXP_Config.trapMultiplier = -1")
 
     g.Infinity_DoFile = include
-    lua.execute((SOURCE / "M_CBMUXP.lua").read_text(encoding="utf-8"))
+    lua.execute((SOURCE / "m_cbmuxp.lua").read_text(encoding="utf-8"))
     assert len(g.logs) == 1
     assert g.game.m_ruleTables.m_tXPBonus.writes == 0
     assert g.listeners.menu is None
