@@ -3,7 +3,7 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.3`
+**Release:** `v0.2.0-alpha.4`
 
 This is a public alpha. Its installer and focused behavior are tested against
 generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
@@ -38,6 +38,10 @@ writing; missing prerequisites are reported by the installer.
 | 196 | `cbm_faldorn_avenger` | Give Faldorn the Avenger kit |
 | 197 | `cbm_dynaheir_haste` | Add the effective installed Haste spell to Dynaheir once |
 | 198 | `cbm_kivan_archer` | Give joinable Kivan variants the Archer kit |
+| 220 | `cbm_yoshimo_swashbuckler` | Give Yoshimo the installed Swashbuckler kit |
+| 221 | `cbm_hexxat_shadowdancer` | Give Hexxat the installed Shadowdancer kit |
+| 222 | `cbm_hexxat_fighter_thief` | Convert Hexxat to Fighter/Thief with rebuilt stats and preserved vampire powers |
+| 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
@@ -69,6 +73,12 @@ The collection also recommends components `192` through `198` where their NPCs a
 prerequisites are present. Garrick needs no component here: the collection selects
 Artisan's Kitpack component `99001` directly.
 
+Yoshimo's Swashbuckler option (`220`) is independent. Hexxat's options
+(`221`-`223`) are mutually exclusive; skip the group to retain her current class.
+They work with vanilla kits or installed Artisan revisions and leave Clara
+unchanged. See the [companion class guide](docs/companion-classes.md) for
+installation, progression and compatibility details.
+
 ## Dependencies and ordering
 
 - Install Fade before `110`, the BG1NPC Kivan quest before `130`, and Sarah ToB v8
@@ -84,6 +94,10 @@ Artisan's Kitpack component `99001` directly.
 - Install `400`, `410`, and `430` after the spell/item systems they refine. In
   particular, `430` belongs after the relevant Use Any Item scroll-caster-level
   changes.
+- Install `220`-`223` after kit overhauls and companion/progression-table changes,
+  using them instead of another class conversion or respec component for the
+  same companion. Their CRE changes require a save from before the companion
+  first appeared in the world. They do not require EEex or Artisan's Kitpack.
 - Install `440` after Ascension's Improved Slayer Transformation and EE Fixpack.
   Install `450` after the SCS shapechange-spell tweak and EE Fixpack.
 - Install `610` after EEex, EET finalization and other utility-XP tweaks, then
@@ -105,6 +119,12 @@ collection. Component 610's native smoke test covered startup, load/save and one
 paused-inventory scribing award; the maintainer confirmed the throwaway test
 worked. The final rounding adjustment is covered by automated tests. Live
 lock/trap awards and the full class matrix were not exhaustively tested.
+
+Components `220`-`223` passed focused synthetic BG2EE/EET installation tests and
+eight additional disposable installs against copied pristine/modded resources,
+with byte-exact uninstall restoration. Source review found no need for a broad
+live test matrix. A short Fighter/Thief recruitment/level-up/save-reload check
+remains optional additional confidence and has not been performed here.
 
 ## License
 

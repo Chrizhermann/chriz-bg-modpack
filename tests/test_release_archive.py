@@ -9,6 +9,7 @@ from unittest.mock import patch
 import zipfile
 
 from tests import test_utility_xp_installer as utility_installer
+from tests import test_companion_classes_installer as companion_installer
 from tests.test_sarah_options import (
     EXPECTED_PROFICIENCIES,
     SyntheticSarahGame,
@@ -36,6 +37,8 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
             self.assertIn("setup-chriz-bg-modpack.tp2", names)
             self.assertIn("WEIDU-COPYING.txt", names)
             self.assertIn("docs/utility-xp.md", names)
+            self.assertIn("docs/companion-classes.md", names)
+            self.assertIn("chriz-bg-modpack/lib/cbm_companion_classes.tpa", names)
             lowered = "\n".join(names).lower()
             for excluded in (
                 "sarah-custom",
@@ -128,6 +131,37 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 self.assertEqual(
                     game.override_before, utility_installer._file_tree(game.override)
                 )
+
+    def test_extracted_release_installs_and_restores_all_companion_choices(self):
+        if not os.environ.get("CBM_RELEASE_ARCHIVE"):
+            self.skipTest("set CBM_RELEASE_ARCHIVE to exercise a built release ZIP")
+        if companion_installer.WEIDU is None:
+            self.skipTest("set WEIDU_BIN to compile authored script fixtures")
+        for component, kit, class_id in companion_installer.CHOICES:
+            with self.subTest(component=component):
+                with tempfile.TemporaryDirectory(prefix="cbm-companion-release-") as raw:
+                    temporary = Path(raw)
+                    game = companion_installer._make_game(temporary, game_type="eet")
+                    self.extract_release(game.root)
+                    weidu = self.installer(game.root)
+                    executable = Path(shutil.which(weidu) or weidu).resolve()
+                    self.assertTrue(executable.is_file(), executable)
+                    # Include the extracted payload in rollback/scope checks.
+                    game.before = utility_installer._file_tree(game.root)
+                    with patch.object(companion_installer, "WEIDU", executable):
+                        install, transcript = companion_installer._run(game, component)
+                        self.assertEqual(0, install.returncode, transcript)
+                        self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                        companion_installer._assert_installed_choice(
+                            game, temporary, component, kit, class_id
+                        )
+                        uninstall, transcript = companion_installer._run(
+                            game, component, uninstall=True
+                        )
+                        self.assertEqual(0, uninstall.returncode, transcript)
+                        self.assertIn("SUCCESSFULLY REMOVED", transcript)
+                        self.assertNotIn(f"#{component} ", game.active_log())
+                        companion_installer._assert_restored(game)
 
 
 if __name__ == "__main__":

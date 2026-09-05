@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.2.0-alpha.4 - 2026-09-05
+
+### Added
+
+- Optional Yoshimo Swashbuckler (`220`), plus mutually exclusive Hexxat
+  Shadowdancer (`221`), Fighter/Thief (`222`) and Assassin (`223`) choices.
+- Installed-table thief-skill allocation and kit resolution support vanilla kits
+  or Artisan revisions. Old class abilities are removed selectively; Hexxat's
+  vampire powers, equipment and quest state are preserved, and Clara is untouched.
+- Fighter/Thief rebuilds levels, HP, THAC0, saves, lore and proficiencies while
+  retaining total XP and recruitment level-up opportunities. Extra Domination
+  uses retain their original total-XP milestones.
+- The public companion guide and focused installer/package acceptance tests.
+
+### Compatibility and verification
+
+- New choices use `220`-`223` to preserve all existing public component IDs.
+  The earlier unpublished `190`-`193` draft numbers must not be used for these
+  choices. No existing component was renumbered.
+- Install after kit/progression changes and before the companion first appears
+  in the saved world. EEex and Artisan's Kitpack are optional for these choices.
+- Focused synthetic tests cover BG2EE/EET, altered kit rules, wrong/missing data,
+  script scope, option exclusion, rollback and byte-exact uninstall. All four
+  options also passed disposable installs against copied pristine and modded
+  resources. Live recruitment remains untested; a broad live test pass is not
+  a release blocker after source review.
+
 ## v0.2.0-alpha.3 - 2026-09-05
 
 ### Added

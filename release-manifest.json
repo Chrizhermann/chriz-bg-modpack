@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.3",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.3",
+  "version": "v0.2.0-alpha.4",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.4",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -22,6 +22,7 @@
     "chriz-bg-modpack/lib/cbm_ascension_slayer_eefp_fix.tpa",
     "chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa",
     "chriz-bg-modpack/lib/cbm_collection_defaults.tpa",
+    "chriz-bg-modpack/lib/cbm_companion_classes.tpa",
     "chriz-bg-modpack/lib/cbm_fade_ft_fix.tpa",
     "chriz-bg-modpack/lib/cbm_mazzy_prof_fix.tpa",
     "chriz-bg-modpack/lib/cbm_sarah_archer.tpa",
@@ -38,6 +39,7 @@
     "chriz-bg-modpack/utility-xp/cbmuxpc.lua",
     "chriz-bg-modpack/utility-xp/cbmuxrt.lua",
     "chriz-bg-modpack/utility-xp/m_cbmuxp.lua",
+    "docs/companion-classes.md",
     "docs/utility-xp.md",
     "setup-chriz-bg-modpack.tp2"
   ]

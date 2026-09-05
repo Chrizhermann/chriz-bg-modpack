@@ -18,6 +18,16 @@
 @197 = ~Dynaheir: learn the installed Haste spell (recommended collection default)~
 @198 = ~Kivan: Archer kit (recommended collection default)~
 
+@220 = ~Yoshimo: Swashbuckler~
+@221 = ~Shadowdancer~
+@222 = ~Fighter/Thief multiclass~
+@223 = ~Assassin~
+@1190 = ~Companion class options require BG2:EE or EET.~
+@1191 = ~Yoshimo's creature resources were not found.~
+@1192 = ~Hexxat's creature resources were not found.~
+@1194 = ~Hexxat: choose a class or kit~
+@1195 = ~Companion conversion installed. Load a save from before the companion first appeared in the world. Kit rules follow installed overhauls; see docs/companion-classes.md.~
+
 @400 = ~Branwen Spiritual Hammer: repair magical-weapon charges~
 @410 = ~Yeslick and Keldorn Dispel Magic: hostile-only, correctly scaled dispels~
 @430 = ~Use Any Item: fair fixed caster level for non-caster scroll use~

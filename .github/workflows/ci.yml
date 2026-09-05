@@ -64,11 +64,11 @@ jobs:
           WEIDU: /usr/local/bin/weidu
         run: python3 -m unittest discover -s tests -v
 
-      - name: Test utility XP under Lua 5.1 and LuaJIT
+      - name: Test utility XP runtimes and companion class choices
         env:
           WEIDU_BIN: /usr/local/bin/weidu
           WEIDU: /usr/local/bin/weidu
-        run: python3 -m pytest tests/test_utility_xp.py -q
+        run: python3 -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py -q
 
       - name: Build the production archive reproducibly
         run: |
