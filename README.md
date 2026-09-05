@@ -3,7 +3,7 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.2`
+**Release:** `v0.2.0-alpha.3`
 
 This is a public alpha. Its installer and focused behavior are tested against
 generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed

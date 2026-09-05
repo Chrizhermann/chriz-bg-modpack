@@ -197,11 +197,13 @@ and writes confined to the intended table cells. Synthetic KEY/BIF/TLK games
 exercise the real component installation, prerequisites and byte-exact uninstall.
 The TP2 and every included TPA are independently parse-checked.
 
-The release candidate passed 276 tests on Windows, including 185 utility-XP
+The release candidate passed 277 tests on Windows, including 186 utility-XP
 checks and both extracted-ZIP installer checks. Set `CBM_RELEASE_ARCHIVE` to a
 built ZIP to enable those archive checks; on Windows, `CBM_USE_BUNDLED_WEIDU=1`
 tests the executable actually shipped in that ZIP. Both hosted workflows build
 the package twice, compare bytes and exercise installation from the extracted ZIP.
+The installer harness also covers temporary paths containing `~`: it invokes
+WeiDU with a relative TP2 name so those paths cannot corrupt WeiDU's quoted log.
 
 On Windows, Python's fault handler can print `0xe24c4a02` diagnostics for LuaJIT's
 handled software exceptions (including deliberate error-path tests). Check the

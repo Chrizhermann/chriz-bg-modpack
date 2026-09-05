@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.0-alpha.2 - 2026-09-05
+## v0.2.0-alpha.3 - 2026-09-05
 
 ### Added
 
@@ -27,6 +27,9 @@
 - The native adapter preserves trailing unnamed XPBONUS padding columns and
   rejects interior gaps before writing. The included `docs/utility-xp.md` explains
   the curve, settings, sources and validation limits.
+- Source filenames support Linux WeiDU, and the installer test harness supports
+  Windows temporary paths containing `~`. The alpha.2 tag failed the latter
+  build check and was not published as a release.
 
 ## v0.2.0-alpha.1 - 2026-09-04
 
