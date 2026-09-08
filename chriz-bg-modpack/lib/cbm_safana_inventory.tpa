@@ -1,0 +1,64 @@
+// Safana in Amn v0.5 preserves the existing EET actor with MoveGlobal, but
+// carries that actor's SoD equipment into SoA. Clear it inside the original
+// one-shot arrival response, after its existing wait lets the actor arrive.
+// The native DestroyAllEquipment action covers carried and equipped items;
+// no CRE replacement, stat reset, spellbook rebuild, or recruitment hook.
+// Install before this arrival has run in the save. There is no retroactive
+// cleanup: that could destroy equipment acquired legitimately during SoA.
+//
+// A full compiled-block match intentionally supports only this audited hook.
+// Source drift and duplicate hooks fail before publishing any game resource.
+
+ACTION_IF NOT (GAME_IS ~eet~) BEGIN
+  FAIL ~cbm_safana_inventory: requires EET.~
+END
+ACTION_IF NOT (MOD_IS_INSTALLED ~Safana.tp2~ 0) BEGIN
+  FAIL ~cbm_safana_inventory: requires Safana in Amn component 0.~
+END
+
+<<<<<<<< .../cbm_safana_arrival_old.baf
+IF
+  Global("bd_safana_spawn","ar0311",0)
+  BeenInParty("safana")
+  !StateCheck("Safana",STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("bd_safana_spawn","ar0311",1)
+    SetGlobal("O#CoranSpawn","GLOBAL",1)
+    MoveGlobal("ar0311","SAFANA",[250.350])
+    ApplySpellRES("bdresurr","SAFANA")
+    SmallWait(1)
+    ActionOverride("SAFANA",Face(W))
+    ApplySpellRES("bdrejuve","SAFANA")
+    ChangeEnemyAlly("SAFANA",NEUTRAL)
+    ChangeSpecifics("SAFANA",ALLIES)
+    ActionOverride("SAFANA",ChangeAIScript("SAFANA2",OVERRIDE))
+    ActionOverride("SAFANA",ChangeAIScript("",CLASS))
+    ActionOverride("SAFANA",ChangeAIScript("",RACE))
+    ActionOverride("SAFANA",ChangeAIScript("BDTHIE01",GENERAL))
+    ActionOverride("SAFANA",ChangeAIScript("",DEFAULT))
+    ActionOverride("SAFANA",SetDialog("SAFANA2"))
+    ActionOverride("SAFANA",FaceObject(Player1))
+    Continue()
+END
+>>>>>>>>
+
+// Derive the replacement from the audited block so its quest actions stay
+// identical. This is a virtual file: it is never written into the game.
+COPY - ~.../cbm_safana_arrival_old.baf~ ~.../cbm_safana_arrival_new.baf~
+  REPLACE_TEXTUALLY EXACT_MATCH ~    SmallWait(1)~
+    ~    SmallWait(1)
+    ActionOverride("SAFANA",DestroyAllEquipment())~
+
+COPY_EXISTING ~ar0311.bcs~ ~override~
+  COUNT_REGEXP_INSTANCES ~bd_safana_spawn~ cbm_safana_spawn_mentions
+  PATCH_IF cbm_safana_spawn_mentions != 2 BEGIN
+    PATCH_FAIL ~cbm_safana_inventory: expected one Safana arrival hook in ar0311.bcs; found an unsupported or duplicate hook. No files changed.~
+  END
+  REPLACE_BCS_BLOCK CASE_INSENSITIVE ~.../cbm_safana_arrival_old.baf~ ~.../cbm_safana_arrival_new.baf~
+    ON_MISMATCH
+      PATCH_FAIL ~cbm_safana_inventory: Safana arrival hook in ar0311.bcs differs from the supported v0.5 block. No files changed.~
+    END
+BUT_ONLY
+
+PRINT ~[cbm_safana_inventory] Safana's existing one-shot SoA arrival now clears her carried and equipped items. Existing character development is preserved.~

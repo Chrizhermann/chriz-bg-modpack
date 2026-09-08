@@ -1,0 +1,13 @@
+IF
+  Global("CBM_ImoenSpellholdXP","LOCALS",0)
+  InParty(Myself)
+  OR(3)
+    AreaCheck("AR1512")
+    AreaCheck("AR1513")
+    AreaCheck("AR1514")
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    EEex_LuaAction("CBM_ImoenXP_Apply(EEex_LuaAction_Object)")
+    SetInterrupt(TRUE)
+END

@@ -1,0 +1,311 @@
+// Identity normalization for the audited EET Xan and Yeslick bridges.
+// Call before EET_end and before spawning either campaign's actors. The
+// public installer owns mod/ordering gates and the actual arrival adapters.
+// No generic text rename and no EET_PCU_core: that platform converter also
+// repairs CREs and migrates sound slots, which is wrong on an EET install.
+
+DEFINE_PATCH_FUNCTION cbmci_field
+  INT_VAR cbmci_offset = 0 cbmci_width = 32
+  STR_VAR cbmci_kind = ~dv~
+BEGIN
+  READ_ASCII cbmci_offset cbmci_value (cbmci_width) NULL
+  TO_UPPER cbmci_value
+  PATCH_IF VARIABLE_IS_SET $EVAL ~cbmci_%cbmci_kind%~(~%cbmci_value%~) BEGIN
+    SPRINT cbmci_dest $EVAL ~cbmci_%cbmci_kind%~(~%cbmci_value%~)
+    PATCH_IF cbmci_width = 8 BEGIN
+      WRITE_ASCIIE cbmci_offset ~%cbmci_dest%~ #8
+    END ELSE BEGIN
+      WRITE_ASCIIE cbmci_offset ~%cbmci_dest%~ #32
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbmci_effects
+  INT_VAR cbmci_fx_start = 0 cbmci_fx_count = 0 cbmci_fx_version = 0
+BEGIN
+  PATCH_IF cbmci_fx_version = 0 BEGIN
+    SET cbmci_stride = 0x30
+  END ELSE BEGIN
+    SET cbmci_stride = 0x108
+  END
+  PATCH_IF (cbmci_fx_count > 0) AND
+      ((cbmci_fx_start < 0) OR (cbmci_fx_start > BUFFER_LENGTH) OR
+       (cbmci_fx_count > (BUFFER_LENGTH - cbmci_fx_start) / cbmci_stride)) BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: invalid effect bounds in %SOURCE_FILE%.~
+  END
+  FOR (cbmci_fx_i = 0; cbmci_fx_i < cbmci_fx_count; ++cbmci_fx_i) BEGIN
+    SET cbmci_fx = cbmci_fx_start + cbmci_fx_i * cbmci_stride
+    PATCH_IF cbmci_fx_version = 0 BEGIN
+      READ_SHORT cbmci_fx cbmci_opcode
+      READ_LONG (cbmci_fx + 8) cbmci_param2
+      SET cbmci_resource = cbmci_fx + 0x14
+    END ELSE BEGIN
+      READ_LONG (cbmci_fx + 8) cbmci_opcode
+      READ_LONG (cbmci_fx + 0x18) cbmci_param2
+      SET cbmci_resource = cbmci_fx + 0x28
+    END
+    PATCH_IF (cbmci_opcode = 319) AND (cbmci_param2 = 11) BEGIN
+      LPF cbmci_field INT_VAR cbmci_offset = cbmci_resource cbmci_width = 8 END
+    END ELSE PATCH_IF (cbmci_fx_version = 1) AND
+        ((cbmci_opcode = 187) OR (cbmci_opcode = 265) OR (cbmci_opcode = 309)) BEGIN
+      // EFF V2 stores a variable name across three separate eight-byte fields.
+      READ_ASCII cbmci_resource cbmci_v1 (8) NULL
+      READ_ASCII (cbmci_fx + 0x68) cbmci_v2 (8) NULL
+      READ_ASCII (cbmci_fx + 0x70) cbmci_v3 (8) NULL
+      SPRINT cbmci_variable ~%cbmci_v1%%cbmci_v2%%cbmci_v3%~
+      TO_UPPER cbmci_variable
+      PATCH_IF VARIABLE_IS_SET $cbmci_var(~%cbmci_variable%~) BEGIN
+        SPRINT cbmci_dest $cbmci_var(~%cbmci_variable%~)
+        INNER_PATCH ~%cbmci_dest%~ BEGIN
+          READ_ASCII 0 cbmci_v1 (8)
+          READ_ASCII 8 cbmci_v2 (8)
+          READ_ASCII 16 cbmci_v3 (BUFFER_LENGTH - 16)
+        END
+        WRITE_ASCIIE cbmci_resource ~%cbmci_v1%~ #8
+        WRITE_ASCIIE (cbmci_fx + 0x68) ~%cbmci_v2%~ #8
+        WRITE_ASCIIE (cbmci_fx + 0x70) ~%cbmci_v3%~ #8
+      END
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbmci_creature
+  INT_VAR cbmci_cre_start = 0 cbmci_cre_size = 0
+BEGIN
+  PATCH_IF (cbmci_cre_size < 0x2d4) OR (cbmci_cre_start < 0) OR
+      (cbmci_cre_size > BUFFER_LENGTH - cbmci_cre_start) BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: invalid creature bounds in %SOURCE_FILE%.~
+  END
+  READ_ASCII cbmci_cre_start cbmci_signature (8)
+  PATCH_IF NOT (~%cbmci_signature%~ STRING_EQUAL_CASE ~CRE V1.0~) BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: unsupported embedded creature in %SOURCE_FILE%.~
+  END
+  LPF cbmci_field INT_VAR cbmci_offset = cbmci_cre_start + 0x280 END
+  READ_LONG (cbmci_cre_start + 0x2c4) cbmci_effect_start
+  READ_LONG (cbmci_cre_start + 0x2c8) cbmci_effect_count
+  READ_BYTE (cbmci_cre_start + 0x33) cbmci_effect_version
+  PATCH_IF cbmci_effect_version > 1 BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: unsupported CRE effect version in %SOURCE_FILE%.~
+  END
+  SET cbmci_effect_stride = (cbmci_effect_version = 0 ? 0x30 : 0x108)
+  PATCH_IF (cbmci_effect_count > 0) AND
+      ((cbmci_effect_start < 0x2d4) OR (cbmci_effect_start > cbmci_cre_size) OR
+       (cbmci_effect_count > (cbmci_cre_size - cbmci_effect_start) / cbmci_effect_stride)) BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: invalid CRE effects in %SOURCE_FILE%.~
+  END
+  LPF cbmci_effects INT_VAR cbmci_fx_start = cbmci_cre_start + cbmci_effect_start
+      cbmci_fx_count = cbmci_effect_count cbmci_fx_version = cbmci_effect_version END
+END
+
+DEFINE_PATCH_FUNCTION cbmci_binary
+BEGIN
+  READ_ASCII 0 cbmci_signature (8)
+  PATCH_IF ~%cbmci_signature%~ STRING_EQUAL_CASE ~CRE V1.0~ BEGIN
+    LPF cbmci_creature INT_VAR cbmci_cre_size = BUFFER_LENGTH END
+  END ELSE PATCH_IF ~%cbmci_signature%~ STRING_EQUAL_CASE ~AREAV1.0~ BEGIN
+    READ_LONG 0x54 cbmci_actors
+    READ_SHORT 0x58 cbmci_actor_count
+    PATCH_IF (cbmci_actor_count > 0) AND ((cbmci_actors < 0x11c) OR
+        (cbmci_actors > BUFFER_LENGTH) OR
+        (cbmci_actor_count > (BUFFER_LENGTH - cbmci_actors) / 0x110)) BEGIN
+      PATCH_FAIL ~cbm_continuity_identity: invalid ARE actors in %SOURCE_FILE%.~
+    END
+    FOR (cbmci_actor_i = 0; cbmci_actor_i < cbmci_actor_count; ++cbmci_actor_i) BEGIN
+      SET cbmci_actor = cbmci_actors + cbmci_actor_i * 0x110
+      READ_LONG (cbmci_actor + 0x28) cbmci_actor_flags
+      PATCH_IF cbmci_actor_flags BAND BIT3 BEGIN
+        LPF cbmci_field INT_VAR cbmci_offset = cbmci_actor END
+      END
+      READ_LONG (cbmci_actor + 0x88) cbmci_embedded
+      READ_LONG (cbmci_actor + 0x8c) cbmci_embedded_size
+      PATCH_IF !(cbmci_actor_flags BAND BIT0) AND (cbmci_embedded_size > 0) BEGIN
+        LPF cbmci_creature INT_VAR cbmci_cre_start = cbmci_embedded
+            cbmci_cre_size = cbmci_embedded_size END
+      END
+    END
+    READ_LONG 0x88 cbmci_variables
+    READ_LONG 0x8c cbmci_variable_count
+    PATCH_IF (cbmci_variable_count > 0) AND ((cbmci_variables < 0x11c) OR
+        (cbmci_variables > BUFFER_LENGTH) OR
+        (cbmci_variable_count > (BUFFER_LENGTH - cbmci_variables) / 0x54)) BEGIN
+      PATCH_FAIL ~cbm_continuity_identity: invalid ARE variables in %SOURCE_FILE%.~
+    END
+    FOR (cbmci_var_i = 0; cbmci_var_i < cbmci_variable_count; ++cbmci_var_i) BEGIN
+      LPF cbmci_field INT_VAR cbmci_offset = cbmci_variables + cbmci_var_i * 0x54
+          STR_VAR cbmci_kind = ~var~ END
+    END
+  END ELSE PATCH_IF ~%cbmci_signature%~ STRING_EQUAL_CASE ~EFF V2.0~ BEGIN
+    LPF cbmci_effects INT_VAR cbmci_fx_start = 8 cbmci_fx_count = 1
+        cbmci_fx_version = 1 END
+  END ELSE PATCH_IF (~%cbmci_signature%~ STRING_EQUAL_CASE ~ITM V1  ~) OR
+      (~%cbmci_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    READ_LONG 0x64 cbmci_abilities
+    READ_SHORT 0x68 cbmci_ability_count
+    READ_LONG 0x6a cbmci_effects
+    READ_SHORT 0x6e cbmci_global_first
+    READ_SHORT 0x70 cbmci_global_count
+    SET cbmci_effect_count = cbmci_global_first + cbmci_global_count
+    SET cbmci_ability_size = (~%cbmci_signature%~ STRING_EQUAL_CASE ~ITM V1  ~ ? 0x38 : 0x28)
+    PATCH_IF (cbmci_ability_count > 0) AND ((cbmci_abilities < 0x72) OR
+        (cbmci_abilities > BUFFER_LENGTH) OR
+        (cbmci_ability_count > (BUFFER_LENGTH - cbmci_abilities) / cbmci_ability_size)) BEGIN
+      PATCH_FAIL ~cbm_continuity_identity: invalid abilities in %SOURCE_FILE%.~
+    END
+    FOR (cbmci_ability_i = 0; cbmci_ability_i < cbmci_ability_count; ++cbmci_ability_i) BEGIN
+      READ_SHORT (cbmci_abilities + cbmci_ability_i * cbmci_ability_size + 0x1e) cbmci_count
+      READ_SHORT (cbmci_abilities + cbmci_ability_i * cbmci_ability_size + 0x20) cbmci_first
+      PATCH_IF cbmci_count + cbmci_first > cbmci_effect_count BEGIN
+        SET cbmci_effect_count = cbmci_count + cbmci_first
+      END
+    END
+    LPF cbmci_effects INT_VAR cbmci_fx_start = cbmci_effects
+        cbmci_fx_count = cbmci_effect_count END
+  END ELSE BEGIN
+    PATCH_FAIL ~cbm_continuity_identity: unsupported candidate resource %SOURCE_FILE%.~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbmci_table
+  INT_VAR cbmci_apply = 0 cbmci_matrix = 0 cbmci_item_use = 0
+BEGIN
+  COUNT_2DA_COLS cbmci_columns
+  PATCH_IF cbmci_item_use BEGIN
+    COUNT_2DA_ROWS cbmci_columns cbmci_rows
+    FOR (cbmci_row = 0; cbmci_row < cbmci_rows; ++cbmci_row) BEGIN
+      READ_2DA_ENTRY cbmci_row 1 cbmci_columns cbmci_value
+      TO_UPPER cbmci_value
+      PATCH_IF cbmci_apply AND VARIABLE_IS_SET $cbmci_dv(~%cbmci_value%~) BEGIN
+        SPRINT cbmci_dest $cbmci_dv(~%cbmci_value%~)
+        SET_2DA_ENTRY cbmci_row 1 cbmci_columns ~%cbmci_dest%~
+      END
+    END
+  END ELSE BEGIN
+    COUNT_2DA_ROWS cbmci_columns cbmci_rows
+    PHP_EACH cbmci_dv AS cbmci_old => cbmci_new BEGIN
+      SET cbmci_old_count = 0 SET cbmci_new_count = 0
+      SET cbmci_old_row = (0 - 1)
+      FOR (cbmci_row = 0; cbmci_row < cbmci_rows; ++cbmci_row) BEGIN
+        READ_2DA_ENTRY cbmci_row 0 cbmci_columns cbmci_value
+        PATCH_IF ~%cbmci_value%~ STR_EQ ~%cbmci_old%~ BEGIN
+          ++cbmci_old_count SET cbmci_old_row = cbmci_row
+        END
+        PATCH_IF ~%cbmci_value%~ STR_EQ ~%cbmci_new%~ BEGIN
+          ++cbmci_new_count
+        END
+      END
+      PATCH_IF (cbmci_old_count > 1) OR (cbmci_new_count > 1) OR
+          ((cbmci_old_count > 0) AND (cbmci_new_count > 0)) BEGIN
+        PATCH_FAIL ~cbm_continuity_identity: conflicting %cbmci_old%/%cbmci_new% rows in %SOURCE_FILE%.~
+      END
+      PATCH_IF cbmci_apply AND (cbmci_old_row >= 0) BEGIN
+        SET_2DA_ENTRY cbmci_old_row 0 cbmci_columns ~%cbmci_new%~
+      END
+    END
+    PATCH_IF cbmci_matrix BEGIN
+      // Token-count readers also admit the two-token signature for tiny
+      // fixture matrices (and the one-token default for a one-column matrix).
+      SET cbmci_header_row = (cbmci_columns > 3 ? 0 : (cbmci_columns = 3 ? 1 : 2))
+      PHP_EACH cbmci_dv AS cbmci_old => cbmci_new BEGIN
+        SET cbmci_old_count = 0 SET cbmci_new_count = 0
+        SET cbmci_old_column = (0 - 1)
+        FOR (cbmci_col = 0; cbmci_col < cbmci_columns - 1; ++cbmci_col) BEGIN
+          READ_2DA_ENTRY cbmci_header_row cbmci_col (cbmci_columns - 1) cbmci_heading
+          PATCH_IF ~%cbmci_heading%~ STR_EQ ~%cbmci_old%~ BEGIN
+            ++cbmci_old_count SET cbmci_old_column = cbmci_col
+          END
+          PATCH_IF ~%cbmci_heading%~ STR_EQ ~%cbmci_new%~ BEGIN
+            ++cbmci_new_count
+          END
+        END
+        PATCH_IF (cbmci_old_count > 1) OR (cbmci_new_count > 1) OR
+            ((cbmci_old_count > 0) AND (cbmci_new_count > 0)) BEGIN
+          PATCH_FAIL ~cbm_continuity_identity: conflicting %cbmci_old%/%cbmci_new% columns in %SOURCE_FILE%.~
+        END
+        PATCH_IF cbmci_apply AND (cbmci_old_column >= 0) BEGIN
+          SET_2DA_ENTRY cbmci_header_row cbmci_old_column (cbmci_columns - 1) ~%cbmci_new%~
+        END
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_continuity_normalize_identity
+  INT_VAR cbmci_xan = 0 cbmci_yeslick = 0
+BEGIN
+  ACTION_IF cbmci_xan OR cbmci_yeslick BEGIN
+    ACTION_IF NOT FILE_EXISTS ~EET/lib/macros.tph~ BEGIN
+      FAIL ~cbm_continuity_identity: EET/lib/macros.tph is required.~
+    END
+    ACTION_CLEAR_ARRAY cbmci_dv
+    ACTION_CLEAR_ARRAY cbmci_var
+    ACTION_IF cbmci_xan BEGIN
+      OUTER_SPRINT $cbmci_dv(~XAN~) ~O#XAN~
+      OUTER_SPRINT $cbmci_var(~SPRITE_IS_DEADXAN~) ~SPRITE_IS_DEADO#XAN~
+    END
+    ACTION_IF cbmci_yeslick BEGIN
+      OUTER_SPRINT $cbmci_dv(~YESLICK~) ~LK#YESLK~
+      OUTER_SPRINT $cbmci_var(~SPRITE_IS_DEADYESLICK~) ~SPRITE_IS_DEADLK#YESLK~
+    END
+
+    // Preflight all tables before publishing any resource. Resource/string
+    // cells remain untouched; only documented DV keys (or ITEM_USE USER) move.
+    ACTION_FOR_EACH cbmci_pass IN 0 1 BEGIN
+      ACTION_FOR_EACH cbmci_table IN BGDIALOG BDDIALOG BGBANTER BDBANTER
+          PARTYAI NPCLEVEL NPCLVLDS INTERACT SODINTER ITEM_USE BEGIN
+        ACTION_IF FILE_EXISTS_IN_GAME ~%cbmci_table%.2da~ BEGIN
+          COPY_EXISTING ~%cbmci_table%.2da~ ~override~
+            LPF cbmci_table INT_VAR cbmci_apply = cbmci_pass
+                cbmci_matrix = (~%cbmci_table%~ STR_EQ ~INTERACT~ OR ~%cbmci_table%~ STR_EQ ~SODINTER~)
+                cbmci_item_use = (~%cbmci_table%~ STR_EQ ~ITEM_USE~) END
+          BUT_ONLY
+        END
+      END
+    END
+
+    INCLUDE ~EET/lib/macros.tph~
+    OUTER_SPRINT remappedPrefix ~cbmci~
+    OUTER_SPRINT tilde "~"
+    OUTER_SPRINT quote ~"~
+    // EET's command parser has field metadata. Temporarily retain ONLY DV and
+    // variable-name arguments, preventing its unrelated stringref/stat logic.
+    ACTION_PHP_EACH EET_cmd_list AS cbmci_command => cbmci_types BEGIN
+      ACTION_CLEAR_ARRAY EVAL ~cbmci_saved_%cbmci_command%~
+      ACTION_PHP_EACH EVAL ~array_%cbmci_command%~ AS cbmci_index => cbmci_type BEGIN
+        OUTER_SPRINT $EVAL ~cbmci_saved_%cbmci_command%~(~%cbmci_index%~ ~%cbmci_index_1%~) ~%cbmci_type%~
+      END
+      ACTION_CLEAR_ARRAY EVAL ~array_%cbmci_command%~
+      ACTION_PHP_EACH EVAL ~cbmci_saved_%cbmci_command%~ AS cbmci_index => cbmci_type BEGIN
+        ACTION_IF (~%cbmci_type%~ STR_EQ ~dv~) OR (~%cbmci_type%~ STR_EQ ~var~) BEGIN
+          OUTER_SPRINT $EVAL ~array_%cbmci_command%~(~%cbmci_index%~ ~%cbmci_index_1%~) ~%cbmci_type%~
+        END
+      END
+    END
+
+    COPY_EXISTING_REGEXP GLOB ~^.+\.\(bcs\|dlg\|cre\|are\|itm\|spl\|eff\)$~ ~override~
+      COUNT_REGEXP_INSTANCES ~XAN\|YESLICK\|SPRITE_I~ cbmci_candidates
+      PATCH_IF cbmci_candidates > 0 BEGIN
+        PATCH_IF (~%SOURCE_EXT%~ STR_EQ ~BCS~) OR (~%SOURCE_EXT%~ STR_EQ ~DLG~) BEGIN
+          READ_ASCII 0 cbmci_original (BUFFER_LENGTH)
+          SET updated = 0
+          DECOMPILE_AND_PATCH BEGIN LPM EET_PCU_match END
+          PATCH_IF NOT updated BEGIN
+            DELETE_BYTES 0 BUFFER_LENGTH
+            INSERT_BYTES 0 (STRING_LENGTH ~%cbmci_original%~)
+            WRITE_ASCIIE 0 ~%cbmci_original%~
+          END
+        END ELSE BEGIN
+          LPF cbmci_binary END
+        END
+      END
+    BUT_ONLY
+
+    // Return EET's shared metadata to its original state for subsequent users.
+    ACTION_PHP_EACH EET_cmd_list AS cbmci_command => cbmci_types BEGIN
+      ACTION_CLEAR_ARRAY EVAL ~array_%cbmci_command%~
+      ACTION_PHP_EACH EVAL ~cbmci_saved_%cbmci_command%~ AS cbmci_index => cbmci_type BEGIN
+        OUTER_SPRINT $EVAL ~array_%cbmci_command%~(~%cbmci_index%~ ~%cbmci_index_1%~) ~%cbmci_type%~
+      END
+      ACTION_CLEAR_ARRAY EVAL ~cbmci_saved_%cbmci_command%~
+    END
+  END
+END

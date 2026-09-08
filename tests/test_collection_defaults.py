@@ -685,7 +685,7 @@ class CollectionDefaultsTests(unittest.TestCase):
         self.assertNotIn("SPWI305", dynaheir)
         for resref, _ in DYNAHEIR_RESOURCES:
             self.assertIn(f"FILE_EXISTS_IN_GAME ~{resref}.CRE~", dynaheir)
-        self.assertNotIn("BEGIN @199", source)
+        self.assertIn("LABEL ~cbm_companion_continuity~", component_block(source, 199))
 
     def _run_public(
         self, game: SyntheticGame, operation: str, component: int

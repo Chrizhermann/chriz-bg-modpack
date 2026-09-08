@@ -1,0 +1,152 @@
+// Whole-actor continuity for the audited Xan v19 and Yeslick v5 spawn paths.
+// Install after companion/kit mods and before EET_end, then start a new game.
+// No character record, spell list, or derived-stat snapshot is copied at runtime.
+
+INCLUDE ~chriz-bg-modpack/lib/cbm_continuity_identity.tpa~
+
+DEFINE_ACTION_FUNCTION cbm_continuity_arrival
+  STR_VAR cbm_dv = ~~ cbm_cre = ~~ cbm_area = ~~ cbm_spawn = ~~
+          cbm_point = ~~ cbm_facing = ~~ cbm_old = ~~ cbm_extra = ~~
+BEGIN
+  // Use effective BG2 scripts/dialogue/voice, including downstream fixes.
+  // Keep the existing actor's name, portrait, class/kit and entire build.
+  OUTER_SPRINT cbm_actions ~~
+  COPY_EXISTING - ~%cbm_cre%.cre~ ~.../cbmci-template.cre~
+    PATCH_IF (BUFFER_LENGTH < 0x2d4) BEGIN
+      PATCH_FAIL ~cbm_companion_continuity: truncated BG2 companion template.~
+    END
+    READ_ASCII 0 signature (8)
+    READ_ASCII 0x280 template_dv (32) NULL
+    PATCH_IF NOT (~%signature%~ STR_EQ ~CRE V1.0~) OR NOT (~%template_dv%~ STR_EQ ~%cbm_dv%~) BEGIN
+      PATCH_FAIL ~cbm_companion_continuity: unexpected BG2 template signature or identity.~
+    END
+    READ_ASCII 0x2cc cbm_dialog (8) NULL
+    READ_BYTE 0x270 cbm_ea
+    READ_BYTE 0x274 cbm_specifics
+    PATCH_IF NOT (FILE_EXISTS_IN_GAME ~%cbm_dialog%.dlg~) BEGIN
+      PATCH_FAIL ~cbm_companion_continuity: BG2 initial dialogue is missing.~
+    END
+    SPRINT cbm_actions ~ActionOverride("%cbm_dv%",SetDialog("%cbm_dialog%"))%LNL%ChangeEnemyAlly("%cbm_dv%",%cbm_ea%)%LNL%ChangeSpecifics("%cbm_dv%",%cbm_specifics%)%LNL%~
+    // Change override last, before moving the global actor into an active area.
+    PATCH_FOR_EACH offset IN 0x250 0x258 0x260 0x268 0x248 BEGIN
+      READ_ASCII offset cbm_script (8) NULL
+      PATCH_IF (~%cbm_script%~ STR_EQ ~NONE~) BEGIN SPRINT cbm_script ~~ END
+      PATCH_IF NOT (~%cbm_script%~ STR_EQ ~~) AND NOT (FILE_EXISTS_IN_GAME ~%cbm_script%.bcs~) BEGIN
+        PATCH_FAIL ~cbm_companion_continuity: BG2 script %cbm_script% is missing.~
+      END
+      SET cbm_slot = (offset = 0x248) ? 0 : ((offset - 0x250) / 8 + 4)
+      SPRINT cbm_actions ~%cbm_actions%ActionOverride("%cbm_dv%",ChangeAIScript("%cbm_script%",%cbm_slot%))%LNL%~
+    END
+    SPRINT cbm_actions ~%cbm_actions%MoveGlobal("%cbm_area%","%cbm_dv%",%cbm_point%)%LNL%ActionOverride("%cbm_dv%",Face(%cbm_facing%))%LNL%ActionOverride("%cbm_dv%",SetNumTimesTalkedTo(0))%LNL%ActionOverride("%cbm_dv%",SetGlobal("KickedOut","LOCALS",0))%LNL%ActionOverride("%cbm_dv%",DestroyAllEquipment())%LNL%~
+    // Xan's mod requires its own moonblade. Recreate only that personal item;
+    // all other imported inventory is discarded. The installed class component
+    // selects the blade variant in the effective template (never hardcode it).
+    PATCH_IF (~%cbm_dv%~ STR_EQ ~O#XAN~) BEGIN
+      READ_LONG 0x2bc cbm_items
+      READ_LONG 0x2c0 cbm_item_count
+      PATCH_IF (cbm_items < 0x2d4) OR (cbm_item_count > 40) OR (cbm_items + cbm_item_count * 20 > BUFFER_LENGTH) BEGIN
+        PATCH_FAIL ~cbm_companion_continuity: malformed Xan inventory template.~
+      END
+      SET cbm_blades = 0
+      FOR (idx = 0; idx < cbm_item_count; ++idx) BEGIN
+        READ_ASCII (cbm_items + idx * 20) cbm_item (8) NULL
+        PATCH_IF (~%cbm_item%~ STR_EQ ~O#XANMB~) OR (~%cbm_item%~ STR_EQ ~O#XANMS~) BEGIN
+          SET cbm_blades += 1
+          PATCH_IF NOT (FILE_EXISTS_IN_GAME ~%cbm_item%.itm~) BEGIN
+            PATCH_FAIL ~cbm_companion_continuity: Xan's personal moonblade is missing.~
+          END
+          SPRINT cbm_actions ~%cbm_actions%ActionOverride("%cbm_dv%",CreateItem("%cbm_item%",1,0,0))%LNL%~
+        END
+      END
+      PATCH_IF cbm_blades != 1 BEGIN
+        PATCH_FAIL ~cbm_companion_continuity: expected one supported personal moonblade in Xan's BG2 template.~
+      END
+    END
+    FOR (slot = 0; slot < 100; ++slot) BEGIN
+      READ_LONG (0xa4 + slot * 4) cbm_sound
+      SPRINT cbm_actions ~%cbm_actions%SetPlayerSound("%cbm_dv%",%cbm_sound%,%slot%)%LNL%~
+    END
+  BUT_ONLY
+
+  // Original creation path remains available for an NPC never recruited in
+  // BG1, including a game started directly in SoA. A recruited dead NPC is
+  // neither resurrected nor replaced with a fresh character.
+  COPY - ~%cbm_old%~ ~.../cbmci-fresh.baf~
+    REPLACE_TEXTUALLY ~THEN~ ~  !BeenInParty("%cbm_dv%")%LNL%THEN~
+  COPY - ~.../cbmci-fresh.baf~ ~.../cbmci-arrival.baf~
+    SPRINT cbm_prefix ~IF%LNL%  Global("%cbm_spawn%","GLOBAL",0)%LNL%  BeenInParty("%cbm_dv%")%LNL%  !StateCheck("%cbm_dv%",STATE_REALLY_DEAD)%LNL%THEN%LNL%  RESPONSE #100%LNL%    SetGlobal("%cbm_spawn%","GLOBAL",1)%LNL%%cbm_actions%%cbm_extra%%LNL%    Continue()%LNL%END%LNL%~
+    INSERT_BYTES 0 (STRING_LENGTH ~%cbm_prefix%~)
+    WRITE_ASCIIE 0 ~%cbm_prefix%~
+  COPY_EXISTING ~%cbm_area%.bcs~ ~override~
+    COUNT_REGEXP_INSTANCES ~%cbm_spawn%~ cbm_count
+    PATCH_IF cbm_count != 2 BEGIN
+      PATCH_FAIL ~cbm_companion_continuity: ambiguous %cbm_dv% spawn hook; expected exactly one original spawn block.~
+    END
+    REPLACE_BCS_BLOCK CASE_INSENSITIVE ~%cbm_old%~ ~.../cbmci-arrival.baf~
+      ON_MISMATCH
+        PATCH_FAIL ~cbm_companion_continuity: %cbm_dv% spawn code differs from the audited mod version.~
+      END
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbm_continuity_install
+  INT_VAR cbmci_xan = 0 cbmci_yeslick = 0
+BEGIN
+  // Legacy stat-delta code would reapply fabricated bonuses to these actors.
+  ACTION_IF (FILE_EXISTS_IN_GAME ~M_K#FP.lua~) OR (MOD_IS_INSTALLED ~BG2EE-EET-Fixpack.tp2~ 200) BEGIN
+    FAIL ~cbm_companion_continuity: remove legacy BG2EE-EET-Fixpack component 200 from the fresh installation plan; it conflicts with whole-actor continuity.~
+  END
+  ACTION_IF NOT (cbmci_xan OR cbmci_yeslick) BEGIN
+    FAIL ~cbm_companion_continuity: no supported separate-actor companion mod is installed (Xan or Yeslick).~
+  END
+  ACTION_IF cbmci_xan BEGIN
+<<<<<<<< .../cbmci-xan-old.baf
+IF
+  Global("O#XanSpawned","GLOBAL",0)
+THEN
+  RESPONSE #100
+    CreateCreature("O#Xan09",[2745.321],4)
+    SetGlobal("O#XanSpawned","GLOBAL",1)
+    Continue()
+END
+>>>>>>>>
+    LAF cbm_continuity_arrival
+      STR_VAR cbm_dv = ~O#XAN~ cbm_cre = ~O#Xan09~ cbm_area = ~AR1000~
+              cbm_spawn = ~O#XanSpawned~ cbm_point = ~[2745.321]~ cbm_facing = ~4~
+              cbm_old = ~.../cbmci-xan-old.baf~
+              // v19's catch-up additions assume a new 161k-XP template. State
+              // 3 is its completed state; returning Xan keeps his actual XP.
+              cbm_extra = ~SetGlobal("O#XanExperienceSet","GLOBAL",3)~
+    END
+  END
+  ACTION_IF cbmci_yeslick BEGIN
+<<<<<<<< .../cbmci-yeslick-old.baf
+IF
+  Global("LK#YeslickExists","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("LK#YeslickExists","GLOBAL",1)
+    CreateCreature("lk#yesl",[586.318],5)
+END
+>>>>>>>>
+    LAF cbm_continuity_arrival
+      STR_VAR cbm_dv = ~LK#YESLK~ cbm_cre = ~lk#yesl~ cbm_area = ~AR2010~
+              cbm_spawn = ~LK#YeslickExists~ cbm_point = ~[586.318]~ cbm_facing = ~5~
+              cbm_old = ~.../cbmci-yeslick-old.baf~
+    END
+    // Yeslick v5 leaves EET's old BG1-only Fate Spirit replies alongside its
+    // new BG2 replies. Hide only those obsolete responses. The new mod's
+    // LK#YESLKPartyBG2/Summoned/SpawnPlane state remains authoritative.
+    COPY_EXISTING ~FATESP.dlg~ ~override~
+      DECOMPILE_AND_PATCH BEGIN
+        COUNT_REGEXP_INSTANCES ~Global("YeslickSummoned","GLOBAL",0)~ cbm_legacy
+        PATCH_IF (cbm_legacy != 0) AND (cbm_legacy != 3) BEGIN
+          PATCH_FAIL ~cbm_companion_continuity: unexpected legacy Yeslick Fate Spirit response shape.~
+        END
+        REPLACE_TEXTUALLY ~Global("YeslickSummoned","GLOBAL",0)~ ~False()~
+      END
+    BUT_ONLY
+  END
+  LAF cbm_continuity_normalize_identity INT_VAR cbmci_xan cbmci_yeslick END
+  PRINT ~[cbm_companion_continuity] Supported companions now share one identity across campaigns. Run EET_end after this component and start a new game.~
+END

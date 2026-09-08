@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - combined playtest source, 2026-09-08
+
+- Add EET actor continuity as **199** for PPG Xan v19 and Yeslick v5. Preserve
+  permanent development and the original build, clear imported equipment, and
+  use native later-campaign presentation. Install after companion conversions
+  and before EET_end; a new game is required.
+- Add Safana in Amn v0.5's one-time SoA arrival equipment cleanup as **189**.
+- Add Imoen Spellhold party-average XP as **620**, capped at 3M mage XP. Install
+  after EEex, EET_end and every IMOEN2.BCS replacer; independent of utility XP 610.
+- Preserve public alpha.5 behavior and component numbers, including Sarah Archer
+  190, conversions 192-198/220-223, and the private Sarah portrait reservation 191.
+  The older unpublished continuity 190 / Safana 191 numbers must not be used.
+- This is a committed test-source integration, not a release or live acceptance.
+  Version markers retain the alpha.5 base; use the exact source commit to pin it.
+
 ## v0.2.0-alpha.5 - 2026-09-06
 
 ### Fixed

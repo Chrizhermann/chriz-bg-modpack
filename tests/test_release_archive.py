@@ -39,13 +39,23 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
             self.assertIn("docs/utility-xp.md", names)
             self.assertIn("docs/companion-classes.md", names)
             self.assertIn("chriz-bg-modpack/lib/cbm_companion_classes.tpa", names)
+            for required in (
+                "chriz-bg-modpack/lib/cbm_companion_continuity.tpa",
+                "chriz-bg-modpack/lib/cbm_continuity_identity.tpa",
+                "chriz-bg-modpack/lib/cbm_safana_inventory.tpa",
+                "chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa",
+                "chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf",
+                "chriz-bg-modpack/imoen-xp/M_CBMIXP.lua",
+                "docs/companion-continuity.md",
+                "docs/imoen-spellhold-xp.md",
+            ):
+                self.assertIn(required, names)
             lowered = "\n".join(names).lower()
             for excluded in (
                 "sarah-custom",
                 "cbm_sarah_portrait",
                 "cbm_no_cat_and_mouse",
                 "cbm_cm_",
-                "cbm_imoen_spellhold_xp",
                 ".gitkeep",
                 "extras/",
             ):

@@ -128,6 +128,14 @@ ACTION_FOR_EACH cbm_xan_cre IN ~XAN4~ ~XAN6~ ~TTXAN~ BEGIN
   BUT_ONLY
 END
 
+// Independent from #199: Safana already moves the original actor, but needs
+// its inventory cleared within the original SoA arrival response.
+BEGIN @189 DESIGNATED 189 GROUP @1100 LABEL ~cbm_safana_inventory~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1991
+  REQUIRE_PREDICATE (MOD_IS_INSTALLED ~Safana.tp2~ 0) @1891
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~ar0311.bcs~ @1892
+INCLUDE ~chriz-bg-modpack/lib/cbm_safana_inventory.tpa~
+
 // Optional Sarah ToB v8 conversion. The collection selects this by default,
 // but users may omit it to keep Sarah's normal kit and proficiencies.
 BEGIN @190 DESIGNATED 190 GROUP @1100 LABEL ~cbm_sarah_archer~
@@ -321,7 +329,16 @@ ACTION_FOR_EACH cbm_kivan_cre IN ~KIVAN~ ~KIVAN4~ ~KIVAN6~ BEGIN
   BUT_ONLY
 END
 
-// Component 199 is reserved and intentionally unavailable in this alpha.
+// Whole-actor continuity for supported separate BG1/BG2 incarnations.
+// All NPC/content/kit mods must precede this; EET_end must follow it.
+BEGIN @199 DESIGNATED 199 GROUP @1100 LABEL ~cbm_companion_continuity~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1991
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~EET_end.tp2~ 0) @1992
+  REQUIRE_PREDICATE FILE_EXISTS ~EET/lib/macros.tph~ @1993
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_continuity.tpa~
+OUTER_SET cbmci_xan = MOD_IS_INSTALLED ~Xan.tp2~ 0
+OUTER_SET cbmci_yeslick = (MOD_IS_INSTALLED ~yeslicknpc.tp2~ 0) OR (MOD_IS_INSTALLED ~yeslicknpc.tp2~ 1)
+LAF cbm_continuity_install INT_VAR cbmci_xan cbmci_yeslick END
 
 // =====================================================================
 // Optional companion class choices (220-223)
@@ -408,3 +425,10 @@ BEGIN @610 DESIGNATED 610 GROUP @1600 LABEL ~cbm_utility_xp~
   REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1611
   REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~XPBONUS.2DA~ AND FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~) @1612
 INCLUDE ~chriz-bg-modpack/lib/cbm_utility_xp.tpa~
+
+// One-time Spellhold catch-up: exact party-average XP, capped at 3M mage XP.
+BEGIN @620 DESIGNATED 620 GROUP @1600 LABEL ~cbm_imoen_spellhold_xp~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1620
+  REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1621
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~imoen2.bcs~ @1622
+INCLUDE ~chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa~
