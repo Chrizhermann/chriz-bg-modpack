@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased - BG1 Yeslick preset, 2026-09-15
+
+- Add optional component **188** (`cbm_yeslick_alaghor`) for the missing BG1
+  Fighter/Alaghor recruitment preset. It requires YeslickNPC 1, resolves the
+  installed kit and priest-level ability delivery, and preserves the entire
+  build apart from the kit field. Install before 199/EET_end and actor creation.
+- Respect the vanilla option and reject conflicting custom builds. Preserve
+  native level-dependent grants without baking early or duplicate abilities.
+- Document a bounded existing-save migration and component-410 tail-patch
+  proposal. Neither was applied. Component 410 and continuity 199 are unchanged.
+
 ## Unreleased - combined playtest source, 2026-09-08
 
 - Add EET actor continuity as **199** for PPG Xan v19 and Yeslick v5. Preserve

@@ -29,6 +29,12 @@ The historical installed-mod TSV alone is not the default roster.
 
 ## Installing the components
 
+With YeslickNPC's Alaghor choice (component 1), install modpack **188** before
+**199** to give the BG1 recruitment templates that starting kit. Omit 188 for
+the vanilla-companion choice. Continuity preserves the original actor's kit;
+it does not impose the BG2 preset during a transition. See the
+[Yeslick guide](yeslick-alaghor.md) for level-dependent grants and saved actors.
+
 **199 — EET companion continuity** supports PPG Xan v19 and Yeslick v5's audited
 spawn blocks. Install all companion, content and class/kit mods first, install
 199, then run **EET_end**. Start a **new campaign**: this changes installed actor

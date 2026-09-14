@@ -128,6 +128,16 @@ ACTION_FOR_EACH cbm_xan_cre IN ~XAN4~ ~XAN6~ ~TTXAN~ BEGIN
   BUT_ONLY
 END
 
+// Extend the selected YeslickNPC Alaghor preset to the BG1 recruit family.
+// Native/provider priest CLAB grants occur on recruitment and level-up.
+BEGIN @188 DESIGNATED 188 GROUP @1100 LABEL ~cbm_yeslick_alaghor~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1991
+  REQUIRE_PREDICATE ((MOD_IS_INSTALLED ~yeslicknpc.tp2~ 1) AND NOT (MOD_IS_INSTALLED ~yeslicknpc.tp2~ 0)) @1881
+  REQUIRE_PREDICATE ((NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 199) AND (NOT MOD_IS_INSTALLED ~EET_end.tp2~ 0)) @1882
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~qd_multi.qd~ @1883
+INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_alaghor.tpa~
+LAF cbmy_install END
+
 // Independent from #199: Safana already moves the original actor, but needs
 // its inventory cleared within the original SoA arrival response.
 BEGIN @189 DESIGNATED 189 GROUP @1100 LABEL ~cbm_safana_inventory~

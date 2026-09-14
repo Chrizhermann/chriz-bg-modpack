@@ -20,6 +20,7 @@ PUBLIC_COMPONENTS = {
     140,
     160,
     170,
+    188,
     189,
     190,
     192,
@@ -71,6 +72,7 @@ class PublicSurfaceTests(unittest.TestCase):
             )
         }
         expected = {
+            188: "cbm_yeslick_alaghor",
             189: "cbm_safana_inventory",
             190: "cbm_sarah_archer",
             192: "cbm_viconia_cleric_thief",
@@ -122,6 +124,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/companion-classes.md",
             "docs/companion-continuity.md",
             "docs/imoen-spellhold-xp.md",
+            "docs/yeslick-alaghor.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
@@ -141,6 +144,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/companion-classes.md",
                 "docs/companion-continuity.md",
                 "docs/imoen-spellhold-xp.md",
+                "docs/yeslick-alaghor.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only the public component user guides belong in release docs",

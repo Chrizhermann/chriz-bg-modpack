@@ -32,6 +32,7 @@ writing; missing prerequisites are reported by the installer.
 | 140 | `cbm_mazzy_prof_fix` | Move Mazzy's illegal fifth Short Bow pip to Short Sword |
 | 160 | `cbm_skie_skill_fix` | After a Swashbuckler conversion, move unusable Move Silently points to Open Locks |
 | 170 | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
+| 188 | `cbm_yeslick_alaghor` | Extend selected YeslickNPC Alaghor to the BG1 recruit family; before 199/EET_end |
 | 189 | `cbm_safana_inventory` | Clear Safana's imported gear once at her SoA arrival |
 | 190 | `cbm_sarah_archer` | Optionally convert Sarah to Archer with the selected proficiency build |
 | 192 | `cbm_viconia_cleric_thief` | Permanently convert Viconia to a true-class Cleric/Thief |
@@ -86,6 +87,11 @@ installation, progression and compatibility details.
 
 ## Dependencies and ordering
 
+- Install **188** only with YeslickNPC **1**, after its kit/progression providers
+  and before **199/EET_end** and Yeslick's first creation. Omit it for vanilla
+  companions; YeslickNPC 0 also skips it. The [Yeslick guide](docs/yeslick-alaghor.md)
+  explains native priest-level grants and the separate existing-save/410 proposals.
+
 - Install all selected companion/content/class/kit changes before **199**, then
   run **EET_end**. Start a new BG1 campaign. Split this modpack into separate
   installation runs so the late patches do not move continuity past finalization.
@@ -132,7 +138,7 @@ installation, progression and compatibility details.
 
 ## Testing status
 
-The additions 189, 199 and 620 have focused synthetic installer/runtime coverage.
+The additions 188, 189, 199 and 620 have focused synthetic installer/runtime coverage.
 Their native transitions, recruitment, level-ups and save/reload remain pending
 in the combined fresh EET playtest. See the component guides for exact limits.
 

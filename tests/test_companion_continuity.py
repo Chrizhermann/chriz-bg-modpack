@@ -284,6 +284,40 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
                 self.assertEqual(snapshot(self.override), before)
 
     @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
+    def test_bg1_alaghor_preset_survives_public_199_without_regrant_or_reset(self):
+        from tests.test_yeslick_alaghor import provider, creature, TARGETS
+
+        self.prepare_public()
+        log = self.game / "weidu.log"
+        log.write_text(log.read_text().replace(
+            "~YESLICKNPC/YESLICKNPC.TP2~ #0 #0", "~YESLICKNPC/YESLICKNPC.TP2~ #0 #1"
+        ))
+        provider(self.override)
+        for case in CASES.values():
+            self.make_template(case)
+            self.compile_area(case)
+        self.make_fatesp()
+        for name in TARGETS:
+            (self.override / f"{name.lower()}.cre").write_bytes(creature())
+        before = snapshot(self.override)
+        self.public_install(188)
+        preset = {name: (self.override / f"{name.lower()}.cre").read_bytes() for name in TARGETS}
+        self.public_install(199)
+        for name, original in preset.items():
+            expected = bytearray(original)
+            expected[0x280:0x2a0] = b"LK#YESLK".ljust(32, b"\0")
+            actual = (self.override / f"{name.lower()}.cre").read_bytes()
+            self.assertEqual(bytes(expected), actual)
+            self.assertEqual(0x40690000, struct.unpack_from("<I", actual, 0x244)[0])
+        arrival = self.normalize_ids(self.decompile(CASES["yeslick"]))
+        self.assert_arrival(CASES["yeslick"], arrival, blade=None)
+        self.assertNotIn("addkit(", norm(arrival))
+        self.assertNotIn("addspecialability(", norm(arrival))
+        self.run_weidu("setup-chriz-bg-modpack.tp2", "--force-uninstall-list", "199", "--quick-log")
+        self.run_weidu("setup-chriz-bg-modpack.tp2", "--force-uninstall-list", "188", "--quick-log")
+        self.assertEqual(snapshot(self.override), before)
+
+    @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
     def test_public_199_complete_install_and_fatesp_replies(self):
         self.prepare_public()
         for case in CASES.values():
