@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased - BG1 Yeslick preset, 2026-09-15
+## v0.2.0-alpha.6 - 2026-09-16
+
+### Added
 
 - Add optional component **188** (`cbm_yeslick_alaghor`) for the missing BG1
   Fighter/Alaghor recruitment preset. It requires YeslickNPC 1, resolves the
@@ -10,8 +12,6 @@
   native level-dependent grants without baking early or duplicate abilities.
 - Document a bounded existing-save migration and component-410 tail-patch
   proposal. Neither was applied. Component 410 and continuity 199 are unchanged.
-
-## Unreleased - combined playtest source, 2026-09-08
 
 - Add EET actor continuity as **199** for PPG Xan v19 and Yeslick v5. Preserve
   permanent development and the original build, clear imported equipment, and
@@ -23,8 +23,10 @@
 - Preserve public alpha.5 behavior and component numbers, including Sarah Archer
   190, conversions 192-198/220-223, and the private Sarah portrait reservation 191.
   The older unpublished continuity 190 / Safana 191 numbers must not be used.
-- This is a committed test-source integration, not a release or live acceptance.
-  Version markers retain the alpha.5 base; use the exact source commit to pin it.
+- Windows packaging includes the WeiDU 249 executable, license/notices, SHA-256
+  checksum and per-file contents manifest. Native companion recruitment,
+  transition, level-up and save/reload checks remain for the full collection
+  candidate; this release does not migrate existing saved actors.
 
 ## v0.2.0-alpha.5 - 2026-09-06
 

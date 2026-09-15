@@ -3,10 +3,11 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.5`
+**Release:** `v0.2.0-alpha.6`
 
-This checkout adds unreleased combined-playtest components to the public alpha.5
-base. Pin its commit for testing; it is not a new published release.
+This release retains the alpha.5 components and adds Yeslick's BG1 Alaghor preset
+(188), Safana's arrival inventory cleanup (189), Xan/Yeslick continuity (199),
+and Imoen's Spellhold XP adjustment (620).
 
 The installer and focused behavior are tested against generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
 startup, load/save and scribing checks in a disposable EET install. A complete
