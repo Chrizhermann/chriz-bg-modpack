@@ -19,7 +19,7 @@
     "chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf",
     "chriz-bg-modpack/baf/cbm_kivan_saha01.baf",
     "chriz-bg-modpack/baf/cbm_kivan_saha02.baf",
-    "chriz-bg-modpack/imoen-xp/M_CBMIXP.lua",
+    "chriz-bg-modpack/imoen-xp/m_cbmixp.lua",
     "chriz-bg-modpack/languages/english/setup.tra",
     "chriz-bg-modpack/lib/cbm_ascension_slayer_eefp_fix.tpa",
     "chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa",

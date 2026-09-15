@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-SOURCE = Path(__file__).resolve().parents[1] / "chriz-bg-modpack/imoen-xp/M_CBMIXP.lua"
+SOURCE = Path(__file__).resolve().parents[1] / "chriz-bg-modpack/imoen-xp/m_cbmixp.lua"
 
 
 @pytest.fixture(params=["lua51", "luajit21"])

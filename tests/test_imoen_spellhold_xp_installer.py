@@ -51,6 +51,7 @@ def run_weidu(game, *args):
     )
     transcript = result.stdout + result.stderr
     assert result.returncode == 0, transcript
+    assert "ERROR" not in transcript, transcript
     return transcript
 
 
@@ -60,14 +61,14 @@ def make_game(tmp_path, *, game_type="bg2ee", eeex=True, old_helper=False):
     if os.name != "nt" and (game.root / "lang/en_US").is_dir():
         (game.root / "lang/en_US").rename(game.root / "lang/en_us")
     for name, text in IDS.items():
-        (game.override / name).write_text(text, encoding="ascii")
+        (game.override / name.lower()).write_text(text, encoding="ascii")
     # These object-selector tables are requested by the BAF compiler.
     for name in ("EA", "GENERAL", "RACE", "CLASS", "SPECIFIC", "GENDER", "ALIGN"):
-        (game.override / (name + ".IDS")).write_text("IDS V1.0\n", encoding="ascii")
+        (game.override / (name.lower() + ".ids")).write_text("IDS V1.0\n", encoding="ascii")
     (game.root / "imoen2.baf").write_text(ORIGINAL, encoding="ascii")
     run_weidu(game, "--out", str(game.override), "imoen2.baf")
     if old_helper:
-        (game.override / "M_CBMIXP.lua").write_bytes(b"-- original helper\r\n\xff")
+        (game.override / "m_cbmixp.lua").write_bytes(b"-- original helper\r\n\xff")
     game.before = _file_tree(game.root)
     return game
 
@@ -94,7 +95,7 @@ def test_install_preserves_script_and_uninstall_restores_all_bytes(tmp_path, gam
     changed = {name for name in set(actual) | set(game.before)
                if actual.get(name) != game.before.get(name) and not _is_weidu_artifact(name)}
     assert changed == {"OVERRIDE/IMOEN2.BCS", "OVERRIDE/M_CBMIXP.LUA"}
-    helper = ROOT / "chriz-bg-modpack/imoen-xp/M_CBMIXP.lua"
+    helper = ROOT / "chriz-bg-modpack/imoen-xp/m_cbmixp.lua"
     assert actual["OVERRIDE/M_CBMIXP.LUA"] == helper.read_bytes()
     # EXTEND_TOP must preserve every original compiled block, byte for byte.
     assert actual["OVERRIDE/IMOEN2.BCS"].endswith(original_script.removeprefix(b"SC\n"))
@@ -128,7 +129,7 @@ def test_missing_prerequisites_make_no_game_changes(tmp_path, missing):
     if missing == "script":
         (game.override / "imoen2.bcs").unlink()
     if missing == "action":
-        path = game.override / "ACTION.IDS"
+        path = game.override / "action.ids"
         path.write_text(IDS["ACTION.IDS"].replace("472 EEex_LuaAction(S:Chunk*)\n", ""))
     game.before = _file_tree(game.root)
     # Failed predicate skips; a missing action discovered during install rolls back.
