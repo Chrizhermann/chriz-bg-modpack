@@ -58,6 +58,15 @@ jobs:
             if ($LASTEXITCODE -ne 0) { throw "Parse-check failed: $($_.FullName)" }
           }
 
+      - name: Fetch pinned EET parser for isolated fixtures
+        shell: pwsh
+        run: |
+          $fixtureRoot = Join-Path $env:RUNNER_TEMP 'cbm-eet'
+          New-Item -ItemType Directory -Force -Path (Join-Path $fixtureRoot 'lib') | Out-Null
+          curl.exe --fail --location --proto '=https' --tlsv1.2 --output (Join-Path $fixtureRoot 'lib/macros.tph') 'https://raw.githubusercontent.com/Gibberlings3/EET/ad20ca29ae797e773fffb10c25537c1b1a674716/EET/lib/macros.tph'
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned EET parser download failed' }
+          "CBM_EET_SOURCE=$fixtureRoot" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Run generated-fixture regression tests
         shell: pwsh
         env:
@@ -65,12 +74,12 @@ jobs:
           WEIDU: weidu.exe
         run: python -m unittest discover -s tests -v
 
-      - name: Test utility XP runtimes and companion class choices
+      - name: Test XP runtimes, Imoen installer, and companion class choices
         shell: pwsh
         env:
           WEIDU_BIN: weidu.exe
           WEIDU: weidu.exe
-        run: python -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py -q
+        run: python -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py tests/test_imoen_spellhold_xp.py tests/test_imoen_spellhold_xp_installer.py -q
 
       - name: Build deterministic release twice
         shell: pwsh

@@ -58,17 +58,29 @@ jobs:
             weidu --noautoupdate --nogame --parse-check TPA "$library"
           done < <(find chriz-bg-modpack/lib -type f -name '*.tpa' -print | LC_ALL=C sort)
 
+      - name: Fetch pinned EET parser for isolated fixtures
+        run: |
+          mkdir -p "$RUNNER_TEMP/cbm-eet/lib"
+          curl --fail --location --proto '=https' --tlsv1.2 \
+            --output "$RUNNER_TEMP/cbm-eet/lib/macros.tph" \
+            https://raw.githubusercontent.com/Gibberlings3/EET/ad20ca29ae797e773fffb10c25537c1b1a674716/EET/lib/macros.tph
+
       - name: Run game-free regression tests
         env:
           WEIDU_BIN: /usr/local/bin/weidu
           WEIDU: /usr/local/bin/weidu
+          CBM_EET_SOURCE: ${{ runner.temp }}/cbm-eet
         run: python3 -m unittest discover -s tests -v
 
-      - name: Test utility XP runtimes and companion class choices
+      - name: Test XP runtimes, Imoen installer, and companion class choices
         env:
           WEIDU_BIN: /usr/local/bin/weidu
           WEIDU: /usr/local/bin/weidu
-        run: python3 -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py -q
+        run: >-
+          python3 -m pytest tests/test_utility_xp.py
+          tests/test_companion_classes_installer.py
+          tests/test_imoen_spellhold_xp.py
+          tests/test_imoen_spellhold_xp_installer.py -q
 
       - name: Build the production archive reproducibly
         run: |

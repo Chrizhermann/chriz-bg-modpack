@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.2.0-alpha.6 - 2026-09-16
+
+### Added
+
+- Add optional component **188** (`cbm_yeslick_alaghor`) for the missing BG1
+  Fighter/Alaghor recruitment preset. It requires YeslickNPC 1, resolves the
+  installed kit and priest-level ability delivery, and preserves the entire
+  build apart from the kit field. Install before 199/EET_end and actor creation.
+- Respect the vanilla option and reject conflicting custom builds. Preserve
+  native level-dependent grants without baking early or duplicate abilities.
+- Document a bounded existing-save migration and component-410 tail-patch
+  proposal. Neither was applied. Component 410 and continuity 199 are unchanged.
+
+- Add EET actor continuity as **199** for PPG Xan v19 and Yeslick v5. Preserve
+  permanent development and the original build, clear imported equipment, and
+  use native later-campaign presentation. Install after companion conversions
+  and before EET_end; a new game is required.
+- Add Safana in Amn v0.5's one-time SoA arrival equipment cleanup as **189**.
+- Add Imoen Spellhold party-average XP as **620**, capped at 3M mage XP. Install
+  after EEex, EET_end and every IMOEN2.BCS replacer; independent of utility XP 610.
+- Preserve public alpha.5 behavior and component numbers, including Sarah Archer
+  190, conversions 192-198/220-223, and the private Sarah portrait reservation 191.
+  The older unpublished continuity 190 / Safana 191 numbers must not be used.
+- Windows packaging includes the WeiDU 249 executable, license/notices, SHA-256
+  checksum and per-file contents manifest. Native companion recruitment,
+  transition, level-up and save/reload checks remain for the full collection
+  candidate; this release does not migrate existing saved actors.
+
 ## v0.2.0-alpha.5 - 2026-09-06
 
 ### Fixed

@@ -39,3 +39,20 @@
 @1611 = ~Progressive utility XP requires EEex. Install EEex first and launch through InfinityLoader.~
 @1612 = ~Progressive utility XP requires XPBONUS.2DA and XPLEVEL.2DA.~
 @1613 = ~[CBM utility XP] Installed. Edit override/CBMUXPC.lua to tune rewards, then restart the game. See docs/utility-xp.md.~
+
+@199 = ~EET companion continuity: preserve the original Xan and Yeslick across campaigns (NEW GAME, BEFORE EET_end)~
+@188 = ~BG1 Yeslick: Fighter/Alaghor of Clangeddin (requires YeslickNPC Alaghor, BEFORE 199/EET_end)~
+@1881 = ~BG1 Yeslick Alaghor requires YeslickNPC component 1. The vanilla Fighter/Cleric choice remains unchanged.~
+@1882 = ~Install BG1 Yeslick Alaghor before companion continuity 199 and EET_end, and before creating Yeslick in a new game. This does not migrate saved actors.~
+@1883 = ~BG1 Yeslick Alaghor requires the kit provider's qd_multiclass support. Install YeslickNPC component 1 first.~
+@189 = ~Safana in Amn: clear imported inventory and equipment at her SoA arrival~
+@1991 = ~This component requires Enhanced Edition Trilogy (EET).~
+@1992 = ~Install companion continuity after NPC/content/kit mods but BEFORE EET_end. Start a new game afterward; existing saves cannot use renamed companion identities.~
+@1993 = ~EET/lib/macros.tph is missing. Keep the EET installation sources available for its field-aware script converter.~
+@1891 = ~This component requires Safana in Amn component 0.~
+@1892 = ~Safana's SoA arrival script AR0311.BCS is missing.~
+@620 = ~Imoen in Spellhold: party-average XP, capped at 3 million mage XP (requires EEex)~
+@1620 = ~Imoen's Spellhold XP requires BG2:EE or EET.~
+@1621 = ~Imoen's Spellhold XP requires EEex with EEex_LuaAction support. Install EEex first and launch through InfinityLoader.~
+@1622 = ~Imoen's Spellhold XP requires IMOEN2.BCS.~
+@1623 = ~[CBM Imoen XP] Installed. Imoen receives party-average XP once when joining in the Spellhold maze, capped at 3 million mage XP. See docs/imoen-spellhold-xp.md.~

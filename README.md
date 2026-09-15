@@ -3,10 +3,13 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.5`
+**Release:** `v0.2.0-alpha.6`
 
-This is a public alpha. Its installer and focused behavior are tested against
-generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
+This release retains the alpha.5 components and adds Yeslick's BG1 Alaghor preset
+(188), Safana's arrival inventory cleanup (189), Xan/Yeslick continuity (199),
+and Imoen's Spellhold XP adjustment (620).
+
+The installer and focused behavior are tested against generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
 startup, load/save and scribing checks in a disposable EET install. A complete
 live-game acceptance pass across all components has not yet been performed.
 
@@ -30,6 +33,8 @@ writing; missing prerequisites are reported by the installer.
 | 140 | `cbm_mazzy_prof_fix` | Move Mazzy's illegal fifth Short Bow pip to Short Sword |
 | 160 | `cbm_skie_skill_fix` | After a Swashbuckler conversion, move unusable Move Silently points to Open Locks |
 | 170 | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
+| 188 | `cbm_yeslick_alaghor` | Extend selected YeslickNPC Alaghor to the BG1 recruit family; before 199/EET_end |
+| 189 | `cbm_safana_inventory` | Clear Safana's imported gear once at her SoA arrival |
 | 190 | `cbm_sarah_archer` | Optionally convert Sarah to Archer with the selected proficiency build |
 | 192 | `cbm_viconia_cleric_thief` | Permanently convert Viconia to a true-class Cleric/Thief |
 | 193 | `cbm_sharteel_wizard_slayer` | Give joinable Shar-Teel variants the Wizard Slayer kit |
@@ -38,6 +43,7 @@ writing; missing prerequisites are reported by the installer.
 | 196 | `cbm_faldorn_avenger` | Give Faldorn the Avenger kit |
 | 197 | `cbm_dynaheir_haste` | Add the effective installed Haste spell to Dynaheir once |
 | 198 | `cbm_kivan_archer` | Give joinable Kivan variants the Archer kit |
+| 199 | `cbm_companion_continuity` | Preserve returning Xan and Yeslick actors; new game, before EET_end |
 | 220 | `cbm_yoshimo_swashbuckler` | Give Yoshimo the installed Swashbuckler kit |
 | 221 | `cbm_hexxat_shadowdancer` | Give Hexxat the installed Shadowdancer kit |
 | 222 | `cbm_hexxat_fighter_thief` | Convert Hexxat to Fighter/Thief with rebuilt stats and preserved vampire powers |
@@ -48,8 +54,9 @@ writing; missing prerequisites are reported by the installer.
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
+| 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
 
-Components `191`, `199`, and `600` are reserved or deferred and are not exposed
+Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
 
 ## Collection choices
@@ -80,6 +87,23 @@ unchanged. See the [companion class guide](docs/companion-classes.md) for
 installation, progression and compatibility details.
 
 ## Dependencies and ordering
+
+- Install **188** only with YeslickNPC **1**, after its kit/progression providers
+  and before **199/EET_end** and Yeslick's first creation. Omit it for vanilla
+  companions; YeslickNPC 0 also skips it. The [Yeslick guide](docs/yeslick-alaghor.md)
+  explains native priest-level grants and the separate existing-save/410 proposals.
+
+- Install all selected companion/content/class/kit changes before **199**, then
+  run **EET_end**. Start a new BG1 campaign. Split this modpack into separate
+  installation runs so the late patches do not move continuity past finalization.
+  See the [continuity guide](docs/companion-continuity.md) for supported routes,
+  imported equipment policy and the legacy stat-transfer conflict.
+- Install **189** after Safana in Amn and the final AR0311.BCS writer, before her
+  first SoA arrival. It clears imported inventory and equipment once; later BG2
+  equipment remains. No EEex is required for 189 or 199.
+- Install **620** after EEex, EET_end and every IMOEN2.BCS replacer. Install before
+  first Spellhold recruitment for the intended test. It is independent of 610;
+  see the [Imoen XP guide](docs/imoen-spellhold-xp.md).
 
 - Install Fade before `110`, the BG1NPC Kivan quest before `130`, and Sarah ToB v8
   before `190`. Install `130` after SCS and `190` after other kit/proficiency edits.
@@ -114,6 +138,10 @@ installation, progression and compatibility details.
   [utility-XP guide](docs/utility-xp.md) for values, class coverage and limits.
 
 ## Testing status
+
+The additions 188, 189, 199 and 620 have focused synthetic installer/runtime coverage.
+Their native transitions, recruitment, level-ups and save/reload remain pending
+in the combined fresh EET playtest. See the component guides for exact limits.
 
 The automated suite covers guarded transformation behavior, malformed-input
 rejection, idempotence, public installer paths, and byte-exact uninstall restoration

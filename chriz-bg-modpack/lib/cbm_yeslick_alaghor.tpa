@@ -1,0 +1,196 @@
+// BG1 recruitment preset for YeslickNPC v5 component 1.
+// qd_multiclass already delivers AP_/GA_ entries via the priest CLAB at
+// recruitment and level-up. Validate that installed path, then set only the
+// two recruitment templates' kit. Baking the grants here would duplicate them.
+// No transition action, saved-actor migration or foreign string reference.
+
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+
+// Resolve an installed priest-level dispatcher and its kit-filtered EFF.
+// Checking the actual chain catches missing/stale multiclass registration,
+// including a kit ID changed without updating qd_multiclass.
+DEFINE_ACTION_FUNCTION cbmy_check_grant
+  INT_VAR cbmy_kit_id = 0
+  STR_VAR cbmy_dispatch = ~~ cbmy_spell = ~~ cbmy_kind = ~~
+BEGIN
+  OUTER_SET cbmy_found = 0
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbmy_spell%.spl~ BEGIN
+    FAIL ~cbm_yeslick_alaghor: missing installed CLAB spell %cbmy_spell%.~
+  END
+  COPY_EXISTING - ~%cbmy_dispatch%.spl~ ~.../cbmy-dispatch~
+    READ_ASCII 0 cbmy_signature (8)
+    PATCH_IF BUFFER_LENGTH < 0x72 OR NOT (~SPL V1  ~ STRING_EQUAL ~%cbmy_signature%~) BEGIN
+      PATCH_FAIL ~cbm_yeslick_alaghor: invalid priest dispatcher %cbmy_dispatch%.~
+    END
+    READ_LONG 0x64 cbmy_headers
+    READ_SHORT 0x68 cbmy_header_count
+    READ_LONG 0x6a cbmy_fx
+    READ_SHORT 0x6e cbmy_cast_first
+    READ_SHORT 0x70 cbmy_cast_count
+    PATCH_IF cbmy_headers < 0x72 OR cbmy_headers > BUFFER_LENGTH
+          OR cbmy_header_count > (BUFFER_LENGTH - cbmy_headers) / 0x28
+          OR cbmy_fx < 0x72 OR cbmy_fx > BUFFER_LENGTH BEGIN
+      PATCH_FAIL ~cbm_yeslick_alaghor: invalid dispatcher table bounds.~
+    END
+    CLEAR_ARRAY cbmy_used
+    FOR (cbmy_i = cbmy_cast_first; cbmy_i < cbmy_cast_first + cbmy_cast_count; ++cbmy_i) BEGIN
+      SET $cbmy_used(~%cbmy_i%~) = 1
+    END
+    FOR (cbmy_h = 0; cbmy_h < cbmy_header_count; ++cbmy_h) BEGIN
+      READ_SHORT (cbmy_headers + cbmy_h * 0x28 + 0x1e) cbmy_count
+      READ_SHORT (cbmy_headers + cbmy_h * 0x28 + 0x20) cbmy_first
+      FOR (cbmy_i = cbmy_first; cbmy_i < cbmy_first + cbmy_count; ++cbmy_i) BEGIN
+        SET $cbmy_used(~%cbmy_i%~) = 1
+      END
+    END
+    PHP_EACH cbmy_used AS cbmy_index => cbmy_unused BEGIN
+      SET cbmy_pos = cbmy_fx + cbmy_index * 0x30
+      PATCH_IF cbmy_pos < cbmy_fx OR cbmy_pos + 0x30 > BUFFER_LENGTH BEGIN
+        PATCH_FAIL ~cbm_yeslick_alaghor: invalid dispatcher effect bounds.~
+      END
+      PATCH_IF SHORT_AT cbmy_pos = 177 AND LONG_AT (cbmy_pos + 4) = cbmy_kit_id
+          AND LONG_AT (cbmy_pos + 8) = 9 BEGIN
+        READ_ASCII (cbmy_pos + 0x14) cbmy_eff (8) NULL
+        INNER_ACTION BEGIN
+          COPY_EXISTING - ~%cbmy_eff%.eff~ ~.../cbmy-effect~
+            READ_ASCII 0 cbmy_signature (8)
+            PATCH_IF BUFFER_LENGTH < 0x110 OR NOT (~EFF V2.0~ STRING_EQUAL ~%cbmy_signature%~) BEGIN
+              PATCH_FAIL ~cbm_yeslick_alaghor: invalid multiclass EFF %cbmy_eff%.~
+            END
+            READ_ASCII 0x30 cbmy_granted (8) NULL
+            PATCH_IF ~%cbmy_granted%~ STRING_EQUAL_CASE ~%cbmy_spell%~ BEGIN
+              PATCH_IF (~%cbmy_kind%~ STRING_EQUAL_CASE ~GA_~ AND LONG_AT 0x10 = 171)
+                    OR (~%cbmy_kind%~ STRING_EQUAL_CASE ~AP_~ AND LONG_AT 0x10 = 146) BEGIN
+                SET cbmy_found = 1
+              END
+            END
+        END
+      END
+    END
+  ACTION_IF NOT cbmy_found BEGIN
+    FAIL ~cbm_yeslick_alaghor: %cbmy_spell% is not registered for LK_ALAGHOR in priest dispatcher %cbmy_dispatch%. Install the kit provider and its multiclass support first.~
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbmy_install BEGIN
+  LAF cbm_collection_resolve_class STR_VAR symbol = ~FIGHTER_CLERIC~
+    RET cbmy_class = class_id END
+  LAF cbm_collection_resolve_kit STR_VAR symbol = ~LK_ALAGHOR~
+    RET cbmy_kit = kit_dword END
+  OUTER_SET cbmy_kit_id = IDS_OF_SYMBOL (~kit~ ~LK_ALAGHOR~)
+  ACTION_IF cbmy_kit_id = 0x4000 BEGIN FAIL ~cbm_yeslick_alaghor: LK_ALAGHOR resolves to true-class.~ END
+
+  OUTER_SET cbmy_matches = 0
+  COPY_EXISTING - ~kitlist.2da~ ~.../cbmy-kitlist~
+    COUNT_2DA_COLS cbmy_cols
+    COUNT_2DA_ROWS cbmy_cols cbmy_rows
+    SET cbmy_name_col = 0
+    SET cbmy_clab_col = 0
+    SET cbmy_id_col = 0
+    FOR (cbmy_col = 0; cbmy_col < cbmy_cols - 1; ++cbmy_col) BEGIN
+      READ_2DA_ENTRY 0 cbmy_col (cbmy_cols - 1) cbmy_heading
+      PATCH_IF ~%cbmy_heading%~ STRING_EQUAL_CASE ~ROWNAME~ BEGIN SET cbmy_name_col = cbmy_col + 1 END
+      PATCH_IF ~%cbmy_heading%~ STRING_EQUAL_CASE ~ABILITIES~ BEGIN SET cbmy_clab_col = cbmy_col + 1 END
+      PATCH_IF ~%cbmy_heading%~ STRING_EQUAL_CASE ~KITIDS~ BEGIN SET cbmy_id_col = cbmy_col + 1 END
+    END
+    PATCH_IF cbmy_name_col = 0 OR cbmy_clab_col = 0 OR cbmy_id_col = 0 BEGIN
+      PATCH_FAIL ~cbm_yeslick_alaghor: KITLIST lacks ROWNAME, ABILITIES or KITIDS.~
+    END
+    FOR (cbmy_row = 0; cbmy_row < cbmy_rows; ++cbmy_row) BEGIN
+      READ_2DA_ENTRY cbmy_row cbmy_name_col cbmy_cols cbmy_name
+      PATCH_IF ~%cbmy_name%~ STRING_EQUAL_CASE ~LK_ALAGHOR~ BEGIN
+        SET cbmy_matches += 1
+        READ_2DA_ENTRY cbmy_row cbmy_id_col cbmy_cols cbmy_id
+        READ_2DA_ENTRY cbmy_row cbmy_clab_col cbmy_cols cbmy_clab
+        PATCH_IF NOT IS_AN_INT ~%cbmy_id%~ OR cbmy_id != cbmy_kit_id BEGIN
+          PATCH_FAIL ~cbm_yeslick_alaghor: KITLIST and KIT.IDS disagree for LK_ALAGHOR.~
+        END
+      END
+    END
+  ACTION_IF cbmy_matches != 1 BEGIN FAIL ~cbm_yeslick_alaghor: expected one LK_ALAGHOR KITLIST row.~ END
+
+  COPY_EXISTING - ~%cbmy_clab%.2da~ ~.../cbmy-clab~
+    COUNT_2DA_COLS cbmy_levels
+    READ_2DA_ENTRIES_NOW cbmy_clab_rows 1
+    READ_2DA_ENTRY_FORMER cbmy_clab_rows 1 0 cbmy_default
+    CLEAR_ARRAY cbmy_entries
+    FOR (cbmy_row = 3; cbmy_row < cbmy_clab_rows; ++cbmy_row) BEGIN
+      FOR (cbmy_level = 1; cbmy_level < cbmy_levels; ++cbmy_level) BEGIN
+        SPRINT cbmy_entry ~%cbmy_default%~
+        PATCH_IF VARIABLE_IS_SET $cbmy_clab_rows(~%cbmy_row%~ ~%cbmy_level%~) BEGIN
+          READ_2DA_ENTRY_FORMER cbmy_clab_rows cbmy_row cbmy_level cbmy_entry
+        END
+        PATCH_IF NOT (~%cbmy_entry%~ STRING_EQUAL_CASE ~%cbmy_default%~) BEGIN
+          SPRINT $cbmy_entries(~%cbmy_row%~ ~%cbmy_level%~) ~%cbmy_entry%~
+        END
+      END
+    END
+
+  OUTER_SET cbmy_priest_rows = 0
+  COPY_EXISTING - ~clabpr01.2da~ ~.../cbmy-priest~
+    READ_2DA_ENTRIES_NOW cbmy_priest_table 1
+    CLEAR_ARRAY cbmy_dispatchers
+    CLEAR_ARRAY cbmy_base_grants
+    FOR (cbmy_row = 3; cbmy_row < cbmy_priest_table; ++cbmy_row) BEGIN
+      READ_2DA_ENTRY_FORMER cbmy_priest_table cbmy_row 0 cbmy_name
+      PATCH_IF ~%cbmy_name%~ STRING_EQUAL_CASE ~QD_MULTI~ BEGIN
+        SET cbmy_priest_rows += 1
+      END
+      FOR (cbmy_level = 1; cbmy_level < cbmy_levels; ++cbmy_level) BEGIN
+        PATCH_IF VARIABLE_IS_SET $cbmy_priest_table(~%cbmy_row%~ ~%cbmy_level%~) BEGIN
+          READ_2DA_ENTRY_FORMER cbmy_priest_table cbmy_row cbmy_level cbmy_entry
+          TO_UPPER cbmy_entry
+          PATCH_IF ~%cbmy_name%~ STRING_EQUAL_CASE ~QD_MULTI~ BEGIN
+            SPRINT $cbmy_dispatchers(~%cbmy_level%~) ~%cbmy_entry%~
+          END ELSE BEGIN
+            SET $cbmy_base_grants(~%cbmy_level%~ ~%cbmy_entry%~) = 1
+          END
+        END
+      END
+    END
+  ACTION_IF cbmy_priest_rows != 1 BEGIN
+    FAIL ~cbm_yeslick_alaghor: missing or ambiguous qd_multiclass priest CLAB registration.~
+  END
+  ACTION_PHP_EACH cbmy_entries AS cbmy_keys => cbmy_entry BEGIN
+    ACTION_TO_UPPER cbmy_entry
+    OUTER_INNER_PATCH ~%cbmy_entry%~ BEGIN
+      READ_ASCII 0 cbmy_kind (3)
+      READ_ASCII 3 cbmy_spell (BUFFER_LENGTH - 3)
+    END
+    ACTION_IF NOT (~%cbmy_kind%~ STRING_EQUAL_CASE ~AP_~ OR ~%cbmy_kind%~ STRING_EQUAL_CASE ~GA_~) BEGIN
+      FAIL ~cbm_yeslick_alaghor: unsupported installed kit CLAB entry %cbmy_entry%.~
+    END
+    ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbmy_spell%.spl~ BEGIN
+      FAIL ~cbm_yeslick_alaghor: missing installed CLAB spell %cbmy_spell%.~
+    END
+    // Later priest-wide passives can be present in both CLABs. Their native
+    // base-class entry supplies the grant without a kit-specific QD wrapper.
+    ACTION_IF NOT VARIABLE_IS_SET $cbmy_base_grants(~%cbmy_keys_1%~ ~%cbmy_entry%~) BEGIN
+      OUTER_TEXT_SPRINT cbmy_dispatch_entry $cbmy_dispatchers(~%cbmy_keys_1%~)
+      OUTER_INNER_PATCH ~%cbmy_dispatch_entry%~ BEGIN
+        READ_ASCII 0 cbmy_prefix (3)
+        READ_ASCII 3 cbmy_dispatch (BUFFER_LENGTH - 3)
+      END
+      ACTION_IF NOT (~%cbmy_prefix%~ STRING_EQUAL_CASE ~AP_~) BEGIN
+        FAIL ~cbm_yeslick_alaghor: unsupported multiclass priest dispatch.~
+      END
+      LAF cbmy_check_grant INT_VAR cbmy_kit_id STR_VAR cbmy_dispatch cbmy_kind cbmy_spell END
+    END
+  END
+
+  // Explicit NPCLEVEL/NPCLVLDS family. YESLID is a dream creature; BG2
+  // LK#YESL/LK#YES25 already belong to the provider and are not patch targets.
+  ACTION_FOR_EACH cbmy_cre IN ~YESLIC~ ~YESLIC5~ BEGIN
+    COPY_EXISTING ~%cbmy_cre%.cre~ ~override~
+      PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN PATCH_FAIL ~cbm_yeslick_alaghor: truncated recruitment CRE.~ END
+      PATCH_IF BYTE_AT 0x234 < 1 OR BYTE_AT 0x235 < 1 BEGIN
+        PATCH_FAIL ~cbm_yeslick_alaghor: invalid stored Fighter/Cleric levels.~
+      END
+      LPF cbm_collection_set_npc_kit
+        INT_VAR expected_class = cbmy_class source_kit = 0x40000000 target_kit = cbmy_kit
+        STR_VAR expected_dv = ~YESLICK~ patch_name = ~cbm_yeslick_alaghor~
+      END
+    BUT_ONLY
+  END
+  PRINT ~[cbm_yeslick_alaghor] BG1 Yeslick uses installed LK_ALAGHOR / %cbmy_clab%. Existing priest-level AP/GA delivery is retained; progression and personal spells are unchanged.~
+END
