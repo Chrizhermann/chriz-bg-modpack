@@ -351,7 +351,7 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         self.assertNotIn("SUCCESSFULLY INSTALLED", output)
         self.assertEqual(snapshot(self.override), before)
         (self.game / "weidu.log").write_text("~XAN/XAN.TP2~ #0 #0 // Xan v19\n")
-        (self.override / "M_K#FP.lua").write_text("-- conflicting legacy stat transfer\n")
+        (self.override / "m_k#fp.lua").write_text("-- conflicting legacy stat transfer\n")
         before = snapshot(self.override)
         output = self.public_install(199, expected_success=False)
         self.assertIn("remove legacy", output)
