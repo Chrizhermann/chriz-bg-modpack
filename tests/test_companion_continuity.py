@@ -91,8 +91,9 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         shutil.copy2(REPO / "setup-chriz-bg-modpack.tp2", self.game)
         if eet_source:
             eet = Path(os.environ["CBM_EET_SOURCE"])
-            (self.game / "EET/lib").mkdir(parents=True)
-            shutil.copy2(eet / "lib/macros.tph", self.game / "EET/lib/macros.tph")
+            # Linux WeiDU resolves game paths in lowercase.
+            (self.game / "eet/lib").mkdir(parents=True)
+            shutil.copy2(eet / "lib/macros.tph", self.game / "eet/lib/macros.tph")
         with (self.game / "weidu.log").open("a") as stream:
             stream.write("~XAN/XAN.TP2~ #0 #0 // Xan v19\n~YESLICKNPC/YESLICKNPC.TP2~ #0 #0 // Yeslick v5\n")
 

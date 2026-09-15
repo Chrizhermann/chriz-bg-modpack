@@ -140,8 +140,9 @@ class ContinuityIdentityTests(unittest.TestCase):
         (self.game / "lang/en_us/dialog.tlk").write_bytes(tlk)
         (self.override / "oh6000.are").write_bytes(b"AREA V1.0")
         (self.override / "eet.flag").write_text("fixture\n")
-        (self.game / "EET/lib").mkdir(parents=True)
-        shutil.copy2(Path(EET_SOURCE) / "lib/macros.tph", self.game / "EET/lib/macros.tph")
+        # Linux WeiDU resolves game paths in lowercase.
+        (self.game / "eet/lib").mkdir(parents=True)
+        shutil.copy2(Path(EET_SOURCE) / "lib/macros.tph", self.game / "eet/lib/macros.tph")
         extra = {
             "action": '\n7 CreateCreature(S:NewObject*,P:Location*,I:Face*Dir)\n'
                       '139 DisplayString(O:Object*,I:StrRef*)\n'
@@ -151,7 +152,7 @@ class ContinuityIdentityTests(unittest.TestCase):
         for name, body in IDS.items():
             (self.override / f"{name}.ids").write_text("IDS V1.0\n" + body + extra.get(name, ""))
         self.protected = {p: (self.game / p).read_bytes() for p in
-                          ("chitin.key", "dialog.tlk", "lang/en_us/dialog.tlk", "EET/lib/macros.tph")}
+                          ("chitin.key", "dialog.tlk", "lang/en_us/dialog.tlk", "eet/lib/macros.tph")}
         self.harness()
 
     def harness(self, xan=1, yeslick=1, twice=False):
