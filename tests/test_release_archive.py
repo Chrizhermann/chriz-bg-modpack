@@ -38,6 +38,7 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
             self.assertIn("WEIDU-COPYING.txt", names)
             self.assertIn("docs/utility-xp.md", names)
             self.assertIn("docs/companion-classes.md", names)
+            self.assertIn("docs/npc-builds.md", names)
             self.assertIn("chriz-bg-modpack/lib/cbm_companion_classes.tpa", names)
             for required in (
                 "chriz-bg-modpack/lib/cbm_companion_continuity.tpa",

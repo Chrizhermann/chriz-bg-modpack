@@ -69,11 +69,13 @@ lore, hit points and proficiencies from the installed progression tables:
   its old class progression. Hit points preserve its original roll quality by
   scaling current/max HP against expected old and new class HP, including
   installed hit-point-table changes.
-- Legal existing weapon proficiencies are retained. Additional warrior points
-  go to long sword, dagger, single-weapon style, club and two-weapon style within
-  the installed Fighter/Thief caps. The budget is `FIRST_LEVEL + level / RATE`
+- Weapon and fighting-style proficiencies are replaced completely. The full
+  budget is spent one point at a time in repeated passes through long sword,
+  dagger, single-weapon style, club and two-weapon style, skipping entries at
+  their installed Fighter/Thief caps. Earlier allocations, including shortbow
+  pips, do not change the result. The budget is `FIRST_LEVEL + level / RATE`
   with integer division (six points at Fighter 6 with vanilla tables). Class and
-  kit table files are not modified.
+  kit table files and unrelated creature effects are not modified.
 - Only the two `ohh_dom` progression conditions in each of `HEXXAT.BCS` and
   `HEXXA25.BCS` change. They use the total XP needed for thief levels 14 and 24
   from `XPLEVEL.2DA`, preserving the original XP milestones for extra Domination
@@ -83,6 +85,11 @@ An unsupported creature class, missing required progression data or an
 unrecognized Domination block causes the component to fail and WeiDU to roll
 back its changes. These conversions are not a general saved-character respec
 system.
+
+To reapply a conversion, use WeiDU's normal uninstall/reinstall process, which
+restores the original templates before converting them again. Fighter/Thief's
+stat calculations require the original thief progression; directly patching
+an already converted Fighter/Thief is not supported.
 
 ## Research and validation
 

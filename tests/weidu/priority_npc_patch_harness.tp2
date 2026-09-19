@@ -1,9 +1,11 @@
 BACKUP ~weidu-backup~
 AUTHOR ~chriz-bg-modpack tests~
 
-// argv[0] = production TPA; argv[1] = source resource; argv[2] = output resource.
+// argv[0] = production TPA; argv[1] = source; argv[2] = output; argv[3] = template.
+// argv[4] = shared NPC build helpers.
 
 BEGIN ~Priority NPC: Fade CRE~ DESIGNATED 1
+INCLUDE ~%argv[4]%~
 INCLUDE ~%argv[0]%~
 LAF cbm_fade_load_context
   RET
@@ -18,6 +20,7 @@ COPY ~%argv[1]%~ ~%argv[2]%~
     INT_VAR
       cbm_fade_thief_class = cbm_fade_thief_class
       cbm_fade_fighter_thief_class = cbm_fade_fighter_thief_class
+    STR_VAR cbm_fade_template = EVAL ~%argv[3]%~
   END
 
 BEGIN ~Priority NPC: Fade amulet~ DESIGNATED 2
@@ -26,9 +29,12 @@ COPY ~%argv[1]%~ ~%argv[2]%~
   LPF cbm_fade_allow_fighter_thief END
 
 BEGIN ~Priority NPC: Mazzy proficiencies~ DESIGNATED 3
+INCLUDE ~%argv[4]%~
 INCLUDE ~%argv[0]%~
 COPY ~%argv[1]%~ ~%argv[2]%~
-  LPF cbm_mazzy_move_bow_pip END
+  LPF cbm_mazzy_move_bow_pip
+    STR_VAR cbm_mazzy_template = EVAL ~%argv[3]%~
+  END
 
 BEGIN ~Priority NPC: Skie skills~ DESIGNATED 4
 INCLUDE ~%argv[0]%~
@@ -45,12 +51,11 @@ COPY ~%argv[1]%~ ~%argv[2]%~
   END
 
 BEGIN ~Priority NPC: Xan Eldritch Knight~ DESIGNATED 5
+INCLUDE ~%argv[4]%~
 INCLUDE ~%argv[0]%~
 LAF cbm_xan_load_context
   RET
-    cbm_xan_mage_class = cbm_xan_mage_class
     cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
-    cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
     cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
   RET_ARRAY
     cbm_xan_fighter_xp = cbm_xan_fighter_xp
@@ -59,8 +64,7 @@ END
 COPY ~%argv[1]%~ ~%argv[2]%~
   LPF cbm_xan_make_eldritch_knight
     INT_VAR
-      cbm_xan_mage_class = cbm_xan_mage_class
       cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
-      cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
       cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
+    STR_VAR cbm_xan_template = EVAL ~%argv[3]%~
   END

@@ -184,6 +184,50 @@ def make_itm(
     return bytes(header + headers + flat_effects + footer)
 
 
+def rearrange_spl(
+    data: bytes, *, casting_first: bool, effects_first: bool, reverse: bool = True
+) -> bytes:
+    """Put identical indexed lists in padded, noncanonical physical locations."""
+    old_ability_offset = struct.unpack_from("<I", data, 0x64)[0]
+    old_effect_offset = struct.unpack_from("<I", data, 0x6A)[0]
+    rows = spl_abilities(data)
+    casts = casting_effects(data)
+    headers = bytearray(data[old_ability_offset:old_effect_offset])
+    flat = bytearray(b"UNREFERENCED-EFFECT-PADDING".ljust(0x30, b"!"))
+    order = list(reversed(range(len(rows)))) if reverse else list(range(len(rows)))
+    order.insert(0 if casting_first else len(order), -1)
+    cast_first = 0
+    for index in order:
+        first = len(flat) // 0x30
+        if index == -1:
+            cast_first = first
+            flat.extend(b"".join(casts))
+        else:
+            struct.pack_into("<H", headers, index * 0x28 + 0x20, first)
+            flat.extend(b"".join(rows[index]["effects"]))
+        flat.extend(b"OPAQUE-SLICE-GAP".ljust(0x30, b"?"))
+    # The last gap is a physical trailer, not part of any indexed list.
+    header = bytearray(data[:0x72])
+    prefix = b"PREFIX-PADDING\x00%marker%\xff"
+    middle = b"BETWEEN-TABLES\x00\xaa\x55"
+    old_end = old_effect_offset + 0x30 * (
+        sum(len(row["effects"]) for row in rows) + len(casts)
+    )
+    footer = data[old_end:]
+    if effects_first:
+        effect_offset = 0x72 + len(prefix)
+        ability_offset = effect_offset + len(flat) + len(middle)
+        body = prefix + flat + middle + headers
+    else:
+        ability_offset = 0x72 + len(prefix)
+        effect_offset = ability_offset + len(headers) + len(middle)
+        body = prefix + headers + middle + flat
+    struct.pack_into("<I", header, 0x64, ability_offset)
+    struct.pack_into("<I", header, 0x6A, effect_offset)
+    struct.pack_into("<H", header, 0x6E, cast_first)
+    return bytes(header + body + footer)
+
+
 def spl_abilities(data: bytes) -> list[dict[str, object]]:
     ability_offset = struct.unpack_from("<I", data, 0x64)[0]
     ability_count = struct.unpack_from("<H", data, 0x68)[0]
@@ -668,8 +712,8 @@ class SpellTailTests(unittest.TestCase):
             {"SPIN112.SPL": dispel_resources()["SPIN112.SPL"]},
             {
                 "SPIN112.SPL": make_spl(
-                    [[effect(58, p1=0, p2=0)], [effect(58, p1=2, p2=2)]],
-                    projectiles=[157, 157],
+                    [[effect(58, p1=0, p2=0), effect(58, p1=2, p2=2)]],
+                    projectiles=[157],
                 ),
                 "SPCL231.SPL": dispel_resources()["SPCL231.SPL"],
             },
@@ -687,6 +731,229 @@ class SpellTailTests(unittest.TestCase):
                 transcript = game.transcript(result)
                 self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
                 self.assertEqual(game.initial_override, file_tree(game.override))
+
+    def assert_dispel_result(self, source: dict[str, bytes], output: dict[str, bytes]):
+        before = source["SPIN112.SPL"]
+        after = output["SPIN112.SPL"]
+        source_rows = spl_abilities(before)
+        rows = spl_abilities(after)
+        self.assertEqual(40, len(rows))
+        for level, row in enumerate(rows, start=1):
+            source_row = max(
+                (item for item in source_rows if item["minimum_level"] <= level),
+                key=lambda item: item["minimum_level"],
+            )
+            expected_header = bytearray(before[source_row["offset"]:source_row["offset"] + 0x28])
+            struct.pack_into("<H", expected_header, 0x10, level)
+            struct.pack_into("<H", expected_header, 0x20,
+                             struct.unpack_from("<H", after, row["offset"] + 0x20)[0])
+            struct.pack_into("<H", expected_header, 0x26, 177)
+            self.assertEqual(bytes(expected_header), after[row["offset"]:row["offset"] + 0x28])
+            self.assertEqual(len(source_row["effects"]), len(row["effects"]))
+            for old_effect, new_effect in zip(source_row["effects"], row["effects"]):
+                expected = bytearray(old_effect)
+                if opcode(old_effect) == 58:
+                    struct.pack_into("<II", expected, 4, level * 3 // 2, 2)
+                self.assertEqual(bytes(expected), new_effect)
+        self.assertEqual(casting_effects(before), casting_effects(after))
+        old_keldorn = source["SPCL231.SPL"]
+        expected_keldorn = bytearray(old_keldorn)
+        for row in spl_abilities(old_keldorn):
+            struct.pack_into("<H", expected_keldorn, row["offset"] + 0x26, 177)
+        self.assertEqual(bytes(expected_keldorn), output["SPCL231.SPL"])
+
+    def test_410_handles_casting_first_from_real_weidu_add_spell_cfeffect(self):
+        source = dispel_resources()
+        ability_effects = spl_abilities(source["SPIN112.SPL"])[0]["effects"]
+        empty_casting = bytearray(make_spl([ability_effects], footer=b"REAL-WEIDU-FOOTER"))
+        struct.pack_into("<H", empty_casting, 0x6E, 0)
+        source["SPIN112.SPL"] = bytes(empty_casting)
+        with tempfile.TemporaryDirectory(prefix="cbm-spell-410-cfeffect-") as raw:
+            game = SyntheticSpellGame(Path(raw) / "game", source)
+            with (game.root / HARNESS.name).open("a", encoding="ascii") as harness:
+                harness.write("""
+BEGIN ~Add a real WeiDU casting effect~ DESIGNATED 409
+COPY_EXISTING ~SPIN112.SPL~ ~override~
+  LPF ADD_SPELL_CFEFFECT INT_VAR opcode = 146 target = 1 timing = 1
+    STR_VAR resource = ~DW#HOOK~ END
+BUT_ONLY
+""")
+            self.install(game, 409)
+            source = file_tree(game.override)
+            self.assertEqual(1, len(casting_effects(source["SPIN112.SPL"])))
+            ability_offset = struct.unpack_from("<I", source["SPIN112.SPL"], 0x64)[0]
+            self.assertEqual(1, struct.unpack_from("<H", source["SPIN112.SPL"], ability_offset + 0x20)[0])
+            self.assertEqual(ability_effects, spl_abilities(source["SPIN112.SPL"])[0]["effects"])
+            game.initial_override = source
+            self.install(game, 410)
+            patched = file_tree(game.override)
+            self.assert_dispel_result(source, patched)
+            self.assertTrue(patched["SPIN112.SPL"].endswith(b"REAL-WEIDU-FOOTER"))
+            self.uninstall(game, 410)
+        self.assert_already_patched_is_stable(410, patched)
+
+    def test_410_preserves_displaced_tables_casting_order_gaps_and_variable_tiers(self):
+        for casting_first in (False, True):
+            for effects_first in (False, True):
+                for levels in ([0], [1, 7, 19], list(range(1, 41)), list(range(1, 46))):
+                    with self.subTest(casting_first=casting_first, effects_first=effects_first, levels=len(levels)):
+                        source = dispel_resources()
+                        tier_effects = [
+                            [effect(58, p1=987, p2=1, marker=0x40 + index)]
+                            + [effect(215, resource="KEEP", marker=0xB0 + extra)
+                               for extra in range(index % 3)]
+                            for index in range(len(levels))
+                        ]
+                        source["SPIN112.SPL"] = make_spl(
+                            tier_effects, minimum_levels=levels,
+                            casting_effects=[effect(146, resource="HOOK")], footer=b"YESLICK-FOOTER",
+                        )
+                        # Keldorn also accepts more than 40 installed tiers.
+                        if len(levels) > 40:
+                            source["SPCL231.SPL"] = make_spl(
+                                [[effect(58, p1=level * 2, p2=0x20002)] for level in levels],
+                                minimum_levels=levels, footer=b"KELDORN-FOOTER",
+                            )
+                        source = {name: rearrange_spl(payload, casting_first=casting_first,
+                                                       effects_first=effects_first)
+                                  for name, payload in source.items()}
+                        with tempfile.TemporaryDirectory(prefix="cbm-spell-410-layout-") as raw:
+                            game = SyntheticSpellGame(Path(raw) / "game", source)
+                            self.install(game, 410)
+                            patched = file_tree(game.override)
+                            self.assert_dispel_result(source, patched)
+                            before, after = source["SPIN112.SPL"], patched["SPIN112.SPL"]
+                            for sentinel in (b"PREFIX-PADDING\x00%marker%\xff", b"BETWEEN-TABLES\x00\xaa\x55",
+                                             b"UNREFERENCED-EFFECT-PADDING".ljust(0x30, b"!"),
+                                             b"OPAQUE-SLICE-GAP".ljust(0x30, b"?")):
+                                self.assertEqual(before.count(sentinel), after.count(sentinel))
+                            self.assertTrue(after.endswith(b"YESLICK-FOOTER"))
+                            if len(levels) == 40:
+                                self.assertEqual(len(before), len(after))
+                            else:
+                                # All original indexed effect bytes survive expansion,
+                                # including unreferenced padding between the slices.
+                                old_start = struct.unpack_from("<I", before, 0x6A)[0]
+                                new_start = struct.unpack_from("<I", after, 0x6A)[0]
+                                old_ends = [struct.unpack_from("<HH", before, row["offset"] + 0x1E)
+                                            for row in spl_abilities(before)]
+                                old_ends.append((struct.unpack_from("<H", before, 0x70)[0],
+                                                 struct.unpack_from("<H", before, 0x6E)[0]))
+                                size = max(count + first for count, first in old_ends) * 0x30
+                                self.assertEqual(before[old_start:old_start + size], after[new_start:new_start + size])
+                            self.uninstall(game, 410)
+                        self.assert_already_patched_is_stable(410, patched)
+
+    def test_410_dealiases_shared_ability_and_casting_slices(self):
+        for count in (1, 40):
+            with self.subTest(ability_count=count):
+                source = dispel_resources()
+                shared = bytearray(make_spl([[effect(58, p1=73, p2=1)] for _ in range(count)],
+                                           footer=b"SHARED-FOOTER"))
+                ability_offset = struct.unpack_from("<I", shared, 0x64)[0]
+                for index in range(count):
+                    struct.pack_into("<H", shared, ability_offset + index * 0x28 + 0x20, 0)
+                struct.pack_into("<HH", shared, 0x6E, 0, 1)
+                source["SPIN112.SPL"] = bytes(shared)
+                with tempfile.TemporaryDirectory(prefix="cbm-spell-410-shared-") as raw:
+                    game = SyntheticSpellGame(Path(raw) / "game", source)
+                    self.install(game, 410)
+                    patched = file_tree(game.override)
+                    self.assert_dispel_result(source, patched)
+                    self.assertTrue(patched["SPIN112.SPL"].endswith(b"SHARED-FOOTER"))
+                    self.uninstall(game, 410)
+                self.assert_already_patched_is_stable(410, patched)
+
+    def test_410_copies_binary_percent_sequences_without_expanding_variables(self):
+        source = dispel_resources()
+        yeslick = bytearray(make_spl([[effect(58), effect(215, resource="%test%")]]))
+        header = struct.unpack_from("<I", yeslick, 0x64)[0]
+        yeslick[header + 2:header + 8] = b"%test%"
+        source["SPIN112.SPL"] = bytes(yeslick)
+        with tempfile.TemporaryDirectory(prefix="cbm-spell-410-binary-") as raw:
+            game = SyntheticSpellGame(Path(raw) / "game", source)
+            harness = game.root / HARNESS.name
+            harness.write_text(harness.read_text(encoding="ascii").replace(
+                "INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~",
+                "OUTER_SPRINT test ~WRONG!~\nINCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~",
+            ), encoding="ascii")
+            self.install(game, 410)
+            patched = file_tree(game.override)
+            self.assert_dispel_result(source, patched)
+            self.uninstall(game, 410)
+        self.assert_already_patched_is_stable(410, patched)
+
+    def test_410_checks_slice_start_capacity_without_rejecting_valid_slice_ends(self):
+        for first in (65455, 65456):
+            with self.subTest(first=first):
+                source = dispel_resources()
+                data = bytearray(make_spl([[effect(58), effect(215)]], footer=b"LIMIT-FOOTER"))
+                header = struct.unpack_from("<I", data, 0x64)[0]
+                effects = struct.unpack_from("<I", data, 0x6A)[0]
+                data[effects:effects] = b"\xEE" * (first * 0x30)
+                struct.pack_into("<H", data, header + 0x20, first)
+                source["SPIN112.SPL"] = bytes(data)
+                with tempfile.TemporaryDirectory(prefix="cbm-spell-410-capacity-") as raw:
+                    game = SyntheticSpellGame(Path(raw) / "game", source)
+                    if first == 65455:
+                        self.install(game, 410)
+                        patched = file_tree(game.override)
+                        self.assert_dispel_result(source, patched)
+                        last = spl_abilities(patched["SPIN112.SPL"])[-1]["offset"]
+                        self.assertEqual(65535, struct.unpack_from("<H", patched["SPIN112.SPL"], last + 0x20)[0])
+                        self.uninstall(game, 410)
+                    else:
+                        result = game.run(self.require_weidu(), "--force-install-list", "410")
+                        self.assertIn("replacement exceeds the effect-index capacity", game.transcript(result))
+                        self.assertEqual(game.initial_override, file_tree(game.override))
+                        game.assert_stable_inputs(self)
+        self.assert_already_patched_is_stable(410, patched)
+
+    def test_410_rejects_malformed_slices_and_ambiguous_thresholds_with_exact_rollback(self):
+        cases = []
+        for resource in ("SPIN112.SPL", "SPCL231.SPL"):
+            for damage in ("header", "ability_table", "huge_ability_offset", "negative_ability_offset",
+                           "huge_effect_offset", "negative_effect_offset", "ability_slice",
+                           "casting_slice", "overlap", "empty", "duplicate_dispel"):
+                source = dispel_resources()
+                data = bytearray(source[resource])
+                header = struct.unpack_from("<I", data, 0x64)[0]
+                effects = struct.unpack_from("<I", data, 0x6A)[0]
+                if damage == "header":
+                    data = data[:50]
+                elif damage == "ability_table":
+                    struct.pack_into("<I", data, 0x64, len(data) - 1)
+                elif damage in ("huge_ability_offset", "negative_ability_offset"):
+                    struct.pack_into("<I", data, 0x64, 0x7FFFFFF0 if damage.startswith("huge") else 0xFFFFFFF0)
+                elif damage in ("huge_effect_offset", "negative_effect_offset"):
+                    struct.pack_into("<I", data, 0x6A, 0x7FFFFFF0 if damage.startswith("huge") else 0xFFFFFFF0)
+                elif damage == "ability_slice":
+                    struct.pack_into("<H", data, header + 0x20, 65535)
+                elif damage == "casting_slice":
+                    struct.pack_into("<HH", data, 0x6E, 65535, 3)
+                elif damage == "overlap":
+                    struct.pack_into("<I", data, 0x64, effects)
+                elif damage == "empty":
+                    struct.pack_into("<H", data, header + 0x1E, 0)
+                else:
+                    count, first = struct.unpack_from("<HH", data, header + 0x1E)
+                    for index in range(count):
+                        if struct.unpack_from("<H", data, effects + (first + index) * 0x30)[0] != 58:
+                            struct.pack_into("<H", data, effects + (first + index) * 0x30, 58)
+                            break
+                source[resource] = bytes(data)
+                cases.append((f"{resource}:{damage}", source))
+        for levels in ([2], [1, 1], [1, 7, 3]):
+            source = dispel_resources()
+            source["SPIN112.SPL"] = make_spl([[effect(58)] for _ in levels], minimum_levels=levels)
+            cases.append((str(levels), source))
+        for label, source in cases:
+            with self.subTest(case=label), tempfile.TemporaryDirectory(prefix="cbm-spell-410-invalid-") as raw:
+                game = SyntheticSpellGame(Path(raw) / "game", source)
+                result = game.run(self.require_weidu(), "--force-install-list", "410")
+                self.assertIn("NOT INSTALLED DUE TO ERRORS", game.transcript(result))
+                self.assertEqual(game.initial_override, file_tree(game.override))
+                game.assert_stable_inputs(self)
 
     def test_430_rewrites_only_flooring_scroll_cast_effects_and_uninstalls(self):
         with tempfile.TemporaryDirectory(prefix="cbm-spell-430-") as raw:

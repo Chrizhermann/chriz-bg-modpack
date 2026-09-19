@@ -195,38 +195,17 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
   WRITE_SHORT 0x26 new_hp
   LPF cbm_npc_skills INT_VAR level = thief vampire = 1 STR_VAR kit = ~FIGHTER_THIEF~ END
 
-  // Keep legal proficiencies in their existing weapons, then spend additional
-  // warrior points on Hexxat's long sword, dagger and fighting styles.
+  // The selected Fighter/Thief preset owns the complete weapon/style allocation.
+  // Spend its installed-table budget in the authored order below, independently
+  // of any earlier mod's pips. Clear only standard proficiency effects.
   SET prof_col = $cbm_column(~WEAPPROF~ ~FIGHTER_THIEF~)
   SET prof_budget = $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~1~) +
                    fighter / $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~2~)
   CLEAR_ARRAY cbm_profs
-  READ_BYTE 0x33 effect_version
-  READ_LONG 0x2c4 effect_offset
-  READ_LONG 0x2c8 effect_count
-  SET effect_size = effect_version = 1 ? 0x108 : 0x30
-  SET effect_start = effect_version = 1 ? 8 : 0
-  FOR (fx = 0; fx < effect_count; ++fx) BEGIN
-    SET at = effect_offset + fx * effect_size + effect_start
-    SET opcode = effect_version = 1 ? LONG_AT at : SHORT_AT at
-    PATCH_IF (opcode = 233) BEGIN
-      READ_LONG (at + (effect_version = 1 ? 16 : 8)) stat
-      PATCH_IF (stat >= 89 AND stat <= 115) BEGIN
-        READ_LONG (at + (effect_version = 1 ? 12 : 4)) pips
-        SET $cbm_profs(~%stat%~) = pips BAND 7
-      END
-    END
+  FOR (stat = 89; stat <= 115; ++stat) BEGIN
+    SET $cbm_profs(~%stat%~) = 0
   END
-  PHP_EACH cbm_prof_stat AS row => stat BEGIN
-    SET pips = 0
-    PATCH_IF VARIABLE_IS_SET $cbm_profs(~%stat%~) BEGIN SET pips = $cbm_profs(~%stat%~) END
-    SET cap = $cbm_cell(~WEAPPROF~ ~%row%~ ~%prof_col%~)
-    SET pips = pips < cap ? pips : cap
-    SET pips = pips < prof_budget ? pips : prof_budget
-    SET $cbm_profs(~%stat%~) = pips
-    SET prof_budget -= pips
-    SET_BG2_PROFICIENCY stat pips
-  END
+  LPF cbm_npc_clear_proficiencies END
   WHILE (prof_budget > 0) BEGIN
     SET before = prof_budget
     PATCH_FOR_EACH row IN ~LONGSWORD~ ~DAGGER~ ~SINGLEWEAPON~ ~CLUB~ ~2WEAPON~ BEGIN

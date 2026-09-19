@@ -21,8 +21,8 @@ live-game acceptance pass across all components has not yet been performed.
    content is installed.
 
 Install this mod after the NPC, kit, spell, and tactical mods whose resources it
-patches. Each component validates its expected resources and source shape before
-writing; missing prerequisites are reported by the installer.
+patches. Each component validates its prerequisites and resource structure
+before writing; missing prerequisites are reported by the installer.
 
 ## Public alpha components
 
@@ -30,7 +30,7 @@ writing; missing prerequisites are reported by the installer.
 |---:|---|---|
 | 110 | `cbm_fade_ft_fix` | Complete Fade's Fighter/Thief conversion, authored build, and amulet usability |
 | 130 | `cbm_kivan_quest_fix` | Protect the BG1NPC Kivan sea-elf dialogue phase from SCS combat AI |
-| 140 | `cbm_mazzy_prof_fix` | Move Mazzy's illegal fifth Short Bow pip to Short Sword |
+| 140 | `cbm_mazzy_prof_fix` | Replace Mazzy's proficiencies with Short Bow 4 / Short Sword 3-4 |
 | 160 | `cbm_skie_skill_fix` | After a Swashbuckler conversion, move unusable Move Silently points to Open Locks |
 | 170 | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
 | 188 | `cbm_yeslick_alaghor` | Extend selected YeslickNPC Alaghor to the BG1 recruit family; before 199/EET_end |
@@ -75,6 +75,10 @@ The owner's custom Sarah portrait preference is maintained separately in private
 collection configuration. Component `191` is reserved for that preference, but no
 portrait component or portrait artwork is included in this public repository or
 release.
+
+The [NPC build guide](docs/npc-builds.md) lists the complete Mazzy, Xan and Fade
+allocations. Those presets replace incoming proficiencies, including earlier
+mod allocations; they do not require particular starting HP or proficiency values.
 
 The collection also recommends components `192` through `198` where their NPCs and
 prerequisites are present. Garrick needs no component here: the collection selects
