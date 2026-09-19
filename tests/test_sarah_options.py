@@ -13,10 +13,11 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 TP2 = ROOT / "setup-chriz-bg-modpack.tp2"
 ARCHER_TPA = ROOT / "chriz-bg-modpack/lib/cbm_sarah_archer.tpa"
+BUILD_HELPERS_TPA = ROOT / "chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa"
 HARNESS = ROOT / "tests/weidu/sarah_archer_harness.tp2"
 
 EFFECT_SIZE = 264
-STANDARD_PROFICIENCIES = range(89, 116)
+STANDARD_PROFICIENCIES = {*range(89, 109), *range(111, 116)}
 EXPECTED_PROFICIENCIES = {90: 1, 104: 3, 105: 2, 114: 2}
 STOCK_PORTRAIT_NAMES = ("SARAHL.BMP", "SARAHM.BMP", "SARAHS.BMP")
 ONE_EMPTY_STRING_TLK = (
@@ -45,7 +46,9 @@ def make_effect(opcode_value: int, parameter1: int, parameter2: int, seed: int) 
     return bytes(effect)
 
 
-def make_sarah_cre(seed: int) -> bytes:
+def make_sarah_cre(
+    seed: int, *, extra_effects: tuple[bytes, ...] = (), without_proficiencies: bool = False,
+) -> bytes:
     """Generate a structurally valid synthetic Sarah-shaped CRE V1.0 fixture."""
     header = bytearray(0x2D4)
     header[:8] = b"CRE V1.0"
@@ -67,6 +70,11 @@ def make_sarah_cre(seed: int) -> bytes:
         make_effect(233, 2, 114, seed + 40),
         make_effect(233, 7, 152, seed + 50),
     ]
+    if without_proficiencies:
+        effects = [effect for effect in effects if not (
+            u32(effect, 0x08) == 233 and (u32(effect, 0x18) & 0xFFFF) in STANDARD_PROFICIENCIES
+        )]
+    effects.extend(extra_effects)
 
     item_slots = b"\xff" * 80
     item_slots_offset = effects_offset + (len(effects) * EFFECT_SIZE)
@@ -100,7 +108,7 @@ def proficiency_map(data: bytes) -> dict[int, int]:
     for record in effect_records(data):
         if opcode(record) == 233:
             value = u32(record, 0x14)
-            stat = u32(record, 0x18)
+            stat = u32(record, 0x18) & 0xFFFF
             if stat in STANDARD_PROFICIENCIES:
                 if stat in result:
                     raise AssertionError(f"duplicate proficiency effect for stat {stat}")
@@ -113,7 +121,7 @@ def unrelated_effects(data: bytes) -> list[bytes]:
     for record in effect_records(data):
         is_standard_prof = (
             opcode(record) == 233
-            and u32(record, 0x18) in STANDARD_PROFICIENCIES
+            and (u32(record, 0x18) & 0xFFFF) in STANDARD_PROFICIENCIES
         )
         if not is_standard_prof:
             records.append(record)
@@ -299,6 +307,8 @@ class SarahArcherTests(unittest.TestCase):
                 source_path.as_posix(),
                 "--args",
                 output_path.as_posix(),
+                "--args",
+                BUILD_HELPERS_TPA.as_posix(),
                 "--no-exit-pause",
                 "--quick-log",
             ]
@@ -356,6 +366,26 @@ class SarahArcherTests(unittest.TestCase):
         first, _ = self.transform(source)
         second, _ = self.transform(first)
         self.assertEqual(first, second)
+
+    def test_archer_preserves_spell_states_and_removes_increment_proficiencies(self):
+        extra_effects = (
+            make_effect(233, 3, 109, 91),
+            make_effect(233, 4, 0x10000 | 110, 92),
+            make_effect(233, 1, 0x10000 | 106, 93),
+        )
+        for missing in (False, True):
+            with self.subTest(missing=missing):
+                source = make_sarah_cre(
+                    1, extra_effects=extra_effects, without_proficiencies=missing,
+                )
+                transformed, _ = self.transform(source)
+                self.assertEqual(EXPECTED_PROFICIENCIES, proficiency_map(transformed))
+                self.assertEqual(unrelated_effects(source), unrelated_effects(transformed))
+                self.assertNotIn(extra_effects[2], effect_records(transformed))
+                old_slots, new_slots = u32(source, 0x2B8), u32(transformed, 0x2B8)
+                self.assertEqual(source[old_slots:old_slots + 80], transformed[new_slots:new_slots + 80])
+                twice, _ = self.transform(transformed)
+                self.assertEqual(transformed, twice)
 
     def test_archer_patch_rejects_non_ranger(self):
         source = bytearray(make_sarah_cre(1))

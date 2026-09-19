@@ -1,0 +1,130 @@
+// Clear the complete EE weapon/style allocation, including increment-mode
+// records. Stats 109/110 have been repurposed for spell state in EE and are not
+// owned by these presets. Other opcodes and extended spell-state stats survive.
+DEFINE_PATCH_FUNCTION cbm_npc_clear_proficiencies BEGIN
+  PATCH_IF SOURCE_SIZE < 0x2d4 BEGIN PATCH_FAIL ~cbm_npc_build: truncated CRE~ END
+  READ_BYTE 0x33 cbmp_version
+  READ_LONG 0x2c4 cbmp_offset
+  READ_LONG 0x2c8 cbmp_count
+  SET cbmp_size = cbmp_version = 1 ? 0x108 : 0x30
+  PATCH_IF (cbmp_version > 1) OR (cbmp_count < 0)
+      OR (cbmp_count > SOURCE_SIZE / cbmp_size)
+      OR ((cbmp_count > 0) AND ((cbmp_offset < 0x2d4)
+        OR (cbmp_offset > SOURCE_SIZE - cbmp_count * cbmp_size))) BEGIN
+    PATCH_FAIL ~cbm_npc_build: invalid embedded effect table~
+  END
+  FOR (cbmp_i = 0; cbmp_i < cbmp_count; ++cbmp_i) BEGIN
+    SET cbmp_at = cbmp_offset + cbmp_i * cbmp_size
+    SET cbmp_opcode = cbmp_version = 1 ? LONG_AT (cbmp_at + 8) : SHORT_AT cbmp_at
+    PATCH_IF cbmp_opcode = 233 BEGIN
+      SET cbmp_parameter = cbmp_at + (cbmp_version = 1 ? 0x18 : 8)
+      READ_SHORT cbmp_parameter cbmp_stat
+      PATCH_IF ((cbmp_stat >= 89) AND (cbmp_stat <= 108))
+            OR ((cbmp_stat >= 111) AND (cbmp_stat <= 115)) BEGIN
+        // WeiDU's removal matches the entire parameter. Normalize only owned
+        // records before deleting them so its pointer maintenance handles both
+        // set and increment modes without touching unrelated records.
+        WRITE_LONG cbmp_parameter cbmp_stat
+      END
+    END
+  END
+  FOR (cbmp_stat = 89; cbmp_stat <= 115; ++cbmp_stat) BEGIN
+    PATCH_IF (cbmp_stat != 109) AND (cbmp_stat != 110) BEGIN
+      SET_BG2_PROFICIENCY cbmp_stat 0
+    END
+  END
+END
+
+// Remove grants attributable to the previous installed kit before assigning a
+// different authored kit. Call after validating the CRE and its effect table.
+// Personal spells and effects without that CLAB provenance remain untouched.
+DEFINE_PATCH_FUNCTION cbm_npc_clear_previous_kit
+  INT_VAR target_kit = 0
+BEGIN
+  READ_LONG 0x244 cbmk_old_encoded_kit
+  PATCH_IF (cbmk_old_encoded_kit != target_kit)
+       AND (FILE_EXISTS_IN_GAME ~KITLIST.2DA~) BEGIN
+    // CRE kit words are reversed relative to KITLIST's KITIDS value.
+    SET cbmk_old_kit_id = ((cbmk_old_encoded_kit BAND 0xffff) BLSL 16)
+                      BOR ((cbmk_old_encoded_kit BLSR 16) BAND 0xffff)
+    CLEAR_ARRAY cbmk_previous_clabs
+    CLEAR_ARRAY cbmk_previous_spells
+    INNER_ACTION BEGIN
+      COPY_EXISTING ~KITLIST.2DA~ ~override~
+        COUNT_2DA_COLS cbmk_columns
+        SET cbmk_ids_column = 0 - 1
+        SET cbmk_abilities_column = 0 - 1
+        // Without both headings this table supplies no resolvable kit CLAB.
+        PATCH_IF (cbmk_columns > 1) BEGIN
+          FOR (cbmk_column = 0; cbmk_column < cbmk_columns - 1; ++cbmk_column) BEGIN
+            READ_2DA_ENTRY 0 cbmk_column (cbmk_columns - 1) cbmk_heading
+            PATCH_IF (~%cbmk_heading%~ STRING_EQUAL_CASE ~KITIDS~) BEGIN
+              SET cbmk_ids_column = cbmk_column + 1
+            END
+            PATCH_IF (~%cbmk_heading%~ STRING_EQUAL_CASE ~ABILITIES~) BEGIN
+              SET cbmk_abilities_column = cbmk_column + 1
+            END
+          END
+        END
+        PATCH_IF (cbmk_ids_column > 0) AND (cbmk_abilities_column > 0) BEGIN
+          COUNT_2DA_ROWS cbmk_columns cbmk_rows
+          FOR (cbmk_row = 0; cbmk_row < cbmk_rows; ++cbmk_row) BEGIN
+            READ_2DA_ENTRY cbmk_row cbmk_ids_column cbmk_columns cbmk_kit_id
+            PATCH_IF IS_AN_INT ~%cbmk_kit_id%~ BEGIN
+              PATCH_IF (cbmk_kit_id = cbmk_old_kit_id) BEGIN
+                READ_2DA_ENTRY cbmk_row cbmk_abilities_column cbmk_columns cbmk_clab
+                PATCH_IF FILE_EXISTS_IN_GAME ~%cbmk_clab%.2DA~ BEGIN
+                  SET $cbmk_previous_clabs(~%cbmk_clab%~) = 1
+                END
+              END
+            END
+          END
+        END
+      BUT_ONLY
+      ACTION_PHP_EACH cbmk_previous_clabs AS cbmk_clab => cbmk_unused BEGIN
+        COPY_EXISTING ~%cbmk_clab%.2DA~ ~override~
+          COUNT_2DA_COLS cbmk_columns
+          COUNT_2DA_ROWS cbmk_columns cbmk_rows
+          FOR (cbmk_row = 0; cbmk_row < cbmk_rows; ++cbmk_row) BEGIN
+            FOR (cbmk_column = 1; cbmk_column < cbmk_columns; ++cbmk_column) BEGIN
+              READ_2DA_ENTRY cbmk_row cbmk_column cbmk_columns cbmk_ability
+              TO_UPPER cbmk_ability
+              PATCH_IF (~%cbmk_ability%~ STRING_MATCHES_REGEXP ~^AP_~ = 0)
+                    OR (~%cbmk_ability%~ STRING_MATCHES_REGEXP ~^GA_~ = 0) BEGIN
+                INNER_PATCH ~%cbmk_ability%~ BEGIN
+                  DELETE_BYTES 0 3
+                  READ_ASCII 0 cbmk_spell (BUFFER_LENGTH)
+                END
+                SET $cbmk_previous_spells(~%cbmk_spell%~) = 1
+              END
+            END
+          END
+        BUT_ONLY
+      END
+    END
+    PHP_EACH cbmk_previous_spells AS cbmk_spell => cbmk_unused BEGIN
+      REMOVE_KNOWN_SPELL ~%cbmk_spell%~
+      REMOVE_MEMORIZED_SPELL ~%cbmk_spell%~
+      // V1 effects lack the parent-spell metadata needed to identify provenance.
+      // A payload-resource match is not sufficient to attribute an effect.
+      PATCH_IF BYTE_AT 0x33 = 1 BEGIN
+        READ_LONG 0x2c4 cbmk_effect_offset
+        READ_LONG 0x2c8 cbmk_effect_count
+        FOR (cbmk_index = cbmk_effect_count - 1; cbmk_index >= 0; --cbmk_index) BEGIN
+          SET cbmk_effect = cbmk_effect_offset + cbmk_index * 0x108
+          READ_ASCII (cbmk_effect + 0x8c) cbmk_parent_spell (8) NULL
+          PATCH_IF (LONG_AT (cbmk_effect + 0x88) = 1)
+               AND (~%cbmk_parent_spell%~ STRING_EQUAL_CASE ~%cbmk_spell%~) BEGIN
+            DELETE_BYTES cbmk_effect 0x108
+            WRITE_LONG 0x2c8 (LONG_AT 0x2c8 - 1)
+            PATCH_FOR_EACH cbmk_pointer IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc BEGIN
+              PATCH_IF LONG_AT cbmk_pointer > cbmk_effect BEGIN
+                WRITE_LONG cbmk_pointer (LONG_AT cbmk_pointer - 0x108)
+              END
+            END
+          END
+        END
+      END
+    END
+  END
+END

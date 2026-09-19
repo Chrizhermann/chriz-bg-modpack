@@ -37,36 +37,9 @@ DEFINE_PATCH_FUNCTION cbm_sarah_make_archer BEGIN
   // The core Archer kit is the high word 0x4007 of the CRE kit dword.
   WRITE_SHORT 0x246 0x4007
 
-  // Clear the complete standard BG2 proficiency range before installing the
-  // exact eight-pip build. Numeric stat IDs keep this function testable under
-  // WeiDU --nogame without loading STATS.IDS.
-  SET_BG2_PROFICIENCY 89 0
-  SET_BG2_PROFICIENCY 90 0
-  SET_BG2_PROFICIENCY 91 0
-  SET_BG2_PROFICIENCY 92 0
-  SET_BG2_PROFICIENCY 93 0
-  SET_BG2_PROFICIENCY 94 0
-  SET_BG2_PROFICIENCY 95 0
-  SET_BG2_PROFICIENCY 96 0
-  SET_BG2_PROFICIENCY 97 0
-  SET_BG2_PROFICIENCY 98 0
-  SET_BG2_PROFICIENCY 99 0
-  SET_BG2_PROFICIENCY 100 0
-  SET_BG2_PROFICIENCY 101 0
-  SET_BG2_PROFICIENCY 102 0
-  SET_BG2_PROFICIENCY 103 0
-  SET_BG2_PROFICIENCY 104 0
-  SET_BG2_PROFICIENCY 105 0
-  SET_BG2_PROFICIENCY 106 0
-  SET_BG2_PROFICIENCY 107 0
-  SET_BG2_PROFICIENCY 108 0
-  SET_BG2_PROFICIENCY 109 0
-  SET_BG2_PROFICIENCY 110 0
-  SET_BG2_PROFICIENCY 111 0
-  SET_BG2_PROFICIENCY 112 0
-  SET_BG2_PROFICIENCY 113 0
-  SET_BG2_PROFICIENCY 114 0
-  SET_BG2_PROFICIENCY 115 0
+  // Replace base and increment-mode proficiency records. Stats 109/110 are
+  // repurposed EE spell-state fields and are not part of this allocation.
+  LPF cbm_npc_clear_proficiencies END
 
   SET_BG2_PROFICIENCY 90  1 // Long Sword
   SET_BG2_PROFICIENCY 104 3 // Long Bow
@@ -75,6 +48,13 @@ DEFINE_PATCH_FUNCTION cbm_sarah_make_archer BEGIN
 
   // Postcondition gate: exactly the four selected proficiency effects must
   // remain in the standard range, with no duplicate or stray values.
+  READ_LONG 0x2c4 cbm_sarah_effect_offset
+  READ_LONG 0x2c8 cbm_sarah_effect_count
+  PATCH_IF (cbm_sarah_effect_offset < 0x2d4)
+        OR (cbm_sarah_effect_count > BUFFER_LENGTH / 0x108)
+        OR (cbm_sarah_effect_offset > BUFFER_LENGTH - cbm_sarah_effect_count * 0x108) BEGIN
+    PATCH_FAIL ~cbm_sarah_archer: invalid resulting embedded effect table~
+  END
   SET cbm_sarah_bad_prof = 0
   SET cbm_sarah_seen_90 = 0
   SET cbm_sarah_seen_104 = 0
@@ -86,7 +66,9 @@ DEFINE_PATCH_FUNCTION cbm_sarah_make_archer BEGIN
     PATCH_IF (cbm_sarah_opcode = 233) BEGIN
       READ_LONG (cbm_sarah_effect + 0x14) cbm_sarah_value
       READ_LONG (cbm_sarah_effect + 0x18) cbm_sarah_stat
-      PATCH_IF ((cbm_sarah_stat >= 89) AND (cbm_sarah_stat <= 115)) BEGIN
+      SET cbm_sarah_stat = cbm_sarah_stat BAND 0xffff
+      PATCH_IF ((cbm_sarah_stat >= 89) AND (cbm_sarah_stat <= 115)
+             AND (cbm_sarah_stat != 109) AND (cbm_sarah_stat != 110)) BEGIN
         PATCH_IF (cbm_sarah_stat = 90) BEGIN
           SET cbm_sarah_seen_90 += 1
           PATCH_IF (cbm_sarah_value != 1) BEGIN SET cbm_sarah_bad_prof = 1 END

@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.2.0-alpha.7 - 2026-09-19
+
+### Fixed
+
+- Fix component **140** rejecting different incoming Mazzy proficiencies and
+  component **170** rejecting different Xan HP, levels or proficiency records.
+  Explicit recruitment variants now select their authored builds. Mazzy, Xan
+  and Fade replace their complete weapon/style allocations; missing, duplicate
+  and previously modified proficiencies are normalized without retaining stray
+  pips. Incoming XP is preserved and is not used as an identity fingerprint.
+- Apply the same policy to Fade **110**, including its authored thief skills.
+  Fade and Xan derive split levels from the installed XP tables without
+  requiring the original source levels or exact XP values. Xan requires the
+  target Eldritch Knight kit, not a particular incoming specialist kit.
+  Both conversions clear former dual-class flags and remove identifiable
+  previous-kit grants while preserving personal abilities and unrelated effects.
+- Skie's narrow skill repair **160/195** transfers the actual Move Silently
+  points to Open Locks, instead of recognizing only fixed example allocations.
+  Already-transferred skills are unchanged; unrepresentable totals report the
+  actual 255-point storage limit.
+- Hexxat Fighter/Thief **222** replaces the full proficiency allocation using
+  its existing weapon preferences and the installed point budget and caps.
+- Share proficiency clearing across these presets and Sarah **190**. Remove
+  increment-mode weapon records as well as ordinary pips, while preserving
+  EE's repurposed spell-state fields and unrelated effects.
+- Fix dispel component **410** rejecting valid casting-first effect layouts,
+  including the layout produced by WeiDU's casting-effect helper. Follow actual
+  indexes for all effect slices; preserve casting hooks, per-tier effects and
+  Keldorn's installed scaling. Yeslick retains the intended 40-level, 1.5x
+  hostile-only dispel progression, including when the input uses shared or
+  differently arranged effect lists.
+
+These changes have automated installer coverage; native gameplay acceptance
+and testing against the reporter's installation remain separate.
+
 ## v0.2.0-alpha.6 - 2026-09-16
 
 ### Added

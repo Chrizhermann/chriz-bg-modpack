@@ -501,16 +501,27 @@ class CollectionDefaultsTests(unittest.TestCase):
                 second = self.transform(spec.harness_component, first, expected_dv=dv)
                 self.assertEqual(first, second)
 
-    def test_skie_default_is_atomic_when_the_skill_state_is_invalid(self):
+    def test_skie_default_is_atomic_when_transferred_skills_exceed_storage(self):
         source = make_cre(
             class_id=CLASS_IDS["THIEF"],
             kit=KIT_IDS["TRUECLASS"] << 16,
             dv="SKIE",
             xp=5_098,
-            open_locks=21,
+            open_locks=250,
             move_silently=25,
         )
-        self.assert_fails_closed(2, source, expected_dv="SKIE", pattern=r"skill|state")
+        self.assert_fails_closed(2, source, expected_dv="SKIE", pattern=r"255")
+
+    def test_skie_default_transfers_modified_skills_and_sets_the_kit(self):
+        source = make_cre(
+            class_id=CLASS_IDS["THIEF"], kit=KIT_IDS["TRUECLASS"] << 16,
+            dv="SKIE", xp=5_999, open_locks=21, move_silently=25,
+        )
+        transformed = self.transform(2, source, expected_dv="SKIE")
+        self.assertEqual(46, transformed[0x67])
+        self.assertEqual(0, transformed[0x68])
+        self.assertEqual(KIT_IDS["SWASHBUCKLER"] << 16, u32(transformed, 0x244))
+        self.assertEqual(transformed, self.transform(2, transformed, expected_dv="SKIE"))
 
     def test_kit_guards_reject_wrong_signature_identity_class_and_kit(self):
         for group, spec in KIT_COMPONENTS.items():

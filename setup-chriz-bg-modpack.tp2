@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.6~
+VERSION ~v0.2.0-alpha.7~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -22,6 +22,7 @@ BEGIN @110 DESIGNATED 110 GROUP @1100 LABEL ~cbm_fade_ft_fix~
     ~cbm_fade_ft_fix: E3FADE25.CRE is missing - the Fade installation is incomplete.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~E3AMUL01.ITM~
     ~cbm_fade_ft_fix: E3AMUL01.ITM is missing - the Fade installation is incomplete.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_fade_ft_fix.tpa~
 LAF cbm_fade_load_context
   RET
@@ -37,6 +38,7 @@ ACTION_FOR_EACH cbm_fade_cre IN ~E3FADE13~ ~E3FADE25~ BEGIN
       INT_VAR
         cbm_fade_thief_class = cbm_fade_thief_class
         cbm_fade_fighter_thief_class = cbm_fade_fighter_thief_class
+      STR_VAR cbm_fade_template = EVAL ~%cbm_fade_cre%~
     END
   BUT_ONLY
 END
@@ -56,18 +58,19 @@ COPY ~chriz-bg-modpack/baf/cbm_kivan_saha01.baf~ ~override/X#SAHA01.BCS~
 COPY ~chriz-bg-modpack/baf/cbm_kivan_saha02.baf~ ~override/X#SAHA02.BCS~
   COMPILE_BAF_TO_BCS
 
-// Move Mazzy's illegal fifth Short Bow pip to Short Sword across all five
-// shipped BG2 variants.
+// Replace Mazzy's weapon/style proficiencies with the authored Short Bow /
+// Short Sword allocation for each of the five shipped BG2 variants.
 BEGIN @140 DESIGNATED 140 GROUP @1100 LABEL ~cbm_mazzy_prof_fix~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY8.CRE~ ~cbm_mazzy_prof_fix: MAZZY8.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY9.CRE~ ~cbm_mazzy_prof_fix: MAZZY9.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY11.CRE~ ~cbm_mazzy_prof_fix: MAZZY11.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY12.CRE~ ~cbm_mazzy_prof_fix: MAZZY12.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~MAZZY15.CRE~ ~cbm_mazzy_prof_fix: MAZZY15.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_mazzy_prof_fix.tpa~
 ACTION_FOR_EACH cbm_mazzy_cre IN ~MAZZY8~ ~MAZZY9~ ~MAZZY11~ ~MAZZY12~ ~MAZZY15~ BEGIN
   COPY_EXISTING ~%cbm_mazzy_cre%.CRE~ ~override~
-    LPF cbm_mazzy_move_bow_pip END
+    LPF cbm_mazzy_move_bow_pip STR_VAR cbm_mazzy_template = EVAL ~%cbm_mazzy_cre%~ END
   BUT_ONLY
 END
 
@@ -105,12 +108,11 @@ BEGIN @170 DESIGNATED 170 GROUP @1100 LABEL ~cbm_xan_ek_fix~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XAN4.CRE~ ~cbm_xan_ek_fix: XAN4.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XAN6.CRE~ ~cbm_xan_ek_fix: XAN6.CRE is missing.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~TTXAN.CRE~ ~cbm_xan_ek_fix: TTXAN.CRE is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_xan_ek_fix.tpa~
 LAF cbm_xan_load_context
   RET
-    cbm_xan_mage_class = cbm_xan_mage_class
     cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
-    cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
     cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
   RET_ARRAY
     cbm_xan_fighter_xp = cbm_xan_fighter_xp
@@ -120,10 +122,9 @@ ACTION_FOR_EACH cbm_xan_cre IN ~XAN4~ ~XAN6~ ~TTXAN~ BEGIN
   COPY_EXISTING ~%cbm_xan_cre%.CRE~ ~override~
     LPF cbm_xan_make_eldritch_knight
       INT_VAR
-        cbm_xan_mage_class = cbm_xan_mage_class
         cbm_xan_fighter_mage_class = cbm_xan_fighter_mage_class
-        cbm_xan_enchanter_kit = cbm_xan_enchanter_kit
         cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_kit
+      STR_VAR cbm_xan_template = EVAL ~%cbm_xan_cre%~
     END
   BUT_ONLY
 END
@@ -151,6 +152,7 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_safana_inventory.tpa~
 BEGIN @190 DESIGNATED 190 GROUP @1100 LABEL ~cbm_sarah_archer~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~K#SARAH.CRE~ ~cbm_sarah_archer: K#SARAH.CRE is missing - install Sarah ToB v8 first.~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~K#SARAH1.CRE~ ~cbm_sarah_archer: K#SARAH1.CRE is missing - the Sarah installation is incomplete.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_sarah_archer.tpa~
 ACTION_FOR_EACH cbm_sarah_cre IN ~K#SARAH~ ~K#SARAH1~ BEGIN
   COPY_EXISTING ~%cbm_sarah_cre%.CRE~ ~override~
@@ -357,6 +359,7 @@ LAF cbm_continuity_install INT_VAR cbmci_xan cbmci_yeslick END
 BEGIN @220 DESIGNATED 220 GROUP @1100 LABEL ~cbm_yoshimo_swashbuckler~
   REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~YOSHI7.CRE~ @1191
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
 LAF cbm_companion_class STR_VAR npc = ~YOSHIMO~ kit = ~SWASHBUCKLER~ END
 
@@ -364,6 +367,7 @@ BEGIN @221 DESIGNATED 221 GROUP @1100 LABEL ~cbm_hexxat_shadowdancer~
   SUBCOMPONENT @1194
   REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
 LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~SHADOWDANCER~ END
 
@@ -371,6 +375,7 @@ BEGIN @222 DESIGNATED 222 GROUP @1100 LABEL ~cbm_hexxat_fighter_thief~
   SUBCOMPONENT @1194
   REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
 LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~FIGHTER_THIEF~ END
 
@@ -378,6 +383,7 @@ BEGIN @223 DESIGNATED 223 GROUP @1100 LABEL ~cbm_hexxat_assassin~
   SUBCOMPONENT @1194
   REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1190
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~OHHEX8.CRE~ @1192
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
 LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~ASSASIN~ END
 

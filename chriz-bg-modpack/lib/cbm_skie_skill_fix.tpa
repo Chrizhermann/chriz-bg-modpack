@@ -34,7 +34,6 @@ BEGIN
   END
   READ_ASCII 0x00 cbm_skie_signature (8)
   READ_ASCII 0x280 cbm_skie_dv (32) NULL
-  READ_LONG 0x18 cbm_skie_xp
   READ_BYTE 0x273 cbm_skie_class
   READ_LONG 0x244 cbm_skie_kit
   READ_BYTE 0x67 cbm_skie_locks
@@ -50,34 +49,15 @@ BEGIN
     PATCH_FAIL ~cbm_skie_skill_fix: expected installed Swashbuckler kit~
   END
 
-  PATCH_IF ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~) AND (cbm_skie_xp = 5098)) BEGIN
-    SET cbm_skie_source_locks = 20
-    SET cbm_skie_source_move = 25
-    SET cbm_skie_target_locks = 45
-  END ELSE PATCH_IF ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~) AND (cbm_skie_xp = 20056)) BEGIN
-    SET cbm_skie_source_locks = 30
-    SET cbm_skie_source_move = 35
-    SET cbm_skie_target_locks = 65
-  END ELSE PATCH_IF (((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIE~)
-                   OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIED~))
-                  AND (cbm_skie_xp = 64000)) BEGIN
-    SET cbm_skie_source_locks = 35
-    SET cbm_skie_source_move = 35
-    SET cbm_skie_target_locks = 70
-  END ELSE BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: unsupported Skie XP/death-variable profile~
+  PATCH_IF NOT ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~)
+             OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIE~)
+             OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIED~)) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: unexpected Skie death variable~
   END
-
-  PATCH_IF NOT (((cbm_skie_locks = cbm_skie_source_locks)
-              AND (cbm_skie_move = cbm_skie_source_move))
-             OR ((cbm_skie_locks = cbm_skie_target_locks)
-              AND (cbm_skie_move = 0))) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: unexpected Skie skill state~
+  SET cbm_skie_target_locks = cbm_skie_locks + cbm_skie_move
+  PATCH_IF (cbm_skie_target_locks > 255) BEGIN
+    PATCH_FAIL ~cbm_skie_skill_fix: combined Open Locks and Move Silently exceeds the CRE skill limit of 255~
   END
-  PATCH_IF ((cbm_skie_source_locks + cbm_skie_source_move) != cbm_skie_target_locks) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: internal Skie skill-budget mismatch~
-  END
-
   WRITE_BYTE 0x67 cbm_skie_target_locks
   WRITE_BYTE 0x68 0
 END

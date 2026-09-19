@@ -79,7 +79,8 @@ def table(columns: tuple[str, ...], rows: dict[str, tuple[object, ...]],
 
 
 def _creature(*, xp: int = 1_000_001, level: int = 14, kit: str = "TRUECLASS",
-              death_variable: str = "HEXXAT") -> bytes:
+              death_variable: str = "HEXXAT",
+              proficiencies: tuple[tuple[int, int], ...] = ((105, 1),)) -> bytes:
     """Build a CRE V1.0 with a racial innate, inventory and permanent effect."""
     header = bytearray(0x2D4)
     header[:8] = b"CRE V1.0"
@@ -117,20 +118,24 @@ def _creature(*, xp: int = 1_000_001, level: int = 14, kit: str = "TRUECLASS",
     effect[0x24:0x26] = bytes((100, 0))
     effect[0x30:0x38] = b"CBMVAMP\0"
     effect[0x90:0x98] = b"CBMVAMP\0"
-    proficiency = bytearray(0x108)
-    struct.pack_into("<III", proficiency, 0x08, 233, 1, 0)
-    struct.pack_into("<III", proficiency, 0x14, 1, 105, 9)
-    proficiency[0x24:0x26] = bytes((100, 0))
+    proficiency_effects = bytearray()
+    for stat, pips in proficiencies:
+        proficiency = bytearray(0x108)
+        struct.pack_into("<III", proficiency, 0x08, 233, 1, 0)
+        struct.pack_into("<III", proficiency, 0x14, pips, stat, 9)
+        proficiency[0x24:0x26] = bytes((100, 0))
+        proficiency_effects.extend(proficiency)
     clab_effect = bytearray(0x108)
     struct.pack_into("<III", clab_effect, 0x08, 0, 1, 0)
     struct.pack_into("<II", clab_effect, 0x14, 1, 0)
     struct.pack_into("<I", clab_effect, 0x1C, 9)
     struct.pack_into("<I", clab_effect, 0x88, 1)
     clab_effect[0x8C:0x94] = b"CLABFX\0\0"
-    chunks = (known, memory, memorized, slots, items, effect + proficiency + clab_effect)
+    chunks = (known, memory, memorized, slots, items, effect + proficiency_effects + clab_effect)
     cursor = len(header)
     for pointer, count, chunk in zip((0x2A0, 0x2A8, 0x2B0, 0x2B8, 0x2BC, 0x2C4),
-                                      (len(spells), 1, len(spells), None, 1, 3), chunks):
+                                      (len(spells), 1, len(spells), None, 1,
+                                       len(proficiencies) + 2), chunks):
         struct.pack_into("<I", header, pointer, cursor)
         if count is not None:
             struct.pack_into("<I", header, pointer + 4, count)
@@ -144,6 +149,17 @@ def _resource_records(creature: bytes, pointer: int, count_pointer: int,
     count = struct.unpack_from("<I", creature, count_pointer)[0]
     return [creature[offset + index * size:offset + (index + 1) * size]
             for index in range(count)]
+
+
+def _proficiency_map(creature: bytes) -> dict[int, int]:
+    result = {}
+    for effect in _resource_records(creature, 0x2C4, 0x2C8, 0x108):
+        opcode = struct.unpack_from("<I", effect, 0x08)[0]
+        stat = struct.unpack_from("<I", effect, 0x18)[0] & 0xFFFF
+        if opcode == 233 and 89 <= stat <= 115 and stat not in (109, 110):
+            assert stat not in result, f"duplicate proficiency record for {stat}"
+            result[stat] = struct.unpack_from("<I", effect, 0x14)[0] & 7
+    return result
 
 
 def _write_tables(game: SyntheticGame) -> None:
@@ -371,10 +387,7 @@ def _assert_installed_choice(
         if component == 221:
             assert creature[0x65] == 0  # Shadowdancers have no Set Traps allocation.
         if component == 222:
-            profs = {struct.unpack_from("<I", effect, 0x18)[0]: struct.unpack_from("<I", effect, 0x14)[0] & 7
-                     for effect in effects if struct.unpack_from("<I", effect, 0x08)[0] == 233}
-            assert profs[105] == 1  # Keep her existing legal shortbow proficiency.
-            assert sum(profs.values()) == 7
+            assert _proficiency_map(creature) == {90: 2, 96: 2, 113: 1, 115: 1, 114: 1}
             # The fixture's combat tables differ from vanilla, so these verify
             # use of effective progression while retaining its NPC modifiers.
             assert creature[0x52] == (10 if name == "OHHEX25" else 9)
@@ -518,9 +531,81 @@ def test_fighter_proficiency_points_arrive_at_levels_six_and_nine(
     assert result.returncode == 0, transcript
     creature = (game.override / "ohhex8.cre").read_bytes()
     assert creature[0x234:0x237] == bytes(levels)
-    effects = _resource_records(creature, 0x2C4, 0x2C8, 0x108)
-    assert sum(struct.unpack_from("<I", effect, 0x14)[0] & 7 for effect in effects
-               if struct.unpack_from("<I", effect, 0x08)[0] == 233) == pips
+    profs = _proficiency_map(creature)
+    assert profs == {90: 2, 96: pips - 5, 113: 1, 115: 1, 114: 1}
+    assert sum(profs.values()) == pips
+    result, transcript = _run(game, 222, uninstall=True)
+    assert result.returncode == 0, transcript
+    _assert_restored(game)
+
+
+@pytest.mark.parametrize("altered_rules,expected", (
+    (False, {90: 2, 96: 2, 113: 1, 115: 1, 114: 1}),
+    (True, {96: 3, 113: 1, 115: 2, 114: 2}),
+))
+def test_fighter_thief_replaces_all_incoming_pips_using_installed_rules(
+    tmp_path, altered_rules, expected,
+):
+    game = _make_game(tmp_path)
+    allocations = (
+        (),
+        ((105, 1),),
+        ((102, 1), (104, 1)),
+        ((105, 1), (105, 2), (90, 1)),
+        ((90, 1), (96, 1), (113, 1)),
+        ((113, 1), (96, 1), (90, 1)),
+        ((108, 1), (109, 1), (110, 1)),
+    )
+    # Spell-state and other nonstandard opcode-233 records are outside the
+    # allocation. The increment-mode Dart proficiency must be removed.
+    for name, allocation in zip(HEXXAT, allocations):
+        (game.override / f"{name.lower()}.cre").write_bytes(
+            _creature(proficiencies=(*allocation, (120, 1), (109, 2),
+                                    (0x10000 | 110, 3), (0x10000 | 106, 1)))
+        )
+    if altered_rules:
+        (game.override / "profs.2da").write_text(table(("FIRST_LEVEL", "RATE"), {
+            "FIGHTER": (4, 3), "THIEF": (2, 4), "FIGHTER_THIEF": (3, 2),
+        }), encoding="ascii")
+        caps = {"LONGSWORD": 0, "DAGGER": 3, "SINGLEWEAPON": 1,
+                "CLUB": 2, "2WEAPON": 3}
+        path = game.override / "weapprof.2da"
+        rows = path.read_text(encoding="ascii").splitlines()
+        for index, row in enumerate(rows):
+            cells = row.split()
+            if cells and cells[0] in caps:
+                cells[6] = str(caps[cells[0]])
+                rows[index] = " ".join(cells)
+        path.write_text("\n".join(rows) + "\n", encoding="ascii")
+    game.before = _file_tree(game.root)
+
+    result, transcript = _run(game, 222)
+    assert result.returncode == 0, transcript
+    for name in HEXXAT:
+        creature = (game.override / f"{name.lower()}.cre").read_bytes()
+        assert creature[0x234:0x237] == bytes((10, 12, 0))
+        assert _proficiency_map(creature) == expected
+        assert sum(_proficiency_map(creature).values()) == (8 if altered_rules else 7)
+        original = game.before[f"OVERRIDE/{name}.CRE"]
+        _assert_preserved_character_state(original, creature)
+        old_effects = _resource_records(original, 0x2C4, 0x2C8, 0x108)
+        new_effects = _resource_records(creature, 0x2C4, 0x2C8, 0x108)
+        def preserved_opcode_233(effects):
+            return [effect for effect in effects
+                    if struct.unpack_from("<I", effect, 0x08)[0] == 233
+                    and (struct.unpack_from("<I", effect, 0x18)[0] & 0xFFFF) in (109, 110, 120)]
+        assert preserved_opcode_233(old_effects) == preserved_opcode_233(new_effects)
+        assert not any(struct.unpack_from("<I", effect, 0x18)[0] == (0x10000 | 106)
+                       and struct.unpack_from("<I", effect, 0x08)[0] == 233
+                       for effect in new_effects)
+
+    installed = _file_tree(game.override)
+    result, transcript = _run(game, 222, uninstall=True)
+    assert result.returncode == 0, transcript
+    _assert_restored(game)
+    result, transcript = _run(game, 222)
+    assert result.returncode == 0, transcript
+    assert _file_tree(game.override) == installed
     result, transcript = _run(game, 222, uninstall=True)
     assert result.returncode == 0, transcript
     _assert_restored(game)

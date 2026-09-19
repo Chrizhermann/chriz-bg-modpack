@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.6",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.6",
+  "version": "v0.2.0-alpha.7",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.7",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -30,6 +30,7 @@
     "chriz-bg-modpack/lib/cbm_fade_ft_fix.tpa",
     "chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa",
     "chriz-bg-modpack/lib/cbm_mazzy_prof_fix.tpa",
+    "chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa",
     "chriz-bg-modpack/lib/cbm_safana_inventory.tpa",
     "chriz-bg-modpack/lib/cbm_sarah_archer.tpa",
     "chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa",
@@ -49,6 +50,7 @@
     "docs/companion-classes.md",
     "docs/companion-continuity.md",
     "docs/imoen-spellhold-xp.md",
+    "docs/npc-builds.md",
     "docs/utility-xp.md",
     "docs/yeslick-alaghor.md",
     "setup-chriz-bg-modpack.tp2"

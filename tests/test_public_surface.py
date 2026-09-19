@@ -124,6 +124,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/companion-classes.md",
             "docs/companion-continuity.md",
             "docs/imoen-spellhold-xp.md",
+            "docs/npc-builds.md",
             "docs/yeslick-alaghor.md",
         ):
             self.assertIn(required, files)
@@ -144,6 +145,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/companion-classes.md",
                 "docs/companion-continuity.md",
                 "docs/imoen-spellhold-xp.md",
+                "docs/npc-builds.md",
                 "docs/yeslick-alaghor.md",
             },
             {path for path in files if path.startswith("docs/")},
