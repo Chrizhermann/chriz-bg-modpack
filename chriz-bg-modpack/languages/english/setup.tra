@@ -56,3 +56,8 @@
 @1621 = ~Imoen's Spellhold XP requires EEex with EEex_LuaAction support. Install EEex first and launch through InfinityLoader.~
 @1622 = ~Imoen's Spellhold XP requires IMOEN2.BCS.~
 @1623 = ~[CBM Imoen XP] Installed. Imoen receives party-average XP once when joining in the Spellhold maze, capped at 3 million mage XP. See docs/imoen-spellhold-xp.md.~
+@630 = ~Generic artwork for unidentified items (requires EEex)~
+@1630 = ~Generic unidentified-item artwork currently supports BG2EE and EET on Windows.~
+@1631 = ~Install EEex / InfinityLoader first. This component needs its loader database and the Windows game executable.~
+@1632 = ~Choose one unidentified-item appearance option: generic artwork or Randomiser's cursed-item appearance. Ordinary loot randomization can stay installed.~
+@1633 = ~Generic unidentified-item artwork installed. Launch with InfinityLoader. Identifying an item restores its own artwork; item abilities, text and saves are unchanged.~

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Add optional **630 — Generic artwork for unidentified items**. Unidentified
+  items share artwork by item category, including cursed items. Identified copies
+  retain their own artwork. No item powers, descriptions, string references or
+  saved items are rewritten.
+- Independent of Randomiser; ordinary loot randomization remains compatible.
+  Choose either this component or Randomiser's cursed-appearance option, not both.
+- Windows BG2EE/EET with EEex; native game-code signatures are checked before
+  installation and again at startup. Live UI acceptance is still pending.
+
 ## v0.2.0-alpha.7 - 2026-09-19
 
 ### Fixed

@@ -5,6 +5,10 @@ compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
 **Release:** `v0.2.0-alpha.7`
 
+Development branch: optional component **630**, generic artwork for unidentified
+items, is implemented here but **not released or live-game accepted**. See the
+[component guide](docs/unidentified-items.md) before testing it.
+
 This release fixes NPC preset compatibility and dispel effect layouts. Selected
 builds replace their complete proficiency allocations, and the installer accepts
 valid resource variations introduced by earlier mods. All alpha.6 components
@@ -56,6 +60,7 @@ before writing; missing prerequisites are reported by the installer.
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
 | 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
+| 630 | `cbm_unidentified_appearance` | Generic artwork until identification; requires Windows EEex; unreleased |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.

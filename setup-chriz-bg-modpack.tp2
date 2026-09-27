@@ -448,3 +448,10 @@ BEGIN @620 DESIGNATED 620 GROUP @1600 LABEL ~cbm_imoen_spellhold_xp~
   REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1621
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~imoen2.bcs~ @1622
 INCLUDE ~chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa~
+
+// Presentation only; ordinary loot randomization remains compatible.
+BEGIN @630 DESIGNATED 630 GROUP @1600 LABEL ~cbm_unidentified_appearance~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1630
+  REQUIRE_PREDICATE (FILE_EXISTS ~override/M___EEex.lua~ AND FILE_EXISTS ~InfinityLoader.db~ AND FILE_EXISTS ~Baldur.exe~) @1631
+  REQUIRE_PREDICATE ((NOT MOD_IS_INSTALLED ~randomiser/randomiser.tp2~ 570) AND (NOT FILE_EXISTS_IN_GAME ~flrc570.mrk~)) @1632
+INCLUDE ~chriz-bg-modpack/lib/cbm_unidentified_appearance.tpa~

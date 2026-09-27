@@ -80,7 +80,8 @@ jobs:
           python3 -m pytest tests/test_utility_xp.py
           tests/test_companion_classes_installer.py
           tests/test_imoen_spellhold_xp.py
-          tests/test_imoen_spellhold_xp_installer.py -q
+          tests/test_imoen_spellhold_xp_installer.py
+          tests/test_unidentified_items.py -q
 
       - name: Build the production archive reproducibly
         run: |

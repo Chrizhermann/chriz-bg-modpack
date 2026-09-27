@@ -42,6 +42,7 @@ PUBLIC_COMPONENTS = {
     450,
     610,
     620,
+    630,
 }
 
 
@@ -121,6 +122,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "THIRD_PARTY_NOTICES.md",
             "setup-chriz-bg-modpack.tp2",
             "docs/utility-xp.md",
+            "docs/unidentified-items.md",
             "docs/companion-classes.md",
             "docs/companion-continuity.md",
             "docs/imoen-spellhold-xp.md",
@@ -142,6 +144,7 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertEqual(
             {
                 "docs/utility-xp.md",
+                "docs/unidentified-items.md",
                 "docs/companion-classes.md",
                 "docs/companion-continuity.md",
                 "docs/imoen-spellhold-xp.md",
