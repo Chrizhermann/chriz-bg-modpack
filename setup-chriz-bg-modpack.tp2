@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.7~
+VERSION ~v0.2.0-alpha.8~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -388,6 +388,24 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_companion_classes.tpa~
 LAF cbm_companion_class STR_VAR npc = ~HEXXAT~ kit = ~ASSASIN~ END
 
 // =====================================================================
+// Evandra preferences are independent: retain the original class or portrait
+// by leaving the corresponding component unselected.
+// =====================================================================
+
+BEGIN @224 DESIGNATED 224 GROUP @1100 LABEL ~cbm_evandra_sorcerer~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1224
+  REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~RH#EVA.CRE~ AND FILE_EXISTS_IN_GAME ~RH#EV25.CRE~) @1225
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~
+INCLUDE ~chriz-bg-modpack/lib/cbm_evandra_sorcerer.tpa~
+LAF cbm_evandra_install END
+
+BEGIN @225 DESIGNATED 225 GROUP @1100 LABEL ~cbm_evandra_portrait~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1224
+  REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~RH#EVA.CRE~ AND FILE_EXISTS_IN_GAME ~RH#EV25.CRE~) @1225
+INCLUDE ~chriz-bg-modpack/lib/cbm_evandra_portrait.tpa~
+
+// =====================================================================
 // Spell and compatibility fixes (400-499)
 // =====================================================================
 
@@ -437,10 +455,19 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa~
 // Shared progression for locks, traps and scribing, independent of the acting
 // character's class-level slots. Configurable; requires the EEex runtime.
 BEGIN @610 DESIGNATED 610 GROUP @1600 LABEL ~cbm_utility_xp~
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 611) @1614
   REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1610
   REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1611
   REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~XPBONUS.2DA~ AND FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~) @1612
 INCLUDE ~chriz-bg-modpack/lib/cbm_utility_xp.tpa~
+
+// Campaign identity and EET flags distinguish the overlapping chapters.
+BEGIN @611 DESIGNATED 611 GROUP @1600 LABEL ~cbm_story_utility_xp~
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 610) @1614
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1615
+  REQUIRE_PREDICATE FILE_EXISTS ~override/M___EEex.lua~ @1616
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XPBONUS.2DA~ @1617
+INCLUDE ~chriz-bg-modpack/lib/cbm_story_utility_xp.tpa~
 
 // One-time Spellhold catch-up: exact party-average XP, capped at 3M mage XP.
 BEGIN @620 DESIGNATED 620 GROUP @1600 LABEL ~cbm_imoen_spellhold_xp~
@@ -455,3 +482,10 @@ BEGIN @630 DESIGNATED 630 GROUP @1600 LABEL ~cbm_unidentified_appearance~
   REQUIRE_PREDICATE (FILE_EXISTS ~override/M___EEex.lua~ AND FILE_EXISTS ~InfinityLoader.db~ AND FILE_EXISTS ~Baldur.exe~) @1631
   REQUIRE_PREDICATE ((NOT MOD_IS_INSTALLED ~randomiser/randomiser.tp2~ 570) AND (NOT FILE_EXISTS_IN_GAME ~flrc570.mrk~)) @1632
 INCLUDE ~chriz-bg-modpack/lib/cbm_unidentified_appearance.tpa~
+
+// Load before legacy skins capture t(); preserve any already-working helper.
+BEGIN @640 DESIGNATED 640 GROUP @1400 LABEL ~cbm_legacy_ui_strings~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1640
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~UTIL.LUA~ @1641
+INCLUDE ~chriz-bg-modpack/lib/cbm_legacy_ui_strings.tpa~
+PRINT @1642

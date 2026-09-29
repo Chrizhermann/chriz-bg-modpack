@@ -35,14 +35,18 @@ PUBLIC_COMPONENTS = {
     221,
     222,
     223,
+    224,
+    225,
     400,
     410,
     430,
     440,
     450,
     610,
+    611,
     620,
     630,
+    640,
 }
 
 
@@ -85,6 +89,10 @@ class PublicSurfaceTests(unittest.TestCase):
             198: "cbm_kivan_archer",
             199: "cbm_companion_continuity",
             620: "cbm_imoen_spellhold_xp",
+            611: "cbm_story_utility_xp",
+            224: "cbm_evandra_sorcerer",
+            225: "cbm_evandra_portrait",
+            640: "cbm_legacy_ui_strings",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -99,7 +107,9 @@ class PublicSurfaceTests(unittest.TestCase):
             if int(match.group(1)) < 1000
         }
         self.assertEqual(PUBLIC_COMPONENTS, component_strings)
-        self.assertNotRegex(source, r"(?im)portrait|not yet|TBD")
+        self.assertNotRegex(source, r"(?im)not yet|TBD")
+        portrait_strings = [line for line in source.splitlines() if "portrait" in line.lower()]
+        self.assertEqual(["@225 = ~Evandra: Chriz's custom portrait~"], portrait_strings)
 
     def test_release_manifest_is_complete_and_excludes_private_material(self):
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -128,11 +138,11 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/imoen-spellhold-xp.md",
             "docs/npc-builds.md",
             "docs/yeslick-alaghor.md",
+            "docs/evandra.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
             "extras/",
-            "portraits/",
             "snapshot",
             "save",
             "handover",
@@ -141,18 +151,24 @@ class PublicSurfaceTests(unittest.TestCase):
         for path in files:
             with self.subTest(path=path):
                 self.assertFalse(any(fragment in path.lower() for fragment in forbidden_fragments))
+                if "portraits/" in path.lower():
+                    self.assertEqual("chriz-bg-modpack/portraits/evandra/rh#eval.bmp", path)
         self.assertEqual(
             {
                 "docs/utility-xp.md",
+                "docs/story-utility-xp.md",
                 "docs/unidentified-items.md",
                 "docs/companion-classes.md",
                 "docs/companion-continuity.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/npc-builds.md",
                 "docs/yeslick-alaghor.md",
+                "docs/evandra.md",
+                "docs/legacy-ui-strings.md",
+                "docs/releases/v0.2.0-alpha.8.md",
             },
             {path for path in files if path.startswith("docs/")},
-            "Only the public component user guides belong in release docs",
+            "Only public component guides and current release notes belong in release docs",
         )
 
 

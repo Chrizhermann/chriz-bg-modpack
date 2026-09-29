@@ -1,0 +1,6 @@
+// Runtime campaign switching only. Do not change the on-disk XPBONUS table.
+COPY ~chriz-bg-modpack/story-utility-xp/m_cbmsxp.lua~ ~override/M_CBMSXP.lua~
+     ~chriz-bg-modpack/story-utility-xp/cbmsxp.lua~ ~override/CBMSXP.lua~
+     ~chriz-bg-modpack/story-utility-xp/cbmsxrt.lua~ ~override/CBMSXRT.lua~
+     ~chriz-bg-modpack/story-utility-xp/cbmsxp.menu~ ~override/CBMSXP.menu~
+PRINT @1618

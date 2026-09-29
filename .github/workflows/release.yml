@@ -74,12 +74,12 @@ jobs:
           WEIDU: weidu.exe
         run: python -m unittest discover -s tests -v
 
-      - name: Test XP runtimes, Imoen installer, and companion class choices
+      - name: Test XP runtimes, companion choices, artwork hooks, and UI adapter
         shell: pwsh
         env:
           WEIDU_BIN: weidu.exe
           WEIDU: weidu.exe
-        run: python -m pytest tests/test_utility_xp.py tests/test_companion_classes_installer.py tests/test_imoen_spellhold_xp.py tests/test_imoen_spellhold_xp_installer.py -q
+        run: python -m pytest tests/test_utility_xp.py tests/test_story_utility_xp.py tests/test_companion_classes_installer.py tests/test_evandra_sorcerer.py tests/test_legacy_ui_strings.py tests/test_imoen_spellhold_xp.py tests/test_imoen_spellhold_xp_installer.py tests/test_unidentified_items.py -q
 
       - name: Build deterministic release twice
         shell: pwsh
@@ -100,7 +100,7 @@ jobs:
           $version = (Get-Content -LiteralPath VERSION -Raw).Trim()
           $env:CBM_RELEASE_ARCHIVE = "dist\chriz-bg-modpack-$version.zip"
           $env:CBM_USE_BUNDLED_WEIDU = '1'
-          python -m unittest tests.test_release_archive -v
+          python -m unittest tests.test_release_archive tests.test_release_new_components -v
 
       - name: Upload verified release files
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

@@ -1,7 +1,7 @@
 # Generic artwork for unidentified items
 
 Component **630**, label `cbm_unidentified_appearance`, marker `CBMID.MRK`.
-Implemented on a development branch; not released or live-game accepted yet.
+Available from **v0.2.0-alpha.8**. Native in-game acceptance remains pending.
 
 ## What it does
 
@@ -34,9 +34,8 @@ their unique image.
   randomization can stay installed. The future per-campaign cursed-appearance
   option must also exclude this component. CEBG integration must enforce both
   directions, not just rely on installation order.
-- The current CEBG recipe defaults to Randomiser 570. Selecting 630 must turn
-  that alternative off; this development branch does not change that recipe or
-  silently change users' defaults.
+- Selecting 630 in CEBG must turn Randomiser 570 off. Collection recipe changes
+  are delivered separately from this mod release.
 - Existing saves are not rewritten and no new campaign state is stored. This
   is not a released CEBG hotpatch; do not overlay it onto a running installation.
   Install/uninstall with WeiDU and the game closed.
@@ -100,7 +99,10 @@ remain skipped). TP2/TPA parse checks and `git diff --check` pass. No test asser
 was weakened to accommodate the runner issue. The final focused run also loads
 each generated config through Lua and the production validator.
 
-On a disposable copy of the **default setup**, without Randomiser 570:
+The remaining native acceptance check, when a disposable copy of the **default
+setup** is available, is below. It was not an additional gate for alpha.8 and
+was not performed during its release preparation. Use a copy without Randomiser
+570:
 
 1. Open the game with InfinityLoader; confirm no Lua/native initialization error.
 2. Compare two different unidentified items of the same category, including a
