@@ -1,0 +1,144 @@
+// All source inspection precedes publication. COPY - creates virtual files,
+// never an override of a donor ITM or a modified game executable.
+OUTER_SPRINT cbmid_loader ~~
+OUTER_SPRINT cbmid_hooks ~~
+COPY - ~chriz-bg-modpack/unidentified-items/hooks.2da~ ~.../cbmid-hooks~
+  COUNT_2DA_ROWS 6 cbmid_count
+  PATCH_IF cbmid_count != 4 BEGIN PATCH_FAIL ~CBMID: expected four display hooks.~ END
+  FOR (cbmid_row = 0; cbmid_row < cbmid_count; ++cbmid_row) BEGIN
+    READ_2DA_ENTRY cbmid_row 0 6 cbmid_name
+    READ_2DA_ENTRY cbmid_row 1 6 cbmid_hex
+    READ_2DA_ENTRY cbmid_row 2 6 cbmid_offset
+    READ_2DA_ENTRY cbmid_row 3 6 cbmid_register
+    READ_2DA_ENTRY cbmid_row 4 6 cbmid_field
+    READ_2DA_ENTRY cbmid_row 5 6 cbmid_map
+    SET cbmid_len = STRING_LENGTH ~%cbmid_hex%~
+    PATCH_IF cbmid_len != 2 * cbmid_offset OR cbmid_len < 20 BEGIN
+      PATCH_FAIL ~CBMID: malformed hook signature %cbmid_name%.~
+    END
+    // Convert a checked hex signature to binary, then use EXACT_MATCH so
+    // regexp metacharacters and locale case folding cannot alter the scan.
+    INNER_PATCH_SAVE cbmid_needle ~~ BEGIN
+      INSERT_BYTES 0 cbmid_offset
+      FOR (cbmid_i = 0; cbmid_i < cbmid_offset; ++cbmid_i) BEGIN
+        INNER_PATCH ~%cbmid_hex%~ BEGIN
+          READ_ASCII (cbmid_i * 2) cbmid_pair (2)
+        END
+        SPRINT cbmid_byte ~0x%cbmid_pair%~
+        WRITE_BYTE cbmid_i cbmid_byte
+      END
+    END
+    INNER_ACTION BEGIN
+      COPY - ~Baldur.exe~ ~.../cbmid-exe~
+        SET cbmid_match = INDEX_BUFFER (CASE_SENSITIVE EXACT_MATCH ~%cbmid_needle%~)
+        PATCH_IF cbmid_match < 0 BEGIN
+          PATCH_FAIL ~CBMID: unsupported game executable; display signature %cbmid_name% was not found. No game code was changed.~
+        END
+        SET cbmid_second = INDEX_BUFFER (CASE_SENSITIVE EXACT_MATCH ~%cbmid_needle%~ (cbmid_match + 1))
+        PATCH_IF cbmid_second >= 0 BEGIN
+          PATCH_FAIL ~CBMID: ambiguous display signature %cbmid_name%. No game code was changed.~
+        END
+        PATCH_IF cbmid_match + cbmid_offset + 5 > BUFFER_LENGTH BEGIN
+          PATCH_FAIL ~CBMID: truncated display code %cbmid_name%.~
+        END
+        READ_BYTE (cbmid_match + cbmid_offset) cbmid_opcode
+        PATCH_IF cbmid_opcode != 0xe8 BEGIN
+          PATCH_FAIL ~CBMID: display code %cbmid_name% was changed by another modification.~
+        END
+    END
+    SPRINT cbmid_loader ~%cbmid_loader%%WNL%[CBMID::%cbmid_name%]%WNL%Pattern=%cbmid_hex%%WNL%Operations=ADD %cbmid_offset%%WNL%~
+    SPRINT cbmid_hooks ~%cbmid_hooks%{name="%cbmid_name%",pattern="%cbmid_hex%",callOffset=%cbmid_offset%,itemRegister="%cbmid_register%",fieldOffset=%cbmid_field%,mapOffset=%cbmid_map%},%WNL%~
+  END
+
+OUTER_SPRINT cbmid_types ~~
+OUTER_SPRINT cbmid_fallback ~~
+COPY - ~chriz-bg-modpack/unidentified-items/donors.2da~ ~.../cbmid-donors~
+  COUNT_2DA_ROWS 2 cbmid_rows
+  // With a one-value table, WeiDU also counts the two-word signature line.
+  READ_2DA_ENTRY 0 0 2 cbmid_header
+  PATCH_IF NOT (~%cbmid_header%~ STRING_EQUAL ~2DA~) BEGIN
+    PATCH_FAIL ~CBMID: invalid donor table header.~
+  END
+  FOR (cbmid_row = 1; cbmid_row < cbmid_rows; ++cbmid_row) BEGIN
+    READ_2DA_ENTRY cbmid_row 0 2 cbmid_type
+    READ_2DA_ENTRY cbmid_row 1 2 cbmid_donor
+    PATCH_IF NOT (~%cbmid_type%~ STRING_EQUAL ~FALLBACK~) BEGIN
+      PATCH_IF NOT (~%cbmid_type%~ STRING_MATCHES_REGEXP ~^[0-9]+$~ = 0) BEGIN
+        PATCH_FAIL ~CBMID: invalid donor type %cbmid_type%.~
+      END
+      PATCH_IF cbmid_type < 0 OR cbmid_type > 65535 BEGIN PATCH_FAIL ~CBMID: donor type out of range.~ END
+    END
+    PATCH_IF FILE_EXISTS_IN_GAME ~%cbmid_donor%.ITM~ BEGIN
+      INNER_ACTION BEGIN
+        COPY_EXISTING - ~%cbmid_donor%.ITM~ ~.../cbmid-donor~
+          PATCH_IF BUFFER_LENGTH < 0x72 BEGIN PATCH_FAIL ~CBMID: truncated donor %cbmid_donor%.ITM.~ END
+          READ_ASCII 0 cbmid_signature (8)
+          PATCH_IF NOT (~%cbmid_signature%~ STRING_EQUAL ~ITM V1  ~) BEGIN
+            PATCH_FAIL ~CBMID: invalid donor %cbmid_donor%.ITM.~
+          END
+          READ_ASCII 0x3a cbmid_inventory (8) NULL
+          READ_ASCII 0x44 cbmid_ground (8) NULL
+          READ_ASCII 0x58 cbmid_picture (8) NULL
+          PATCH_IF ~%cbmid_inventory%~ STRING_EQUAL ~~ BEGIN
+            PATCH_FAIL ~CBMID: donor %cbmid_donor%.ITM has no inventory icon.~
+          END
+          PATCH_FOR_EACH cbmid_art IN ~%cbmid_inventory%~ ~%cbmid_ground%~ ~%cbmid_picture%~ BEGIN
+            PATCH_IF NOT (~%cbmid_art%~ STRING_EQUAL ~~) BEGIN
+              PATCH_IF NOT (~%cbmid_art%~ STRING_MATCHES_REGEXP ~^[A-Za-z0-9_#-]+$~ = 0)
+                OR NOT FILE_EXISTS_IN_GAME ~%cbmid_art%.BAM~ BEGIN
+                PATCH_FAIL ~CBMID: missing or invalid donor artwork %cbmid_art% (%cbmid_donor%).~
+              END
+              INNER_ACTION BEGIN
+                COPY_EXISTING - ~%cbmid_art%.BAM~ ~.../cbmid-art~
+                  PATCH_IF BUFFER_LENGTH < 12 BEGIN
+                    PATCH_FAIL ~CBMID: truncated donor artwork %cbmid_art%.BAM.~
+                  END
+                  READ_ASCII 0 cbmid_bam_signature (8)
+                  PATCH_IF ~%cbmid_bam_signature%~ STRING_EQUAL ~BAM V1  ~ BEGIN
+                    PATCH_IF BUFFER_LENGTH < 0x18 BEGIN PATCH_FAIL ~CBMID: truncated BAM V1 header.~ END
+                  END ELSE PATCH_IF ~%cbmid_bam_signature%~ STRING_EQUAL ~BAM V2  ~ BEGIN
+                    PATCH_IF BUFFER_LENGTH < 0x20 BEGIN PATCH_FAIL ~CBMID: truncated BAM V2 header.~ END
+                  END ELSE PATCH_IF ~%cbmid_bam_signature%~ STRING_EQUAL ~BAMCV1  ~ BEGIN
+                    READ_LONG 8 cbmid_bam_size
+                    PATCH_IF BUFFER_LENGTH <= 12 OR cbmid_bam_size < 0x18 BEGIN
+                      PATCH_FAIL ~CBMID: truncated BAMC header.~
+                    END
+                  END ELSE BEGIN
+                    PATCH_FAIL ~CBMID: invalid donor artwork header %cbmid_art%.BAM.~
+                  END
+              END
+            END
+          END
+          SPRINT cbmid_art_lua ~{inventory="%cbmid_inventory%",ground="%cbmid_ground%",picture="%cbmid_picture%"}~
+      END
+      PATCH_IF ~%cbmid_type%~ STRING_EQUAL ~FALLBACK~ BEGIN
+        SPRINT cbmid_fallback ~%cbmid_art_lua%~
+      END ELSE BEGIN
+        SPRINT cbmid_types ~%cbmid_types%[%cbmid_type%]=%cbmid_art_lua%,%WNL%~
+      END
+    END ELSE BEGIN
+      PATCH_PRINT ~CBMID: %cbmid_donor%.ITM unavailable; using neutral artwork for type %cbmid_type%.~
+    END
+  END
+ACTION_IF ~%cbmid_fallback%~ STRING_EQUAL ~~ BEGIN
+  FAIL ~CBMID: the neutral artwork donor is missing. No files were installed.~
+END
+// Existing unrelated patterns are preserved; a foreign owner of our labels is
+// not silently overwritten. WeiDU removes our own block before reinstalling.
+ACTION_IF FILE_CONTAINS ~InfinityLoader.db~ ~\[CBMID::~ BEGIN
+  FAIL ~CBMID: existing unidentified-item hook definitions need to be removed by their owning installer first.~
+END
+
+OUTER_SPRINT cbmid_config ~-- Generated from installed resources. Contains no string references.%WNL%CBMID_Config={schema=1,fallback=%cbmid_fallback%,types={%WNL%%cbmid_types%},hooks={%WNL%%cbmid_hooks%}}%WNL%~
+<<<<<<<< .../cbmid-config.lua
+%cbmid_config%
+>>>>>>>>
+COPY ~.../cbmid-config.lua~ ~override/CBMIDCFG.lua~ EVALUATE_BUFFER
+COPY ~chriz-bg-modpack/unidentified-items/cbmid.lua~ ~override/CBMID.lua~
+     ~chriz-bg-modpack/unidentified-items/m_cbmid.lua~ ~override/M_CBMID.lua~
+APPEND_OUTER ~InfinityLoader.db~ ~%cbmid_loader%~ KEEP_CRLF
+<<<<<<<< .../cbmid-marker
+cbm_unidentified_appearance schema=1
+>>>>>>>>
+COPY ~.../cbmid-marker~ ~override/CBMID.MRK~
+PRINT @1633

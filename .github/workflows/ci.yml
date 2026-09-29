@@ -72,15 +72,19 @@ jobs:
           CBM_EET_SOURCE: ${{ runner.temp }}/cbm-eet
         run: python3 -m unittest discover -s tests -v
 
-      - name: Test XP runtimes, Imoen installer, and companion class choices
+      - name: Test XP runtimes, companion choices, artwork hooks, and UI adapter
         env:
           WEIDU_BIN: /usr/local/bin/weidu
           WEIDU: /usr/local/bin/weidu
         run: >-
           python3 -m pytest tests/test_utility_xp.py
+          tests/test_story_utility_xp.py
           tests/test_companion_classes_installer.py
+          tests/test_evandra_sorcerer.py
+          tests/test_legacy_ui_strings.py
           tests/test_imoen_spellhold_xp.py
-          tests/test_imoen_spellhold_xp_installer.py -q
+          tests/test_imoen_spellhold_xp_installer.py
+          tests/test_unidentified_items.py -q
 
       - name: Build the production archive reproducibly
         run: |
@@ -101,4 +105,4 @@ jobs:
           WEIDU_BIN=/usr/local/bin/weidu \
           WEIDU=/usr/local/bin/weidu \
           CBM_RELEASE_ARCHIVE="dist-one/chriz-bg-modpack-${VERSION}.zip" \
-            python3 -m unittest tests.test_release_archive -v
+            python3 -m unittest tests.test_release_archive tests.test_release_new_components -v

@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.2.0-alpha.8 - 2026-09-29
+
+- Add **224 — Evandra: Sorcerer**, restoring the collection's missing class
+  preference with a legal starting spellbook for Spell Revisions or vanilla.
+  Keep her stored level and XP so recruitment level-ups remain available.
+- Add independent **225 — Evandra: Chriz's custom portrait**, using Christopher's
+  approved ChatGPT-created artwork. No save editing is required
+  for actors already using Evandra's standard portrait resource name.
+
+- Add **611 — Story-based utility XP**: BG1 rewards throughout BG1 and SoD,
+  then native BG2 rewards from SoA through ToB. Include the approved EE Fixpack
+  correction for BG1/SoD level-16+ locks (155 XP). Use EET campaign flags and
+  handle direct starts, reloads and unsupported states without editing saves.
+- Keep **610** unchanged as the smooth protagonist-XP alternative, with reciprocal
+  installer exclusions. Neither mode uses party-average XP.
+
+- Add optional **630 — Generic artwork for unidentified items**. Unidentified
+  items share artwork by item category, including cursed items. Identified copies
+  retain their own artwork. No item powers, descriptions, string references or
+  saved items are rewritten.
+- Independent of Randomiser; ordinary loot randomization remains compatible.
+  Choose either this component or Randomiser's cursed-appearance option, not both.
+- Windows BG2EE/EET with EEex; native game-code signatures are checked before
+  installation and again at startup. Live UI acceptance is still pending.
+
+- Add independent **640 — Legacy UI text compatibility** for LeUI and
+  Dragonspear UI. Restore the old `t()` helper through `getUiString` when needed,
+  before skin loaders capture it, and preserve any already-working `t()`.
+  Install after the UI provider and before Bubb's Spell Menu. No HGO dependency.
+
+- Verify the new components through focused automated and extracted-package
+  installer checks. No running-game or save changes were performed for this
+  release, and no full collection/live acceptance claim is made.
+
 ## v0.2.0-alpha.7 - 2026-09-19
 
 ### Fixed

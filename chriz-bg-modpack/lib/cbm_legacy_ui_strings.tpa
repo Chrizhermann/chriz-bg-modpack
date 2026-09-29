@@ -1,0 +1,16 @@
+// UTIL is the engine's UI bootstrap, before provider menus and M_ wrappers use t.
+// LeUI 4.9.1 and Dragonspear UI++ 22.01.3 retain the pre-2.7 helper name.
+// Do not replace an older game's helper or a function installed by another mod,
+// and do not fetch any translated text while the engine is still starting up.
+APPEND ~UTIL.LUA~ ~~~~~
+-- CBM_LEGACY_UI_STRINGS_BEGIN
+if type(_G.t) ~= "function" then
+  if type(_G.getUiString) ~= "function" then
+    error("chriz-bg-modpack component 640: UTIL.LUA provides neither a callable t nor getUiString UI string helper")
+  end
+  _G.t = _G.getUiString
+end
+-- CBM_LEGACY_UI_STRINGS_END
+~~~~~
+  UNLESS ~CBM_LEGACY_UI_STRINGS_BEGIN~
+  KEEP_CRLF

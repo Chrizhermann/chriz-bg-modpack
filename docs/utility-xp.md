@@ -1,5 +1,10 @@
 # Progressive utility XP — component 610
 
+This mode retains its original smooth protagonist-XP curve. The
+[story-based alternative, component 611](story-utility-xp.md), is the approved
+next CEBG default; collection integration is separate. Select one mode only.
+Neither mode uses party-average XP.
+
 Component `610`, label `cbm_utility_xp`, scales experience for picking locks,
 disarming traps and learning spells throughout BG1, SoD and BG2 in EET. It
 requires BG2:EE/EET and a working EEex installation. The implementation is in

@@ -22,6 +22,10 @@
 @221 = ~Shadowdancer~
 @222 = ~Fighter/Thief multiclass~
 @223 = ~Assassin~
+@224 = ~Evandra: Sorcerer with a level-appropriate starting spellbook~
+@225 = ~Evandra: Chriz's custom portrait~
+@1224 = ~Evandra options require BG2:EE or EET.~
+@1225 = ~Install Evandra first; both her SoA and ToB creature resources are required.~
 @1190 = ~Companion class options require BG2:EE or EET.~
 @1191 = ~Yoshimo's creature resources were not found.~
 @1192 = ~Hexxat's creature resources were not found.~
@@ -39,6 +43,12 @@
 @1611 = ~Progressive utility XP requires EEex. Install EEex first and launch through InfinityLoader.~
 @1612 = ~Progressive utility XP requires XPBONUS.2DA and XPLEVEL.2DA.~
 @1613 = ~[CBM utility XP] Installed. Edit override/CBMUXPC.lua to tune rewards, then restart the game. See docs/utility-xp.md.~
+@611 = ~Story-based utility XP: BG1 rewards through SoD, BG2 rewards from SoA (requires EET and EEex)~
+@1614 = ~Choose one utility-XP mode: story-based 611 or progressive 610. Uninstall the other mode before switching.~
+@1615 = ~Story-based utility XP requires EET. Standalone games and other campaign systems are unsupported.~
+@1616 = ~Story-based utility XP requires EEex. Install EEex first and launch through InfinityLoader.~
+@1617 = ~Story-based utility XP requires XPBONUS.2DA.~
+@1618 = ~[CBM story utility XP] Installed. Locks, traps and scribing use BG1-sized rewards throughout BG1 and SoD, then native BG2 rewards from SoA onward. See docs/story-utility-xp.md for level brackets and the BG1 lock typo correction.~
 
 @199 = ~EET companion continuity: preserve the original Xan and Yeslick across campaigns (NEW GAME, BEFORE EET_end)~
 @188 = ~BG1 Yeslick: Fighter/Alaghor of Clangeddin (requires YeslickNPC Alaghor, BEFORE 199/EET_end)~
@@ -56,3 +66,12 @@
 @1621 = ~Imoen's Spellhold XP requires EEex with EEex_LuaAction support. Install EEex first and launch through InfinityLoader.~
 @1622 = ~Imoen's Spellhold XP requires IMOEN2.BCS.~
 @1623 = ~[CBM Imoen XP] Installed. Imoen receives party-average XP once when joining in the Spellhold maze, capped at 3 million mage XP. See docs/imoen-spellhold-xp.md.~
+@630 = ~Generic artwork for unidentified items (requires EEex)~
+@1630 = ~Generic unidentified-item artwork currently supports BG2EE and EET on Windows.~
+@1631 = ~Install EEex / InfinityLoader first. This component needs its loader database and the Windows game executable.~
+@1632 = ~Choose one unidentified-item appearance option: generic artwork or Randomiser's cursed-item appearance. Ordinary loot randomization can stay installed.~
+@1633 = ~Generic unidentified-item artwork installed. Launch with InfinityLoader. Identifying an item restores its own artwork; item abilities, text and saves are unchanged.~
+@640 = ~Legacy UI text compatibility for LeUI and Dragonspear UI~
+@1640 = ~Legacy UI text compatibility supports BG2:EE and EET.~
+@1641 = ~Legacy UI text compatibility requires UTIL.LUA from the game. Install the UI provider before this component.~
+@1642 = ~Legacy UI text compatibility installed. Install after the UI provider and before Bubb's Spell Menu. An existing working t() helper is preserved.~

@@ -1,0 +1,326 @@
+// Evandra's authored Sorcerer build. Stored levels and XP are deliberately
+// preserved: a recruitment template can leave level-ups for the player.
+
+DEFINE_ACTION_FUNCTION cbme_read_table STR_VAR table = ~~
+  RET_ARRAY cbme_cell cbme_column BEGIN
+  COPY_EXISTING ~%table%.2DA~ ~override~
+    COUNT_2DA_COLS cbme_cols
+    PATCH_IF cbme_cols < 3 BEGIN PATCH_FAIL ~Evandra: malformed %table%.2DA~ END
+    FOR (cbme_col = 0; cbme_col < cbme_cols - 1; ++cbme_col) BEGIN
+      READ_2DA_ENTRY 0 cbme_col (cbme_cols - 1) cbme_heading
+      TO_UPPER cbme_heading
+      SET $cbme_column(~%table%~ ~%cbme_heading%~) = cbme_col + 1
+    END
+    COUNT_2DA_ROWS cbme_cols cbme_rows
+    FOR (cbme_row = 0; cbme_row < cbme_rows; ++cbme_row) BEGIN
+      READ_2DA_ENTRY cbme_row 0 cbme_cols cbme_key
+      TO_UPPER cbme_key
+      FOR (cbme_col = 1; cbme_col < cbme_cols; ++cbme_col) BEGIN
+        READ_2DA_ENTRY cbme_row cbme_col cbme_cols cbme_value
+        SPRINT $cbme_cell(~%table%~ ~%cbme_key%~ ~%cbme_col%~) ~%cbme_value%~
+      END
+    END
+  BUT_ONLY
+END
+
+// Replace one independently indexed CRE block, preserving the physical order
+// and bytes of every other block. Empty blocks may have a zero offset.
+DEFINE_PATCH_FUNCTION cbme_replace_block
+  INT_VAR pointer = 0 count_pointer = 0 stride = 0 new_count = 0
+  STR_VAR replacement = ~~ BEGIN
+  READ_LONG pointer cbme_old_offset
+  READ_LONG count_pointer cbme_old_count
+  SET cbme_old_size = cbme_old_count * stride
+  PATCH_IF cbme_old_offset < 0x2d4 BEGIN SET cbme_old_offset = BUFFER_LENGTH END
+  PATCH_IF cbme_old_size > 0 BEGIN
+    DELETE_BYTES cbme_old_offset cbme_old_size
+    PATCH_FOR_EACH cbme_pointer IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+      PATCH_IF (cbme_pointer != pointer)
+          AND (LONG_AT cbme_pointer >= cbme_old_offset + cbme_old_size) BEGIN
+        WRITE_LONG cbme_pointer (LONG_AT cbme_pointer - cbme_old_size)
+      END
+    END
+  END
+  SET cbme_new_size = new_count * stride
+  INSERT_BYTES cbme_old_offset cbme_new_size
+  WRITE_ASCIIE cbme_old_offset ~%replacement%~ (cbme_new_size)
+  PATCH_FOR_EACH cbme_pointer IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+    PATCH_IF (cbme_pointer != pointer)
+        AND (LONG_AT cbme_pointer >= cbme_old_offset) BEGIN
+      WRITE_LONG cbme_pointer (LONG_AT cbme_pointer + cbme_new_size)
+    END
+  END
+  WRITE_LONG pointer cbme_old_offset
+  WRITE_LONG count_pointer new_count
+END
+
+DEFINE_PATCH_FUNCTION cbme_validate_cre BEGIN
+  PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN PATCH_FAIL ~Evandra: truncated CRE~ END
+  READ_ASCII 0 cbme_signature (8)
+  PATCH_IF NOT ~%cbme_signature%~ STRING_EQUAL ~CRE V1.0~ BEGIN
+    PATCH_FAIL ~Evandra: unsupported CRE signature~
+  END
+  PATCH_IF BYTE_AT 0x33 > 1 BEGIN PATCH_FAIL ~Evandra: invalid effect format~ END
+  CLEAR_ARRAY cbme_block_start
+  CLEAR_ARRAY cbme_block_size
+  PATCH_FOR_EACH cbme_pointer IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+    READ_LONG cbme_pointer cbme_start
+    SET cbme_count = cbme_pointer = 0x2b8 ? 1 : LONG_AT (cbme_pointer + 4)
+    SET cbme_stride = cbme_pointer = 0x2a8 ? 16 :
+                      cbme_pointer = 0x2b8 ? 80 :
+                      cbme_pointer = 0x2bc ? 20 :
+                      cbme_pointer = 0x2c4 ? (BYTE_AT 0x33 = 1 ? 0x108 : 0x30) : 12
+    PATCH_IF (cbme_count < 0) OR (cbme_count > BUFFER_LENGTH / cbme_stride)
+       OR ((cbme_count > 0) AND ((cbme_start < 0x2d4)
+          OR (cbme_start > BUFFER_LENGTH - cbme_count * cbme_stride))) BEGIN
+      PATCH_FAIL ~Evandra: malformed CRE resource table at %cbme_pointer% (offset %cbme_start%, count %cbme_count%, stride %cbme_stride%)~
+    END
+    SET $cbme_block_start(~%cbme_pointer%~) = cbme_start
+    SET $cbme_block_size(~%cbme_pointer%~) = cbme_count * cbme_stride
+    PHP_EACH cbme_block_start AS cbme_other => cbme_other_start BEGIN
+      SET cbme_other_size = $cbme_block_size(~%cbme_other%~)
+      PATCH_IF (cbme_other != cbme_pointer) AND (cbme_count > 0) AND (cbme_other_size > 0)
+          AND (cbme_start < cbme_other_start + cbme_other_size)
+          AND (cbme_other_start < cbme_start + cbme_count * cbme_stride) BEGIN
+        PATCH_FAIL ~Evandra: overlapping CRE resource tables~
+      END
+    END
+  END
+  CLEAR_ARRAY cbme_mem_owner
+  READ_LONG 0x2a8 cbme_info
+  READ_LONG 0x2ac cbme_info_count
+  READ_LONG 0x2b4 cbme_mem_count
+  FOR (cbme_i = 0; cbme_i < cbme_info_count; ++cbme_i) BEGIN
+    SET cbme_at = cbme_info + cbme_i * 16
+    READ_LONG (cbme_at + 8) cbme_first
+    READ_LONG (cbme_at + 12) cbme_count
+    PATCH_IF (cbme_first < 0) OR (cbme_count < 0)
+        OR (cbme_first > cbme_mem_count) OR (cbme_count > cbme_mem_count - cbme_first) BEGIN
+      PATCH_FAIL ~Evandra: invalid memorized-spell slice~
+    END
+    FOR (cbme_j = cbme_first; cbme_j < cbme_first + cbme_count; ++cbme_j) BEGIN
+      PATCH_IF VARIABLE_IS_SET $cbme_mem_owner(~%cbme_j%~) BEGIN
+        PATCH_FAIL ~Evandra: overlapping memorized-spell slices~
+      END
+      SET $cbme_mem_owner(~%cbme_j%~) = 1
+    END
+  END
+  FOR (cbme_j = 0; cbme_j < cbme_mem_count; ++cbme_j) BEGIN
+    PATCH_IF NOT VARIABLE_IS_SET $cbme_mem_owner(~%cbme_j%~) BEGIN
+      PATCH_FAIL ~Evandra: unreferenced memorized-spell entry~
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbme_convert BEGIN
+  LPF cbme_validate_cre END
+  READ_BYTE 0x234 cbme_level
+  CLEAR_ARRAY cbme_budget
+  PATCH_FOR_EACH cbme_table IN SPLSRCKN MXSPLSRC BEGIN
+    FOR (cbme_level_index = 1; cbme_level_index <= 9; ++cbme_level_index) BEGIN
+      PATCH_IF NOT VARIABLE_IS_SET $cbme_column(~%cbme_table%~ ~%cbme_level_index%~) BEGIN
+        PATCH_FAIL ~Evandra: missing spell-level column in %cbme_table%.2DA~
+      END
+      SET cbme_col = $cbme_column(~%cbme_table%~ ~%cbme_level_index%~)
+      PATCH_IF NOT VARIABLE_IS_SET $cbme_cell(~%cbme_table%~ ~%cbme_level%~ ~%cbme_col%~) BEGIN
+        PATCH_FAIL ~Evandra: %cbme_table%.2DA has no row for stored level %cbme_level%~
+      END
+      SPRINT cbme_value $cbme_cell(~%cbme_table%~ ~%cbme_level%~ ~%cbme_col%~)
+      PATCH_IF NOT IS_AN_INT ~%cbme_value%~ BEGIN
+        PATCH_FAIL ~Evandra: nonnumeric %cbme_table%.2DA budget~
+      END
+      PATCH_IF (cbme_value < 0) OR (cbme_value > 65535) BEGIN
+        PATCH_FAIL ~Evandra: invalid %cbme_table%.2DA budget~
+      END
+      SET $cbme_budget(~%cbme_table%~ ~%cbme_level_index%~) = cbme_value
+    END
+  END
+  LPF cbm_npc_clear_previous_kit INT_VAR target_kit = cbme_kit END
+  LPF cbme_validate_cre END
+  // Preserve all non-wizard known records, including duplicate personal grants.
+  SPRINT cbme_known ~~
+  SET cbme_known_count = 0
+  READ_LONG 0x2a0 cbme_offset
+  FOR (cbme_i = 0; cbme_i < LONG_AT 0x2a4; ++cbme_i) BEGIN
+    SET cbme_at = cbme_offset + cbme_i * 12
+    PATCH_IF SHORT_AT (cbme_at + 10) != 1 BEGIN
+      READ_ASCII cbme_at cbme_record (12)
+      SPRINT cbme_known ~%cbme_known%%cbme_record%~
+      SET cbme_known_count += 1
+    END
+  END
+  SPRINT cbme_memory ~~
+  SPRINT cbme_memorized ~~
+  SET cbme_memory_count = 0
+  SET cbme_memorized_count = 0
+  READ_LONG 0x2a8 cbme_info
+  READ_LONG 0x2b0 cbme_spells
+  FOR (cbme_i = 0; cbme_i < LONG_AT 0x2ac; ++cbme_i) BEGIN
+    SET cbme_at = cbme_info + cbme_i * 16
+    PATCH_IF SHORT_AT (cbme_at + 6) != 1 BEGIN
+      READ_LONG (cbme_at + 8) cbme_first
+      READ_LONG (cbme_at + 12) cbme_count
+      READ_ASCII cbme_at cbme_record (16)
+      INNER_PATCH_SAVE cbme_record ~%cbme_record%~ BEGIN
+        WRITE_LONG 8 cbme_memorized_count
+      END
+      SPRINT cbme_memory ~%cbme_memory%%cbme_record%~
+      READ_ASCII (cbme_spells + cbme_first * 12) cbme_record (cbme_count * 12)
+      SPRINT cbme_memorized ~%cbme_memorized%%cbme_record%~
+      SET cbme_memory_count += 1
+      SET cbme_memorized_count += cbme_count
+    END
+  END
+  FOR (cbme_spell_level = 1; cbme_spell_level <= 9; ++cbme_spell_level) BEGIN
+    SET cbme_slots = $cbme_budget(~MXSPLSRC~ ~%cbme_spell_level%~)
+    SET cbme_picks = $cbme_budget(~SPLSRCKN~ ~%cbme_spell_level%~)
+    SET cbme_available = $cbme_pick_count(~%cbme_spell_level%~)
+    // Keep the authored priority order within the installed budget. A higher
+    // level or expanded table does not authorize inventing additional picks.
+    SET cbme_picks = cbme_slots = 0 ? 0 : (cbme_picks < cbme_available ? cbme_picks : cbme_available)
+    INNER_PATCH_SAVE cbme_record ~~ BEGIN
+      INSERT_BYTES 0 16
+      WRITE_SHORT 0 (cbme_spell_level - 1)
+      WRITE_SHORT 2 cbme_slots
+      WRITE_SHORT 4 cbme_slots
+      WRITE_SHORT 6 1
+      WRITE_LONG 8 cbme_memorized_count
+      WRITE_LONG 12 (cbme_picks * cbme_slots)
+    END
+    SPRINT cbme_memory ~%cbme_memory%%cbme_record%~
+    SET cbme_memory_count += 1
+    FOR (cbme_pick = 1; cbme_pick <= cbme_picks; ++cbme_pick) BEGIN
+      SPRINT cbme_resref $cbme_pick_resref(~%cbme_spell_level%~ ~%cbme_pick%~)
+      INNER_PATCH_SAVE cbme_record ~~ BEGIN
+        INSERT_BYTES 0 12
+        WRITE_ASCIIE 0 ~%cbme_resref%~ (8)
+        WRITE_SHORT 8 (cbme_spell_level - 1)
+        WRITE_SHORT 10 1
+      END
+      SPRINT cbme_known ~%cbme_known%%cbme_record%~
+      SET cbme_known_count += 1
+      INNER_PATCH_SAVE cbme_record ~%cbme_record%~ BEGIN WRITE_LONG 8 1 END
+      FOR (cbme_copy = 0; cbme_copy < cbme_slots; ++cbme_copy) BEGIN
+        SPRINT cbme_memorized ~%cbme_memorized%%cbme_record%~
+        SET cbme_memorized_count += 1
+      END
+    END
+  END
+  LPF cbme_replace_block INT_VAR pointer = 0x2a0 count_pointer = 0x2a4 stride = 12
+      new_count = cbme_known_count STR_VAR replacement = EVAL ~%cbme_known%~ END
+  LPF cbme_replace_block INT_VAR pointer = 0x2a8 count_pointer = 0x2ac stride = 16
+      new_count = cbme_memory_count STR_VAR replacement = EVAL ~%cbme_memory%~ END
+  LPF cbme_replace_block INT_VAR pointer = 0x2b0 count_pointer = 0x2b4 stride = 12
+      new_count = cbme_memorized_count STR_VAR replacement = EVAL ~%cbme_memorized%~ END
+  WRITE_BYTE 0x273 cbme_class
+  WRITE_LONG 0x244 cbme_kit
+  LPF cbme_validate_cre END
+END
+
+DEFINE_ACTION_FUNCTION cbm_evandra_install BEGIN
+  LAF cbm_collection_resolve_class STR_VAR symbol = ~SORCERER~ RET cbme_class = class_id END
+  LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET cbme_kit = kit_dword END
+  ACTION_CLEAR_ARRAY cbme_cell
+  ACTION_CLEAR_ARRAY cbme_column
+  ACTION_FOR_EACH table IN SPLSRCKN MXSPLSRC BEGIN
+    LAF cbme_read_table STR_VAR table RET_ARRAY cbme_cell cbme_column END
+  END
+  ACTION_IF FILE_EXISTS_IN_GAME ~HIDESPL.2DA~ BEGIN
+    LAF cbme_read_table STR_VAR table = ~HIDESPL~ RET_ARRAY cbme_cell cbme_column END
+    COPY_EXISTING ~HIDESPL.2DA~ ~override~
+      READ_2DA_ENTRY 1 0 1 cbme_hide_default
+    BUT_ONLY
+    ACTION_FOR_EACH cbme_flag IN IS_HIDDEN IS_REMOVED BEGIN
+      ACTION_IF NOT VARIABLE_IS_SET $cbme_column(~HIDESPL~ ~%cbme_flag%~) BEGIN
+        FAIL ~Evandra: HIDESPL.2DA is missing the %cbme_flag% heading~
+      END
+    END
+  END
+  ACTION_CLEAR_ARRAY cbme_pick_count
+  ACTION_CLEAR_ARRAY cbme_pick_resref
+  ACTION_CLEAR_ARRAY cbme_seen_spell
+  OUTER_FOR (cbme_l = 1; cbme_l <= 9; ++cbme_l) BEGIN
+    OUTER_SET $cbme_pick_count(~%cbme_l%~) = 0
+  END
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbme_choices BEGIN
+    ~1 1~ => ~WIZARD_MAGIC_MISSILE~
+    ~1 2~ => ~WIZARD_DIMENSION_JUMP WIZARD_COLOR_SPRAY~
+    ~1 3~ => ~WIZARD_SHIELD~
+    ~1 4~ => ~WIZARD_IDENTIFY~
+    ~1 5~ => ~WIZARD_SPOOK~
+    ~2 1~ => ~WIZARD_MIRROR_IMAGE~
+    ~2 2~ => ~WIZARD_INVISIBILITY~
+    ~2 3~ => ~WIZARD_DETECT_INVISIBILITY~
+    ~2 4~ => ~WIZARD_GLITTERDUST~
+    ~2 5~ => ~WIZARD_BLUR~
+    ~3 1~ => ~WIZARD_SLOW~
+    ~3 2~ => ~WIZARD_SPELL_THRUST~
+    ~3 3~ => ~WIZARD_FIREBALL~
+    ~3 4~ => ~WIZARD_HASTE~
+    ~4 1~ => ~WIZARD_IMPROVED_INVISIBILITY~
+    ~4 2~ => ~WIZARD_STONE_SKIN~
+    ~4 3~ => ~WIZARD_SPIRIT_ARMOR~
+    ~4 4~ => ~WIZARD_VITRIOLIC_SPHERE WIZARD_GREATER_MALISON~
+    ~5 1~ => ~WIZARD_BREACH~
+    ~5 2~ => ~WIZARD_SPELL_SHIELD~
+    ~5 3~ => ~WIZARD_SUMMON_SHADOW WIZARD_ANIMATE_DEAD~
+    ~6 1~ => ~WIZARD_MISLEAD~
+    ~6 2~ => ~WIZARD_PROTECTION_FROM_MAGIC_WEAPONS~
+    ~7 1~ => ~WIZARD_PROJECT_IMAGE~
+  END
+  ACTION_PHP_EACH cbme_choices AS cbme_key => cbme_candidates BEGIN
+    OUTER_PATCH ~%cbme_key%~ BEGIN
+      READ_2DA_ENTRY 0 0 2 cbme_l
+      READ_2DA_ENTRY 0 1 2 cbme_pick
+    END
+    OUTER_SPRINT cbme_symbol ~~
+    OUTER_PATCH ~%cbme_candidates%~ BEGIN
+      COUNT_2DA_COLS cbme_candidate_count
+      FOR (cbme_n = 0; cbme_n < cbme_candidate_count; ++cbme_n) BEGIN
+        READ_2DA_ENTRY 0 cbme_n cbme_candidate_count cbme_candidate
+        PATCH_IF (~%cbme_symbol%~ STRING_EQUAL ~~)
+            AND (IDS_OF_SYMBOL (~spell~ ~%cbme_candidate%~) >= 2100) BEGIN
+          SPRINT cbme_symbol ~%cbme_candidate%~
+        END
+      END
+    END
+    ACTION_IF ~%cbme_symbol%~ STRING_EQUAL ~~ BEGIN
+      FAIL ~Evandra: missing SPELL.IDS choice %cbme_candidates%~
+    END
+    LAF cbm_collection_resolve_wizard_spell STR_VAR symbol = EVAL ~%cbme_symbol%~ RET spell_resref END
+    ACTION_IF VARIABLE_IS_SET $cbme_seen_spell(~%spell_resref%~) BEGIN
+      FAIL ~Evandra: two authored spells resolve to %spell_resref%~
+    END
+    OUTER_SET $cbme_seen_spell(~%spell_resref%~) = 1
+    COPY_EXISTING ~%spell_resref%.SPL~ ~override~
+      PATCH_IF SOURCE_SIZE < 0x72 BEGIN PATCH_FAIL ~Evandra: truncated %spell_resref%.SPL~ END
+      READ_ASCII 0 cbme_signature (8)
+      PATCH_IF NOT ~%cbme_signature%~ STRING_EQUAL ~SPL V1  ~ BEGIN
+        PATCH_FAIL ~Evandra: invalid %spell_resref%.SPL signature~
+      END
+      PATCH_IF (SHORT_AT 0x1c != 1) OR (LONG_AT 0x34 != cbme_l) BEGIN
+        PATCH_FAIL ~Evandra: %cbme_symbol% must be a level %cbme_l% wizard spell~
+      END
+    BUT_ONLY
+    ACTION_FOR_EACH cbme_flag IN IS_HIDDEN IS_REMOVED BEGIN
+      ACTION_IF VARIABLE_IS_SET $cbme_column(~HIDESPL~ ~%cbme_flag%~) BEGIN
+        OUTER_SET cbme_col = $cbme_column(~HIDESPL~ ~%cbme_flag%~)
+        OUTER_SPRINT cbme_value ~%cbme_hide_default%~
+        ACTION_IF VARIABLE_IS_SET $cbme_cell(~HIDESPL~ ~%spell_resref%~ ~%cbme_col%~) BEGIN
+          OUTER_SPRINT cbme_value $cbme_cell(~HIDESPL~ ~%spell_resref%~ ~%cbme_col%~)
+        END
+        ACTION_IF NOT IS_AN_INT ~%cbme_value%~ BEGIN
+          FAIL ~Evandra: invalid HIDESPL.2DA flag for %spell_resref%~
+        END
+        ACTION_IF cbme_value != 0 BEGIN
+          FAIL ~Evandra: %spell_resref% is hidden or removed in HIDESPL.2DA~
+        END
+      END
+    END
+    OUTER_SET $cbme_pick_count(~%cbme_l%~) += 1
+    OUTER_SPRINT $cbme_pick_resref(~%cbme_l%~ ~%cbme_pick%~) ~%spell_resref%~
+  END
+  COPY_EXISTING ~RH#EVA.CRE~ ~override~ ~RH#EV25.CRE~ ~override~
+    LPF cbme_convert END
+  BUT_ONLY
+END

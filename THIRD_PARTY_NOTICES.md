@@ -39,3 +39,12 @@ implemented: no Ascension, SCS, EE Fixpack, or Dan_P hotfix source code, script
 blocks, binary resources, artwork, or other payloads are copied into this project.
 
 The owner's custom Sarah portrait is not distributed in this repository or release.
+
+## Evandra portrait provenance
+
+Component 225 includes `chriz-bg-modpack/portraits/evandra/rh#eval.bmp`.
+Christopher Hermann confirmed on September 29, 2026 that he created this artwork
+with ChatGPT and approved its inclusion in future installations. It is not
+artwork copied from the Evandra NPC mod. The supplied 210x330, 24-bit BMP is
+included unchanged; SHA-256:
+`b4bde98aec195d47db521d3cc4d72b636ae5a0f391cc7469ea5d48688b112aad`.

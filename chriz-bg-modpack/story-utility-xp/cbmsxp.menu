@@ -1,0 +1,9 @@
+menu
+{
+    name "CBM_StoryXP_Tick"
+    ignoreEsc
+    label
+    {
+        enabled "CBM_StoryXP_Runtime.Refresh()"
+    }
+}

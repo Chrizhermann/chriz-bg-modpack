@@ -3,12 +3,14 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.7`
+**Release:** `v0.2.0-alpha.8`
 
-This release fixes NPC preset compatibility and dispel effect layouts. Selected
-builds replace their complete proficiency allocations, and the installer accepts
-valid resource variations introduced by earlier mods. All alpha.6 components
-remain available.
+This release adds **224**, Evandra as a Sorcerer; **225**, her approved custom
+portrait; **611**, story-based utility XP; **630**, generic artwork for
+unidentified items; and **640**, legacy UI text compatibility. All alpha.7
+components remain available. The new options
+have focused offline and packaged-installer coverage; live gameplay/UI
+acceptance remains separate. See the [release notes](docs/releases/v0.2.0-alpha.8.md).
 
 The installer and focused behavior are tested against generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
 startup, load/save and scribing checks in a disposable EET install. A complete
@@ -49,18 +51,34 @@ before writing; missing prerequisites are reported by the installer.
 | 221 | `cbm_hexxat_shadowdancer` | Give Hexxat the installed Shadowdancer kit |
 | 222 | `cbm_hexxat_fighter_thief` | Convert Hexxat to Fighter/Thief with rebuilt stats and preserved vampire powers |
 | 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
+| 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
+| 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
+| 611 | `cbm_story_utility_xp` | BG1-sized utility XP through SoD, native BG2 rewards from SoA; requires EET and EEex; alternative to 610 |
 | 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
+| 630 | `cbm_unidentified_appearance` | Generic artwork until identification; requires Windows EEex |
+| 640 | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI/Dragonspear UI on EE 2.7 |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
 
 ## Collection choices
+
+**611** is the approved next CEBG default; **610** retains its smooth
+protagonist-XP curve as a mutually exclusive alternative. **224/225** are
+independent defaults when Evandra's core is selected. **630** requires excluding
+Randomiser's cursed-appearance option; normal loot randomization can remain.
+**640** follows LeUI/Dragonspear UI and precedes Bubb's Spell Menu; it does not
+depend on Hidden Gameplay Options.
+Collection recipe integration is delivered separately from this mod release.
+See [Evandra](docs/evandra.md), [story utility XP](docs/story-utility-xp.md) and
+[unidentified artwork](docs/unidentified-items.md), plus
+[legacy UI compatibility](docs/legacy-ui-strings.md), for scope and ordering.
 
 A normal Sarah installation remains unchanged unless component `190` is selected.
 The collection recommends `190` by default, but it is optional. It converts both
@@ -74,8 +92,9 @@ Sarah ToB v8 CREs to Archer and assigns exactly:
 
 The owner's custom Sarah portrait preference is maintained separately in private
 collection configuration. Component `191` is reserved for that preference, but no
-portrait component or portrait artwork is included in this public repository or
-release.
+Sarah portrait component or Sarah portrait artwork is included in this public
+repository or release. Evandra's separate component 225 uses owner-created,
+ChatGPT-generated artwork approved for inclusion on September 29, 2026.
 
 The [NPC build guide](docs/npc-builds.md) lists the complete Mazzy, Xan and Fade
 allocations. Those presets replace incoming proficiencies, including earlier
