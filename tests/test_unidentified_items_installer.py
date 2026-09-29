@@ -209,8 +209,10 @@ class SyntheticGame:
         hooks = _catalog_rows(self.source / "hooks.2da")
         assert len(hooks) == 4
         patterns = [row["PATTERN"] for row in hooks]
+        # WeiDU's Unix filesystem backend lowercases paths. Use portable names
+        # so the same synthetic Windows-game inputs are discoverable in CI.
         if executable:
-            (root / "Baldur.exe").write_bytes(
+            (root / "baldur.exe").write_bytes(
                 _toy_executable(patterns, missing=missing_pattern,
                                 duplicate=duplicate_pattern,
                                 wrong_opcode=wrong_opcode)
@@ -219,7 +221,7 @@ class SyntheticGame:
             loader_bytes = LOADER_DB
             if existing_hook_label:
                 loader_bytes += b"[CBMID::Inventory]\r\nPattern=CAFEBABE\r\n"
-            (root / "InfinityLoader.db").write_bytes(loader_bytes)
+            (root / "infinityloader.db").write_bytes(loader_bytes)
         (root / "Baldur.lua").write_bytes(b"-- Existing profile settings\r\n")
         (root / "UI.menu").write_bytes(b"-- Existing UI\r\n")
         (root / "engine.lua").write_bytes(b"-- Existing mechanic\r\n")
@@ -237,7 +239,7 @@ class SyntheticGame:
             self.override.joinpath("flrc570.mrk").write_bytes(b"foreign randomiser marker")
         if log_conflict or unrelated_randomiser:
             component = 570 if log_conflict else 569
-            (root / "WeiDU.log").write_text(
+            (root / "weidu.log").write_text(
                 f"~randomiser/randomiser.tp2~ #0 #{component} // synthetic component\n",
                 encoding="ascii",
             )
@@ -355,7 +357,7 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
         lua.execute((SOURCE / "cbmid.lua").read_text(encoding="utf-8"))
         self.assertGreater(lua.globals().CBMID.validate(lua.globals().CBMID_Config), 0)
         if LUA:
-            path = (game.override / "CBMIDCFG.lua").as_posix()
+            path = (game.override / "cbmidcfg.lua").as_posix()
             script = (
                 f"assert(loadfile([=[{path}]=]))();"
                 "assert(type(CBMID_Config)=='table');"
@@ -453,7 +455,7 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
         missing = row["DONOR"].upper()
         game = self.make_game(missing_donor=missing)
         self.assert_installed(game)
-        config = (game.override / "CBMIDCFG.lua").read_bytes()
+        config = (game.override / "cbmidcfg.lua").read_bytes()
         missing_entry = f"[{row['ROW']}]=".encode("ascii")
         self.assertNotIn(missing_entry, config)
         self.assert_uninstalled(game)
@@ -461,7 +463,7 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
     def test_optional_picture_may_be_blank(self) -> None:
         game = self.make_game(blank_picture_for="MISC59")
         self.assert_installed(game)
-        config = (game.override / "CBMIDCFG.lua").read_bytes()
+        config = (game.override / "cbmidcfg.lua").read_bytes()
         self.assertIn(b'picture=""', config)
         self.assert_uninstalled(game)
 
