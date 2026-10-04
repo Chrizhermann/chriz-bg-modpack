@@ -37,6 +37,7 @@ PUBLIC_COMPONENTS = {
     223,
     224,
     225,
+    235,
     400,
     410,
     430,
@@ -92,6 +93,7 @@ class PublicSurfaceTests(unittest.TestCase):
             611: "cbm_story_utility_xp",
             224: "cbm_evandra_sorcerer",
             225: "cbm_evandra_portrait",
+            235: "cbm_baeloth_spellbook",
             640: "cbm_legacy_ui_strings",
         }
         for component, label in expected.items():
@@ -164,6 +166,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/npc-builds.md",
                 "docs/yeslick-alaghor.md",
                 "docs/evandra.md",
+                "docs/baeloth-spellbook.md",
                 "docs/legacy-ui-strings.md",
                 "docs/releases/v0.2.0-alpha.8.md",
             },

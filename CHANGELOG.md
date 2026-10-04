@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Add independently selectable **235 — Baeloth: standard sorcerer spells known
+  (major rebalance)** for the planned Challenge Mode. Normalize his BG1 and fresh
+  SoD recruitment books against installed known-spell allowances, with Identify
+  for the SR level-seven pick and Blindness without SR. Preserve daily cast
+  limits, existing readiness, later level-up choices and unrelated fields.
+  Install after NPC spellbook writers, including optional SR component 60.
+  This is not an unconditional collection default or an existing-save repair.
+
 ## v0.2.0-alpha.8 - 2026-09-29
 
 - Add **224 — Evandra: Sorcerer**, restoring the collection's missing class

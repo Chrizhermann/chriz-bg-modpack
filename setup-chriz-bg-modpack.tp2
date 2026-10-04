@@ -405,6 +405,13 @@ BEGIN @225 DESIGNATED 225 GROUP @1100 LABEL ~cbm_evandra_portrait~
   REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~RH#EVA.CRE~ AND FILE_EXISTS_IN_GAME ~RH#EV25.CRE~) @1225
 INCLUDE ~chriz-bg-modpack/lib/cbm_evandra_portrait.tpa~
 
+// Optional Challenge Mode companion balance; keep independent of class/stats.
+BEGIN @235 DESIGNATED 235 GROUP @1100 LABEL ~cbm_baeloth_spellbook~
+  REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1235
+INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+INCLUDE ~chriz-bg-modpack/lib/cbm_baeloth_spellbook.tpa~
+LAF cbm_baeloth_install END
+
 // =====================================================================
 // Spell and compatibility fixes (400-499)
 // =====================================================================
