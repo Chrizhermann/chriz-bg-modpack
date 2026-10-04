@@ -5,6 +5,10 @@ compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
 **Release:** `v0.2.0-alpha.8`
 
+Development adds independently selectable **235**, Baeloth's spells-known
+rebalance for the planned Challenge Mode. It is **not in alpha.8** and is not an
+unconditional collection default. See [the Baeloth guide](docs/baeloth-spellbook.md).
+
 This release adds **224**, Evandra as a Sorcerer; **225**, her approved custom
 portrait; **611**, story-based utility XP; **630**, generic artwork for
 unidentified items; and **640**, legacy UI text compatibility. All alpha.7
@@ -53,6 +57,7 @@ before writing; missing prerequisites are reported by the installer.
 | 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
 | 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
 | 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
+| 235 (unreleased) | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
