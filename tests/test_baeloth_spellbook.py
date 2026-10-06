@@ -216,7 +216,7 @@ def make_game(tmp_path, *, sr=False, sr_marker="marker", budgets=None, levels=(6
         if sr_marker == "marker":
             (ov / "dvimhere.mrk").write_bytes(b"synthetic Spell Revisions marker")
         else:
-            (game.root / "WeiDU.log").write_text("~SPELL_REV/SPELL_REV.TP2~ #0 #0 // SR fixture\n")
+            (game.root / "weidu.log").write_text("~SPELL_REV/SPELL_REV.TP2~ #0 #0 // SR fixture\n")
     for index, name in enumerate(TARGETS):
         (ov / f"{name.lower()}.cre").write_bytes(make_cre(
             spells, recruitment_tier=6 + index, level=levels[index], hp=index,

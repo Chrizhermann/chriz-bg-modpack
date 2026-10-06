@@ -1,4 +1,4 @@
-# October 7 owner release — v0.2.0-alpha.9
+# October 7 owner release — v0.2.0-alpha.10
 
 Worktree: `modpack-release-alpha6/chriz-bg-modpack`, branch
 `codex/baeloth-known-spells`, starting commit `3d3381f`.
@@ -37,16 +37,25 @@ Worktree: `modpack-release-alpha6/chriz-bg-modpack`, branch
 - Windows LuaJIT/Unicorn print handled native-exception diagnostics while
   running existing negative/emulation tests. The process completed normally;
   pytest's final result and saved status both confirm exit 0.
-- Release built twice byte-identically. Explicit allowlist contains runtime,
+- Alpha.9 candidate built twice byte-identically locally. Explicit allowlist contains runtime,
   public docs and pinned WeiDU only, no private captures/adapters/test output.
-  SHA256: `0439559cdd3e73d3dc2d5c3b079fa42bc412c5e791be5b265a212f5fb36abf6e`.
+  Its tagged Windows packaging workflow also passed. Linux CI exposed two
+  fixture log names using mixed case; Linux WeiDU requires `weidu.log`.
+  Both are corrected without changing production mechanics, and the 60 focused
+  companion/extracted-package checks passed again. Alpha.9 remains an
+  unpublished tag; alpha.10 receives the corrected tested source.
+- The local alpha.9 ZIP and CI ZIP differed only in inherited CRLF versus Git's
+  LF for the Baeloth library. Normalized text and all other members were equal.
+  The final tagged CI artifact is authoritative; verify its actual hash and
+  members against committed source before publication. No release hash from
+  an earlier candidate should be used as the final alpha.10 pin.
 - Independent owner review found no blockers. No live-game playtest or save
   migration is claimed. No game files were changed or game processes launched.
 
 ## Release evidence and boundaries
 
 Version markers, README, changelog, component guides, release allowlist and both
-CI workflows are synchronized to alpha.9. Cleanup/security review found no
+CI workflows are synchronized to alpha.10. Cleanup/security review found no
 debug artifacts, secrets, network/auth changes or new runtime dependencies.
 Bounds checks and collision refusal protect existing resources. This is a
 WeiDU/data change, not a graphical UI change; UI/a11y review is not applicable.

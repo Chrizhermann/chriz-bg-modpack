@@ -171,7 +171,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.9.md",
+                "docs/releases/v0.2.0-alpha.10.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

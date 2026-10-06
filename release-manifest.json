@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.9",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.9",
+  "version": "v0.2.0-alpha.10",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.10",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -70,7 +70,7 @@
     "docs/companion-continuity.md",
     "docs/imoen-spellhold-xp.md",
     "docs/legacy-ui-strings.md",
-    "docs/releases/v0.2.0-alpha.9.md",
+    "docs/releases/v0.2.0-alpha.10.md",
     "docs/npc-builds.md",
     "docs/utility-xp.md",
     "docs/story-utility-xp.md",

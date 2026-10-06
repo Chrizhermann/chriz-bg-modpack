@@ -99,7 +99,7 @@ def make_game(tmp_path, *, version=1, shuffled=False, prerequisite=True, sr60=Fa
     log = "~ARTISANSKITPACK_NPC/ARTISANSKITPACK_NPC.TP2~ #0 #5102 // fixture\n" if prerequisite else ""
     if sr60:
         log += "~SPELL_REV/SETUP-SPELL_REV.TP2~ #0 #60 // fixture\n"
-    (game.root / "WeiDU.log").write_text(log)
+    (game.root / "weidu.log").write_text(log)
     for index, name in enumerate(TARGETS):
         (game.override / f"{name.lower()}.cre").write_bytes(make_cre(
             kit=0x80 if name == "EDWIN7_" else KIT_ID << 16,
