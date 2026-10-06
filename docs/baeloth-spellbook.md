@@ -1,6 +1,6 @@
 # Baeloth: standard sorcerer spells known
 
-**Component 235** — `cbm_baeloth_spellbook` — **major rebalance, alpha.9**.
+**Component 235** — `cbm_baeloth_spellbook` — **major rebalance, alpha.10**.
 
 This independent option reduces Baeloth's unusually large starting spellbook to
 the installed Sorcerer spells-known allowance. It is intended for the collection's
@@ -100,7 +100,7 @@ to restore the original resource bytes.
 
 Keep 235 independently selectable within the planned Challenge Mode and identify
 it as a major companion rebalance. Do not make it mandatory, couple it to other
-NPC options, or select it unconditionally. Pin alpha.9 or later before exposing
+NPC options, or select it unconditionally. Pin alpha.10 or later before exposing
 the collection choice: the older alpha.8 archive does not contain it.
 
 Validation on October 4, 2026, using WeiDU 249:

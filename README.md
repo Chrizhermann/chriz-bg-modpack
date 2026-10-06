@@ -3,13 +3,13 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.9`
+**Release:** `v0.2.0-alpha.10`
 
 This release adds independently selectable **235**, Baeloth's spells-known
 rebalance for the planned Challenge Mode, and **236**, Edwin's Red Wizard slot
 and amulet correction. Baeloth is not an unconditional collection default.
 All alpha.8 components remain available. See the
-[release notes](docs/releases/v0.2.0-alpha.9.md),
+[release notes](docs/releases/v0.2.0-alpha.10.md),
 [Baeloth guide](docs/baeloth-spellbook.md) and
 [Edwin guide](docs/edwin-redwizard.md).
 

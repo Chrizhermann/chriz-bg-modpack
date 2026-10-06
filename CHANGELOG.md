@@ -1,6 +1,9 @@
 # Changelog
 
-## v0.2.0-alpha.9 - 2026-10-07
+## v0.2.0-alpha.10 - 2026-10-07
+
+The alpha.9 tag was an unpublished release candidate. Alpha.10 includes its
+companion changes and corrects Linux test-fixture log filename casing.
 
 - Add independently selectable **235 — Baeloth: standard sorcerer spells known
   (major rebalance)** for the planned Challenge Mode. Normalize his BG1 and fresh
