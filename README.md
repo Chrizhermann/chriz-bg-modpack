@@ -3,18 +3,15 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.8`
+**Release:** `v0.2.0-alpha.9`
 
-Development adds independently selectable **235**, Baeloth's spells-known
-rebalance for the planned Challenge Mode. It is **not in alpha.8** and is not an
-unconditional collection default. See [the Baeloth guide](docs/baeloth-spellbook.md).
-
-This release adds **224**, Evandra as a Sorcerer; **225**, her approved custom
-portrait; **611**, story-based utility XP; **630**, generic artwork for
-unidentified items; and **640**, legacy UI text compatibility. All alpha.7
-components remain available. The new options
-have focused offline and packaged-installer coverage; live gameplay/UI
-acceptance remains separate. See the [release notes](docs/releases/v0.2.0-alpha.8.md).
+This release adds independently selectable **235**, Baeloth's spells-known
+rebalance for the planned Challenge Mode, and **236**, Edwin's Red Wizard slot
+and amulet correction. Baeloth is not an unconditional collection default.
+All alpha.8 components remain available. See the
+[release notes](docs/releases/v0.2.0-alpha.9.md),
+[Baeloth guide](docs/baeloth-spellbook.md) and
+[Edwin guide](docs/edwin-redwizard.md).
 
 The installer and focused behavior are tested against generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
 startup, load/save and scribing checks in a disposable EET install. A complete
@@ -30,6 +27,8 @@ live-game acceptance pass across all components has not yet been performed.
 Install this mod after the NPC, kit, spell, and tactical mods whose resources it
 patches. Each component validates its prerequisites and resource structure
 before writing; missing prerequisites are reported by the installer.
+Exception: **236** belongs immediately after Artisan NPC 5102 and before Spell
+Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 
 ## Public alpha components
 
@@ -57,7 +56,8 @@ before writing; missing prerequisites are reported by the installer.
 | 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
 | 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
 | 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
-| 235 (unreleased) | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
+| 235 | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
+| 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
@@ -80,6 +80,9 @@ independent defaults when Evandra's core is selected. **630** requires excluding
 Randomiser's cursed-appearance option; normal loot randomization can remain.
 **640** follows LeUI/Dragonspear UI and precedes Bubb's Spell Menu; it does not
 depend on Hidden Gameplay Options.
+**235** stays optional as a planned Challenge choice. **236** is the recommended
+correction only when Artisan's Red Wizard conversion (5102) is selected; it does
+not enable or change vanilla Edwin on its own.
 Collection recipe integration is delivered separately from this mod release.
 See [Evandra](docs/evandra.md), [story utility XP](docs/story-utility-xp.md) and
 [unidentified artwork](docs/unidentified-items.md), plus

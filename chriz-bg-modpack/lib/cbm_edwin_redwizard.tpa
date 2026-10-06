@@ -1,0 +1,219 @@
+// Repair the selected Artisan Red Wizard conversion, not vanilla Edwin.
+// Adapted from the resource-tested October 3 repair; no saved actors are edited.
+DEFINE_PATCH_FUNCTION cbm_edwin_item BEGIN
+  PATCH_IF BUFFER_LENGTH < 0x72 BEGIN PATCH_FAIL ~cbm_edwin: truncated amulet~ END
+  READ_ASCII 0 signature (8)
+  PATCH_IF NOT (~%signature%~ STRING_EQUAL ~ITM V1  ~) BEGIN
+    PATCH_FAIL ~cbm_edwin: unsupported amulet format~
+  END
+  READ_LONG 0x18 flags
+  WRITE_LONG 0x18 ((flags BOR 4) BAND (BNOT 16))
+  READ_LONG 0x6a fx_base
+  READ_SHORT 0x6e fx_first
+  READ_SHORT 0x70 fx_count
+  PATCH_IF (fx_count > 0) AND ((fx_base < 0x72) OR
+      (fx_base > BUFFER_LENGTH - (fx_first + fx_count) * 48)) BEGIN
+    PATCH_FAIL ~cbm_edwin: invalid amulet equipped effects~
+  END
+  FOR (i = 0; i < fx_count; ++i) BEGIN
+    SET pos = fx_base + (fx_first + i) * 48
+    PATCH_IF SHORT_AT pos = 42 BEGIN
+      WRITE_SHORT pos 0
+      WRITE_LONG (pos + 4) 0
+      WRITE_LONG (pos + 8) 0
+      WRITE_BYTE (pos + 12) 0
+      WRITE_LONG (pos + 14) 0
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_edwin_cre
+  INT_VAR redwizard_id = 0 repair_missing_kit = 0
+BEGIN
+  PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN PATCH_FAIL ~cbm_edwin: truncated creature~ END
+  READ_ASCII 0 signature (8)
+  READ_ASCII 0x280 dv (32) NULL
+  PATCH_IF NOT ((~%signature%~ STRING_EQUAL ~CRE V1.0~) AND
+                (~%dv%~ STRING_EQUAL_CASE ~Edwin~)) BEGIN
+    PATCH_FAIL ~cbm_edwin: expected Edwin CRE V1.0~
+  END
+  READ_LONG 0x244 encoded_kit
+  SET current_kit = ((encoded_kit BAND 0xffff) BLSL 16)
+                  BOR ((encoded_kit BLSR 16) BAND 0xffff)
+  // Only fill the known EET omission while it remains the original Conjurer.
+  // Another selected class/kit override is not ours to undo.
+  // Vanilla specialist flags use the low word, unlike ADD_KIT kit IDs.
+  SET converted = repair_missing_kit AND (encoded_kit = 0x80) AND (BYTE_AT 0x273 = 1)
+  PATCH_IF converted BEGIN
+    WRITE_LONG 0x244 ((redwizard_id BAND 0xffff) BLSL 16)
+    SET current_kit = redwizard_id
+  END
+  PATCH_IF current_kit = redwizard_id BEGIN
+    READ_BYTE 0x33 fx_version
+    READ_LONG 0x2c4 fx_base
+    READ_LONG 0x2c8 fx_count
+    SET stride = fx_version = 0 ? 48 : 264
+    PATCH_IF (fx_version > 1) OR (fx_count < 0) OR (fx_count > BUFFER_LENGTH / stride)
+        OR ((fx_count > 0) AND ((fx_base < 0x2d4)
+        OR (fx_base > BUFFER_LENGTH - fx_count * stride))) BEGIN
+      PATCH_FAIL ~cbm_edwin: invalid creature effects~
+    END
+    FOR (i = 0; i < fx_count; ++i) BEGIN
+      SET pos = fx_base + i * stride
+      SET owned = 1
+      PATCH_IF fx_version = 0 BEGIN
+        READ_SHORT pos opcode
+        READ_LONG (pos + 4) p1
+        READ_LONG (pos + 8) p2
+        READ_BYTE (pos + 12) timing
+      END ELSE BEGIN
+        READ_LONG (pos + 8) opcode
+        READ_LONG (pos + 20) p1
+        READ_LONG (pos + 24) p2
+        READ_LONG (pos + 28) timing
+        READ_LONG (pos + 0x88) parent_type
+        READ_ASCII (pos + 0x8c) parent (8) NULL
+        SET owned = (parent_type = 0) AND (~%parent%~ STRING_EQUAL ~~)
+      END
+      // Exact source-less vanilla grants only. Retain other kit/item effects.
+      PATCH_IF (opcode = 42) AND (p1 = 2) AND (timing = 9) AND owned
+          AND (p2 > 0) AND (p2 <= 256) AND ((p2 BAND (p2 - 1)) = 0) BEGIN
+        PATCH_IF fx_version = 0 BEGIN
+          WRITE_SHORT pos 0
+          WRITE_LONG (pos + 4) 0
+          WRITE_LONG (pos + 8) 0
+          WRITE_BYTE (pos + 12) 0
+          WRITE_LONG (pos + 14) 0
+        END ELSE BEGIN
+          WRITE_LONG (pos + 8) 0
+          WRITE_LONG (pos + 20) 0
+          WRITE_LONG (pos + 24) 0
+          WRITE_LONG (pos + 28) 0
+          WRITE_LONG (pos + 36) 0
+        END
+      END
+    END
+    READ_LONG 0x2bc item_base
+    READ_LONG 0x2c0 item_count
+    PATCH_IF (item_count < 0) OR (item_count > BUFFER_LENGTH / 20)
+        OR ((item_count > 0) AND ((item_base < 0x2d4)
+        OR (item_base > BUFFER_LENGTH - item_count * 20))) BEGIN
+      PATCH_FAIL ~cbm_edwin: invalid creature inventory~
+    END
+    FOR (i = 0; i < item_count; ++i) BEGIN
+      SET pos = item_base + i * 20
+      READ_ASCII pos item (8) NULL
+      PATCH_IF (~%item%~ STRING_EQUAL_CASE ~MISC89~)
+          OR (~%item%~ STRING_EQUAL_CASE ~MISC89_~) BEGIN
+        WRITE_LONG (pos + 16) (LONG_AT (pos + 16) BAND (BNOT 8))
+      END
+    END
+    PATCH_IF converted BEGIN
+      // Match the selected Artisan conversion at the same install-order stage.
+      // Install this component before SR's final NPC spellbook pass (60).
+      REMOVE_KNOWN_SPELL ~SPWI120~ ~SPWI106~ ~SPWI212~ ~SPWI201~ ~SPWI307~ ~SPWI405~ ~SPWI505~
+      REMOVE_MEMORIZED_SPELL ~SPWI120~ ~SPWI106~ ~SPWI212~ ~SPWI201~ ~SPWI307~ ~SPWI405~ ~SPWI505~
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_edwin_write_grant BEGIN
+  DELETE_BYTES 0 BUFFER_LENGTH
+  INSERT_BYTES 0 0x24a
+  WRITE_ASCII 0 ~SPL V1  ~ #8
+  WRITE_LONG 0x08 0xffffffff
+  WRITE_LONG 0x0c 0xffffffff
+  WRITE_SHORT 0x1c 4
+  WRITE_LONG 0x38 1
+  WRITE_LONG 0x50 0xffffffff
+  WRITE_LONG 0x54 0xffffffff
+  WRITE_LONG 0x64 0x72
+  WRITE_SHORT 0x68 1
+  WRITE_LONG 0x6a 0x9a
+  WRITE_SHORT 0x72 1
+  WRITE_SHORT 0x74 4
+  WRITE_BYTE 0x7e 1
+  WRITE_BYTE 0x7f 0
+  WRITE_SHORT 0x80 1
+  WRITE_SHORT 0x82 1
+  WRITE_SHORT 0x88 6
+  WRITE_SHORT 0x8e 1
+  WRITE_SHORT 0x90 9
+  WRITE_SHORT 0x94 1
+  WRITE_SHORT 0x96 1
+  WRITE_SHORT 0x98 1
+  FOR (i = 0; i < 9; ++i) BEGIN
+    SET pos = 0x9a + i * 48
+    WRITE_SHORT pos 42
+    WRITE_BYTE (pos + 2) 1
+    WRITE_LONG (pos + 4) 1
+    WRITE_LONG (pos + 8) (1 BLSL i)
+    WRITE_BYTE (pos + 12) 9
+    WRITE_BYTE (pos + 18) 100
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_edwin_install BEGIN
+  OUTER_SET redwizard_id = IDS_OF_SYMBOL (~KIT~ ~C0REDWIZ~)
+  ACTION_IF (redwizard_id < 0x4000) OR (redwizard_id > 0xffff) BEGIN
+    FAIL ~cbm_edwin: the installed C0REDWIZ kit ID is invalid~
+  END
+  // Do not stack on the older private slot correction or an unknown replacement.
+  ACTION_IF FILE_EXISTS_IN_GAME ~C0REDW4.SPL~ BEGIN
+    FAIL ~cbm_edwin: an older Red Wizard slot correction is present. Uninstall it before choosing this component.~
+  END
+  ACTION_IF FILE_EXISTS_IN_GAME ~CBMEDSL.SPL~ BEGIN
+    COPY_EXISTING ~CBMEDSL.SPL~ ~override~
+      READ_ASCII 0 original (BUFFER_LENGTH)
+      LPF cbm_edwin_write_grant END
+      READ_ASCII 0 expected (BUFFER_LENGTH)
+      PATCH_IF NOT (~%original%~ STRING_EQUAL ~%expected%~) BEGIN
+        PATCH_FAIL ~cbm_edwin: CBMEDSL.SPL belongs to another source; refusing to replace it~
+      END
+    BUT_ONLY
+  END ELSE BEGIN
+    CREATE SPL ~cbmedsl~
+    COPY_EXISTING ~CBMEDSL.SPL~ ~override~
+      LPF cbm_edwin_write_grant END
+  END
+  COPY_EXISTING ~C0REDWIZ.2DA~ ~override~
+    COUNT_2DA_COLS columns
+    PATCH_IF columns < 2 BEGIN PATCH_FAIL ~cbm_edwin: invalid Red Wizard CLAB~ END
+    COUNT_2DA_ROWS columns rows
+    SET grants = 0
+    FOR (row = 0; row < rows; ++row) BEGIN
+      FOR (column = 1; column < columns; ++column) BEGIN
+        READ_2DA_ENTRY row column columns ability
+        PATCH_IF ~%ability%~ STRING_EQUAL_CASE ~AP_CBMEDSL~ BEGIN
+          PATCH_IF column != 1 BEGIN PATCH_FAIL ~cbm_edwin: slot grant must occur only at level 1~ END
+          SET grants += 1
+        END
+      END
+    END
+    PATCH_IF grants > 1 BEGIN PATCH_FAIL ~cbm_edwin: duplicate Red Wizard slot grants~ END
+    PATCH_IF grants = 0 BEGIN
+      SPRINT grant_row ~CBMEDSLOT AP_CBMEDSL~
+      FOR (i = 2; i < columns; ++i) BEGIN SPRINT grant_row ~%grant_row% ****~ END
+      SPRINT grant_row ~%WNL%%grant_row%%WNL%~
+      SET append_at = BUFFER_LENGTH
+      INSERT_BYTES append_at (STRING_LENGTH ~%grant_row%~)
+      WRITE_ASCIIE append_at ~%grant_row%~
+    END
+  BUT_ONLY
+  ACTION_FOR_EACH item IN ~MISC89.ITM~ ~MISC89_.ITM~ BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%item%~ BEGIN
+      COPY_EXISTING ~%item%~ ~override~ LPF cbm_edwin_item END BUT_ONLY
+    END
+  END
+  ACTION_FOR_EACH creature IN
+    ~EDWIN~ ~EDWIN2~ ~EDWIN4~ ~EDWIN6~ ~EDWIN7~ ~EDWIN7_~
+    ~EDWIN9~ ~EDWIN11~ ~EDWIN12~ ~EDWIN13~ ~EDWIN15~
+  BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%creature%.CRE~ BEGIN
+      COPY_EXISTING ~%creature%.CRE~ ~override~
+        SET repair_missing_kit = ~%creature%~ STRING_EQUAL_CASE ~EDWIN7_~
+        LPF cbm_edwin_cre INT_VAR redwizard_id repair_missing_kit END
+      BUT_ONLY
+    END
+  END
+END

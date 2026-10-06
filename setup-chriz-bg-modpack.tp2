@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.8~
+VERSION ~v0.2.0-alpha.9~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -411,6 +411,17 @@ BEGIN @235 DESIGNATED 235 GROUP @1100 LABEL ~cbm_baeloth_spellbook~
 INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
 INCLUDE ~chriz-bg-modpack/lib/cbm_baeloth_spellbook.tpa~
 LAF cbm_baeloth_install END
+
+// Immediately after Artisan's selected Edwin conversion, before SR 60.
+BEGIN @236 DESIGNATED 236 GROUP @1100 LABEL ~cbm_edwin_redwizard~
+  REQUIRE_PREDICATE (MOD_IS_INSTALLED ~ArtisansKitpack_npc/ArtisansKitpack_npc.tp2~ 5102)
+    ~Install Artisan's Red Wizard conversion for Edwin (5102) first.~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~C0REDWIZ.2DA~
+    ~The installed Red Wizard kit table is missing.~
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~spell_rev/setup-spell_rev.tp2~ 60)
+    ~Install this Edwin correction before Spell Revisions' NPC spellbook component 60.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_edwin_redwizard.tpa~
+LAF cbm_edwin_install END
 
 // =====================================================================
 // Spell and compatibility fixes (400-499)
