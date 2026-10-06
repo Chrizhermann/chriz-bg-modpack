@@ -38,6 +38,7 @@ PUBLIC_COMPONENTS = {
     224,
     225,
     235,
+    236,
     400,
     410,
     430,
@@ -94,6 +95,7 @@ class PublicSurfaceTests(unittest.TestCase):
             224: "cbm_evandra_sorcerer",
             225: "cbm_evandra_portrait",
             235: "cbm_baeloth_spellbook",
+            236: "cbm_edwin_redwizard",
             640: "cbm_legacy_ui_strings",
         }
         for component, label in expected.items():
@@ -167,8 +169,9 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/yeslick-alaghor.md",
                 "docs/evandra.md",
                 "docs/baeloth-spellbook.md",
+                "docs/edwin-redwizard.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.8.md",
+                "docs/releases/v0.2.0-alpha.9.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

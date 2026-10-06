@@ -82,6 +82,7 @@ jobs:
           tests/test_companion_classes_installer.py
           tests/test_evandra_sorcerer.py
           tests/test_baeloth_spellbook.py
+          tests/test_edwin_redwizard.py
           tests/test_legacy_ui_strings.py
           tests/test_imoen_spellhold_xp.py
           tests/test_imoen_spellhold_xp_installer.py

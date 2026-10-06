@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.0-alpha.9 - 2026-10-07
 
 - Add independently selectable **235 — Baeloth: standard sorcerer spells known
   (major rebalance)** for the planned Challenge Mode. Normalize his BG1 and fresh
@@ -9,6 +9,18 @@
   limits, existing readiness, later level-up choices and unrelated fields.
   Install after NPC spellbook writers, including optional SR component 60.
   This is not an unconditional collection default or an existing-save repair.
+
+- Add **236 — Edwin Red Wizard: correct spell slots and removable amulet**.
+  Remove inherited bonus slots and the amulet's slot bonus; the selected kit
+  supplies its promised +1 alongside the native specialist +1. Both BG2 and
+  EET's BG1 amulets can be removed. Cover the EET recruitment template missed
+  by Artisan's conversion, without undoing a different selected kit.
+  Requires Artisan NPC 5102; install immediately after it and before SR 60.
+  Existing saved actors are not rewritten.
+- Generate the new slot spell from source and retain unrelated creature/item
+  effects. Refuse conflicting older private slot fixes instead of stacking them.
+- Keep every alpha.8 option available, with no default or balance changes to
+  unrelated components. Collection defaults and download pins are separate.
 
 ## v0.2.0-alpha.8 - 2026-09-29
 

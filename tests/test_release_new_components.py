@@ -1,4 +1,4 @@
-"""Accept the new alpha.8 components using only runtime files from a release ZIP."""
+"""Accept current components using only runtime files from a release ZIP."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ import zipfile
 from lupa.lua51 import LuaRuntime
 
 from tests import test_evandra_sorcerer as evandra
+from tests import test_baeloth_spellbook as baeloth
+from tests import test_edwin_redwizard as edwin
 from tests import test_release_archive as release_archive
 from tests import test_unidentified_items_installer as unidentified
 from tests import test_utility_xp_installer as utility
@@ -87,6 +89,27 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                     expected[name] = after[name]
                 self.assertEqual(expected, after)
                 self.assert_restored(game, 224, before)
+
+    def test_235_extracted_baeloth_with_sr_and_without_sr(self) -> None:
+        for sr in (False, True):
+            with self.subTest(spell_revisions=sr), tempfile.TemporaryDirectory(
+                prefix="cbm-release-baeloth-"
+            ) as raw:
+                game, spells = baeloth.make_game(Path(raw), sr=sr)
+                game.before = self.extract_release(game)
+                bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+                with patch.object(baeloth, "WEIDU", bundled):
+                    baeloth.assert_success(game, spells, sr=sr)
+
+    def test_236_extracted_edwin_slots_and_amulet(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-edwin-") as raw:
+            game = edwin.make_game(Path(raw), shuffled=True)
+            game.before = self.extract_release(game)
+            bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+            # Edwin shares the same invocation helper but reads all runtime
+            # source from the extracted archive, never the development checkout.
+            with patch.object(baeloth, "WEIDU", bundled):
+                edwin.assert_success(game)
 
     def test_225_extracted_portrait_has_approved_hash_and_changes_only_portraits(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cbm-release-evandra-portrait-") as raw:

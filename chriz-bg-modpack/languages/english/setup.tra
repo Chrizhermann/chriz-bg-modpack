@@ -33,6 +33,7 @@
 @1195 = ~Companion conversion installed. Load a save from before the companion first appeared in the world. Kit rules follow installed overhauls; see docs/companion-classes.md.~
 
 @235 = ~Baeloth: standard sorcerer spells known (major rebalance)~
+@236 = ~Edwin Red Wizard: correct spell slots and removable amulet~
 @1235 = ~Baeloth's spellbook rebalance supports BG:EE (including SoD), BG2:EE and EET.~
 
 @400 = ~Branwen Spiritual Hammer: repair magical-weapon charges~
