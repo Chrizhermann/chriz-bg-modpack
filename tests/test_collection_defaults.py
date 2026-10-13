@@ -101,6 +101,8 @@ DYNAHEIR_RESOURCES = (
     ("DYNAHE6", "Dynaheir"),
     ("DYNAHE7", "DYNAHEIR"),
 )
+# Components that patch every present variant, keyed to their loop variable.
+TOLERANT_COMPONENTS = {196: "cbm_faldorn_cre", 197: "cbm_dynaheir_cre"}
 
 ONE_EMPTY_STRING_TLK = (
     struct.pack("<8sHII", b"TLK V1  ", 0, 1, 0x2C)
@@ -683,7 +685,8 @@ class CollectionDefaultsTests(unittest.TestCase):
                 block = component_block(source, spec.public_component)
                 self.assertIn(functions[group], block)
                 for resref, _ in spec.resources:
-                    self.assertIn(f"FILE_EXISTS_IN_GAME ~{resref}.CRE~", block)
+                    if spec.public_component not in TOLERANT_COMPONENTS:
+                        self.assertIn(f"FILE_EXISTS_IN_GAME ~{resref}.CRE~", block)
                     self.assertRegex(block, rf"(?i)\b{re.escape(resref)}\b")
         skie = component_block(source, 195)
         self.assertEqual(1, skie.count("COPY_EXISTING"))
@@ -695,7 +698,13 @@ class CollectionDefaultsTests(unittest.TestCase):
         self.assertIn("WIZARD_HASTE", dynaheir)
         self.assertNotIn("SPWI305", dynaheir)
         for resref, _ in DYNAHEIR_RESOURCES:
-            self.assertIn(f"FILE_EXISTS_IN_GAME ~{resref}.CRE~", dynaheir)
+            self.assertRegex(dynaheir, rf"(?i)\b{re.escape(resref)}\b")
+        # Faldorn and Dynaheir check each variant at install time instead of
+        # requiring the complete family up front.
+        for component, variable in TOLERANT_COMPONENTS.items():
+            block = component_block(source, component)
+            self.assertNotIn("REQUIRE_PREDICATE", block)
+            self.assertIn(f"FILE_EXISTS_IN_GAME ~%{variable}%.CRE~", block)
         self.assertIn("LABEL ~cbm_companion_continuity~", component_block(source, 199))
 
     def _run_public(
@@ -767,6 +776,34 @@ class CollectionDefaultsTests(unittest.TestCase):
             )
         return [resref for resref, _ in spec.resources], expected_skills
 
+    def _public_game(self, raw: str) -> SyntheticGame:
+        game = SyntheticGame(Path(raw) / "game")
+        shutil.copy2(TP2, game.root / TP2.name)
+        shutil.copytree(ROOT / "chriz-bg-modpack", game.root / "chriz-bg-modpack")
+        return game
+
+    def assert_public_default_applied(self, component: int, transformed: bytes) -> None:
+        if component == 197:
+            haste = [
+                row
+                for row in known_records(transformed)
+                if row[:8].rstrip(b"\0").upper() == EFFECTIVE_HASTE_RESREF.encode()
+            ]
+            self.assertEqual([known_record(EFFECTIVE_HASTE_RESREF, 2, 1)], haste)
+        else:
+            spec = next(
+                candidate
+                for candidate in KIT_COMPONENTS.values()
+                if candidate.public_component == component
+            )
+            self.assertEqual(
+                KIT_IDS[spec.target_kit_symbol] << 16, u32(transformed, 0x244)
+            )
+
+    @staticmethod
+    def missing_variant_warning(resref: str) -> str:
+        return rf"(?m)^WARNING: cbm_\w+: {re.escape(resref)}\.CRE is missing; skipping this variant\."
+
     def test_public_components_install_and_uninstall_byte_exactly(self):
         if self.weidu is None:
             self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
@@ -786,30 +823,14 @@ class CollectionDefaultsTests(unittest.TestCase):
                 transcript = self.transcript(install)
                 self.assertEqual(0, install.returncode, transcript)
                 self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                if component in TOLERANT_COMPONENTS:
+                    self.assertIn(f"processed {len(resources)} present", transcript)
+                    self.assertNotIn("is missing; skipping", transcript)
                 for resref in resources:
                     transformed = resource_path(
                         game.override, f"{resref}.CRE"
                     ).read_bytes()
-                    if component == 197:
-                        haste = [
-                            row
-                            for row in known_records(transformed)
-                            if row[:8].rstrip(b"\0").upper()
-                            == EFFECTIVE_HASTE_RESREF.encode()
-                        ]
-                        self.assertEqual(
-                            [known_record(EFFECTIVE_HASTE_RESREF, 2, 1)], haste
-                        )
-                    else:
-                        spec = next(
-                            candidate
-                            for candidate in KIT_COMPONENTS.values()
-                            if candidate.public_component == component
-                        )
-                        self.assertEqual(
-                            KIT_IDS[spec.target_kit_symbol] << 16,
-                            u32(transformed, 0x244),
-                        )
+                    self.assert_public_default_applied(component, transformed)
                     if component == 195:
                         self.assertEqual(expected_skills[resref], transformed[0x67])
                         self.assertEqual(0, transformed[0x68])
@@ -821,7 +842,8 @@ class CollectionDefaultsTests(unittest.TestCase):
     def test_public_components_preflight_all_declared_resources(self):
         if self.weidu is None:
             self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
-        for component in (194, 195, 196, 197, 198):
+        # 196 and 197 patch whichever variants are present; see the tests below.
+        for component in (194, 195, 198):
             with self.subTest(component=component), tempfile.TemporaryDirectory(
                 prefix=f"cbm-public-default-missing-{component}-"
             ) as raw:
@@ -840,6 +862,79 @@ class CollectionDefaultsTests(unittest.TestCase):
                 self.assertIn("SKIPPING", transcript)
                 self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
                 self.assertIn(f"{missing}.CRE", transcript)
+                self.assertEqual(before, file_tree(game.override))
+
+    def test_faldorn_and_dynaheir_patch_present_variants_and_report_missing_ones(self):
+        if self.weidu is None:
+            self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
+        # The first variant is missing in both; DYNAHE7 with its distinct death
+        # variable stays present behind a missing one.
+        for component, missing in ((196, {"FALDOR"}), (197, {"DYNAHE", "DYNAHE6"})):
+            with self.subTest(component=component), tempfile.TemporaryDirectory(
+                prefix=f"cbm-public-partial-{component}-"
+            ) as raw:
+                game = self._public_game(raw)
+                resources, _ = self._stage_public_component(game, component)
+                for resref in missing:
+                    resource_path(game.override, f"{resref}.CRE").unlink()
+                present = [resref for resref in resources if resref not in missing]
+                before = file_tree(game.override)
+
+                install = self._run_public(game, "--force-install-list", component)
+                transcript = self.transcript(install)
+                self.assertEqual(0, install.returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertIn(f"processed {len(present)} present", transcript)
+                for resref in resources:
+                    warning = self.missing_variant_warning(resref)
+                    if resref in missing:
+                        self.assertRegex(transcript, warning)
+                    else:
+                        self.assertNotRegex(transcript, warning)
+                after = file_tree(game.override)
+                # Only the present variants change; missing ones are not created.
+                self.assertEqual(set(before), set(after))
+                self.assertEqual(
+                    {f"{resref}.CRE" for resref in present},
+                    {name for name in after if after[name] != before[name]},
+                )
+                for resref in present:
+                    self.assert_public_default_applied(component, after[f"{resref}.CRE"])
+
+                uninstall = self._run_public(game, "--force-uninstall-list", component)
+                self.assertEqual(0, uninstall.returncode, self.transcript(uninstall))
+                self.assertEqual(before, file_tree(game.override))
+
+    def test_faldorn_and_dynaheir_without_variants_are_reported_noops(self):
+        if self.weidu is None:
+            self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
+        for component, resources in (
+            (196, [resref for resref, _ in KIT_COMPONENTS["faldorn"].resources]),
+            (197, [resref for resref, _ in DYNAHEIR_RESOURCES]),
+        ):
+            with self.subTest(component=component), tempfile.TemporaryDirectory(
+                prefix=f"cbm-public-none-{component}-"
+            ) as raw:
+                game = self._public_game(raw)
+                # With no target the class, kit and spell lookups must not run,
+                # so their absence cannot turn the reported no-op into a failure.
+                for filename in (
+                    "CLASS.IDS", "KIT.IDS", "SPELL.IDS", f"{EFFECTIVE_HASTE_RESREF}.SPL",
+                ):
+                    resource_path(game.override, filename).unlink()
+                before = file_tree(game.override)
+
+                install = self._run_public(game, "--force-install-list", component)
+                transcript = self.transcript(install)
+                self.assertEqual(0, install.returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertIn("variants found; no resources changed", transcript)
+                for resref in resources:
+                    self.assertRegex(transcript, self.missing_variant_warning(resref))
+                self.assertEqual(before, file_tree(game.override))
+
+                uninstall = self._run_public(game, "--force-uninstall-list", component)
+                self.assertEqual(0, uninstall.returncode, self.transcript(uninstall))
                 self.assertEqual(before, file_tree(game.override))
 
 
