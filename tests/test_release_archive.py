@@ -48,7 +48,9 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 "chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa",
                 "chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf",
                 "chriz-bg-modpack/imoen-xp/m_cbmixp.lua",
+                "chriz-bg-modpack/lib/cbm_companion_stats.tpa",
                 "docs/companion-continuity.md",
+                "docs/companion-stats.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/yeslick-alaghor.md",
             ):

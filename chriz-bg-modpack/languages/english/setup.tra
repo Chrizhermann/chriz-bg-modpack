@@ -32,6 +32,12 @@
 @1194 = ~Hexxat: choose a class or kit~
 @1195 = ~Companion conversion installed. Load a save from before the companion first appeared in the world. Kit rules follow installed overhauls; see docs/companion-classes.md.~
 
+@230 = ~Rasaad: Dexterity 17 and Constitution 16~
+@231 = ~Dorn: Constitution 16~
+@232 = ~Eldoth: Strength 17, Constitution 16, Wisdom 9 and Intelligence 14~
+@233 = ~Garrick: Dexterity 17 and Intelligence 15~
+@234 = ~Quayle: Constitution 15~
+
 @235 = ~Baeloth: standard sorcerer spells known (major rebalance)~
 @236 = ~Edwin Red Wizard: correct spell slots and removable amulet~
 @237 = ~Fade: first-recruitment SoA XP catch-up (new recruitment actors)~

@@ -15,6 +15,7 @@ from lupa.lua51 import LuaRuntime
 
 from tests import test_evandra_sorcerer as evandra
 from tests import test_baeloth_spellbook as baeloth
+from tests import test_companion_stats as stats
 from tests import test_degrodel_fight as degrodel
 from tests import test_edwin_redwizard as edwin
 from tests import test_release_archive as release_archive
@@ -90,6 +91,37 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                     expected[name] = after[name]
                 self.assertEqual(expected, after)
                 self.assert_restored(game, 224, before)
+
+    def test_230_234_extracted_companion_stats_install_alone_and_together(self) -> None:
+        for selection in (*((component,) for component in stats.STAT_COMPONENTS),
+                          tuple(stats.STAT_COMPONENTS)):
+            with self.subTest(components=selection), tempfile.TemporaryDirectory(
+                prefix="cbm-release-stats-"
+            ) as raw:
+                game = stats.stage_game(Path(raw))
+                before = self.extract_release(game)
+                installer = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+                result = stats.run_component(installer, game, selection)
+                transcript = result.stdout + result.stderr
+                self.assertEqual(0, result.returncode, transcript)
+                self.assertEqual(len(selection), transcript.count("SUCCESSFULLY INSTALLED"))
+                # The stat fixture has no log helper; utility's reads only game.root.
+                log = utility.SyntheticGame.active_log(game)
+                for component in selection:
+                    self.assertRegex(log, rf"(?m)#0\s+#{component}\b")
+                # Every game file outside the selected families keeps its bytes.
+                self.assertEqual(
+                    stats.expected_tree(before, selection, prefix="OVERRIDE/"),
+                    self.game_files(game.root),
+                )
+                uninstall = stats.run_component(installer, game, selection, uninstall=True)
+                transcript = uninstall.stdout + uninstall.stderr
+                self.assertEqual(0, uninstall.returncode, transcript)
+                self.assertIn("SUCCESSFULLY REMOVED", transcript)
+                self.assertNotRegex(
+                    utility.SyntheticGame.active_log(game), r"(?m)#0\s+#23[0-4]\b"
+                )
+                self.assertEqual(before, self.game_files(game.root))
 
     def test_235_extracted_baeloth_with_sr_and_without_sr(self) -> None:
         for sr in (False, True):

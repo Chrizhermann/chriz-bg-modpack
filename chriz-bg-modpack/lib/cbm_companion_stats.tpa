@@ -1,0 +1,86 @@
+// Independent base ability-score presets. Named variants are documented in
+// docs/companion-stats.md. Class, kit, level and previous scores are not gates.
+DEFINE_ACTION_FUNCTION cbm_companion_stats STR_VAR npc = ~~ BEGIN
+  OUTER_SPRINT cbmst_npc EVAL ~%npc%~
+  ACTION_TO_UPPER cbmst_npc
+  ACTION_CLEAR_ARRAY cbmst_resources
+  OUTER_SET cbmst_strength = 0
+  OUTER_SET cbmst_intelligence = 0
+  OUTER_SET cbmst_wisdom = 0
+  OUTER_SET cbmst_dexterity = 0
+  OUTER_SET cbmst_constitution = 0
+
+  ACTION_IF (~%cbmst_npc%~ STRING_EQUAL ~RASAAD~) BEGIN
+    ACTION_DEFINE_ARRAY cbmst_resources BEGIN
+      RASAAD RASAAD2 RASAAD4 RASAAD6 RASAAD7
+      RASAAD8 RASAAD9 RASAAD10 RASAAD11 RASAAD12 RASAAD13
+    END
+    OUTER_SET cbmst_dexterity = 17
+    OUTER_SET cbmst_constitution = 16
+  END ELSE ACTION_IF (~%cbmst_npc%~ STRING_EQUAL ~DORN~) BEGIN
+    ACTION_DEFINE_ARRAY cbmst_resources BEGIN
+      DORN DORN2 DORN4 DORN6 DORN7 DORN8 DORN9 DORN10 DORN12 DORN14
+    END
+    OUTER_SET cbmst_constitution = 16
+  END ELSE ACTION_IF (~%cbmst_npc%~ STRING_EQUAL ~ELDOTH~) BEGIN
+    ACTION_DEFINE_ARRAY cbmst_resources BEGIN ELDOTH ELDOTH5 ELDOTD END
+    OUTER_SET cbmst_strength = 17
+    OUTER_SET cbmst_intelligence = 14
+    OUTER_SET cbmst_wisdom = 9
+    OUTER_SET cbmst_constitution = 16
+  END ELSE ACTION_IF (~%cbmst_npc%~ STRING_EQUAL ~GARRICK~) BEGIN
+    ACTION_DEFINE_ARRAY cbmst_resources BEGIN
+      GARRIC GARRIC2 GARRIC4 GARRIC6 BDGARRIC GARRICK
+    END
+    OUTER_SET cbmst_dexterity = 17
+    OUTER_SET cbmst_intelligence = 15
+  END ELSE ACTION_IF (~%cbmst_npc%~ STRING_EQUAL ~QUAYLE~) BEGIN
+    ACTION_DEFINE_ARRAY cbmst_resources BEGIN
+      QUAYLE QUAYLE_ QUAYLE4 QUAYLE6 QUAYLEM
+    END
+    OUTER_SET cbmst_constitution = 15
+  END ELSE BEGIN
+    FAIL ~cbm_companion_stats: unknown preset %cbmst_npc%.~
+  END
+
+  OUTER_SET cbmst_present = 0
+  ACTION_PHP_EACH cbmst_resources AS cbmst_index => cbmst_resref BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbmst_resref%.CRE~ BEGIN
+      COPY_EXISTING ~%cbmst_resref%.CRE~ ~override~
+        PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
+          PATCH_FAIL ~cbm_companion_stats: %SOURCE_FILE% has a truncated CRE header.~
+        END
+        READ_ASCII 0 cbmst_signature (8)
+        PATCH_IF NOT (~%cbmst_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+          PATCH_FAIL ~cbm_companion_stats: %SOURCE_FILE% is not a supported CRE V1.0 resource.~
+        END
+
+        PATCH_IF (cbmst_strength > 0) BEGIN
+          WRITE_BYTE 0x238 cbmst_strength
+          // STR 17 has no exceptional-strength percentile, regardless of kit.
+          WRITE_BYTE 0x239 0
+        END
+        PATCH_IF (cbmst_intelligence > 0) BEGIN
+          WRITE_BYTE 0x23a cbmst_intelligence
+        END
+        PATCH_IF (cbmst_wisdom > 0) BEGIN
+          WRITE_BYTE 0x23b cbmst_wisdom
+        END
+        PATCH_IF (cbmst_dexterity > 0) BEGIN
+          WRITE_BYTE 0x23c cbmst_dexterity
+        END
+        PATCH_IF (cbmst_constitution > 0) BEGIN
+          WRITE_BYTE 0x23d cbmst_constitution
+        END
+      BUT_ONLY
+      OUTER_SET cbmst_present += 1
+    END ELSE BEGIN
+      PRINT ~WARNING: cbm_companion_stats (%cbmst_npc%): %cbmst_resref%.CRE is missing; skipping this variant. Other or renamed variants may remain unpatched.~
+    END
+  END
+  ACTION_IF (cbmst_present > 0) BEGIN
+    PRINT ~cbm_companion_stats (%cbmst_npc%): processed %cbmst_present% present creature variant(s). Install after other NPC stat and class/kit conversions, before first actor creation.~
+  END ELSE BEGIN
+    PRINT ~WARNING: cbm_companion_stats (%cbmst_npc%): no supported variants found; no resources changed.~
+  END
+END

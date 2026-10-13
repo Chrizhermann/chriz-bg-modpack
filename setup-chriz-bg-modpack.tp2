@@ -405,6 +405,32 @@ BEGIN @225 DESIGNATED 225 GROUP @1100 LABEL ~cbm_evandra_portrait~
   REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~RH#EVA.CRE~ AND FILE_EXISTS_IN_GAME ~RH#EV25.CRE~) @1225
 INCLUDE ~chriz-bg-modpack/lib/cbm_evandra_portrait.tpa~
 
+// =====================================================================
+// Optional companion stat choices (230-234)
+// =====================================================================
+
+// Ability scores are independently selectable and authoritative for the owned
+// fields, with no prerequisite on a companion's installed class or kit.
+BEGIN @230 DESIGNATED 230 GROUP @1100 LABEL ~cbm_rasaad_stats~
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_stats.tpa~
+LAF cbm_companion_stats STR_VAR npc = ~RASAAD~ END
+
+BEGIN @231 DESIGNATED 231 GROUP @1100 LABEL ~cbm_dorn_stats~
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_stats.tpa~
+LAF cbm_companion_stats STR_VAR npc = ~DORN~ END
+
+BEGIN @232 DESIGNATED 232 GROUP @1100 LABEL ~cbm_eldoth_stats~
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_stats.tpa~
+LAF cbm_companion_stats STR_VAR npc = ~ELDOTH~ END
+
+BEGIN @233 DESIGNATED 233 GROUP @1100 LABEL ~cbm_garrick_stats~
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_stats.tpa~
+LAF cbm_companion_stats STR_VAR npc = ~GARRICK~ END
+
+BEGIN @234 DESIGNATED 234 GROUP @1100 LABEL ~cbm_quayle_stats~
+INCLUDE ~chriz-bg-modpack/lib/cbm_companion_stats.tpa~
+LAF cbm_companion_stats STR_VAR npc = ~QUAYLE~ END
+
 // Optional Challenge Mode companion balance; keep independent of class/stats.
 BEGIN @235 DESIGNATED 235 GROUP @1100 LABEL ~cbm_baeloth_spellbook~
   REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @1235
