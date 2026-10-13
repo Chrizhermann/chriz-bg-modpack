@@ -1,0 +1,134 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CObList::AddTail+0x0 [0x140406720, 0x140406770)
+0000000140406720  mov      qword ptr [rsp + 8], rbx
+0000000140406725  push     rdi
+0000000140406726  sub      rsp, 0x20
+000000014040672a  mov      rbx, rdx
+000000014040672d  xor      r8d, r8d
+0000000140406730  mov      rdx, qword ptr [rcx + 0x10]
+0000000140406734  mov      rdi, rcx
+0000000140406737  call     0x1404069f0 ; CObList::NewNode+0x0
+000000014040673c  mov      qword ptr [rax + 0x10], rbx
+0000000140406740  mov      rcx, qword ptr [rdi + 0x10]
+0000000140406744  test     rcx, rcx
+0000000140406747  je       0x14040675b
+0000000140406749  mov      qword ptr [rcx], rax
+000000014040674c  mov      qword ptr [rdi + 0x10], rax
+0000000140406750  mov      rbx, qword ptr [rsp + 0x30]
+0000000140406755  add      rsp, 0x20
+0000000140406759  pop      rdi
+000000014040675a  ret
+000000014040675b  mov      rbx, qword ptr [rsp + 0x30]
+0000000140406760  mov      qword ptr [rdi + 8], rax
+0000000140406764  mov      qword ptr [rdi + 0x10], rax
+0000000140406768  add      rsp, 0x20
+000000014040676c  pop      rdi
+000000014040676d  ret
+000000014040676e  int3
+000000014040676f  int3
+
+CObList::NewNode+0x0 [0x1404069f0, 0x140406a90)
+00000001404069f0  mov      qword ptr [rsp + 8], rbx
+00000001404069f5  mov      qword ptr [rsp + 0x10], rsi
+00000001404069fa  push     rdi
+00000001404069fb  sub      rsp, 0x20
+00000001404069ff  cmp      qword ptr [rcx + 0x20], 0
+0000000140406a04  mov      rdi, r8
+0000000140406a07  mov      rsi, rdx
+0000000140406a0a  mov      rbx, rcx
+0000000140406a0d  jne      0x140406a55
+0000000140406a0f  mov      edx, dword ptr [rbx + 0x30]
+0000000140406a12  add      rcx, 0x28
+0000000140406a16  mov      r8d, 0x18
+0000000140406a1c  call     0x140406c50 ; CPlex::Create+0x0
+0000000140406a21  mov      r8d, dword ptr [rbx + 0x30]
+0000000140406a25  add      rax, 0x10
+0000000140406a29  sub      r8d, 1
+0000000140406a2d  movsxd   rcx, r8d
+0000000140406a30  lea      rdx, [rcx + rcx*2]
+0000000140406a34  lea      rax, [rax + rdx*8]
+0000000140406a38  js       0x140406a55
+0000000140406a3a  nop      word ptr [rax + rax]
+0000000140406a40  mov      rcx, qword ptr [rbx + 0x20]
+0000000140406a44  mov      qword ptr [rax], rcx
+0000000140406a47  mov      qword ptr [rbx + 0x20], rax
+0000000140406a4b  sub      rax, 0x18
+0000000140406a4f  sub      r8d, 1
+0000000140406a53  jns      0x140406a40
+0000000140406a55  mov      rax, qword ptr [rbx + 0x20]
+0000000140406a59  mov      rcx, qword ptr [rax]
+0000000140406a5c  mov      qword ptr [rbx + 0x20], rcx
+0000000140406a60  mov      qword ptr [rax + 8], rsi
+0000000140406a64  mov      rsi, qword ptr [rsp + 0x38]
+0000000140406a69  mov      qword ptr [rax], rdi
+0000000140406a6c  inc      dword ptr [rbx + 0x18]
+0000000140406a6f  mov      rbx, qword ptr [rsp + 0x30]
+0000000140406a74  mov      qword ptr [rax + 0x10], 0
+0000000140406a7c  add      rsp, 0x20
+0000000140406a80  pop      rdi
+0000000140406a81  ret
+0000000140406a82  int3
+0000000140406a83  int3
+0000000140406a84  int3
+0000000140406a85  int3
+0000000140406a86  int3
+0000000140406a87  int3
+0000000140406a88  int3
+0000000140406a89  int3
+0000000140406a8a  int3
+0000000140406a8b  int3
+0000000140406a8c  int3
+0000000140406a8d  int3
+0000000140406a8e  int3
+0000000140406a8f  int3
+
+CObList::RemoveAt+0x0 [0x140406ad0, 0x140406b50)
+0000000140406ad0  push     rbx
+0000000140406ad2  sub      rsp, 0x20
+0000000140406ad6  mov      rbx, rcx
+0000000140406ad9  mov      rcx, qword ptr [rdx]
+0000000140406adc  cmp      rdx, qword ptr [rbx + 8]
+0000000140406ae0  jne      0x140406ae8
+0000000140406ae2  mov      qword ptr [rbx + 8], rcx
+0000000140406ae6  jmp      0x140406aef ; CObList::RemoveAt+0x1f
+0000000140406ae8  mov      rax, qword ptr [rdx + 8]
+0000000140406aec  mov      qword ptr [rax], rcx
+0000000140406aef  mov      rcx, qword ptr [rdx + 8]
+0000000140406af3  cmp      rdx, qword ptr [rbx + 0x10]
+0000000140406af7  jne      0x140406aff
+0000000140406af9  mov      qword ptr [rbx + 0x10], rcx
+0000000140406afd  jmp      0x140406b06 ; CObList::RemoveAt+0x36
+0000000140406aff  mov      rax, qword ptr [rdx]
+0000000140406b02  mov      qword ptr [rax + 8], rcx
+0000000140406b06  mov      rax, qword ptr [rbx + 0x20]
+0000000140406b0a  mov      qword ptr [rdx], rax
+0000000140406b0d  sub      dword ptr [rbx + 0x18], 1
+0000000140406b11  mov      qword ptr [rbx + 0x20], rdx
+0000000140406b15  jne      0x140406b3f
+0000000140406b17  mov      rcx, qword ptr [rbx + 0x28]
+0000000140406b1b  mov      qword ptr [rsp + 0x30], rdi
+0000000140406b20  xor      edi, edi
+0000000140406b22  mov      dword ptr [rbx + 0x18], edi
+0000000140406b25  mov      qword ptr [rbx + 0x20], rdi
+0000000140406b29  mov      qword ptr [rbx + 0x10], rdi
+0000000140406b2d  mov      qword ptr [rbx + 8], rdi
+0000000140406b31  call     0x140406ca0 ; CPlex::FreeDataChain+0x0
+0000000140406b36  mov      qword ptr [rbx + 0x28], rdi
+0000000140406b3a  mov      rdi, qword ptr [rsp + 0x30]
+0000000140406b3f  add      rsp, 0x20
+0000000140406b43  pop      rbx
+0000000140406b44  ret
+0000000140406b45  int3
+0000000140406b46  int3
+0000000140406b47  int3
+0000000140406b48  int3
+0000000140406b49  int3
+0000000140406b4a  int3
+0000000140406b4b  int3
+0000000140406b4c  int3
+0000000140406b4d  int3
+0000000140406b4e  int3
+0000000140406b4f  int3

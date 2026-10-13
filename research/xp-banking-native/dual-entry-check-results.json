@@ -1,0 +1,375 @@
+{
+  "checks": 32,
+  "results": [
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "owed-only",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "ordinary-no-owed",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "not-controlled",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "other-player",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "owned-network",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "incapacitated",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "level-drained",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 70,
+      "case": "pending-spell-not-controlled",
+      "nativeResult": 1,
+      "queryRan": false
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "owed-only",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "ordinary-no-owed",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "not-controlled",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "other-player",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "owned-network",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "incapacitated",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "level-drained",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.6.6.0",
+      "oldSlot": 72,
+      "case": "pending-spell-not-controlled",
+      "nativeResult": 1,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "owed-only",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "ordinary-no-owed",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "not-controlled",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "other-player",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "owned-network",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "incapacitated",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "level-drained",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 70,
+      "case": "pending-spell-not-controlled",
+      "nativeResult": 1,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "owed-only",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "ordinary-no-owed",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "not-controlled",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "other-player",
+      "nativeResult": 0,
+      "queryRan": false
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "owned-network",
+      "nativeResult": 1,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "incapacitated",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "level-drained",
+      "nativeResult": 0,
+      "queryRan": true
+    },
+    {
+      "version": "2.7.3.0",
+      "oldSlot": 72,
+      "case": "pending-spell-not-controlled",
+      "nativeResult": 1,
+      "queryRan": false
+    }
+  ],
+  "profiles": [
+    {
+      "version": "2.6.6.0",
+      "exe_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+      "gameTimestamp": 1620326323,
+      "gameSize": 55771136,
+      "eligibilityQuery": {
+        "rva": 2786545,
+        "bytes": "e89aa1f9ff"
+      },
+      "manualStartCall": {
+        "rva": 2796523,
+        "bytes": "e8c08b0100"
+      },
+      "functions": {
+        "clickable": {
+          "rva": 2786400,
+          "bytes": "48895c240848896c2418565741564881ece00c0000488b059ca03b004833c448"
+        },
+        "nextLevel": {
+          "rva": 2369168,
+          "bytes": "48895c2408488974241055574156488bec4883ec404c8bf1498bf0488bca488b"
+        },
+        "classes": {
+          "rva": 1169840,
+          "bytes": "48895c24104889742418574883ec200fb6410b488bf18802498bd80fb6410b48"
+        },
+        "overall": {
+          "rva": 1170464,
+          "bytes": "0fb6410bc3cccccccccccccccccccccc48895c2408574883ec20488b05cfde53"
+        },
+        "level": {
+          "rva": 1387056,
+          "bytes": "4883ec284c8d4c2448e812000000488b4424480fb6004883c428c3cccccccccc"
+        },
+        "setLevel": {
+          "rva": 1392096,
+          "bytes": "40534883ec30410fb6d94c8d4c2420e85cecffff488b4424206689184883c430"
+        },
+        "isUsable": {
+          "rva": 1171568,
+          "bytes": "48895c2410565741564883ec300fb6fa4c8d442468488d542450488bf133dbe8"
+        },
+        "startEditing": {
+          "rva": 2897840,
+          "bytes": "48895c24104889742418574883ec2044898168070000488bf189917007000041"
+        },
+        "onLevelUp": {
+          "rva": 2796288,
+          "bytes": "48895c2410574883ec20488b058fa53b0033d2488bd9488bb890100000488b01"
+        },
+        "getDeny": {
+          "rva": 2581648,
+          "bytes": "48c7020000000083f9ff74498bc141b8ff7f0000c1f810664123c0663905826f"
+        }
+      },
+      "entries": {
+        "clickable": {
+          "rva": 2786400,
+          "bytes": "48895c2408",
+          "span": 5
+        },
+        "click": {
+          "rva": 2796288,
+          "bytes": "48895c2410",
+          "span": 5
+        }
+      }
+    },
+    {
+      "version": "2.7.3.0",
+      "exe_sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+      "gameTimestamp": 1780012861,
+      "gameSize": 55779328,
+      "eligibilityQuery": {
+        "rva": 2788209,
+        "bytes": "e87a9df9ff"
+      },
+      "manualStartCall": {
+        "rva": 2798187,
+        "bytes": "e8c08b0100"
+      },
+      "functions": {
+        "clickable": {
+          "rva": 2788064,
+          "bytes": "48895c240848896c2418565741564881ece00c0000488b05dcbe3b004833c448"
+        },
+        "nextLevel": {
+          "rva": 2369776,
+          "bytes": "48895c2408488974241055574156488bec4883ec404c8bf1498bf0488bca488b"
+        },
+        "classes": {
+          "rva": 1169872,
+          "bytes": "48895c24104889742418574883ec200fb6410b488bf18802498bd80fb6410b48"
+        },
+        "overall": {
+          "rva": 1170496,
+          "bytes": "0fb6410bc3cccccccccccccccccccccc48895c2408574883ec20488b05afee53"
+        },
+        "level": {
+          "rva": 1387584,
+          "bytes": "4883ec284c8d4c2448e812000000488b4424480fb6004883c428c3cccccccccc"
+        },
+        "setLevel": {
+          "rva": 1392624,
+          "bytes": "40534883ec30410fb6d94c8d4c2420e85cecffff488b4424206689184883c430"
+        },
+        "isUsable": {
+          "rva": 1171600,
+          "bytes": "48895c2410565741564883ec300fb6fa4c8d442468488d542450488bf133dbe8"
+        },
+        "startEditing": {
+          "rva": 2899504,
+          "bytes": "48895c24104889742418574883ec2044898168070000488bf189917007000041"
+        },
+        "onLevelUp": {
+          "rva": 2797952,
+          "bytes": "48895c2410574883ec20488b05b7c33b0033d2488bd9488bb890100000488b01"
+        },
+        "getDeny": {
+          "rva": 2582272,
+          "bytes": "48c7020000000083f9ff74498bc141b8ff7f0000c1f810664123c0663905d291"
+        }
+      },
+      "entries": {
+        "clickable": {
+          "rva": 2788064,
+          "bytes": "48895c2408",
+          "span": 5
+        },
+        "click": {
+          "rva": 2797952,
+          "bytes": "48895c2410",
+          "span": 5
+        }
+      }
+    }
+  ],
+  "gameLaunched": false,
+  "boundaries": [
+    "derived constructor/copy/destructor",
+    "progression query separately proven",
+    "effect presence",
+    "security cookie"
+  ],
+  "limits": "Native restrictions executed; no UI layout/render or full retired reward transaction acceptance."
+}

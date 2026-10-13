@@ -1,0 +1,162 @@
+[
+  {
+    "version": "2.6.6.0",
+    "functions": [
+      {
+        "name": "CScreenCreateChar::IsThiefSkillPlusMinusButtonClickable",
+        "rva": 2844816,
+        "size": 96,
+        "sha256": "63abfa5abce79785d23ea3ced8ce1d8f780d109e1e3817fdc89ee38e53e3858b"
+      },
+      {
+        "name": "CScreenCreateChar::OnThiefSkillPlusMinusButtonClick",
+        "rva": 2876016,
+        "size": 240,
+        "sha256": "b0b64c727b41fc4271cf301f6d04fe41ca207d70975a20f27ce7236c7b394932"
+      },
+      {
+        "name": "CGameSprite::GetSkillName",
+        "rva": 3512864,
+        "size": 128,
+        "sha256": "57efcaf753e721a84590658890a4211ec3d9ac3bdcf2decce437ee343a4cc1b3"
+      },
+      {
+        "name": "CGameSprite::GetSkillValue",
+        "rva": 3512992,
+        "size": 368,
+        "sha256": "886c30678ae5d2379c493abf8369b9a40c2636b181c2de9b9dffd8c82bb79947"
+      },
+      {
+        "name": "CRuleTables::GetThiefSkillPercentage",
+        "rva": 2396848,
+        "size": 416,
+        "sha256": "72b6d5d6ef81f9fa8769b5c7150dfa24955871602d60c21c76f4ec27ac8d6709"
+      },
+      {
+        "name": "CScreenCreateChar::ResetProficienciesPanel",
+        "rva": 2889904,
+        "size": 3328,
+        "sha256": "885c7b942a140d2691c9a01ae954918b5d791c3d8724a976050f47b034b0145f"
+      }
+    ],
+    "skill_key_references": [
+      {
+        "at": 2914140,
+        "key": "OPEN_LOCKS"
+      },
+      {
+        "at": 2914151,
+        "key": "PICK_POCKETS"
+      },
+      {
+        "at": 2914158,
+        "key": "FIND_TRAPS"
+      },
+      {
+        "at": 2914176,
+        "key": "MOVE_SILENTLY"
+      },
+      {
+        "at": 2914193,
+        "key": "HIDE_IN_SHADOWS"
+      },
+      {
+        "at": 2914210,
+        "key": "DETECT_ILLUSION"
+      },
+      {
+        "at": 2914221,
+        "key": "SET_TRAPS"
+      },
+      {
+        "at": 2914232,
+        "key": "STEALTH"
+      }
+    ],
+    "displayed_skill_cap": {
+      "instruction_rva": 2876146,
+      "value_rva": 5905020,
+      "value": 250
+    }
+  },
+  {
+    "version": "2.7.3.0",
+    "functions": [
+      {
+        "name": "CScreenCreateChar::IsThiefSkillPlusMinusButtonClickable",
+        "rva": 2846480,
+        "size": 96,
+        "sha256": "d3e0dae781bd4d43eea1119720b94b4b379b0dcb799a0f4c360d614346fee06d"
+      },
+      {
+        "name": "CScreenCreateChar::OnThiefSkillPlusMinusButtonClick",
+        "rva": 2877680,
+        "size": 240,
+        "sha256": "4aa136728a62c04fa85f64c0c2ecf0b6f82b18a135e8ecae313711f5f7681ad0"
+      },
+      {
+        "name": "CGameSprite::GetSkillName",
+        "rva": 3514464,
+        "size": 128,
+        "sha256": "71c4283285c5df569b493f4d32bc631972561f5c281bd5b6a59b008e49ddc63f"
+      },
+      {
+        "name": "CGameSprite::GetSkillValue",
+        "rva": 3514592,
+        "size": 368,
+        "sha256": "6f895ff5c6814767e65790ed167e888d899e4e4ee3a5edb1ed1d7d9186be8fdb"
+      },
+      {
+        "name": "CRuleTables::GetThiefSkillPercentage",
+        "rva": 2397456,
+        "size": 416,
+        "sha256": "c99367fdaeb5c721dfff6a61fc61d113e05568d065217a2478b7a4647a32838a"
+      },
+      {
+        "name": "CScreenCreateChar::ResetProficienciesPanel",
+        "rva": 2891568,
+        "size": 3328,
+        "sha256": "41ef346c5dd591c8cc03511248a8b31c49c4db1cc1a21aad47c616273af371f3"
+      }
+    ],
+    "skill_key_references": [
+      {
+        "at": 2915804,
+        "key": "OPEN_LOCKS"
+      },
+      {
+        "at": 2915815,
+        "key": "PICK_POCKETS"
+      },
+      {
+        "at": 2915822,
+        "key": "FIND_TRAPS"
+      },
+      {
+        "at": 2915840,
+        "key": "MOVE_SILENTLY"
+      },
+      {
+        "at": 2915857,
+        "key": "HIDE_IN_SHADOWS"
+      },
+      {
+        "at": 2915874,
+        "key": "DETECT_ILLUSION"
+      },
+      {
+        "at": 2915885,
+        "key": "SET_TRAPS"
+      },
+      {
+        "at": 2915896,
+        "key": "STEALTH"
+      }
+    ],
+    "displayed_skill_cap": {
+      "instruction_rva": 2877810,
+      "value_rva": 5909340,
+      "value": 250
+    }
+  }
+]

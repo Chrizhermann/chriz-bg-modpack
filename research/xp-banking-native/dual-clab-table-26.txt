@@ -1,0 +1,405 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetClassAbilityTable+0x0 [0x14023ca00, 0x14023d020)
+000000014023ca00  mov      qword ptr [rsp + 8], rbx
+000000014023ca05  mov      qword ptr [rsp + 0x10], rsi
+000000014023ca0a  push     rdi
+000000014023ca0b  sub      rsp, 0x20
+000000014023ca0f  xor      edi, edi
+000000014023ca11  movzx    esi, dl
+000000014023ca14  mov      rbx, rcx
+000000014023ca17  bt       r8d, 0xe
+000000014023ca1c  jae      0x14023cab3
+000000014023ca22  mov      ecx, r8d
+000000014023ca25  and      ecx, 0xffffbfff
+000000014023ca2b  je       0x14023cab3
+000000014023ca31  movsx    edx, word ptr [rbx + 0x2640]
+000000014023ca38  mov      edi, ecx
+000000014023ca3a  mov      dword ptr [rsp + 0x40], 0
+000000014023ca42  cmp      edx, 7
+000000014023ca45  jle      0x14023ca6d
+000000014023ca47  movsx    eax, word ptr [rbx + 0x2642]
+000000014023ca4e  cmp      ecx, eax
+000000014023ca50  jge      0x14023ca6d
+000000014023ca52  test     ecx, ecx
+000000014023ca54  js       0x14023ca6d
+000000014023ca56  mov      rax, qword ptr [rbx + 0x2630]
+000000014023ca5d  imul     edx, edi
+000000014023ca60  add      rax, 0x38
+000000014023ca64  movsxd   rcx, edx
+000000014023ca67  lea      rcx, [rax + rcx*8]
+000000014023ca6b  jmp      0x14023ca74 ; CRuleTables::GetClassAbilityTable+0x74
+000000014023ca6d  lea      rcx, [rbx + 0x2638]
+000000014023ca74  mov      rcx, qword ptr [rcx]
+000000014023ca77  lea      r8, [rsp + 0x40]
+000000014023ca7c  lea      rdx, [rip + 0x3ca2cd]
+000000014023ca83  call     0x1400580f0 ; sscanf+0x0
+000000014023ca88  movzx    eax, sil
+000000014023ca8c  cmp      dword ptr [rsp + 0x40], eax
+000000014023ca90  jne      0x14023caad
+000000014023ca92  lea      eax, [rdi - 1]
+000000014023ca95  mov      rax, qword ptr [rbx + rax*8 + 0x2648]
+000000014023ca9d  mov      rbx, qword ptr [rsp + 0x30]
+000000014023caa2  mov      rsi, qword ptr [rsp + 0x38]
+000000014023caa7  add      rsp, 0x20
+000000014023caab  pop      rdi
+000000014023caac  ret
+000000014023caad  mov      r8d, 0x4000
+000000014023cab3  movzx    eax, sil
+000000014023cab7  dec      eax
+000000014023cab9  cmp      eax, 0x14
+000000014023cabc  ja       0x14023cfaf
+000000014023cac2  lea      rdx, [rip - 0x23cac9]
+000000014023cac9  cdqe
+000000014023cacb  mov      ecx, dword ptr [rdx + rax*4 + 0x23cfc4]
+000000014023cad2  add      rcx, rdx
+000000014023cad5  jmp      rcx
+000000014023cad7  cmp      r8d, 0x800
+000000014023cade  ja       0x14023cba3
+000000014023cae4  je       0x14023cb8c
+000000014023caea  sub      r8d, 0x40
+000000014023caee  je       0x14023cb75
+000000014023caf4  sub      r8d, 0x40
+000000014023caf8  je       0x14023cb5e
+000000014023cafa  sub      r8d, 0x80
+000000014023cb01  je       0x14023cb47
+000000014023cb03  sub      r8d, 0x100
+000000014023cb0a  je       0x14023cb30
+000000014023cb0c  cmp      r8d, 0x200
+000000014023cb13  jne      0x14023cbe3
+000000014023cb19  lea      rax, [rbx + 0x2220]
+000000014023cb20  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb25  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb2a  add      rsp, 0x20
+000000014023cb2e  pop      rdi
+000000014023cb2f  ret
+000000014023cb30  lea      rax, [rbx + 0x2258]
+000000014023cb37  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb3c  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb41  add      rsp, 0x20
+000000014023cb45  pop      rdi
+000000014023cb46  ret
+000000014023cb47  lea      rax, [rbx + 0x2178]
+000000014023cb4e  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb53  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb58  add      rsp, 0x20
+000000014023cb5c  pop      rdi
+000000014023cb5d  ret
+000000014023cb5e  lea      rax, [rbx + 0x21b0]
+000000014023cb65  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb6a  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb6f  add      rsp, 0x20
+000000014023cb73  pop      rdi
+000000014023cb74  ret
+000000014023cb75  lea      rax, [rbx + 0x20d0]
+000000014023cb7c  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb81  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb86  add      rsp, 0x20
+000000014023cb8a  pop      rdi
+000000014023cb8b  ret
+000000014023cb8c  lea      rax, [rbx + 0x21e8]
+000000014023cb93  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cb98  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cb9d  add      rsp, 0x20
+000000014023cba1  pop      rdi
+000000014023cba2  ret
+000000014023cba3  cmp      r8d, 0x1000
+000000014023cbaa  je       0x14023cbcc
+000000014023cbac  cmp      r8d, 0x2000
+000000014023cbb3  jne      0x14023cbe3
+000000014023cbb5  lea      rax, [rbx + 0x2140]
+000000014023cbbc  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cbc1  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cbc6  add      rsp, 0x20
+000000014023cbca  pop      rdi
+000000014023cbcb  ret
+000000014023cbcc  lea      rax, [rbx + 0x2108]
+000000014023cbd3  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cbd8  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cbdd  add      rsp, 0x20
+000000014023cbe1  pop      rdi
+000000014023cbe2  ret
+000000014023cbe3  lea      rax, [rbx + 0x2098]
+000000014023cbea  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cbef  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cbf4  add      rsp, 0x20
+000000014023cbf8  pop      rdi
+000000014023cbf9  ret
+000000014023cbfa  sub      r8d, 1
+000000014023cbfe  je       0x14023cc71
+000000014023cc00  sub      r8d, 1
+000000014023cc04  je       0x14023cc5a
+000000014023cc06  sub      r8d, 2
+000000014023cc0a  je       0x14023cc43
+000000014023cc0c  cmp      r8d, 0x3ffffffc
+000000014023cc13  je       0x14023cc2c
+000000014023cc15  lea      rax, [rbx + 0x19d0]
+000000014023cc1c  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cc21  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cc26  add      rsp, 0x20
+000000014023cc2a  pop      rdi
+000000014023cc2b  ret
+000000014023cc2c  lea      rax, [rbx + 0x2338]
+000000014023cc33  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cc38  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cc3d  add      rsp, 0x20
+000000014023cc41  pop      rdi
+000000014023cc42  ret
+000000014023cc43  lea      rax, [rbx + 0x1a78]
+000000014023cc4a  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cc4f  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cc54  add      rsp, 0x20
+000000014023cc58  pop      rdi
+000000014023cc59  ret
+000000014023cc5a  lea      rax, [rbx + 0x1a40]
+000000014023cc61  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cc66  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cc6b  add      rsp, 0x20
+000000014023cc6f  pop      rdi
+000000014023cc70  ret
+000000014023cc71  lea      rax, [rbx + 0x1a08]
+000000014023cc78  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cc7d  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cc82  add      rsp, 0x20
+000000014023cc86  pop      rdi
+000000014023cc87  ret
+000000014023cc88  cmp      r8d, 0x1000000
+000000014023cc8f  je       0x14023cce8
+000000014023cc91  cmp      r8d, 0x2000000
+000000014023cc98  je       0x14023ccd1
+000000014023cc9a  cmp      r8d, 0x4000000
+000000014023cca1  je       0x14023ccba
+000000014023cca3  lea      rax, [rbx + 0x1fb8]
+000000014023ccaa  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ccaf  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ccb4  add      rsp, 0x20
+000000014023ccb8  pop      rdi
+000000014023ccb9  ret
+000000014023ccba  lea      rax, [rbx + 0x2060]
+000000014023ccc1  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ccc6  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cccb  add      rsp, 0x20
+000000014023cccf  pop      rdi
+000000014023ccd0  ret
+000000014023ccd1  lea      rax, [rbx + 0x2028]
+000000014023ccd8  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ccdd  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cce2  add      rsp, 0x20
+000000014023cce6  pop      rdi
+000000014023cce7  ret
+000000014023cce8  lea      rax, [rbx + 0x1ff0]
+000000014023ccef  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ccf4  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ccf9  add      rsp, 0x20
+000000014023ccfd  pop      rdi
+000000014023ccfe  ret
+000000014023ccff  cmp      r8d, 0x40000
+000000014023cd06  je       0x14023cd5f
+000000014023cd08  cmp      r8d, 0x80000
+000000014023cd0f  je       0x14023cd48
+000000014023cd11  cmp      r8d, 0x100000
+000000014023cd18  je       0x14023cd31
+000000014023cd1a  lea      rax, [rbx + 0x1ce0]
+000000014023cd21  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cd26  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cd2b  add      rsp, 0x20
+000000014023cd2f  pop      rdi
+000000014023cd30  ret
+000000014023cd31  lea      rax, [rbx + 0x1d88]
+000000014023cd38  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cd3d  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cd42  add      rsp, 0x20
+000000014023cd46  pop      rdi
+000000014023cd47  ret
+000000014023cd48  lea      rax, [rbx + 0x1d50]
+000000014023cd4f  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cd54  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cd59  add      rsp, 0x20
+000000014023cd5d  pop      rdi
+000000014023cd5e  ret
+000000014023cd5f  lea      rax, [rbx + 0x1d18]
+000000014023cd66  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cd6b  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cd70  add      rsp, 0x20
+000000014023cd74  pop      rdi
+000000014023cd75  ret
+000000014023cd76  cmp      r8d, 0x200000
+000000014023cd7d  je       0x14023cdd6
+000000014023cd7f  cmp      r8d, 0x400000
+000000014023cd86  je       0x14023cdbf
+000000014023cd88  cmp      r8d, 0x800000
+000000014023cd8f  je       0x14023cda8
+000000014023cd91  lea      rax, [rbx + 0x1dc0]
+000000014023cd98  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cd9d  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cda2  add      rsp, 0x20
+000000014023cda6  pop      rdi
+000000014023cda7  ret
+000000014023cda8  lea      rax, [rbx + 0x1e68]
+000000014023cdaf  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cdb4  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cdb9  add      rsp, 0x20
+000000014023cdbd  pop      rdi
+000000014023cdbe  ret
+000000014023cdbf  lea      rax, [rbx + 0x1e30]
+000000014023cdc6  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cdcb  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cdd0  add      rsp, 0x20
+000000014023cdd4  pop      rdi
+000000014023cdd5  ret
+000000014023cdd6  lea      rax, [rbx + 0x1df8]
+000000014023cddd  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cde2  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cde7  add      rsp, 0x20
+000000014023cdeb  pop      rdi
+000000014023cdec  ret
+000000014023cded  cmp      r8d, 8
+000000014023cdf1  je       0x14023ce44
+000000014023cdf3  cmp      r8d, 0x10
+000000014023cdf7  je       0x14023ce2d
+000000014023cdf9  cmp      r8d, 0x20
+000000014023cdfd  je       0x14023ce16
+000000014023cdff  lea      rax, [rbx + 0x1ab0]
+000000014023ce06  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce0b  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce10  add      rsp, 0x20
+000000014023ce14  pop      rdi
+000000014023ce15  ret
+000000014023ce16  lea      rax, [rbx + 0x1b58]
+000000014023ce1d  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce22  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce27  add      rsp, 0x20
+000000014023ce2b  pop      rdi
+000000014023ce2c  ret
+000000014023ce2d  lea      rax, [rbx + 0x1b20]
+000000014023ce34  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce39  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce3e  add      rsp, 0x20
+000000014023ce42  pop      rdi
+000000014023ce43  ret
+000000014023ce44  lea      rax, [rbx + 0x1ae8]
+000000014023ce4b  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce50  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce55  add      rsp, 0x20
+000000014023ce59  pop      rdi
+000000014023ce5a  ret
+000000014023ce5b  cmp      r8d, 0x8000000
+000000014023ce62  je       0x14023cebb
+000000014023ce64  cmp      r8d, 0x10000000
+000000014023ce6b  je       0x14023cea4
+000000014023ce6d  cmp      r8d, 0x20000000
+000000014023ce74  je       0x14023ce8d
+000000014023ce76  lea      rax, [rbx + 0x1ea0]
+000000014023ce7d  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce82  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce87  add      rsp, 0x20
+000000014023ce8b  pop      rdi
+000000014023ce8c  ret
+000000014023ce8d  lea      rax, [rbx + 0x1f80]
+000000014023ce94  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ce99  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ce9e  add      rsp, 0x20
+000000014023cea2  pop      rdi
+000000014023cea3  ret
+000000014023cea4  lea      rax, [rbx + 0x1f48]
+000000014023ceab  mov      rbx, qword ptr [rsp + 0x30]
+000000014023ceb0  mov      rsi, qword ptr [rsp + 0x38]
+000000014023ceb5  add      rsp, 0x20
+000000014023ceb9  pop      rdi
+000000014023ceba  ret
+000000014023cebb  lea      rax, [rbx + 0x1f10]
+000000014023cec2  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cec7  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cecc  add      rsp, 0x20
+000000014023ced0  pop      rdi
+000000014023ced1  ret
+000000014023ced2  lea      rax, [rbx + 0x1ed8]
+000000014023ced9  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cede  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cee3  add      rsp, 0x20
+000000014023cee7  pop      rdi
+000000014023cee8  ret
+000000014023cee9  cmp      r8d, 0x8000
+000000014023cef0  je       0x14023cf49
+000000014023cef2  cmp      r8d, 0x10000
+000000014023cef9  je       0x14023cf32
+000000014023cefb  cmp      r8d, 0x20000
+000000014023cf02  je       0x14023cf1b
+000000014023cf04  lea      rax, [rbx + 0x1bc8]
+000000014023cf0b  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf10  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf15  add      rsp, 0x20
+000000014023cf19  pop      rdi
+000000014023cf1a  ret
+000000014023cf1b  lea      rax, [rbx + 0x1c70]
+000000014023cf22  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf27  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf2c  add      rsp, 0x20
+000000014023cf30  pop      rdi
+000000014023cf31  ret
+000000014023cf32  lea      rax, [rbx + 0x1c38]
+000000014023cf39  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf3e  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf43  add      rsp, 0x20
+000000014023cf47  pop      rdi
+000000014023cf48  ret
+000000014023cf49  lea      rax, [rbx + 0x1c00]
+000000014023cf50  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf55  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf5a  add      rsp, 0x20
+000000014023cf5e  pop      rdi
+000000014023cf5f  ret
+000000014023cf60  sub      edi, 0x24
+000000014023cf63  je       0x14023cf98
+000000014023cf65  cmp      edi, 1
+000000014023cf68  je       0x14023cf81
+000000014023cf6a  lea      rax, [rbx + 0x2290]
+000000014023cf71  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf76  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf7b  add      rsp, 0x20
+000000014023cf7f  pop      rdi
+000000014023cf80  ret
+000000014023cf81  lea      rax, [rbx + 0x2300]
+000000014023cf88  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cf8d  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cf92  add      rsp, 0x20
+000000014023cf96  pop      rdi
+000000014023cf97  ret
+000000014023cf98  lea      rax, [rbx + 0x22c8]
+000000014023cf9f  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cfa4  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cfa9  add      rsp, 0x20
+000000014023cfad  pop      rdi
+000000014023cfae  ret
+000000014023cfaf  mov      rbx, qword ptr [rsp + 0x30]
+000000014023cfb4  xor      eax, eax
+000000014023cfb6  mov      rsi, qword ptr [rsp + 0x38]
+000000014023cfbb  add      rsp, 0x20
+000000014023cfbf  pop      rdi
+000000014023cfc0  ret
+000000014023cfc1  nop      dword ptr [rax]
+000000014023cfc4  xlatb
+000000014023cfc5  retf     0x23
+000000014023cfc8  cli
+000000014023cfc9  retf
+000000014023cfca  and      eax, dword ptr [rax]
+000000014023cfcc  mov      ah, cl
+000000014023cfce  and      eax, dword ptr [rax]
+000000014023cfd0  dec      esp
+000000014023cfd2  and      eax, dword ptr [rax]
+000000014023cfd4  jbe      0x14023cfa3
+000000014023cfd6  and      eax, dword ptr [rax]
+000000014023cfd8  in       eax, dx
+000000014023cfd9  int      0x23
+000000014023cfdb  add      byte ptr [rdi - 0x50ffdc31], ch
+000000014023cfe1  iretd
+000000014023cfe2  and      eax, dword ptr [rax]
+000000014023cfe4  scasd    eax, dword ptr [rdi]
+000000014023cfe5  iretd
+000000014023cfe6  and      eax, dword ptr [rax]
+000000014023cfe8  scasd    eax, dword ptr [rdi]
+000000014023cfe9  iretd
+000000014023cfea  and      eax, dword ptr [rax]
+000000014023cfec  pop      rbx

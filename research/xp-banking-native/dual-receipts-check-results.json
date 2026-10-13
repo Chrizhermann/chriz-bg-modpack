@@ -1,0 +1,16 @@
+{
+  "scope": "Offline public EEex-field capture protocol; not a live engine or reward mutation test",
+  "results": [
+    {
+      "runtime": "Lua 5.1",
+      "scenarios": 51,
+      "passed": true
+    },
+    {
+      "runtime": "LuaJIT 2.1",
+      "scenarios": 51,
+      "passed": true
+    }
+  ],
+  "sha256": "5f9a202d2a6b74145b534bcd011d030c51ee463b62562ddfa46543458ec5d184"
+}

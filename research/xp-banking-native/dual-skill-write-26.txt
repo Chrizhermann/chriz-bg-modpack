@@ -1,0 +1,132 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameSprite::GetSkillValue+0x0 [0x140359aa0, 0x140359c10)
+0000000140359aa0  mov      r11, rsp
+0000000140359aa3  mov      qword ptr [r11 + 0x18], rbx
+0000000140359aa7  mov      byte ptr [rsp + 0x10], dl
+0000000140359aab  push     rbp
+0000000140359aac  push     rsi
+0000000140359aad  push     rdi
+0000000140359aae  push     r12
+0000000140359ab0  push     r13
+0000000140359ab2  push     r14
+0000000140359ab4  push     r15
+0000000140359ab6  sub      rsp, 0x70
+0000000140359aba  cmp      dword ptr [rcx + 0x4ea4], 0
+0000000140359ac1  lea      rdx, [rcx + 0x4b68]
+0000000140359ac8  movzx    ebp, byte ptr [rcx + 0x5c2]
+0000000140359acf  mov      eax, 0x1dc8
+0000000140359ad4  movzx    r14d, byte ptr [rcx + 0x5bf]
+0000000140359adc  mov      ebx, r9d
+0000000140359adf  movzx    r15d, byte ptr [rcx + 0x5c1]
+0000000140359ae7  lea      r9, [r11 + 0x20]
+0000000140359aeb  movzx    edi, byte ptr [rcx + 0x5c0]
+0000000140359af2  mov      r8d, 0x1120
+0000000140359af8  movzx    esi, byte ptr [rcx + 0x59d]
+0000000140359aff  cmove    r8d, eax
+0000000140359b03  movzx    r12d, byte ptr [rcx + 0x5bc]
+0000000140359b0b  lea      rax, [r11 - 0x48]
+0000000140359b0f  movzx    r13d, byte ptr [rcx + 0x5bd]
+0000000140359b17  add      r8, rcx
+0000000140359b1a  mov      rcx, qword ptr [rip + 0x30b57f]
+0000000140359b21  mov      qword ptr [r11 - 0x60], rax
+0000000140359b25  lea      rax, [r11 - 0x4c]
+0000000140359b29  mov      qword ptr [r11 - 0x68], rax
+0000000140359b2d  lea      rax, [r11 - 0x50]
+0000000140359b31  mov      qword ptr [r11 - 0x70], rax
+0000000140359b35  lea      rax, [r11 - 0x54]
+0000000140359b39  mov      rcx, qword ptr [rcx + 0x1090]
+0000000140359b40  mov      qword ptr [r11 - 0x78], rax
+0000000140359b44  lea      rax, [r11 - 0x58]
+0000000140359b48  mov      qword ptr [r11 - 0x80], rax
+0000000140359b4c  lea      rax, [r11 + 8]
+0000000140359b50  mov      qword ptr [rsp + 0x20], rax
+0000000140359b55  call     0x140247720 ; CRuleTables::GetSkillBonusValue+0x0
+0000000140359b5a  test     ebx, ebx
+0000000140359b5c  jne      0x140359b84
+0000000140359b5e  add      ebp, dword ptr [rsp + 0xc8]
+0000000140359b65  add      r14d, dword ptr [rsp + 0xb0]
+0000000140359b6d  add      r15d, dword ptr [rsp + 0x50]
+0000000140359b72  add      edi, dword ptr [rsp + 0x54]
+0000000140359b76  add      esi, dword ptr [rsp + 0x58]
+0000000140359b7a  add      r12d, dword ptr [rsp + 0x5c]
+0000000140359b7f  add      r13d, dword ptr [rsp + 0x60]
+0000000140359b84  movzx    eax, byte ptr [rsp + 0xb8]
+0000000140359b8c  cmp      eax, 7
+0000000140359b8f  ja       0x140359bd0
+0000000140359b91  mov      ecx, eax
+0000000140359b93  lea      rax, [rip - 0x359b9a]
+0000000140359b9a  mov      edx, dword ptr [rax + rcx*4 + 0x359bec]
+0000000140359ba1  add      rdx, rax
+0000000140359ba4  jmp      rdx
+0000000140359ba6  mov      eax, ebp
+0000000140359ba8  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359baa  mov      eax, r14d
+0000000140359bad  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359baf  mov      eax, r15d
+0000000140359bb2  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bb4  mov      eax, edi
+0000000140359bb6  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bb8  mov      eax, esi
+0000000140359bba  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bbc  mov      eax, r12d
+0000000140359bbf  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bc1  mov      eax, r13d
+0000000140359bc4  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bc6  lea      eax, [rsi + rdi]
+0000000140359bc9  cdq
+0000000140359bca  sub      eax, edx
+0000000140359bcc  sar      eax, 1
+0000000140359bce  jmp      0x140359bd2 ; CGameSprite::GetSkillValue+0x132
+0000000140359bd0  xor      eax, eax
+0000000140359bd2  mov      rbx, qword ptr [rsp + 0xc0]
+0000000140359bda  add      rsp, 0x70
+0000000140359bde  pop      r15
+0000000140359be0  pop      r14
+0000000140359be2  pop      r13
+0000000140359be4  pop      r12
+0000000140359be6  pop      rdi
+0000000140359be7  pop      rsi
+0000000140359be8  pop      rbp
+0000000140359be9  ret
+0000000140359bea  nop
+0000000140359bec  cmpsb    byte ptr [rsi], byte ptr [rdi]
+0000000140359bed  wait
+0000000140359bee  xor      eax, 0x359baa00
+0000000140359bf3  add      byte ptr [rdi - 0x4bffca65], ch
+0000000140359bf9  wait
+0000000140359bfa  xor      eax, 0x359bb800
+0000000140359bff  add      byte ptr [rbx + rbx*4 - 0x643effcb], bh
+0000000140359c06  xor      eax, 0x359bc600
+0000000140359c0b  add      ah, cl
+0000000140359c0d  int3
+0000000140359c0e  int3
+0000000140359c0f  int3
+
+CGameSprite::SetSkillValue+0x0 [0x1403755c0, 0x140375630)
+00000001403755c0  movzx    eax, dl
+00000001403755c3  cmp      eax, 6
+00000001403755c6  ja       0x140375613
+00000001403755c8  lea      r9, [rip - 0x3755cf]
+00000001403755cf  mov      edx, dword ptr [r9 + rax*4 + 0x375614]
+00000001403755d7  add      rdx, r9
+00000001403755da  jmp      rdx
+00000001403755dc  mov      byte ptr [rcx + 0x5c2], r8b
+00000001403755e3  ret
+00000001403755e4  mov      byte ptr [rcx + 0x5bf], r8b
+00000001403755eb  ret
+00000001403755ec  mov      byte ptr [rcx + 0x5c1], r8b
+00000001403755f3  ret
+00000001403755f4  mov      byte ptr [rcx + 0x5c0], r8b
+00000001403755fb  ret
+00000001403755fc  mov      byte ptr [rcx + 0x59d], r8b
+0000000140375603  ret
+0000000140375604  mov      byte ptr [rcx + 0x5bc], r8b
+000000014037560b  ret
+000000014037560c  mov      byte ptr [rcx + 0x5bd], r8b
+0000000140375613  ret
+0000000140375614  fcom     qword ptr [rbp + 0x37]
+0000000140375617  add      ah, ah
+0000000140375619  push     rbp

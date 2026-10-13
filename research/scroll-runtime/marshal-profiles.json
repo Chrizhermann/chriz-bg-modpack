@@ -1,0 +1,60 @@
+[
+  {
+    "version": "2.6.6.0",
+    "rva": 1986256,
+    "timestamp": 1620326323,
+    "spans": [
+      {
+        "name": "Marshal prologue and filter/count",
+        "rva": 1986256,
+        "size": 676,
+        "sha256": "560fd9f75e600ee0afaa07bf7bed08f5e90c719be6592640527a14bc1374e26e"
+      },
+      {
+        "name": "Marshal allocation argument",
+        "rva": 1986938,
+        "size": 3,
+        "sha256": "5f637c2b62527e8f8330ba2640088355da43fbcccbcaf56c93ceeef9d51c80c0"
+      },
+      {
+        "name": "Marshal native writer and return",
+        "rva": 1986946,
+        "size": 238,
+        "sha256": "1b7d38acf478f0a34e24cdcb565576a8e48ea4be9ff362b320ef6d15637468bb"
+      }
+    ],
+    "branch_rva": 1986932,
+    "branch": "0f8ec1000000",
+    "call_rva": 1986941,
+    "call": "e862163100"
+  },
+  {
+    "version": "2.7.3.0",
+    "rva": 1986784,
+    "timestamp": 1780012861,
+    "spans": [
+      {
+        "name": "Marshal prologue and filter/count",
+        "rva": 1986784,
+        "size": 676,
+        "sha256": "1ca59165024880b981a7c007dab11fbdd856572bee1bdb7fbe4649cc8c3cdc37"
+      },
+      {
+        "name": "Marshal allocation argument",
+        "rva": 1987466,
+        "size": 3,
+        "sha256": "5f637c2b62527e8f8330ba2640088355da43fbcccbcaf56c93ceeef9d51c80c0"
+      },
+      {
+        "name": "Marshal native writer and return",
+        "rva": 1987474,
+        "size": 238,
+        "sha256": "d30f39ebb51db00d86bf874d2ff056b8699a120489c123c2be78896ebdd3edc1"
+      }
+    ],
+    "branch_rva": 1987460,
+    "branch": "0f8ec1000000",
+    "call_rva": 1987469,
+    "call": "e832243100"
+  }
+]

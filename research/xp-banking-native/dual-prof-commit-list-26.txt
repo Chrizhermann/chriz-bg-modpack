@@ -1,0 +1,92 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameEffectList::HandleList+0x0 [0x1401e4d80, 0x1401e4e90)
+00000001401e4d80  mov      qword ptr [rsp + 0x10], rbp
+00000001401e4d85  mov      qword ptr [rsp + 0x18], rsi
+00000001401e4d8a  push     rdi
+00000001401e4d8b  push     r14
+00000001401e4d8d  push     r15
+00000001401e4d8f  sub      rsp, 0x20
+00000001401e4d93  mov      r8, qword ptr [rcx + 8]
+00000001401e4d97  xor      ebp, ebp
+00000001401e4d99  mov      qword ptr [rcx + 0x38], r8
+00000001401e4d9d  mov      r15d, 1
+00000001401e4da3  mov      qword ptr [rcx + 0x40], r8
+00000001401e4da7  mov      r14, rdx
+00000001401e4daa  mov      rdi, rcx
+00000001401e4dad  mov      esi, r15d
+00000001401e4db0  test     r8, r8
+00000001401e4db3  je       0x1401e4e59
+00000001401e4db9  mov      qword ptr [rsp + 0x40], rbx
+00000001401e4dbe  nop
+00000001401e4dc0  mov      rax, qword ptr [r8]
+00000001401e4dc3  mov      qword ptr [rdi + 0x38], rax
+00000001401e4dc7  cmp      dword ptr [r14 + 0x3bfc], 0
+00000001401e4dcf  mov      rbx, qword ptr [r8 + 0x10]
+00000001401e4dd3  jne      0x1401e4deb
+00000001401e4dd5  mov      ecx, dword ptr [rbx + 0x10]
+00000001401e4dd8  lea      eax, [rcx - 0xd4]
+00000001401e4dde  cmp      eax, r15d
+00000001401e4de1  jbe      0x1401e4deb
+00000001401e4de3  cmp      ecx, 0xe9
+00000001401e4de9  jne      0x1401e4e43
+00000001401e4deb  test     esi, esi
+00000001401e4ded  je       0x1401e4e04
+00000001401e4def  mov      rax, qword ptr [rbx]
+00000001401e4df2  mov      rdx, r14
+00000001401e4df5  mov      rcx, rbx
+00000001401e4df8  call     qword ptr [rax + 0x18]
+00000001401e4dfb  test     eax, eax
+00000001401e4dfd  je       0x1401e4e04
+00000001401e4dff  mov      esi, r15d
+00000001401e4e02  jmp      0x1401e4e06 ; CGameEffectList::HandleList+0x86
+00000001401e4e04  xor      esi, esi
+00000001401e4e06  cmp      dword ptr [rbx + 0x118], 0
+00000001401e4e0d  mov      rdx, qword ptr [rdi + 0x40]
+00000001401e4e11  cmovne   ebp, r15d
+00000001401e4e15  test     rdx, rdx
+00000001401e4e18  je       0x1401e4e43
+00000001401e4e1a  cmp      dword ptr [rbx + 0x114], 0
+00000001401e4e21  je       0x1401e4e43
+00000001401e4e23  mov      rcx, rdi
+00000001401e4e26  call     0x140406ad0 ; CObList::RemoveAt+0x0
+00000001401e4e2b  mov      rax, qword ptr [rbx]
+00000001401e4e2e  mov      rdx, r14
+00000001401e4e31  mov      rcx, rbx
+00000001401e4e34  call     qword ptr [rax + 0x50]
+00000001401e4e37  mov      r8, qword ptr [rbx]
+00000001401e4e3a  mov      edx, r15d
+00000001401e4e3d  mov      rcx, rbx
+00000001401e4e40  call     qword ptr [r8]
+00000001401e4e43  mov      r8, qword ptr [rdi + 0x38]
+00000001401e4e47  mov      qword ptr [rdi + 0x40], r8
+00000001401e4e4b  test     r8, r8
+00000001401e4e4e  jne      0x1401e4dc0
+00000001401e4e54  mov      rbx, qword ptr [rsp + 0x40]
+00000001401e4e59  mov      dword ptr [rdi + 0x4c], ebp
+00000001401e4e5c  mov      eax, esi
+00000001401e4e5e  mov      rbp, qword ptr [rsp + 0x48]
+00000001401e4e63  mov      rsi, qword ptr [rsp + 0x50]
+00000001401e4e68  mov      qword ptr [rdi + 0x38], 0
+00000001401e4e70  mov      qword ptr [rdi + 0x40], 0
+00000001401e4e78  add      rsp, 0x20
+00000001401e4e7c  pop      r15
+00000001401e4e7e  pop      r14
+00000001401e4e80  pop      rdi
+00000001401e4e81  ret
+00000001401e4e82  int3
+00000001401e4e83  int3
+00000001401e4e84  int3
+00000001401e4e85  int3
+00000001401e4e86  int3
+00000001401e4e87  int3
+00000001401e4e88  int3
+00000001401e4e89  int3
+00000001401e4e8a  int3
+00000001401e4e8b  int3
+00000001401e4e8c  int3
+00000001401e4e8d  int3
+00000001401e4e8e  int3
+00000001401e4e8f  int3

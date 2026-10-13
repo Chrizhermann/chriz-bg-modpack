@@ -1,0 +1,24 @@
+{
+  "windows_msvc": {
+    "scenarios": 64,
+    "checks": 645,
+    "backend": "fake detached contract only",
+    "engine_binding_executed": false,
+    "game_launched": false
+  },
+  "verified_c_exports": 10,
+  "native_engine_binding": false,
+  "game_launched": false,
+  "source_sha256": {
+    "dual_transaction_test.cpp": "13e77a800cd597549ff3feb63613cdb722234ec17ca97d22b894d3fbb724f9c0",
+    "dual_transaction.cpp": "c43893e78816ea6f761d92f4e8f4365f28f9c6ef82901987bb22a50e0a63061d",
+    "dual_transaction.h": "d37b769ad0ed68c138a1fdfb5709a92b027955e3fa3d4cf0a082a12ed18f948e"
+  },
+  "gcc_asan_ubsan": {
+    "scenarios": 64,
+    "checks": 645,
+    "backend": "fake detached contract only",
+    "engine_binding_executed": false,
+    "game_launched": false
+  }
+}

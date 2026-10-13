@@ -7,8 +7,8 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa~
 BEGIN ~Yeslick and Keldorn Dispel Magic structural patch~ DESIGNATED 410
 INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~
 
-BEGIN ~Use Any Item scroll caster-level patch~ DESIGNATED 430
-INCLUDE ~chriz-bg-modpack/lib/cbm_uai_caster_level.tpa~
+// Component 430 is a runtime installer; its full public installer and resource
+// preservation are covered by test_scroll_runtime_installer.py.
 
 BEGIN ~Ascension Slayer EE Fixpack compatibility patch~ DESIGNATED 440
 INCLUDE ~chriz-bg-modpack/lib/cbm_ascension_slayer_eefp_fix.tpa~

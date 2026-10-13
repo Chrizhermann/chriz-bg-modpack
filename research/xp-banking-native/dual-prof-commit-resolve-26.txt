@@ -1,0 +1,167 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameEffect::ResolveEffect+0x0 [0x1401e81c0, 0x1401e8470)
+00000001401e81c0  mov      qword ptr [rsp + 8], rbx
+00000001401e81c5  push     rdi
+00000001401e81c6  sub      rsp, 0x20
+00000001401e81ca  mov      rax, qword ptr [rdx]
+00000001401e81cd  mov      rbx, rcx
+00000001401e81d0  mov      rcx, rdx
+00000001401e81d3  mov      rdi, rdx
+00000001401e81d6  call     qword ptr [rax + 0x20]
+00000001401e81d9  movzx    r8d, byte ptr [rip + 0x47213f]
+00000001401e81e1  mov      r9, rax
+00000001401e81e4  cmp      byte ptr [rax + 8], r8b
+00000001401e81e8  jne      0x1401e8250
+00000001401e81ea  movzx    r8d, byte ptr [rip + 0x47212f]
+00000001401e81f2  cmp      byte ptr [rax + 9], r8b
+00000001401e81f6  jne      0x1401e8250
+00000001401e81f8  movzx    edx, byte ptr [rip + 0x472123]
+00000001401e81ff  cmp      byte ptr [rax + 0xa], dl
+00000001401e8202  jne      0x1401e8250
+00000001401e8204  movzx    ecx, byte ptr [rip + 0x472118]
+00000001401e820b  cmp      byte ptr [rax + 0xb], cl
+00000001401e820e  jne      0x1401e8250
+00000001401e8210  movzx    eax, byte ptr [rip + 0x472116]
+00000001401e8217  cmp      byte ptr [r9 + 0x15], al
+00000001401e821b  jne      0x1401e8250
+00000001401e821d  movzx    eax, byte ptr [rip + 0x47210b]
+00000001401e8224  cmp      byte ptr [r9 + 0x17], al
+00000001401e8228  jne      0x1401e8250
+00000001401e822a  movzx    eax, byte ptr [rip + 0x4720fd]
+00000001401e8231  cmp      byte ptr [r9 + 0x16], al
+00000001401e8235  jne      0x1401e8250
+00000001401e8237  mov      eax, dword ptr [rip + 0x4720e7]
+00000001401e823d  cmp      dword ptr [r9 + 0xc], eax
+00000001401e8241  jne      0x1401e8250
+00000001401e8243  xor      eax, eax
+00000001401e8245  mov      rbx, qword ptr [rsp + 0x30]
+00000001401e824a  add      rsp, 0x20
+00000001401e824e  pop      rdi
+00000001401e824f  ret
+00000001401e8250  mov      eax, dword ptr [rbx + 0x24]
+00000001401e8253  cmp      eax, 0x1000
+00000001401e8258  jne      0x1401e8291
+00000001401e825a  mov      rax, qword ptr [rip + 0x47ce3f]
+00000001401e8261  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e8268  mov      eax, dword ptr [rbx + 0x28]
+00000001401e826b  cmp      dword ptr [rcx + 0x3fa0], eax
+00000001401e8271  jb       0x1401e8458
+00000001401e8277  mov      dword ptr [rbx + 0x114], 1
+00000001401e8281  mov      eax, 1
+00000001401e8286  mov      rbx, qword ptr [rsp + 0x30]
+00000001401e828b  add      rsp, 0x20
+00000001401e828f  pop      rdi
+00000001401e8290  ret
+00000001401e8291  test     eax, eax
+00000001401e8293  jne      0x1401e82de
+00000001401e8295  mov      eax, dword ptr [rbx + 0x28]
+00000001401e8298  lea      rdx, [rsp + 0x38]
+00000001401e829d  lea      rcx, [rsp + 0x40]
+00000001401e82a2  mov      dword ptr [rsp + 0x40], eax
+00000001401e82a6  mov      dword ptr [rbx + 0x24], 0x1000
+00000001401e82ad  mov      dword ptr [rsp + 0x38], 0x8888888
+00000001401e82b5  call     0x140406d20 ; min+0x0
+00000001401e82ba  imul     edx, eax, 0xf
+00000001401e82bd  mov      dword ptr [rbx + 0x28], edx
+00000001401e82c0  mov      rax, qword ptr [rip + 0x47cdd9]
+00000001401e82c7  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e82ce  mov      ecx, dword ptr [rcx + 0x3fa0]
+00000001401e82d4  add      ecx, edx
+00000001401e82d6  mov      dword ptr [rbx + 0x28], ecx
+00000001401e82d9  jmp      0x1401e8458 ; CGameEffect::ResolveEffect+0x298
+00000001401e82de  cmp      eax, 0xa
+00000001401e82e1  jne      0x1401e8306
+00000001401e82e3  mov      dword ptr [rbx + 0x24], 0x1000
+00000001401e82ea  mov      rax, qword ptr [rip + 0x47cdaf]
+00000001401e82f1  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e82f8  mov      eax, dword ptr [rcx + 0x3fa0]
+00000001401e82fe  add      dword ptr [rbx + 0x28], eax
+00000001401e8301  jmp      0x1401e8458 ; CGameEffect::ResolveEffect+0x298
+00000001401e8306  cmp      eax, 3
+00000001401e8309  jne      0x1401e835f
+00000001401e830b  mov      dword ptr [rbx + 0x24], 6
+00000001401e8312  mov      eax, dword ptr [rbx + 0x28]
+00000001401e8315  lea      rdx, [rsp + 0x38]
+00000001401e831a  lea      rcx, [rsp + 0x40]
+00000001401e831f  mov      dword ptr [rsp + 0x40], eax
+00000001401e8323  mov      dword ptr [rsp + 0x38], 0x8888888
+00000001401e832b  call     0x140406d20 ; min+0x0
+00000001401e8330  imul     edx, eax, 0xf
+00000001401e8333  mov      dword ptr [rbx + 0x28], edx
+00000001401e8336  mov      rax, qword ptr [rip + 0x47cd63]
+00000001401e833d  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e8344  mov      eax, 1
+00000001401e8349  mov      ecx, dword ptr [rcx + 0x3fa0]
+00000001401e834f  add      ecx, edx
+00000001401e8351  mov      dword ptr [rbx + 0x28], ecx
+00000001401e8354  mov      rbx, qword ptr [rsp + 0x30]
+00000001401e8359  add      rsp, 0x20
+00000001401e835d  pop      rdi
+00000001401e835e  ret
+00000001401e835f  cmp      eax, 4
+00000001401e8362  jne      0x1401e836d
+00000001401e8364  mov      dword ptr [rbx + 0x24], 7
+00000001401e836b  jmp      0x1401e8312 ; CGameEffect::ResolveEffect+0x152
+00000001401e836d  cmp      eax, 5
+00000001401e8370  jne      0x1401e837b
+00000001401e8372  mov      dword ptr [rbx + 0x24], 8
+00000001401e8379  jmp      0x1401e8312 ; CGameEffect::ResolveEffect+0x152
+00000001401e837b  cmp      eax, 6
+00000001401e837e  jne      0x1401e83ec
+00000001401e8380  mov      rax, qword ptr [rip + 0x47cd19]
+00000001401e8387  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e838e  mov      eax, dword ptr [rbx + 0x28]
+00000001401e8391  cmp      dword ptr [rcx + 0x3fa0], eax
+00000001401e8397  jb       0x1401e8281
+00000001401e839d  mov      eax, dword ptr [rbx + 0x11c]
+00000001401e83a3  lea      rdx, [rsp + 0x38]
+00000001401e83a8  lea      rcx, [rsp + 0x40]
+00000001401e83ad  mov      dword ptr [rsp + 0x40], eax
+00000001401e83b1  mov      dword ptr [rbx + 0x24], 0x1000
+00000001401e83b8  mov      dword ptr [rsp + 0x38], 0x8888888
+00000001401e83c0  call     0x140406d20 ; min+0x0
+00000001401e83c5  imul     edx, eax, 0xf
+00000001401e83c8  mov      dword ptr [rbx + 0x11c], eax
+00000001401e83ce  mov      dword ptr [rbx + 0x28], edx
+00000001401e83d1  mov      rax, qword ptr [rip + 0x47ccc8]
+00000001401e83d8  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e83df  mov      ecx, dword ptr [rcx + 0x3fa0]
+00000001401e83e5  add      ecx, edx
+00000001401e83e7  mov      dword ptr [rbx + 0x28], ecx
+00000001401e83ea  jmp      0x1401e8440 ; CGameEffect::ResolveEffect+0x280
+00000001401e83ec  cmp      eax, 7
+00000001401e83ef  jne      0x1401e8417
+00000001401e83f1  mov      rax, qword ptr [rip + 0x47cca8]
+00000001401e83f8  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e83ff  mov      eax, dword ptr [rbx + 0x28]
+00000001401e8402  cmp      dword ptr [rcx + 0x3fa0], eax
+00000001401e8408  jb       0x1401e8281
+00000001401e840e  mov      dword ptr [rbx + 0x24], 1
+00000001401e8415  jmp      0x1401e8440 ; CGameEffect::ResolveEffect+0x280
+00000001401e8417  cmp      eax, 8
+00000001401e841a  jne      0x1401e8458
+00000001401e841c  mov      rax, qword ptr [rip + 0x47cc7d]
+00000001401e8423  mov      rcx, qword ptr [rax + 0x1090]
+00000001401e842a  mov      eax, dword ptr [rbx + 0x28]
+00000001401e842d  cmp      dword ptr [rcx + 0x3fa0], eax
+00000001401e8433  jb       0x1401e8281
+00000001401e8439  mov      dword ptr [rbx + 0x24], 2
+00000001401e8440  mov      rax, qword ptr [rbx]
+00000001401e8443  mov      rdx, rdi
+00000001401e8446  mov      rcx, rbx
+00000001401e8449  call     qword ptr [rax + 0x20]
+00000001401e844c  mov      rax, qword ptr [rbx]
+00000001401e844f  mov      rdx, rdi
+00000001401e8452  mov      rcx, rbx
+00000001401e8455  call     qword ptr [rax + 0x48]
+00000001401e8458  mov      rax, qword ptr [rbx]
+00000001401e845b  mov      rdx, rdi
+00000001401e845e  mov      rcx, rbx
+00000001401e8461  mov      rbx, qword ptr [rsp + 0x30]
+00000001401e8466  add      rsp, 0x20
+00000001401e846a  pop      rdi
+00000001401e846b  jmp      qword ptr [rax + 0x10]
+00000001401e846f  int3

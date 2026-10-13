@@ -1,0 +1,99 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CDerivedStats::GetClassLevel+0x0 [0x1401525b0, 0x1401527a0)
+00000001401525b0  sub      rsp, 0x28
+00000001401525b4  movzx    r9d, r8b
+00000001401525b8  mov      r10, rcx
+00000001401525bb  sub      r9d, 1
+00000001401525bf  je       0x1401526af
+00000001401525c5  sub      r9d, 1
+00000001401525c9  je       0x1401526a6
+00000001401525cf  sub      r9d, 1
+00000001401525d3  je       0x14015262f
+00000001401525d5  cmp      r9d, 1
+00000001401525d9  jne      0x1401526a6
+00000001401525df  movzx    eax, dl
+00000001401525e2  add      eax, -4
+00000001401525e5  cmp      eax, 0x10
+00000001401525e8  ja       0x140152717
+00000001401525ee  lea      r8, [rip - 0x1525f5]
+00000001401525f5  cdqe
+00000001401525f7  movzx    eax, byte ptr [r8 + rax + 0x152734]
+0000000140152600  mov      ecx, dword ptr [r8 + rax*4 + 0x152728]
+0000000140152608  add      rcx, r8
+000000014015260b  jmp      rcx
+000000014015260d  movzx    r8d, byte ptr [rip + 0x43a908]
+0000000140152615  lea      r9, [rsp + 0x48]
+000000014015261a  mov      rcx, r10
+000000014015261d  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152622  mov      rax, qword ptr [rsp + 0x48]
+0000000140152627  movzx    eax, byte ptr [rax]
+000000014015262a  add      rsp, 0x28
+000000014015262e  ret
+000000014015262f  movzx    eax, dl
+0000000140152632  dec      eax
+0000000140152634  cmp      eax, 0x14
+0000000140152637  ja       0x14015271e
+000000014015263d  lea      r8, [rip - 0x152644]
+0000000140152644  cdqe
+0000000140152646  movzx    eax, byte ptr [r8 + rax + 0x152758]
+000000014015264f  mov      ecx, dword ptr [r8 + rax*4 + 0x152748]
+0000000140152657  add      rcx, r8
+000000014015265a  jmp      rcx
+000000014015265c  lea      r9, [rsp + 0x48]
+0000000140152661  movzx    r8d, dl
+0000000140152665  mov      rcx, r10
+0000000140152668  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+000000014015266d  mov      rax, qword ptr [rsp + 0x48]
+0000000140152672  movzx    eax, byte ptr [rax]
+0000000140152675  add      rsp, 0x28
+0000000140152679  ret
+000000014015267a  movzx    r8d, byte ptr [rip + 0x43a89a]
+0000000140152682  lea      r9, [rsp + 0x48]
+0000000140152687  mov      rcx, r10
+000000014015268a  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+000000014015268f  mov      rax, qword ptr [rsp + 0x48]
+0000000140152694  movzx    eax, byte ptr [rax]
+0000000140152697  add      rsp, 0x28
+000000014015269b  ret
+000000014015269c  movzx    r8d, byte ptr [rip + 0x43a880]
+00000001401526a4  jmp      0x1401526fd ; CDerivedStats::GetClassLevel+0x14d
+00000001401526a6  add      rsp, 0x28
+00000001401526aa  jmp      0x1401532d0 ; CDerivedStats::GetWarriorLevel+0x0
+00000001401526af  movzx    eax, dl
+00000001401526b2  dec      eax
+00000001401526b4  cmp      eax, 0x14
+00000001401526b7  ja       0x14015271e
+00000001401526b9  lea      r8, [rip - 0x1526c0]
+00000001401526c0  cdqe
+00000001401526c2  movzx    eax, byte ptr [r8 + rax + 0x15277c]
+00000001401526cb  mov      ecx, dword ptr [r8 + rax*4 + 0x152770]
+00000001401526d3  add      rcx, r8
+00000001401526d6  jmp      rcx
+00000001401526d8  movzx    r8d, byte ptr [rip + 0x43a83a]
+00000001401526e0  lea      r9, [rsp + 0x48]
+00000001401526e5  mov      rcx, r10
+00000001401526e8  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+00000001401526ed  mov      rax, qword ptr [rsp + 0x48]
+00000001401526f2  movzx    eax, byte ptr [rax]
+00000001401526f5  add      rsp, 0x28
+00000001401526f9  ret
+00000001401526fa  mov      r8b, 0x13
+00000001401526fd  lea      r9, [rsp + 0x48]
+0000000140152702  mov      rcx, r10
+0000000140152705  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+000000014015270a  mov      rax, qword ptr [rsp + 0x48]
+000000014015270f  movzx    eax, byte ptr [rax]
+0000000140152712  add      rsp, 0x28
+0000000140152716  ret
+0000000140152717  xor      al, al
+0000000140152719  add      rsp, 0x28
+000000014015271d  ret
+000000014015271e  movzx    eax, byte ptr [r10 + 0x46]
+0000000140152723  add      rsp, 0x28
+0000000140152727  ret
+0000000140152728  pop      rsp
+0000000140152729  adc      eax, 0x15260d00
+000000014015272f  add      byte ptr [rdi], dl

@@ -1,0 +1,157 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetNextLevel+0x0 [0x140242690, 0x140242990)
+0000000140242690  mov      qword ptr [rsp + 8], rbx
+0000000140242695  mov      qword ptr [rsp + 0x10], rsi
+000000014024269a  push     rbp
+000000014024269b  push     rdi
+000000014024269c  push     r14
+000000014024269e  mov      rbp, rsp
+00000001402426a1  sub      rsp, 0x40
+00000001402426a5  mov      r14, rcx
+00000001402426a8  mov      rsi, r8
+00000001402426ab  mov      rcx, rdx
+00000001402426ae  mov      rbx, rdx
+00000001402426b1  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402426b6  lea      r8, [rbp + 0x38]
+00000001402426ba  mov      rcx, rbx
+00000001402426bd  lea      rdx, [rbp - 0x10]
+00000001402426c1  movzx    edi, al
+00000001402426c4  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+00000001402426c9  movzx    edx, byte ptr [rbp - 0x10]
+00000001402426cd  cmp      dil, dl
+00000001402426d0  je       0x1402426e8
+00000001402426d2  movzx    ecx, byte ptr [rbp + 0x38]
+00000001402426d6  movzx    r8d, dl
+00000001402426da  mov      qword ptr [rsp + 0x28], rsi
+00000001402426df  mov      byte ptr [rsp + 0x20], cl
+00000001402426e3  jmp      0x14024290e ; CRuleTables::GetNextLevel+0x27e
+00000001402426e8  movzx    eax, dil
+00000001402426ec  dec      eax
+00000001402426ee  cmp      eax, 0x14
+00000001402426f1  ja       0x1402428f9
+00000001402426f7  lea      r8, [rip - 0x2426fe]
+00000001402426fe  cdqe
+0000000140242700  mov      ecx, dword ptr [r8 + rax*4 + 0x242934]
+0000000140242708  add      rcx, r8
+000000014024270b  jmp      rcx
+000000014024270d  movzx    r8d, dil
+0000000140242711  jmp      0x140242901 ; CRuleTables::GetNextLevel+0x271
+0000000140242716  movzx    r9d, dl
+000000014024271a  movzx    r8d, byte ptr [rip + 0x3497d8]
+0000000140242722  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242726  movzx    edx, dil
+000000014024272a  mov      qword ptr [rsp + 0x28], rsi
+000000014024272f  mov      rcx, r14
+0000000140242732  mov      byte ptr [rsp + 0x20], al
+0000000140242736  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+000000014024273b  movzx    eax, byte ptr [rbp + 0x38]
+000000014024273f  movzx    r9d, byte ptr [rbp - 0x10]
+0000000140242744  movzx    r8d, byte ptr [rip + 0x3497b1]
+000000014024274c  mov      qword ptr [rsp + 0x28], rsi
+0000000140242751  mov      byte ptr [rsp + 0x20], al
+0000000140242755  jmp      0x140242912 ; CRuleTables::GetNextLevel+0x282
+000000014024275a  movzx    r8d, byte ptr [rip + 0x34979a]
+0000000140242762  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242766  movzx    r9d, dl
+000000014024276a  movzx    edx, dil
+000000014024276e  mov      qword ptr [rsp + 0x28], rsi
+0000000140242773  mov      rcx, r14
+0000000140242776  mov      byte ptr [rsp + 0x20], al
+000000014024277a  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+000000014024277f  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242783  movzx    r9d, byte ptr [rbp - 0x10]
+0000000140242788  movzx    r8d, byte ptr [rip + 0x34976a]
+0000000140242790  mov      qword ptr [rsp + 0x28], rsi
+0000000140242795  mov      byte ptr [rsp + 0x20], al
+0000000140242799  jmp      0x140242912 ; CRuleTables::GetNextLevel+0x282
+000000014024279e  movzx    r8d, byte ptr [rip + 0x349755]
+00000001402427a6  jmp      0x140242762 ; CRuleTables::GetNextLevel+0xd2
+00000001402427a8  movzx    r8d, byte ptr [rip + 0x34974b]
+00000001402427b0  movzx    r9d, dl
+00000001402427b4  jmp      0x140242722 ; CRuleTables::GetNextLevel+0x92
+00000001402427b9  movzx    r8d, byte ptr [rip + 0x34973b]
+00000001402427c1  movzx    r9d, dl
+00000001402427c5  jmp      0x140242722 ; CRuleTables::GetNextLevel+0x92
+00000001402427ca  movzx    r8d, byte ptr [rip + 0x349729]
+00000001402427d2  movzx    r9d, dl
+00000001402427d6  movzx    eax, byte ptr [rbp + 0x38]
+00000001402427da  movzx    edx, dil
+00000001402427de  mov      qword ptr [rsp + 0x28], rsi
+00000001402427e3  mov      rcx, r14
+00000001402427e6  mov      byte ptr [rsp + 0x20], al
+00000001402427ea  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+00000001402427ef  movzx    eax, byte ptr [rbp + 0x38]
+00000001402427f3  movzx    r9d, byte ptr [rbp - 0x10]
+00000001402427f8  movzx    r8d, byte ptr [rip + 0x3496fc]
+0000000140242800  mov      qword ptr [rsp + 0x28], rsi
+0000000140242805  mov      byte ptr [rsp + 0x20], al
+0000000140242809  jmp      0x140242912 ; CRuleTables::GetNextLevel+0x282
+000000014024280e  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242812  movzx    r9d, dl
+0000000140242816  movzx    r8d, byte ptr [rip + 0x3496de]
+000000014024281e  movzx    edx, dil
+0000000140242822  mov      qword ptr [rsp + 0x28], rsi
+0000000140242827  mov      rcx, r14
+000000014024282a  mov      byte ptr [rsp + 0x20], al
+000000014024282e  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+0000000140242833  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242837  movzx    r9d, byte ptr [rbp - 0x10]
+000000014024283c  movzx    r8d, byte ptr [rip + 0x3496c1]
+0000000140242844  mov      qword ptr [rsp + 0x28], rsi
+0000000140242849  mov      byte ptr [rsp + 0x20], al
+000000014024284d  jmp      0x140242912 ; CRuleTables::GetNextLevel+0x282
+0000000140242852  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242856  movzx    r9d, dl
+000000014024285a  movzx    r8d, byte ptr [rip + 0x349699]
+0000000140242862  movzx    edx, dil
+0000000140242866  mov      qword ptr [rsp + 0x28], rsi
+000000014024286b  mov      rcx, r14
+000000014024286e  mov      byte ptr [rsp + 0x20], al
+0000000140242872  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+0000000140242877  movzx    eax, byte ptr [rbp + 0x38]
+000000014024287b  movzx    r9d, byte ptr [rbp - 0x10]
+0000000140242880  movzx    r8d, byte ptr [rip + 0x34967c]
+0000000140242888  mov      qword ptr [rsp + 0x28], rsi
+000000014024288d  mov      byte ptr [rsp + 0x20], al
+0000000140242891  jmp      0x140242912 ; CRuleTables::GetNextLevel+0x282
+0000000140242893  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242897  movzx    r9d, dl
+000000014024289b  movzx    r8d, byte ptr [rip + 0x349658]
+00000001402428a3  movzx    edx, dil
+00000001402428a7  mov      qword ptr [rsp + 0x28], rsi
+00000001402428ac  mov      rcx, r14
+00000001402428af  mov      byte ptr [rsp + 0x20], al
+00000001402428b3  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+00000001402428b8  movzx    r9d, byte ptr [rbp - 0x10]
+00000001402428bd  jmp      0x14024271a ; CRuleTables::GetNextLevel+0x8a
+00000001402428c2  movzx    eax, byte ptr [rbp + 0x38]
+00000001402428c6  movzx    r9d, dl
+00000001402428ca  movzx    r8d, byte ptr [rip + 0x349629]
+00000001402428d2  movzx    edx, dil
+00000001402428d6  mov      qword ptr [rsp + 0x28], rsi
+00000001402428db  mov      rcx, r14
+00000001402428de  mov      byte ptr [rsp + 0x20], al
+00000001402428e2  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+00000001402428e7  movzx    r9d, byte ptr [rbp - 0x10]
+00000001402428ec  movzx    r8d, byte ptr [rip + 0x349606]
+00000001402428f4  jmp      0x1402427d6 ; CRuleTables::GetNextLevel+0x146
+00000001402428f9  movzx    r8d, byte ptr [rip + 0x3495fa]
+0000000140242901  movzx    eax, byte ptr [rbp + 0x38]
+0000000140242905  mov      qword ptr [rsp + 0x28], rsi
+000000014024290a  mov      byte ptr [rsp + 0x20], al
+000000014024290e  movzx    r9d, dl
+0000000140242912  movzx    edx, dil
+0000000140242916  mov      rcx, r14
+0000000140242919  call     0x140242990 ; CRuleTables::GetNextLevelSubClass+0x0
+000000014024291e  mov      rbx, qword ptr [rsp + 0x60]
+0000000140242923  mov      rsi, qword ptr [rsp + 0x68]
+0000000140242928  add      rsp, 0x40
+000000014024292c  pop      r14
+000000014024292e  pop      rdi
+000000014024292f  pop      rbp
+0000000140242930  ret
+0000000140242931  nop      dword ptr [rax]
+0000000140242934  or       eax, 0xd002427

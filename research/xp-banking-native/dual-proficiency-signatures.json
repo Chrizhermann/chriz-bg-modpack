@@ -1,0 +1,266 @@
+[
+  {
+    "version": "2.6.6.0",
+    "exe_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+    "functions": [
+      {
+        "name": "CRuleTables::GetProficiencySlots",
+        "rva": 2383472,
+        "size": 784,
+        "fnv64": 7158906259747707477,
+        "sha256": "94fa7ce460cd2f407618414618861a377a2d6a6e2480955ad2d4d026abfdc9de"
+      },
+      {
+        "name": "CAIObjectType::GetActiveInactiveClasses",
+        "rva": 1169840,
+        "size": 624,
+        "fnv64": 8280331762655227986,
+        "sha256": "4f9773167e5e979dea36be9d9fe8513b9b12b3384262e9b266acfc7e69c7da91"
+      },
+      {
+        "name": "CGameAnimationType::GetMoveScale",
+        "rva": 1170464,
+        "size": 16,
+        "fnv64": 7795641131839691007,
+        "sha256": "424647bead54bf59f6ce7de8f9f330a826f3f802330a27f2b0e565e669764350"
+      },
+      {
+        "name": "CDerivedStats::GetLevel",
+        "rva": 1387056,
+        "size": 32,
+        "fnv64": 13102987137761148549,
+        "sha256": "6eb90e4a5b25884b932ea962a2127a2c5508467e7c85f847ed341c4af5ea81a4"
+      },
+      {
+        "name": "CRuleTables::GetClassString",
+        "rva": 2349648,
+        "size": 1616,
+        "fnv64": 14977393932863833758,
+        "sha256": "a70da99597d2f43ab74f7e9efa102498ecfea3317a2bf9431d587417a713fee0"
+      },
+      {
+        "name": "CString::~CString",
+        "rva": 4181504,
+        "size": 48,
+        "fnv64": 11045831091227283010,
+        "sha256": "d41bb6c02133045c3dda7b0beddb6a89e36b4074030d72c6fef1220719fc17d4"
+      },
+      {
+        "name": "C2DArray::GetAt",
+        "rva": 1135040,
+        "size": 240,
+        "fnv64": 4131684577518195947,
+        "sha256": "506f43680e5c64b2908c96ae527ecd5c8762739a8539bda9dba89c0182d3cfa7"
+      },
+      {
+        "name": "CDerivedStats::GetLevelField",
+        "rva": 1387088,
+        "size": 384,
+        "fnv64": 16960545740539619829,
+        "sha256": "1956e6018b0ed2320c88c21ef316224e34a97d1f75882b971981c19ac7d4378a"
+      },
+      {
+        "name": "CRuleTables::GetClassProficiency",
+        "rva": 2348944,
+        "size": 704,
+        "fnv64": 13180739115640480837,
+        "sha256": "1edbc28f879ea6e745d65b5b35b2a65880a491fdc54c8e47ca019d4caa3be680"
+      },
+      {
+        "name": "CRuleTables::GetProficiencyClassIndex",
+        "rva": 2380896,
+        "size": 1504,
+        "fnv64": 16693455759764685079,
+        "sha256": "32946d65c0dab82dcef891506e7e71d5f6e7075ceb8f4f1e26fb940d300b1c87"
+      },
+      {
+        "name": "CRuleTables::GetMaximumProficiency",
+        "rva": 2368544,
+        "size": 272,
+        "fnv64": 4993735363375330577,
+        "sha256": "60a18ed23d54dc45acc4571cc8c6936c27854746bb49a8755504b3ea76e22aa4"
+      },
+      {
+        "name": "CRuleTables::GetThiefSkillsLevelUp",
+        "rva": 2397472,
+        "size": 272,
+        "fnv64": 12401891597556553364,
+        "sha256": "394e9d58c411413e78058e3b26c78219033c9ac839fe11647c26da124ea22af1"
+      },
+      {
+        "name": "CRuleTables::GetHPCONBonus",
+        "rva": 2360624,
+        "size": 288,
+        "fnv64": 5363705006175305065,
+        "sha256": "b8c4a942dc689931cab7a4145aabf466d9114b3485d896ce01748f087a2974b2"
+      },
+      {
+        "name": "CRuleTables::RollHitPoints@class",
+        "rva": 2403824,
+        "size": 400,
+        "fnv64": 16121801500907157020,
+        "sha256": "6eb651a4dd20b49bb7f240750c8f59c653d0d27696afb939b57633318f204294"
+      },
+      {
+        "name": "CGameSprite::SetSkillValue",
+        "rva": 3626432,
+        "size": 112,
+        "fnv64": 11511478751393714818,
+        "sha256": "96bd6d2e2e5731cf892270ab7cc293338259856a62daad544055e8f2ec254501"
+      },
+      {
+        "name": "CAIObjectType::IsUsableSubClass",
+        "rva": 1171568,
+        "size": 624,
+        "fnv64": 3182650834796625812,
+        "sha256": "c7f04a4938cf1c5992aa949786ad20f37e5b00876973da242e4f1818f8f1ad11"
+      },
+      {
+        "name": "CRuleTables::GetNextLevelSubClass",
+        "rva": 2369936,
+        "size": 320,
+        "fnv64": 16742237655695597007,
+        "sha256": "c0f2b554b2d5f936a06450e2d0c1fca29a6fd044fe13c4941305a3854a2e64ca"
+      },
+      {
+        "name": "CDerivedStats::SetLevel",
+        "rva": 1392096,
+        "size": 48,
+        "fnv64": 16355069578817555960,
+        "sha256": "44145fb498a0023a35182afba0fcba00a1c7bd021619e4b0293ceac7b14c96ac"
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "exe_sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "functions": [
+      {
+        "name": "CRuleTables::GetProficiencySlots",
+        "rva": 2384080,
+        "size": 784,
+        "fnv64": 8320645030918147855,
+        "sha256": "b31efc3c7441146d099f698a225e9451c8a94b3f4b07d78cc63ab83ec8f6c2c1"
+      },
+      {
+        "name": "CAIObjectType::GetActiveInactiveClasses",
+        "rva": 1169872,
+        "size": 624,
+        "fnv64": 17857856036914864883,
+        "sha256": "553ac03e89a992ae0f430979dbf34de330f555b841f4261bf62a1404233ad42b"
+      },
+      {
+        "name": "CGameAnimationType::GetMoveScale",
+        "rva": 1170496,
+        "size": 16,
+        "fnv64": 7795641131839691007,
+        "sha256": "424647bead54bf59f6ce7de8f9f330a826f3f802330a27f2b0e565e669764350"
+      },
+      {
+        "name": "CDerivedStats::GetLevel",
+        "rva": 1387584,
+        "size": 32,
+        "fnv64": 13102987137761148549,
+        "sha256": "6eb90e4a5b25884b932ea962a2127a2c5508467e7c85f847ed341c4af5ea81a4"
+      },
+      {
+        "name": "CRuleTables::GetClassString",
+        "rva": 2350256,
+        "size": 1616,
+        "fnv64": 16923011766373288334,
+        "sha256": "4f2fd10c38afe0c2b5a0afb9e27a9515881ecb60d6cbd1ef0e0fec2537f97f53"
+      },
+      {
+        "name": "CString::~CString",
+        "rva": 4183872,
+        "size": 48,
+        "fnv64": 11653911698355454088,
+        "sha256": "ba9e46957e815bec67fb3c14ed7b41ba01ffb8de17e36fe0376cf3264ed3e683"
+      },
+      {
+        "name": "C2DArray::GetAt",
+        "rva": 1135072,
+        "size": 240,
+        "fnv64": 15318380496816724491,
+        "sha256": "66ab2e54f84ada76f692aee809ec2b8f23c94a3d350d6a4a878d372304c32a6b"
+      },
+      {
+        "name": "CDerivedStats::GetLevelField",
+        "rva": 1387616,
+        "size": 384,
+        "fnv64": 4730267748454439792,
+        "sha256": "4b145f65f4b668241dfe03576ab4fde77b50ff6aa8afeea3a3272e66c724c44a"
+      },
+      {
+        "name": "CRuleTables::GetClassProficiency",
+        "rva": 2349552,
+        "size": 704,
+        "fnv64": 8287230453705612932,
+        "sha256": "6111bc5e61e2c890a08874d46bf256bc75e46dbb79538fcbdd6849175c452c74"
+      },
+      {
+        "name": "CRuleTables::GetProficiencyClassIndex",
+        "rva": 2381504,
+        "size": 1504,
+        "fnv64": 16288447680214958779,
+        "sha256": "adcf2feab741f8f346b212b2cc393ae2f983846961e6d0bafdb29c63f7a3548e"
+      },
+      {
+        "name": "CRuleTables::GetMaximumProficiency",
+        "rva": 2369152,
+        "size": 272,
+        "fnv64": 5174523681286009740,
+        "sha256": "3e2ca1202a0ca9a8b916b076b78cfa05ec17a000bf51846b7463c5183eb3f1ad"
+      },
+      {
+        "name": "CRuleTables::GetThiefSkillsLevelUp",
+        "rva": 2398080,
+        "size": 272,
+        "fnv64": 4425837492469361951,
+        "sha256": "be2a2dc0938997d26b1be04c7ef7722e9fa73d2d94e3810bee69c7905c14323c"
+      },
+      {
+        "name": "CRuleTables::GetHPCONBonus",
+        "rva": 2361232,
+        "size": 288,
+        "fnv64": 3800998179891627697,
+        "sha256": "87e21e536e1623328746bddb64a0c0e8c03c450eb001397aa76b8e00ad6afc58"
+      },
+      {
+        "name": "CRuleTables::RollHitPoints@class",
+        "rva": 2404432,
+        "size": 400,
+        "fnv64": 2767915808176579639,
+        "sha256": "822897b5d1ac0cfc6016fc4b848355832ff288d6628c55967628b6e00456f254"
+      },
+      {
+        "name": "CGameSprite::SetSkillValue",
+        "rva": 3628032,
+        "size": 112,
+        "fnv64": 14518229904970784130,
+        "sha256": "75acfaac9417d01a29078273a786c1ddddcb6feb72e698e593cbf417cbccb59c"
+      },
+      {
+        "name": "CAIObjectType::IsUsableSubClass",
+        "rva": 1171600,
+        "size": 624,
+        "fnv64": 16453609169935177255,
+        "sha256": "5bf37d7255652002acff500f8dc2173b15f769ae326d5880dbb0a94b05d2c8c7"
+      },
+      {
+        "name": "CRuleTables::GetNextLevelSubClass",
+        "rva": 2370544,
+        "size": 320,
+        "fnv64": 12265044139239305363,
+        "sha256": "b2d7e1d2e800cfc8e92deb9e2b0e8b818097e119fabe1044174495800c0dbbb3"
+      },
+      {
+        "name": "CDerivedStats::SetLevel",
+        "rva": 1392624,
+        "size": 48,
+        "fnv64": 16355069578817555960,
+        "sha256": "44145fb498a0023a35182afba0fcba00a1c7bd021619e4b0293ceac7b14c96ac"
+      }
+    ]
+  }
+]

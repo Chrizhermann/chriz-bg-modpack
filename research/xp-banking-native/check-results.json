@@ -1,0 +1,33 @@
+{
+  "executables": [
+    {
+      "path": "%BG2EE_266_ROOT%\\Baldur.exe",
+      "sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+      "opcode104_rva": "0x1cb160",
+      "entry_signature_matches": 1,
+      "function_sha256": "b82b9164057049bbca1f2f7cbe5c98e3edf3595bc09aa1ab53ace0912e626c86",
+      "emulated_cases": 15,
+      "restored_instructions": [
+        "mov r8, rcx",
+        "mov r9, rdx",
+        "mov ecx, dword ptr [rcx + 0x20]"
+      ]
+    },
+    {
+      "path": "%BG2EE_273_ROOT%\\Baldur.exe",
+      "sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+      "opcode104_rva": "0x1cb370",
+      "entry_signature_matches": 1,
+      "function_sha256": "b82b9164057049bbca1f2f7cbe5c98e3edf3595bc09aa1ab53ace0912e626c86",
+      "emulated_cases": 15,
+      "restored_instructions": [
+        "mov r8, rcx",
+        "mov r9, rdx",
+        "mov ecx, dword ptr [rcx + 0x20]"
+      ]
+    }
+  ],
+  "lua_checks": "Lua 5.1 parsed; observer contract, proposal validation, errors, reentrancy, exclusion and absent-capability rejection passed",
+  "native_bridge_executed": false,
+  "game_launched": false
+}

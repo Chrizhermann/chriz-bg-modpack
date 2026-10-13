@@ -1,0 +1,106 @@
+[
+  {
+    "version": "2.6.6.0",
+    "timestamp": 1620326323,
+    "spans": [
+      {
+        "name": "CGameSprite::UseItem",
+        "rva": 3909824,
+        "size": 4352,
+        "sha256": "91c7d61e3371d1ed28ace3083bfb1e201ef32e5d1f91de0863553bc56f5745c7"
+      },
+      {
+        "name": "CGameSprite::UseItemPoint",
+        "rva": 3914176,
+        "size": 2816,
+        "sha256": "a047fbbca247560488af45489a84bbb620a38003747464972be93b2ee4874cb0"
+      },
+      {
+        "name": "CGameAIBase::FireItem",
+        "rva": 1483440,
+        "size": 992,
+        "sha256": "3121b060484f641208a4b8ed5661d89479ca29d0b01c594450fef2dba71c06a1"
+      },
+      {
+        "name": "CGameAIBase::FireItemPoint",
+        "rva": 1484432,
+        "size": 800,
+        "sha256": "832bcd1fa4a331b6f8fb03c83c2542f9007d356e8855edadb63cfcd5c89d3b91"
+      },
+      {
+        "name": "CItem::GetAbilityEffect",
+        "rva": 2077104,
+        "size": 368,
+        "sha256": "1f401002b2ad98fdbdb85a281fc0ac364b8fa37755d50bffd5ce52a92bc29c5f"
+      },
+      {
+        "name": "CItem::GetItemType",
+        "rva": 2078864,
+        "size": 96,
+        "sha256": "6fa2368105e8f46722eacee2805e80c4232859fea3624624a9af45fd3b09d07f"
+      }
+    ],
+    "root_returns": [
+      3912825,
+      3915772,
+      1483601,
+      1484577
+    ],
+    "continuation_returns": [
+      3913670,
+      3916454
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "timestamp": 1780012861,
+    "spans": [
+      {
+        "name": "CGameSprite::UseItem",
+        "rva": 3911424,
+        "size": 4352,
+        "sha256": "252b0b1e5eafb417f6e55f90ca3f2709bc8ffa138ede7d78028cc548589c5a53"
+      },
+      {
+        "name": "CGameSprite::UseItemPoint",
+        "rva": 3915776,
+        "size": 2816,
+        "sha256": "beadec21cb5a39f3eaab8ce4c52624a35514a6f8dcc002c9aab6686e10909451"
+      },
+      {
+        "name": "CGameAIBase::FireItem",
+        "rva": 1483968,
+        "size": 992,
+        "sha256": "ac233e339b370901595f848e4208f0e0b8f331b337f9521e748f0abc2eed9a47"
+      },
+      {
+        "name": "CGameAIBase::FireItemPoint",
+        "rva": 1484960,
+        "size": 800,
+        "sha256": "3e825c24911413c5809066897aed270f0735a946d5c409019cc0ebce6f88cdca"
+      },
+      {
+        "name": "CItem::GetAbilityEffect",
+        "rva": 2077712,
+        "size": 368,
+        "sha256": "aeb954a82b9d19d9f4bbd44c513ab82e92ceb93df694311fc33b2761168aa1bb"
+      },
+      {
+        "name": "CItem::GetItemType",
+        "rva": 2079472,
+        "size": 96,
+        "sha256": "2a072a474f7e93e3d7e3a0235d8b3bfcf91e8497db49927f334a4ffde59585bd"
+      }
+    ],
+    "root_returns": [
+      3914425,
+      3917372,
+      1484129,
+      1485105
+    ],
+    "continuation_returns": [
+      3915270,
+      3918054
+    ]
+  }
+]

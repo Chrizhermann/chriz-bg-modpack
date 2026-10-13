@@ -1,0 +1,130 @@
+// New SoA recruitment actors only. Clone the effective override script so
+// existing actors, shared script users and ToB scripts retain their behavior.
+DEFINE_ACTION_FUNCTION cbm_recruitment_xp
+  STR_VAR creature = ~~ private_script = ~~ companion = ~~ BEGIN
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~%creature%.CRE~ BEGIN
+    WARN ~%companion%: %creature%.CRE is absent; recruitment XP was not changed. Renamed recruitment variants may remain unpatched.~
+  END ELSE BEGIN
+    COPY_EXISTING - ~%creature%.CRE~ ~.../cbmr-cre~
+      PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN PATCH_FAIL ~%companion%: truncated recruitment CRE.~ END
+      READ_ASCII 0 cbmr_signature (8)
+      PATCH_IF NOT ~%cbmr_signature%~ STRING_EQUAL ~CRE V1.0~ BEGIN
+        PATCH_FAIL ~%companion%: unsupported recruitment CRE format.~
+      END
+      READ_ASCII 0x248 cbmr_script (8) NULL
+    ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%cbmr_script%.BCS~) BEGIN
+      FAIL ~%companion%: recruitment override script %cbmr_script%.BCS is missing; its story behavior cannot be preserved.~
+    END
+
+    OUTER_SET cbmr_provider = 0
+    OUTER_SET cbmr_scs_setup = 0
+    OUTER_SET cbmr_scs_reset = 0
+    OUTER_SET cbmr_owned = 0
+    // Read canonical decompiled blocks independently: separate quest rewards
+    // and protagonist conditions must not accidentally identify one provider.
+    COPY_EXISTING - ~%cbmr_script%.BCS~ ~.../cbmr-script~
+      DECOMPILE_BCS_TO_BAF
+      PATCH_IF ~%cbmr_script%~ STRING_EQUAL_CASE ~%private_script%~ BEGIN
+        PATCH_IF NOT (INDEX_BUFFER (~^[ ]*Global("CBM_SoARecruitXP","LOCALS",0)~) >= 0) BEGIN
+          PATCH_FAIL ~%companion%: reserved recruitment script %private_script% has an unrecognized owner.~
+        END
+        SET cbmr_owned = 1
+      END
+      SET cbmr_next = 0
+      SET cbmr_start = INDEX_BUFFER (~^IF~ cbmr_next)
+      WHILE cbmr_start >= 0 BEGIN
+        SET cbmr_end = INDEX_BUFFER (~^END~ cbmr_start)
+        PATCH_IF cbmr_end < cbmr_start BEGIN PATCH_FAIL ~%companion%: incomplete script block.~ END
+        READ_ASCII cbmr_start cbmr_block (cbmr_end - cbmr_start)
+        INNER_PATCH ~%cbmr_block%~ BEGIN
+          // SCS's actor setup and zero-level XP reset are a different owner.
+          // A global component check cannot tell whether it handled this NPC.
+          PATCH_IF (INDEX_BUFFER (~^[ ]*ApplySpellRES("dw#aulel",Myself)~) >= 0)
+            AND (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0) BEGIN
+            SET cbmr_scs_setup = 1
+          END
+          PATCH_IF (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0)
+            AND (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,0,SET)~) >= 0) BEGIN
+            SET cbmr_scs_reset = 1
+          END
+          // Preserve an existing one-shot, protagonist-based catch-up provider,
+          // including a different threshold ladder or cap chosen by that mod.
+          PATCH_IF (INDEX_BUFFER (~^[ ]*InParty(Myself)~) >= 0)
+            AND (INDEX_BUFFER (~^[ ]*XPGT(Player1,[0-9]+)~) >= 0)
+            AND (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,[1-9][0-9]*,SET)~) >= 0)
+            AND (INDEX_BUFFER (~^[ ]*OR(~) < 0) BEGIN
+            CLEAR_ARRAY cbmr_completes
+            REPLACE_EVALUATE ~^[ ]*SetGlobal("\([^"]+\)","\([^"]+\)",[1-9][0-9]*)~ BEGIN
+              SPRINT cbmr_once_name ~%MATCH1%~
+              SPRINT cbmr_once_scope ~%MATCH2%~
+              TO_UPPER cbmr_once_name
+              TO_UPPER cbmr_once_scope
+              SET $cbmr_completes(~%cbmr_once_name%~ ~%cbmr_once_scope%~) = 1
+            END ~%MATCH0%~
+            REPLACE_EVALUATE ~^[ ]*Global("\([^"]+\)","\([^"]+\)",0)~ BEGIN
+              SPRINT cbmr_once_name ~%MATCH1%~
+              SPRINT cbmr_once_scope ~%MATCH2%~
+              TO_UPPER cbmr_once_name
+              TO_UPPER cbmr_once_scope
+              PATCH_IF VARIABLE_IS_SET $cbmr_completes(~%cbmr_once_name%~ ~%cbmr_once_scope%~) BEGIN
+                SET cbmr_provider = 1
+              END
+            END ~%MATCH0%~
+          END
+        END
+        SET cbmr_next = cbmr_end + 3
+        SET cbmr_start = INDEX_BUFFER (~^IF~ cbmr_next)
+      END
+    ACTION_IF cbmr_owned BEGIN
+      PRINT ~%companion%: recruitment XP script is already installed; no duplicate added.~
+    END ELSE ACTION_IF cbmr_scs_setup AND cbmr_scs_reset BEGIN
+      PRINT ~%companion%: SCS NPC customization already owns this actor's XP catch-up. Its CRE and script are unchanged; use its normal character-screen leveling flow.~
+    END ELSE ACTION_IF cbmr_provider BEGIN
+      PRINT ~%companion%: the effective recruitment script already supplies one-shot protagonist-based XP catch-up; that provider is preserved unchanged.~
+    END ELSE BEGIN
+      ACTION_IF FILE_EXISTS_IN_GAME ~%private_script%.BCS~ BEGIN
+        FAIL ~%companion%: reserved script %private_script%.BCS already exists for another actor; no resources changed.~
+      END
+      // Pure native actions: no spell, class, kit, SR or EEex dependency.
+      OUTER_SPRINT cbmr_prefix ~~
+      ACTION_FOR_EACH cbmr_xp IN 1250000 1000000 750000 500000 250000 125000 BEGIN
+        OUTER_SET cbmr_threshold = cbmr_xp - 1
+        OUTER_SPRINT cbmr_prefix ~%cbmr_prefix%
+IF
+  Global("CBM_SoARecruitXP","LOCALS",0)
+  InParty(Myself)
+  XPGT(Player1,%cbmr_threshold%)
+  XPLT(Myself,%cbmr_xp%)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("CBM_SoARecruitXP","LOCALS",1)
+    ChangeStat(Myself,XP,%cbmr_xp%,SET)
+    SetInterrupt(TRUE)
+END
+~
+      END
+      OUTER_SPRINT cbmr_prefix ~%cbmr_prefix%
+IF
+  Global("CBM_SoARecruitXP","LOCALS",0)
+  InParty(Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_SoARecruitXP","LOCALS",1)
+END
+~
+      // Virtual source has a different basename from every published resource.
+      // The original compiled story blocks remain intact after EXTEND_TOP.
+      COPY - ~.../cbmr-script~ ~.../cbmr-prefix.baf~
+        DELETE_BYTES 0 BUFFER_LENGTH
+        INSERT_BYTES 0 (STRING_LENGTH ~%cbmr_prefix%~)
+        WRITE_ASCIIE 0 ~%cbmr_prefix%~
+      COPY_EXISTING ~%cbmr_script%.BCS~ ~override/%private_script%.BCS~
+      EXTEND_TOP ~%private_script%.BCS~ ~.../cbmr-prefix.baf~
+      COPY_EXISTING ~%creature%.CRE~ ~override~
+        WRITE_ASCIIE 0x248 ~%private_script%~ #8
+      BUT_ONLY
+      PRINT ~%companion%: new SoA recruitment actors receive one-shot protagonist-threshold XP catch-up, capped at 1,250,000. Existing XP is never reduced; existing actors and ToB resources are unchanged.~
+    END
+  END
+END

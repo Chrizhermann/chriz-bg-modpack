@@ -1,0 +1,70 @@
+{
+  "2.6": {
+    "cases": 66,
+    "exe_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+    "native_additive_anomalies": [
+      {
+        "stat": 92,
+        "before_fold_derived_bonus_home_pointee": [
+          10,
+          0,
+          0
+        ]
+      },
+      {
+        "stat": 99,
+        "before_fold_derived_bonus_home_pointee": [
+          2,
+          8,
+          8
+        ]
+      }
+    ],
+    "actual_functions": [
+      "CGameEffectProficiency::ApplyEffect",
+      "CDerivedStats::GetAtOffset",
+      "CGameSprite::SetInactiveProficiency",
+      "CGameEffectList::ModifyAllOfType"
+    ],
+    "actual_instruction_window": "CDerivedStats::operator+= contiguous proficiency fold",
+    "helper_stubs": [
+      "operator_new[] returns a synthetic 0x108-byte buffer only during native v2 Marshal"
+    ],
+    "marshal_scope": "full native v2 Marshal and full CopyFromBase; not whole-save/unmarshal integration",
+    "game_launched": false
+  },
+  "2.7": {
+    "cases": 66,
+    "exe_sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "native_additive_anomalies": [
+      {
+        "stat": 92,
+        "before_fold_derived_bonus_home_pointee": [
+          10,
+          0,
+          0
+        ]
+      },
+      {
+        "stat": 99,
+        "before_fold_derived_bonus_home_pointee": [
+          2,
+          8,
+          8
+        ]
+      }
+    ],
+    "actual_functions": [
+      "CGameEffectProficiency::ApplyEffect",
+      "CDerivedStats::GetAtOffset",
+      "CGameSprite::SetInactiveProficiency",
+      "CGameEffectList::ModifyAllOfType"
+    ],
+    "actual_instruction_window": "CDerivedStats::operator+= contiguous proficiency fold",
+    "helper_stubs": [
+      "operator_new[] returns a synthetic 0x108-byte buffer only during native v2 Marshal"
+    ],
+    "marshal_scope": "full native v2 Marshal and full CopyFromBase; not whole-save/unmarshal integration",
+    "game_launched": false
+  }
+}

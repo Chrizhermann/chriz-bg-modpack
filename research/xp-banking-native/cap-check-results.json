@@ -1,0 +1,6592 @@
+[
+  {
+    "version": "2.6.6.0",
+    "sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+    "call": "0x14034e71c",
+    "start": "0x14034e721",
+    "stop": "0x14034e7b8",
+    "instruction_sha256": "3d8674e80bf0235df10902efd7eb9574fed086ee14e04f81352e4e8c0c992a8e",
+    "cases": 367,
+    "results": [
+      {
+        "control": "unhooked native clamp",
+        "kind": "single",
+        "retired": 0,
+        "derived": 500000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "multi",
+        "retired": 0,
+        "derived": 500000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "dual",
+        "retired": 125000,
+        "derived": 375000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "dual",
+        "retired": 500000,
+        "derived": 0
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "floor": 200000,
+        "retired": 0,
+        "derived": 200000,
+        "preserved_base": true
+      },
+      {
+        "floor": 600000,
+        "retired": 0,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "floor": 0,
+        "retired": 500000,
+        "derived": 0,
+        "preserved_base": true
+      }
+    ],
+    "bridge_executed": false,
+    "game_launched": false
+  },
+  {
+    "version": "2.7.3.0",
+    "sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "call": "0x14034ed5c",
+    "start": "0x14034ed61",
+    "stop": "0x14034edf8",
+    "instruction_sha256": "e452cb1fc0f818064a66580c2cb5a1a8650d3767d5bf0669c1c393b9bdf97058",
+    "cases": 367,
+    "results": [
+      {
+        "control": "unhooked native clamp",
+        "kind": "single",
+        "retired": 0,
+        "derived": 500000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "multi",
+        "retired": 0,
+        "derived": 500000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "dual",
+        "retired": 125000,
+        "derived": 375000
+      },
+      {
+        "control": "unhooked native clamp",
+        "kind": "dual",
+        "retired": 500000,
+        "derived": 0
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "single",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2950000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 500000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 8000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "multi",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294967280,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "BG1",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 0,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOD",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "SOA",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 2789000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 500000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 8000000,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 160999,
+        "native": 4294967295,
+        "derived": 160999,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 500000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 8000000,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 161000,
+        "native": 4294967295,
+        "derived": 161000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 8000000,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 600000,
+        "native": 4294967295,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 8000000,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4000000,
+        "native": 4294967295,
+        "derived": 4000000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 500000,
+        "derived": 339000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 8000000,
+        "derived": 7839000,
+        "preserved_base": true
+      },
+      {
+        "kind": "dual",
+        "phase": "TOB",
+        "policy": "bg1_sod_soa",
+        "raw": 4294967280,
+        "native": 4294967295,
+        "derived": 4294806295,
+        "preserved_base": true
+      },
+      {
+        "floor": 200000,
+        "retired": 0,
+        "derived": 200000,
+        "preserved_base": true
+      },
+      {
+        "floor": 600000,
+        "retired": 0,
+        "derived": 600000,
+        "preserved_base": true
+      },
+      {
+        "floor": 0,
+        "retired": 500000,
+        "derived": 0,
+        "preserved_base": true
+      }
+    ],
+    "bridge_executed": false,
+    "game_launched": false
+  }
+]

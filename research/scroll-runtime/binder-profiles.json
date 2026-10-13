@@ -1,0 +1,252 @@
+[
+  {
+    "version": "2.6.6.0",
+    "source": "%BG2EE_266_ROOT%\\Baldur.exe",
+    "sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+    "timestamp": 1620326323,
+    "image_size": 55771136,
+    "entry": 5207248,
+    "preferred_base": 5368709120,
+    "signatures": [
+      {
+        "name": "CGameObjectArray::GetDeny",
+        "rva": 2581648,
+        "size": 96,
+        "sha256": "b02ffaf7d4e94e8a42cf4c0da06f952f6dccef93c6e4aaaedff71f4a36eef0d9"
+      },
+      {
+        "name": "CAIObjectType::GetActiveInactiveClasses",
+        "rva": 1169840,
+        "size": 624,
+        "sha256": "4f9773167e5e979dea36be9d9fe8513b9b12b3384262e9b266acfc7e69c7da91"
+      },
+      {
+        "name": "CDerivedStats::GetLevel",
+        "rva": 1387056,
+        "size": 32,
+        "sha256": "6eb90e4a5b25884b932ea962a2127a2c5508467e7c85f847ed341c4af5ea81a4"
+      },
+      {
+        "name": "CDerivedStats::GetMaximumLevel",
+        "rva": 1387472,
+        "size": 144,
+        "sha256": "7f7c95cb3c6b574f86da0f14861097507e2d8ce94e5d583dbbaaa74ecb1c250e"
+      },
+      {
+        "name": "CScreenWizSpell::CanCastMageSpells",
+        "rva": 3047440,
+        "size": 112,
+        "sha256": "d91458137134c0a8c4a643a0ed32e26bc4240e3101fa25bc98aa8d13b10df28a"
+      },
+      {
+        "name": "CScreenPriestSpell::CanCastPriestSpells",
+        "rva": 2997056,
+        "size": 224,
+        "sha256": "adfe849c0f660538f7c7cf9f679702acdf396c6401286000d978d11679ed862c"
+      },
+      {
+        "name": "CSpell::GetCasterType",
+        "rva": 2420144,
+        "size": 80,
+        "sha256": "89fe91166b6ff51cde02d59af664e306595512c98f0728e4b28e027d91b9a4c9"
+      },
+      {
+        "name": "CGameSprite::GetCasterLevel",
+        "rva": 3786224,
+        "size": 480,
+        "sha256": "c94b282350f29bf1f26cb9dc788160c04650b922d1b2f1c2c6c6745e1d06f731"
+      },
+      {
+        "name": "CAIObjectType::IsUsableSubClass",
+        "rva": 1171568,
+        "size": 624,
+        "sha256": "c7f04a4938cf1c5992aa949786ad20f37e5b00876973da242e4f1818f8f1ad11"
+      },
+      {
+        "name": "CDerivedStats::GetLevelField",
+        "rva": 1387088,
+        "size": 384,
+        "sha256": "1956e6018b0ed2320c88c21ef316224e34a97d1f75882b971981c19ac7d4378a"
+      },
+      {
+        "name": "CGameSprite::GetKitMask",
+        "rva": 3786960,
+        "size": 176,
+        "sha256": "2a246fbc673131e16a55c0857f5e0f43f827af492a831cca9ea7caf3a3badaad"
+      },
+      {
+        "name": "CGameAnimationType::GetMoveScale",
+        "rva": 1170464,
+        "size": 16,
+        "sha256": "424647bead54bf59f6ce7de8f9f330a826f3f802330a27f2b0e565e669764350"
+      },
+      {
+        "name": "CDerivedStats::GetPriestLevelCast",
+        "rva": 1387824,
+        "size": 496,
+        "sha256": "33e1c18e93bdf105169bb6500d7a38ce11576a3b74bf6a83ccb482bfd5a9de78"
+      },
+      {
+        "name": "CDerivedStats::GetWizardLevelCast",
+        "rva": 1389088,
+        "size": 160,
+        "sha256": "5db94d528b81e609301e85df9c33bcaa480be0e519386a4f7c138fe8afb89f48"
+      },
+      {
+        "name": "CSpell::GetLevel",
+        "rva": 2421056,
+        "size": 80,
+        "sha256": "13e381cb683d1540d69cf9485d48076576b5ee376b1e36c284ab8f7cdc61cf76"
+      },
+      {
+        "name": "CGameSprite::GetMinCasterLevel",
+        "rva": 3500896,
+        "size": 192,
+        "sha256": "6364cc3c969f1635bd52b70e2928eeccc9e209f3c2730f5c8c0f258c26bacf2b"
+      },
+      {
+        "name": "CDerivedStats::GetAverageLevel",
+        "rva": 1385072,
+        "size": 192,
+        "sha256": "c546a1fda5d3bf0839ea02e294a88e32f4b52c7fb48faea2379d820cb168c730"
+      },
+      {
+        "name": "max",
+        "rva": 4222224,
+        "size": 16,
+        "sha256": "0eebc7f2d7867c18a274570913cb958429b93e3912d994dab814bdc54fbb38f5"
+      },
+      {
+        "name": "sscanf",
+        "rva": 360688,
+        "size": 96,
+        "sha256": "a7ab49180d68f77a015b65f1ad3f19976b9e1ffafd9a6bb3efbdf6a106ad8ca1"
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "source": "%BG2EE_273_ROOT%\\Baldur.exe",
+    "sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "timestamp": 1780012861,
+    "image_size": 55779328,
+    "entry": 5211312,
+    "preferred_base": 5368709120,
+    "signatures": [
+      {
+        "name": "CGameObjectArray::GetDeny",
+        "rva": 2582272,
+        "size": 256,
+        "sha256": "c226fc54223d8191bebf8abdd7560f0fd13146b47ff72395ac6ac24c06d58730"
+      },
+      {
+        "name": "CAIObjectType::GetActiveInactiveClasses",
+        "rva": 1169872,
+        "size": 624,
+        "sha256": "553ac03e89a992ae0f430979dbf34de330f555b841f4261bf62a1404233ad42b"
+      },
+      {
+        "name": "CDerivedStats::GetLevel",
+        "rva": 1387584,
+        "size": 32,
+        "sha256": "6eb90e4a5b25884b932ea962a2127a2c5508467e7c85f847ed341c4af5ea81a4"
+      },
+      {
+        "name": "CDerivedStats::GetMaximumLevel",
+        "rva": 1388000,
+        "size": 144,
+        "sha256": "9f4213059d2b995c68ac394a5da2f8383d245023b5e3971af1c1a6086e1bdf19"
+      },
+      {
+        "name": "CScreenWizSpell::CanCastMageSpells",
+        "rva": 3049040,
+        "size": 112,
+        "sha256": "33cedbbc634ba8cb8795b45f985d0773a7955eb9b89195c95d72e45be3062841"
+      },
+      {
+        "name": "CScreenPriestSpell::CanCastPriestSpells",
+        "rva": 2998688,
+        "size": 224,
+        "sha256": "2a8956aba731e5440a375572f5bf7afc4360609e82f8e2bb1b5e368008ef9e1d"
+      },
+      {
+        "name": "CSpell::GetCasterType",
+        "rva": 2420752,
+        "size": 80,
+        "sha256": "eb99351dcdab31eb41d4802687a53cb2b033bd3095019d1ff93b8b105e256d7a"
+      },
+      {
+        "name": "CGameSprite::GetCasterLevel",
+        "rva": 3787824,
+        "size": 480,
+        "sha256": "9978ecd62ae12d64407a8ca8221460ebcd971891b37e5c479b44c9baff8edd22"
+      },
+      {
+        "name": "CAIObjectType::IsUsableSubClass",
+        "rva": 1171600,
+        "size": 624,
+        "sha256": "5bf37d7255652002acff500f8dc2173b15f769ae326d5880dbb0a94b05d2c8c7"
+      },
+      {
+        "name": "CDerivedStats::GetLevelField",
+        "rva": 1387616,
+        "size": 384,
+        "sha256": "4b145f65f4b668241dfe03576ab4fde77b50ff6aa8afeea3a3272e66c724c44a"
+      },
+      {
+        "name": "CGameSprite::GetKitMask",
+        "rva": 3788560,
+        "size": 176,
+        "sha256": "f9fea968f06046d0f51f3bec95d37dbda42617bb91dcf5379e36a81421eeaebb"
+      },
+      {
+        "name": "CGameAnimationType::GetMoveScale",
+        "rva": 1170496,
+        "size": 16,
+        "sha256": "424647bead54bf59f6ce7de8f9f330a826f3f802330a27f2b0e565e669764350"
+      },
+      {
+        "name": "CDerivedStats::GetPriestLevelCast",
+        "rva": 1388352,
+        "size": 496,
+        "sha256": "4d9a78b6069c300be21c7eea0d414b0f307503825286c1d03b288653d80854ff"
+      },
+      {
+        "name": "CDerivedStats::GetWizardLevelCast",
+        "rva": 1389616,
+        "size": 160,
+        "sha256": "11d6ba3c7feb51005832df6a2350baa042d3af0042f19b33d40340831bb19dc8"
+      },
+      {
+        "name": "CSpell::GetLevel",
+        "rva": 2421664,
+        "size": 80,
+        "sha256": "e142650eb92d86cfba88e50208aa4c456ffdc4415346d02411196e94595eb9cf"
+      },
+      {
+        "name": "CGameSprite::GetMinCasterLevel",
+        "rva": 3502496,
+        "size": 192,
+        "sha256": "376958c0db32129c7a8b9740c629d35b12b7d3f6544b279480a8c44fe08f9bb7"
+      },
+      {
+        "name": "CDerivedStats::GetAverageLevel",
+        "rva": 1385600,
+        "size": 192,
+        "sha256": "9b06bfbaf440e0e7c3516c2b12568d564f2531ae792567b203065e29ee80c8ac"
+      },
+      {
+        "name": "max",
+        "rva": 4225968,
+        "size": 16,
+        "sha256": "0eebc7f2d7867c18a274570913cb958429b93e3912d994dab814bdc54fbb38f5"
+      },
+      {
+        "name": "sscanf",
+        "rva": 360720,
+        "size": 96,
+        "sha256": "bb30c442355c20ed006aaf2c8dfac5798a63845fd6011bfed4656283374eca37"
+      }
+    ]
+  }
+]

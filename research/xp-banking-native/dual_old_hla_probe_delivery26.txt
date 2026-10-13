@@ -1,0 +1,246 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0 [0x1402b2cb0, 0x1402b3010)
+00000001402b2cb0  mov      r11, rsp
+00000001402b2cb3  push     rbp
+00000001402b2cb4  push     rsi
+00000001402b2cb5  push     r13
+00000001402b2cb7  sub      rsp, 0xa0
+00000001402b2cbe  mov      rax, qword ptr [rip + 0x3af853]
+00000001402b2cc5  xor      rax, rsp
+00000001402b2cc8  mov      qword ptr [rsp + 0x78], rax
+00000001402b2ccd  mov      rax, qword ptr [rip + 0x3a8e3c]
+00000001402b2cd4  mov      rbp, rcx
+00000001402b2cd7  mov      rcx, qword ptr [rcx + 0x9e8]
+00000001402b2cde  mov      rsi, rdx
+00000001402b2ce1  mov      qword ptr [r11 - 0x70], rax
+00000001402b2ce5  mov      qword ptr [r11 - 0x78], rax
+00000001402b2ce9  test     rcx, rcx
+00000001402b2cec  je       0x1402b2fe0
+00000001402b2cf2  mov      qword ptr [r11 + 0x18], rbx
+00000001402b2cf6  mov      qword ptr [r11 - 0x20], rdi
+00000001402b2cfa  mov      qword ptr [r11 - 0x28], r12
+00000001402b2cfe  xor      r12d, r12d
+00000001402b2d01  mov      qword ptr [r11 - 0x30], r14
+00000001402b2d05  mov      r14d, r12d
+00000001402b2d08  cmp      byte ptr [rbp + 0xa08], r12b
+00000001402b2d0f  jbe      0x1402b2f2d
+00000001402b2d15  mov      qword ptr [r11 - 0x38], r15
+00000001402b2d19  mov      r15d, r12d
+00000001402b2d1c  nop      dword ptr [rax]
+00000001402b2d20  mov      ecx, 0x40
+00000001402b2d25  call     0x1404f6aa8 ; operator_new+0x0
+00000001402b2d2a  mov      rdi, rax
+00000001402b2d2d  test     rax, rax
+00000001402b2d30  je       0x1402b2d9e
+00000001402b2d32  movzx    ecx, byte ptr [r15 + rbp + 0x9f0]
+00000001402b2d3b  mov      rax, qword ptr [rbp + 0x9e8]
+00000001402b2d42  mov      rax, qword ptr [rax + 8]
+00000001402b2d46  mov      rbx, qword ptr [rax + rcx*8]
+00000001402b2d4a  lea      rcx, [rdi + 0x10]
+00000001402b2d4e  mov      rax, qword ptr [rbx]
+00000001402b2d51  lea      rdx, [rbx + 0x10]
+00000001402b2d55  mov      qword ptr [rdi], rax
+00000001402b2d58  mov      eax, dword ptr [rbx + 8]
+00000001402b2d5b  mov      dword ptr [rdi + 8], eax
+00000001402b2d5e  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b2d63  mov      eax, dword ptr [rbx + 0x18]
+00000001402b2d66  lea      rdx, [rbx + 0x28]
+00000001402b2d6a  mov      dword ptr [rdi + 0x18], eax
+00000001402b2d6d  lea      rcx, [rdi + 0x28]
+00000001402b2d71  mov      eax, dword ptr [rbx + 0x1c]
+00000001402b2d74  mov      dword ptr [rdi + 0x1c], eax
+00000001402b2d77  mov      eax, dword ptr [rbx + 0x20]
+00000001402b2d7a  mov      dword ptr [rdi + 0x20], eax
+00000001402b2d7d  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b2d82  lea      rdx, [rbx + 0x30]
+00000001402b2d86  lea      rcx, [rdi + 0x30]
+00000001402b2d8a  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b2d8f  lea      rdx, [rbx + 0x38]
+00000001402b2d93  lea      rcx, [rdi + 0x38]
+00000001402b2d97  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b2d9c  jmp      0x1402b2da1 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0xf1
+00000001402b2d9e  mov      rdi, r12
+00000001402b2da1  mov      r8d, 2
+00000001402b2da7  lea      rdx, [rsp + 0x50]
+00000001402b2dac  lea      rcx, [rdi + 0x10]
+00000001402b2db0  call     0x1403fe5e0 ; CString::Left+0x0
+00000001402b2db5  mov      rdx, rax
+00000001402b2db8  lea      rcx, [rsp + 0x48]
+00000001402b2dbd  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b2dc2  lea      rcx, [rsp + 0x50]
+00000001402b2dc7  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2dcc  mov      rax, qword ptr [rdi + 0x10]
+00000001402b2dd0  lea      rdx, [rsp + 0x58]
+00000001402b2dd5  lea      rcx, [rdi + 0x10]
+00000001402b2dd9  mov      r8d, dword ptr [rax - 8]
+00000001402b2ddd  add      r8d, -3
+00000001402b2de1  call     0x1403feaf0 ; CString::Right+0x0
+00000001402b2de6  mov      rdx, rax
+00000001402b2de9  lea      rcx, [rsp + 0x40]
+00000001402b2dee  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b2df3  lea      rcx, [rsp + 0x58]
+00000001402b2df8  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2dfd  mov      edx, dword ptr [rsi + 0x4a98]
+00000001402b2e03  lea      rcx, [rsi + 0x4a88]
+00000001402b2e0a  mov      r8, rdi
+00000001402b2e0d  call     0x140422990 ; CObArray::SetAtGrow+0x0
+00000001402b2e12  mov      ecx, 0x158
+00000001402b2e17  call     0x1404f6aa8 ; operator_new+0x0
+00000001402b2e1c  mov      rbx, rax
+00000001402b2e1f  test     rax, rax
+00000001402b2e22  je       0x1402b2e3f
+00000001402b2e24  mov      rcx, rax
+00000001402b2e27  call     0x14014c4b0 ; CGameEffect::CGameEffect+0x0
+00000001402b2e2c  lea      rax, [rip + 0x2e007d]
+00000001402b2e33  mov      dword ptr [rbx + 0x10], 0x139
+00000001402b2e3a  mov      qword ptr [rbx], rax
+00000001402b2e3d  jmp      0x1402b2e42 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x192
+00000001402b2e3f  mov      rbx, r12
+00000001402b2e42  lea      rcx, [rbx + 0x30]
+00000001402b2e46  lea      r8, [rsp + 0x40]
+00000001402b2e4b  lea      rdx, [rsp + 0x70]
+00000001402b2e50  call     0x1403fef50 ; CResRef::operator=+0x0
+00000001402b2e55  movzx    eax, word ptr [rip + 0x2dd8b4]
+00000001402b2e5c  lea      rdx, [rip + 0x2eff05]
+00000001402b2e63  mov      dword ptr [rbx + 0x24], eax
+00000001402b2e66  mov      rcx, qword ptr [rsp + 0x48]
+00000001402b2e6b  call     0x140502d6c ; _mbscmp+0x0
+00000001402b2e70  test     eax, eax
+00000001402b2e72  jne      0x1402b2e95
+00000001402b2e74  lea      rdx, [rsp + 0x40]
+00000001402b2e79  lea      rcx, [rsp + 0x60]
+00000001402b2e7e  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402b2e83  xor      r8d, r8d
+00000001402b2e86  lea      rdx, [rsp + 0x60]
+00000001402b2e8b  mov      rcx, rsi
+00000001402b2e8e  call     0x140349390 ; CGameSprite::AddSpecialAbility+0x0
+00000001402b2e93  jmp      0x1402b2ee6 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x236
+00000001402b2e95  mov      rcx, qword ptr [rsp + 0x48]
+00000001402b2e9a  lea      rdx, [rip + 0x2efecb]
+00000001402b2ea1  call     0x140502d6c ; _mbscmp+0x0
+00000001402b2ea6  test     eax, eax
+00000001402b2ea8  jne      0x1402b2f08
+00000001402b2eaa  lea      rdx, [rsp + 0x40]
+00000001402b2eaf  lea      rcx, [rsp + 0x68]
+00000001402b2eb4  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402b2eb9  mov      dword ptr [rsp + 0x38], r12d
+00000001402b2ebe  lea      rdx, [rsp + 0x68]
+00000001402b2ec3  mov      dword ptr [rsp + 0x30], 1
+00000001402b2ecb  xor      r9d, r9d
+00000001402b2ece  mov      qword ptr [rsp + 0x28], r12
+00000001402b2ed3  mov      r8, rsi
+00000001402b2ed6  mov      rcx, rsi
+00000001402b2ed9  mov      dword ptr [rsp + 0x20], 0xffffffff
+00000001402b2ee1  call     0x14016a9b0 ; CGameAIBase::FireSpell+0x0
+00000001402b2ee6  mov      rax, qword ptr [rsi]
+00000001402b2ee9  xor      r9d, r9d
+00000001402b2eec  movzx    r8d, byte ptr [rip + 0x2f8ebc]
+00000001402b2ef4  mov      rdx, rbx
+00000001402b2ef7  mov      rcx, rsi
+00000001402b2efa  mov      dword ptr [rsp + 0x20], 1
+00000001402b2f02  call     qword ptr [rax + 0xe8]
+00000001402b2f08  movzx    eax, byte ptr [rbp + 0xa08]
+00000001402b2f0f  inc      r14d
+00000001402b2f12  inc      r15
+00000001402b2f15  cmp      r14d, eax
+00000001402b2f18  jl       0x1402b2d20
+00000001402b2f1e  mov      rcx, qword ptr [rbp + 0x9e8]
+00000001402b2f25  mov      r15, qword ptr [rsp + 0x80]
+00000001402b2f2d  mov      r14, qword ptr [rsp + 0x88]
+00000001402b2f35  test     rcx, rcx
+00000001402b2f38  je       0x1402b2fc8
+00000001402b2f3e  mov      esi, r12d
+00000001402b2f41  cmp      dword ptr [rcx + 0x10], r12d
+00000001402b2f45  jle      0x1402b2fa0
+00000001402b2f47  mov      rdi, r12
+00000001402b2f4a  nop      word ptr [rax + rax]
+00000001402b2f50  mov      rbx, qword ptr [rcx + 8]
+00000001402b2f54  mov      rbx, qword ptr [rdi + rbx]
+00000001402b2f58  test     rbx, rbx
+00000001402b2f5b  je       0x1402b2f8e
+00000001402b2f5d  lea      rcx, [rbx + 0x38]
+00000001402b2f61  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2f66  lea      rcx, [rbx + 0x30]
+00000001402b2f6a  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2f6f  lea      rcx, [rbx + 0x28]
+00000001402b2f73  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2f78  lea      rcx, [rbx + 0x10]
+00000001402b2f7c  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2f81  mov      edx, 0x40
+00000001402b2f86  mov      rcx, rbx
+00000001402b2f89  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402b2f8e  mov      rcx, qword ptr [rbp + 0x9e8]
+00000001402b2f95  inc      esi
+00000001402b2f97  add      rdi, 8
+00000001402b2f9b  cmp      esi, dword ptr [rcx + 0x10]
+00000001402b2f9e  jl       0x1402b2f50
+00000001402b2fa0  xor      edx, edx
+00000001402b2fa2  lea      r8d, [rdx - 1]
+00000001402b2fa6  call     0x1404229e0 ; CObArray::SetSize+0x0
+00000001402b2fab  mov      rcx, qword ptr [rbp + 0x9e8]
+00000001402b2fb2  test     rcx, rcx
+00000001402b2fb5  je       0x1402b2fc1
+00000001402b2fb7  mov      rax, qword ptr [rcx]
+00000001402b2fba  mov      edx, 1
+00000001402b2fbf  call     qword ptr [rax]
+00000001402b2fc1  mov      qword ptr [rbp + 0x9e8], r12
+00000001402b2fc8  mov      rdi, qword ptr [rsp + 0x98]
+00000001402b2fd0  mov      rbx, qword ptr [rsp + 0xd0]
+00000001402b2fd8  mov      r12, qword ptr [rsp + 0x90]
+00000001402b2fe0  lea      rcx, [rsp + 0x40]
+00000001402b2fe5  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2fea  lea      rcx, [rsp + 0x48]
+00000001402b2fef  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b2ff4  mov      rcx, qword ptr [rsp + 0x78]
+00000001402b2ff9  xor      rcx, rsp
+00000001402b2ffc  call     0x1404f67c0 ; __security_check_cookie+0x0
+00000001402b3001  add      rsp, 0xa0
+00000001402b3008  pop      r13
+00000001402b300a  pop      rsi
+00000001402b300b  pop      rbp
+00000001402b300c  ret
+00000001402b300d  int3
+00000001402b300e  int3
+00000001402b300f  int3
+
+CScreenCreateChar::OnHighLevelAbilitiesButtonClick+0x0 [0x1402baee0, 0x1402baf30)
+00000001402baee0  push     rbx
+00000001402baee2  sub      rsp, 0x20
+00000001402baee6  mov      rbx, rcx
+00000001402baee9  lea      rdx, [rsp + 0x30]
+00000001402baeee  mov      ecx, dword ptr [rcx + 0x770]
+00000001402baef4  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402baef9  test     al, al
+00000001402baefb  jne      0x1402baf20
+00000001402baefd  mov      rdx, qword ptr [rsp + 0x30]
+00000001402baf02  mov      rcx, rbx
+00000001402baf05  mov      dword ptr [rbx + 0x768], 0x1d
+00000001402baf0f  call     0x1402c4fd0 ; CScreenCreateChar::UpdateHighLevelAbilitiesPanel+0x0
+00000001402baf14  lea      rcx, [rip + 0x2d2bd5]
+00000001402baf1b  call     0x1403da620 ; uiPush+0x0
+00000001402baf20  add      rsp, 0x20
+00000001402baf24  pop      rbx
+00000001402baf25  ret
+00000001402baf26  int3
+00000001402baf27  int3
+00000001402baf28  int3
+00000001402baf29  int3
+00000001402baf2a  int3
+00000001402baf2b  int3
+00000001402baf2c  int3
+00000001402baf2d  int3
+00000001402baf2e  int3
+00000001402baf2f  int3
+
+DIRECT CALL/JMP XREFS (executable sections; function-name attribution is nearest preceding symbol)
+0x1402b9132 call 0x1402b2cb0 CScreenCreateChar::CompleteCharacterHighLevelAbilities FROM CScreenCreateChar::OnDoneButtonClick+0x792
+0x1402b91c7 call 0x1402b2cb0 CScreenCreateChar::CompleteCharacterHighLevelAbilities FROM CScreenCreateChar::OnDoneButtonClick+0x827
+0x1402b921f call 0x1402b2cb0 CScreenCreateChar::CompleteCharacterHighLevelAbilities FROM CScreenCreateChar::OnDoneButtonClick+0x87f
+0x1402b9265 call 0x1402b2cb0 CScreenCreateChar::CompleteCharacterHighLevelAbilities FROM CScreenCreateChar::OnDoneButtonClick+0x8c5
+0x1402bf889 call 0x140242c10 CRuleTables::GetNumLevelUpAbilities FROM CScreenCreateChar::ResetLevelUpPanel+0x629
+0x1402bf8b2 call 0x140241690 CRuleTables::GetLevelUpAbilities FROM CScreenCreateChar::ResetLevelUpPanel+0x652
+0x1402c5017 call 0x140241690 CRuleTables::GetLevelUpAbilities FROM CScreenCreateChar::UpdateHighLevelAbilitiesPanel+0x47
+0x1402c503b call 0x140241690 CRuleTables::GetLevelUpAbilities FROM CScreenCreateChar::UpdateHighLevelAbilitiesPanel+0x6b

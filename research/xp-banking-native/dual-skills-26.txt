@@ -1,0 +1,186 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetThiefSkillsLevelUp+0x0 [0x140249520, 0x140249630)
+0000000140249520  mov      qword ptr [rsp + 0x18], rbx
+0000000140249525  push     rdi
+0000000140249526  sub      rsp, 0x60
+000000014024952a  mov      rax, qword ptr [rip + 0x418fe7]
+0000000140249531  xor      rax, rsp
+0000000140249534  mov      qword ptr [rsp + 0x50], rax
+0000000140249539  mov      rax, qword ptr [rip + 0x4125d0]
+0000000140249540  mov      rbx, rdx
+0000000140249543  mov      rdi, rcx
+0000000140249546  mov      qword ptr [rsp + 0x38], rax
+000000014024954b  add      rdx, 0x4b50
+0000000140249552  lea      rcx, [rsp + 0x38]
+0000000140249557  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+000000014024955c  lea      r8, [rsp + 0x21]
+0000000140249561  lea      rdx, [rsp + 0x20]
+0000000140249566  lea      rcx, [rsp + 0x38]
+000000014024956b  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+0000000140249570  mov      rax, qword ptr [rip + 0x412599]
+0000000140249577  lea      rdx, [rsp + 0x28]
+000000014024957c  movzx    r9d, word ptr [rbx + 0x79c]
+0000000140249584  mov      rcx, rdi
+0000000140249587  movzx    r8d, byte ptr [rsp + 0x20]
+000000014024958d  mov      qword ptr [rsp + 0x30], rax
+0000000140249592  movzx    eax, word ptr [rbx + 0x79e]
+0000000140249599  shl      r9d, 0x10
+000000014024959d  or       r9d, eax
+00000001402495a0  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+00000001402495a5  mov      rdx, rax
+00000001402495a8  lea      rcx, [rsp + 0x30]
+00000001402495ad  call     0x1403fce30 ; CString::operator=+0x0
+00000001402495b2  lea      rcx, [rsp + 0x28]
+00000001402495b7  call     0x1403fce00 ; CString::~CString+0x0
+00000001402495bc  lea      rdx, [rip + 0x353e6d]
+00000001402495c3  lea      rcx, [rsp + 0x28]
+00000001402495c8  call     0x1403fcd70 ; CString::CString+0x0
+00000001402495cd  lea      rcx, [rdi + 0x3238]
+00000001402495d4  lea      r8, [rsp + 0x30]
+00000001402495d9  lea      rdx, [rsp + 0x28]
+00000001402495de  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402495e3  mov      rcx, qword ptr [rax]
+00000001402495e6  call     0x140502d40 ; atoi+0x0
+00000001402495eb  lea      rcx, [rsp + 0x28]
+00000001402495f0  mov      ebx, eax
+00000001402495f2  call     0x1403fce00 ; CString::~CString+0x0
+00000001402495f7  lea      rcx, [rsp + 0x30]
+00000001402495fc  call     0x1403fce00 ; CString::~CString+0x0
+0000000140249601  lea      rcx, [rsp + 0x38]
+0000000140249606  call     0x1403fce00 ; CString::~CString+0x0
+000000014024960b  mov      eax, ebx
+000000014024960d  mov      rcx, qword ptr [rsp + 0x50]
+0000000140249612  xor      rcx, rsp
+0000000140249615  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014024961a  mov      rbx, qword ptr [rsp + 0x80]
+0000000140249622  add      rsp, 0x60
+0000000140249626  pop      rdi
+0000000140249627  ret
+0000000140249628  int3
+0000000140249629  int3
+000000014024962a  int3
+000000014024962b  int3
+000000014024962c  int3
+000000014024962d  int3
+000000014024962e  int3
+000000014024962f  int3
+
+CRuleTables::GetThiefSkillsStart+0x0 [0x140249630, 0x140249740)
+0000000140249630  mov      qword ptr [rsp + 0x18], rbx
+0000000140249635  push     rdi
+0000000140249636  sub      rsp, 0x60
+000000014024963a  mov      rax, qword ptr [rip + 0x418ed7]
+0000000140249641  xor      rax, rsp
+0000000140249644  mov      qword ptr [rsp + 0x50], rax
+0000000140249649  mov      rax, qword ptr [rip + 0x4124c0]
+0000000140249650  mov      rbx, rdx
+0000000140249653  mov      rdi, rcx
+0000000140249656  mov      qword ptr [rsp + 0x38], rax
+000000014024965b  add      rdx, 0x4b50
+0000000140249662  lea      rcx, [rsp + 0x38]
+0000000140249667  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+000000014024966c  lea      r8, [rsp + 0x21]
+0000000140249671  lea      rdx, [rsp + 0x20]
+0000000140249676  lea      rcx, [rsp + 0x38]
+000000014024967b  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+0000000140249680  mov      rax, qword ptr [rip + 0x412489]
+0000000140249687  lea      rdx, [rsp + 0x28]
+000000014024968c  movzx    r9d, word ptr [rbx + 0x79c]
+0000000140249694  mov      rcx, rdi
+0000000140249697  movzx    r8d, byte ptr [rsp + 0x20]
+000000014024969d  mov      qword ptr [rsp + 0x30], rax
+00000001402496a2  movzx    eax, word ptr [rbx + 0x79e]
+00000001402496a9  shl      r9d, 0x10
+00000001402496ad  or       r9d, eax
+00000001402496b0  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+00000001402496b5  mov      rdx, rax
+00000001402496b8  lea      rcx, [rsp + 0x30]
+00000001402496bd  call     0x1403fce30 ; CString::operator=+0x0
+00000001402496c2  lea      rcx, [rsp + 0x28]
+00000001402496c7  call     0x1403fce00 ; CString::~CString+0x0
+00000001402496cc  lea      rdx, [rip + 0x353c45]
+00000001402496d3  lea      rcx, [rsp + 0x28]
+00000001402496d8  call     0x1403fcd70 ; CString::CString+0x0
+00000001402496dd  lea      rcx, [rdi + 0x3238]
+00000001402496e4  lea      r8, [rsp + 0x30]
+00000001402496e9  lea      rdx, [rsp + 0x28]
+00000001402496ee  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402496f3  mov      rcx, qword ptr [rax]
+00000001402496f6  call     0x140502d40 ; atoi+0x0
+00000001402496fb  lea      rcx, [rsp + 0x28]
+0000000140249700  mov      ebx, eax
+0000000140249702  call     0x1403fce00 ; CString::~CString+0x0
+0000000140249707  lea      rcx, [rsp + 0x30]
+000000014024970c  call     0x1403fce00 ; CString::~CString+0x0
+0000000140249711  lea      rcx, [rsp + 0x38]
+0000000140249716  call     0x1403fce00 ; CString::~CString+0x0
+000000014024971b  mov      eax, ebx
+000000014024971d  mov      rcx, qword ptr [rsp + 0x50]
+0000000140249722  xor      rcx, rsp
+0000000140249725  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014024972a  mov      rbx, qword ptr [rsp + 0x80]
+0000000140249732  add      rsp, 0x60
+0000000140249736  pop      rdi
+0000000140249737  ret
+0000000140249738  int3
+0000000140249739  int3
+000000014024973a  int3
+000000014024973b  int3
+000000014024973c  int3
+000000014024973d  int3
+000000014024973e  int3
+000000014024973f  int3
+
+CRuleTables::GetThiefSkillsDual+0x0 [0x140249450, 0x140249520)
+0000000140249450  push     rbx
+0000000140249452  sub      rsp, 0x60
+0000000140249456  mov      rax, qword ptr [rip + 0x4190bb]
+000000014024945d  xor      rax, rsp
+0000000140249460  mov      qword ptr [rsp + 0x50], rax
+0000000140249465  mov      rax, qword ptr [rip + 0x4126a4]
+000000014024946c  mov      rbx, rcx
+000000014024946f  lea      rcx, [rsp + 0x38]
+0000000140249474  mov      qword ptr [rsp + 0x38], rax
+0000000140249479  add      rdx, 0x4b50
+0000000140249480  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+0000000140249485  lea      r8, [rsp + 0x20]
+000000014024948a  lea      rdx, [rsp + 0x21]
+000000014024948f  lea      rcx, [rsp + 0x38]
+0000000140249494  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+0000000140249499  mov      rax, qword ptr [rip + 0x412670]
+00000001402494a0  lea      rdx, [rip + 0x3530a9]
+00000001402494a7  lea      rcx, [rsp + 0x28]
+00000001402494ac  mov      qword ptr [rsp + 0x28], rax
+00000001402494b1  call     0x1403fced0 ; CString::operator=+0x0
+00000001402494b6  lea      rdx, [rip + 0x353e5b]
+00000001402494bd  lea      rcx, [rsp + 0x30]
+00000001402494c2  call     0x1403fcd70 ; CString::CString+0x0
+00000001402494c7  lea      rcx, [rbx + 0x3238]
+00000001402494ce  lea      r8, [rsp + 0x28]
+00000001402494d3  lea      rdx, [rsp + 0x30]
+00000001402494d8  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402494dd  mov      rcx, qword ptr [rax]
+00000001402494e0  call     0x140502d40 ; atoi+0x0
+00000001402494e5  lea      rcx, [rsp + 0x30]
+00000001402494ea  mov      ebx, eax
+00000001402494ec  call     0x1403fce00 ; CString::~CString+0x0
+00000001402494f1  lea      rcx, [rsp + 0x28]
+00000001402494f6  call     0x1403fce00 ; CString::~CString+0x0
+00000001402494fb  lea      rcx, [rsp + 0x38]
+0000000140249500  call     0x1403fce00 ; CString::~CString+0x0
+0000000140249505  mov      eax, ebx
+0000000140249507  mov      rcx, qword ptr [rsp + 0x50]
+000000014024950c  xor      rcx, rsp
+000000014024950f  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140249514  add      rsp, 0x60
+0000000140249518  pop      rbx
+0000000140249519  ret
+000000014024951a  int3
+000000014024951b  int3
+000000014024951c  int3
+000000014024951d  int3
+000000014024951e  int3
+000000014024951f  int3

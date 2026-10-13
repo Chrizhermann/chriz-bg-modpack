@@ -1,0 +1,16 @@
+{
+  "2.6": {
+    "entry_trampoline_checks": 10,
+    "native_prefix_xp_reset_checks": 12,
+    "actual_caller_argument_comparisons": 6,
+    "remove_call": 2859663,
+    "preview_call": 2794348
+  },
+  "2.7": {
+    "entry_trampoline_checks": 10,
+    "native_prefix_xp_reset_checks": 12,
+    "actual_caller_argument_comparisons": 6,
+    "remove_call": 2861327,
+    "preview_call": 2796012
+  }
+}

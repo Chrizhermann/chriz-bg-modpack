@@ -1,0 +1,142 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CDerivedStats::GetXP+0x0 [0x1401532c0, 0x140153390)
+00000001401532c0  push     rdi
+00000001401532c2  sub      rsp, 0x30
+00000001401532c6  mov      rax, qword ptr [rip + 0x511dd3]
+00000001401532cd  movzx    r10d, r9b
+00000001401532d1  mov      rdi, qword ptr [rax + 0x1090]
+00000001401532d8  movzx    eax, dl
+00000001401532db  dec      eax
+00000001401532dd  cmp      eax, 0x14
+00000001401532e0  ja       0x140153354
+00000001401532e2  lea      r11, [rip - 0x1532e9]
+00000001401532e9  cdqe
+00000001401532eb  movzx    eax, byte ptr [r11 + rax + 0x15336c]
+00000001401532f4  mov      r9d, dword ptr [r11 + rax*4 + 0x153360]
+00000001401532fc  add      r9, r11
+00000001401532ff  jmp      r9
+0000000140153302  cmp      dl, r10b
+0000000140153305  jne      0x140153312
+0000000140153307  mov      eax, dword ptr [rcx + 0x60]
+000000014015330a  shr      eax, 1
+000000014015330c  add      rsp, 0x30
+0000000140153310  pop      rdi
+0000000140153311  ret
+0000000140153312  cmp      r8b, r10b
+0000000140153315  je       0x140153354
+0000000140153317  movzx    r8d, byte ptr [rsp + 0x60]
+000000014015331d  lea      r9, [rsp + 0x20]
+0000000140153322  call     0x140152a50 ; CDerivedStats::GetLevelField+0x0
+0000000140153327  mov      rax, qword ptr [rsp + 0x20]
+000000014015332c  mov      rcx, rdi
+000000014015332f  movzx    edx, byte ptr [rsp + 0x60]
+0000000140153334  movzx    r8d, byte ptr [rax]
+0000000140153338  add      rsp, 0x30
+000000014015333c  pop      rdi
+000000014015333d  jmp      0x140242ad0 ; CRuleTables::GetNextLevelXP+0x0
+0000000140153342  mov      eax, 0xaaaaaaab
+0000000140153347  mul      dword ptr [rcx + 0x60]
+000000014015334a  shr      edx, 1
+000000014015334c  mov      eax, edx
+000000014015334e  add      rsp, 0x30
+0000000140153352  pop      rdi
+0000000140153353  ret
+0000000140153354  mov      eax, dword ptr [rcx + 0x60]
+0000000140153357  add      rsp, 0x30
+000000014015335b  pop      rdi
+000000014015335c  ret
+000000014015335d  nop      dword ptr [rax]
+0000000140153360  push     rsp
+0000000140153361  xor      edx, dword ptr [rip + 0x15330200]
+0000000140153367  add      byte ptr [rdx + 0x33], al
+000000014015336a  adc      eax, 0
+000000014015336f  add      byte ptr [rax], al
+0000000140153371  add      byte ptr [rcx], al
+0000000140153373  add      dword ptr [rcx], eax
+0000000140153375  add      al, byte ptr [rax]
+0000000140153377  add      byte ptr [rcx], al
+0000000140153379  add      dword ptr [rcx], eax
+000000014015337b  add      dword ptr [rdx], eax
+000000014015337d  add      dword ptr [rax], eax
+000000014015337f  add      byte ptr [rax], al
+0000000140153381  int3
+0000000140153382  int3
+0000000140153383  int3
+0000000140153384  int3
+0000000140153385  int3
+0000000140153386  int3
+0000000140153387  int3
+0000000140153388  int3
+0000000140153389  int3
+000000014015338a  int3
+000000014015338b  int3
+000000014015338c  int3
+000000014015338d  int3
+000000014015338e  int3
+000000014015338f  int3
+
+CRuleTables::GetNextLevelXP+0x0 [0x140242ad0, 0x140242c10)
+0000000140242ad0  mov      qword ptr [rsp + 0x20], rbx
+0000000140242ad5  push     rdi
+0000000140242ad6  sub      rsp, 0xa0
+0000000140242add  mov      rax, qword ptr [rip + 0x41fa34]
+0000000140242ae4  xor      rax, rsp
+0000000140242ae7  mov      qword ptr [rsp + 0x90], rax
+0000000140242aef  mov      rax, qword ptr [rip + 0x41901a]
+0000000140242af6  movzx    edi, r8b
+0000000140242afa  mov      qword ptr [rsp + 0x30], rax
+0000000140242aff  mov      rbx, rcx
+0000000140242b02  movzx    eax, dl
+0000000140242b05  dec      eax
+0000000140242b07  cmp      eax, 0x14
+0000000140242b0a  ja       0x140242bbb
+0000000140242b10  lea      r8, [rip - 0x242b17]
+0000000140242b17  cdqe
+0000000140242b19  movzx    eax, byte ptr [r8 + rax + 0x242bf4]
+0000000140242b22  mov      ecx, dword ptr [r8 + rax*4 + 0x242bec]
+0000000140242b2a  add      rcx, r8
+0000000140242b2d  jmp      rcx
+0000000140242b2f  movzx    r8d, dl
+0000000140242b33  mov      r9d, 0x4000
+0000000140242b39  lea      rdx, [rsp + 0x20]
+0000000140242b3e  mov      rcx, rbx
+0000000140242b41  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+0000000140242b46  mov      rdx, rax
+0000000140242b49  lea      rcx, [rsp + 0x30]
+0000000140242b4e  call     0x1403fce30 ; CString::operator=+0x0
+0000000140242b53  lea      rcx, [rsp + 0x20]
+0000000140242b58  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242b5d  movzx    r8d, dil
+0000000140242b61  lea      rdx, [rip + 0x3c41e8]
+0000000140242b68  lea      rcx, [rsp + 0x40]
+0000000140242b6d  call     0x1400d2340 ; sprintf+0x0
+0000000140242b72  lea      rdx, [rsp + 0x40]
+0000000140242b77  lea      rcx, [rsp + 0x20]
+0000000140242b7c  call     0x1403fcd70 ; CString::CString+0x0
+0000000140242b81  lea      rcx, [rbx + 0x9a0]
+0000000140242b88  lea      r8, [rsp + 0x30]
+0000000140242b8d  lea      rdx, [rsp + 0x20]
+0000000140242b92  call     0x1401151c0 ; C2DArray::GetAt+0x0
+0000000140242b97  lea      r8, [rsp + 0x28]
+0000000140242b9c  lea      rdx, [rip + 0x3c41ad]
+0000000140242ba3  mov      rcx, qword ptr [rax]
+0000000140242ba6  call     0x1400580f0 ; sscanf+0x0
+0000000140242bab  lea      rcx, [rsp + 0x20]
+0000000140242bb0  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242bb5  mov      ebx, dword ptr [rsp + 0x28]
+0000000140242bb9  jmp      0x140242bbd ; CRuleTables::GetNextLevelXP+0xed
+0000000140242bbb  xor      ebx, ebx
+0000000140242bbd  lea      rcx, [rsp + 0x30]
+0000000140242bc2  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242bc7  mov      eax, ebx
+0000000140242bc9  mov      rcx, qword ptr [rsp + 0x90]
+0000000140242bd1  xor      rcx, rsp
+0000000140242bd4  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140242bd9  mov      rbx, qword ptr [rsp + 0xc8]
+0000000140242be1  add      rsp, 0xa0
+0000000140242be8  pop      rdi
+0000000140242be9  ret
+0000000140242bea  nop

@@ -39,6 +39,8 @@ PUBLIC_COMPONENTS = {
     225,
     235,
     236,
+    237,
+    238,
     400,
     410,
     430,
@@ -49,6 +51,9 @@ PUBLIC_COMPONENTS = {
     620,
     630,
     640,
+    650,
+    651,
+    660,
 }
 
 
@@ -96,7 +101,12 @@ class PublicSurfaceTests(unittest.TestCase):
             225: "cbm_evandra_portrait",
             235: "cbm_baeloth_spellbook",
             236: "cbm_edwin_redwizard",
+            237: "cbm_fade_recruitment_xp",
+            238: "cbm_evandra_recruitment_xp",
             640: "cbm_legacy_ui_strings",
+            650: "cbm_campaign_xp",
+            651: "cbm_campaign_xp_soa",
+            660: "cbm_degrodel_fight",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -164,14 +174,18 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/unidentified-items.md",
                 "docs/companion-classes.md",
                 "docs/companion-continuity.md",
+                "docs/degrodel-fight.md",
                 "docs/imoen-spellhold-xp.md",
+                "docs/recruitment-xp.md",
+                "docs/campaign-xp-banking.md",
+                "docs/scroll-casting.md",
                 "docs/npc-builds.md",
                 "docs/yeslick-alaghor.md",
                 "docs/evandra.md",
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.10.md",
+                "docs/releases/v0.2.0-alpha.11.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

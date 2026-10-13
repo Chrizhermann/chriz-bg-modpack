@@ -1,0 +1,176 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CAIAction::CAIAction+0x0 [0x140116d10, 0x140116f40)
+0000000140116d10  push     rbx
+0000000140116d12  sub      rsp, 0x50
+0000000140116d16  mov      dword ptr [rsp + 0x40], 0xffffffff
+0000000140116d1e  mov      rbx, rcx
+0000000140116d21  mov      byte ptr [rsp + 0x38], 0
+0000000140116d26  add      rcx, 8
+0000000140116d2a  mov      byte ptr [rsp + 0x30], 0
+0000000140116d2f  xor      r9d, r9d
+0000000140116d32  mov      byte ptr [rsp + 0x28], 0
+0000000140116d37  xor      r8d, r8d
+0000000140116d3a  xor      edx, edx
+0000000140116d3c  mov      byte ptr [rsp + 0x20], 0
+0000000140116d41  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+0000000140116d46  mov      dword ptr [rsp + 0x40], 0xffffffff
+0000000140116d4e  lea      rcx, [rbx + 0x20]
+0000000140116d52  mov      byte ptr [rsp + 0x38], 0
+0000000140116d57  xor      r9d, r9d
+0000000140116d5a  mov      byte ptr [rsp + 0x30], 0
+0000000140116d5f  xor      r8d, r8d
+0000000140116d62  mov      byte ptr [rsp + 0x28], 0
+0000000140116d67  xor      edx, edx
+0000000140116d69  mov      byte ptr [rsp + 0x20], 0
+0000000140116d6e  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+0000000140116d73  mov      dword ptr [rsp + 0x40], 0xffffffff
+0000000140116d7b  lea      rcx, [rbx + 0x38]
+0000000140116d7f  mov      byte ptr [rsp + 0x38], 0
+0000000140116d84  xor      r9d, r9d
+0000000140116d87  mov      byte ptr [rsp + 0x30], 0
+0000000140116d8c  xor      r8d, r8d
+0000000140116d8f  mov      byte ptr [rsp + 0x28], 0
+0000000140116d94  xor      edx, edx
+0000000140116d96  mov      byte ptr [rsp + 0x20], 0
+0000000140116d9b  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+0000000140116da0  mov      rax, qword ptr [rip + 0x545d69]
+0000000140116da7  mov      qword ptr [rbx + 0x60], rax
+0000000140116dab  mov      rax, qword ptr [rip + 0x545d5e]
+0000000140116db2  mov      qword ptr [rbx + 0x68], rax
+0000000140116db6  mov      rax, qword ptr [rip + 0x545d53]
+0000000140116dbd  mov      qword ptr [rbx + 0x80], rax
+0000000140116dc4  movzx    eax, word ptr [rip + 0x475af1]
+0000000140116dcb  mov      word ptr [rbx], ax
+0000000140116dce  xor      eax, eax
+0000000140116dd0  mov      qword ptr [rbx + 0x50], rax
+0000000140116dd4  mov      dword ptr [rbx + 0x58], eax
+0000000140116dd7  mov      dword ptr [rbx + 0x78], eax
+0000000140116dda  mov      rax, rbx
+0000000140116ddd  add      rsp, 0x50
+0000000140116de1  pop      rbx
+0000000140116de2  ret
+0000000140116de3  int3
+0000000140116de4  int3
+0000000140116de5  int3
+0000000140116de6  int3
+0000000140116de7  int3
+0000000140116de8  int3
+0000000140116de9  int3
+0000000140116dea  int3
+0000000140116deb  int3
+0000000140116dec  int3
+0000000140116ded  int3
+0000000140116dee  int3
+0000000140116def  int3
+0000000140116df0  mov      qword ptr [rsp + 8], rbx
+0000000140116df5  push     rdi
+0000000140116df6  sub      rsp, 0x20
+0000000140116dfa  movzx    eax, word ptr [rdx]
+0000000140116dfd  mov      rbx, rdx
+0000000140116e00  mov      word ptr [rcx], ax
+0000000140116e03  mov      rdi, rcx
+0000000140116e06  mov      eax, dword ptr [rdx + 0x50]
+0000000140116e09  add      rdx, 8
+0000000140116e0d  mov      dword ptr [rcx + 0x50], eax
+0000000140116e10  add      rcx, 8
+0000000140116e14  call     0x14011ea00 ; CAIObjectType::Set+0x0
+0000000140116e19  lea      rdx, [rbx + 0x20]
+0000000140116e1d  lea      rcx, [rdi + 0x20]
+0000000140116e21  call     0x14011ea00 ; CAIObjectType::Set+0x0
+0000000140116e26  lea      rdx, [rbx + 0x38]
+0000000140116e2a  lea      rcx, [rdi + 0x38]
+0000000140116e2e  call     0x14011ea00 ; CAIObjectType::Set+0x0
+0000000140116e33  mov      rax, qword ptr [rbx + 0x70]
+0000000140116e37  lea      rdx, [rbx + 0x60]
+0000000140116e3b  mov      qword ptr [rdi + 0x70], rax
+0000000140116e3f  lea      rcx, [rdi + 0x60]
+0000000140116e43  mov      eax, dword ptr [rbx + 0x54]
+0000000140116e46  mov      dword ptr [rdi + 0x54], eax
+0000000140116e49  mov      eax, dword ptr [rbx + 0x58]
+0000000140116e4c  mov      dword ptr [rdi + 0x58], eax
+0000000140116e4f  call     0x1403fd770 ; CString::operator=+0x0
+0000000140116e54  lea      rdx, [rbx + 0x68]
+0000000140116e58  lea      rcx, [rdi + 0x68]
+0000000140116e5c  call     0x1403fd770 ; CString::operator=+0x0
+0000000140116e61  mov      eax, dword ptr [rbx + 0x78]
+0000000140116e64  lea      rdx, [rbx + 0x80]
+0000000140116e6b  lea      rcx, [rdi + 0x80]
+0000000140116e72  mov      dword ptr [rdi + 0x78], eax
+0000000140116e75  call     0x1403fd770 ; CString::operator=+0x0
+0000000140116e7a  mov      rbx, qword ptr [rsp + 0x30]
+0000000140116e7f  mov      rax, rdi
+0000000140116e82  add      rsp, 0x20
+0000000140116e86  pop      rdi
+0000000140116e87  ret
+0000000140116e88  int3
+0000000140116e89  int3
+0000000140116e8a  int3
+0000000140116e8b  int3
+0000000140116e8c  int3
+0000000140116e8d  int3
+0000000140116e8e  int3
+0000000140116e8f  int3
+0000000140116e90  mov      qword ptr [rsp + 8], rbx
+0000000140116e95  push     rdi
+0000000140116e96  sub      rsp, 0x20
+0000000140116e9a  mov      ebx, edx
+0000000140116e9c  mov      rdi, rcx
+0000000140116e9f  call     0x1404073d0 ; CObList::~CObList+0x0
+0000000140116ea4  test     bl, 1
+0000000140116ea7  je       0x140116eb6
+0000000140116ea9  mov      edx, 0x38
+0000000140116eae  mov      rcx, rdi
+0000000140116eb1  call     0x14045e690 ; DSOUND_FreeDeviceHandle+0x0
+0000000140116eb6  mov      rbx, qword ptr [rsp + 0x30]
+0000000140116ebb  mov      rax, rdi
+0000000140116ebe  add      rsp, 0x20
+0000000140116ec2  pop      rdi
+0000000140116ec3  ret
+0000000140116ec4  int3
+0000000140116ec5  int3
+0000000140116ec6  int3
+0000000140116ec7  int3
+0000000140116ec8  int3
+0000000140116ec9  int3
+0000000140116eca  int3
+0000000140116ecb  int3
+0000000140116ecc  int3
+0000000140116ecd  int3
+0000000140116ece  int3
+0000000140116ecf  int3
+0000000140116ed0  push     rbx
+0000000140116ed2  sub      rsp, 0x20
+0000000140116ed6  lea      rax, [rip + 0x475e83]
+0000000140116edd  mov      rbx, rcx
+0000000140116ee0  mov      qword ptr [rcx], rax
+0000000140116ee3  test     dl, 1
+0000000140116ee6  je       0x140116ef2
+0000000140116ee8  mov      edx, 0x10
+0000000140116eed  call     0x14045e690 ; DSOUND_FreeDeviceHandle+0x0
+0000000140116ef2  mov      rax, rbx
+0000000140116ef5  add      rsp, 0x20
+0000000140116ef9  pop      rbx
+0000000140116efa  ret
+0000000140116efb  int3
+0000000140116efc  int3
+0000000140116efd  int3
+0000000140116efe  int3
+0000000140116eff  int3
+0000000140116f00  mov      qword ptr [rsp + 8], rbx
+0000000140116f05  push     rdi
+0000000140116f06  sub      rsp, 0x20
+0000000140116f0a  mov      rdi, rcx
+0000000140116f0d  mov      ebx, edx
+0000000140116f0f  add      rcx, 0x90
+0000000140116f16  call     0x1403fd740 ; CString::~CString+0x0
+0000000140116f1b  lea      rcx, [rdi + 0x78]
+0000000140116f1f  call     0x1403fd740 ; CString::~CString+0x0
+0000000140116f24  lea      rcx, [rdi + 0x70]
+0000000140116f28  call     0x1403fd740 ; CString::~CString+0x0
+0000000140116f2d  lea      rcx, [rdi + 0x48]
+0000000140116f31  call     0x1403fd740 ; CString::~CString+0x0
+0000000140116f36  lea      rcx, [rdi + 0x30]
+0000000140116f3a  call     0x1403fd740 ; CString::~CString+0x0

@@ -1,0 +1,14 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+DIRECT CALL/JMP XREFS (executable sections; function-name attribution is nearest preceding symbol)
+0x1402b81d4 call 0x1402b1790 CScreenCreateChar::CancelLevelUp FROM CScreenCreateChar::OnCancelButtonClick+0xe4
+0x1402b923d call 0x1402b68f0 CScreenCreateChar::LevelUp FROM CScreenCreateChar::OnDoneButtonClick+0x89d
+0x1402b933d call 0x1402bb530 CScreenCreateChar::OnLevelUp FROM CScreenCreateChar::OnDoneButtonClick+0x99d
+0x1402b934e call 0x1402bb530 CScreenCreateChar::OnLevelUp FROM CScreenCreateChar::OnDoneButtonClick+0x9ae
+0x1402ba2eb call 0x1402b68f0 CScreenCreateChar::LevelUp FROM CScreenCreateChar::OnDoneButtonClick+0x194b
+0x1402bca27 call 0x1402bb530 CScreenCreateChar::OnLevelUp FROM CScreenCreateChar::OnMenuButtonClick+0x3b7
+0x1402bca3e call 0x1402bf260 CScreenCreateChar::ResetLevelUpPanel FROM CScreenCreateChar::OnMenuButtonClick+0x3ce
+0x1402c384b call 0x1402bf260 CScreenCreateChar::ResetLevelUpPanel FROM CScreenCreateChar::StartEditing+0x9b
+0x1402c38b2 call 0x1402bf260 CScreenCreateChar::ResetLevelUpPanel FROM CScreenCreateChar::StartEditing+0x102

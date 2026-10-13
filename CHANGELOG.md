@@ -1,5 +1,54 @@
 # Changelog
 
+## v0.2.0-alpha.11 - 2026-10-13
+
+- Add independent **237/238** options for Fade/Evandra first-recruitment SoA
+  XP catch-up, using protagonist thresholds through 1,250,000 XP. Preserve higher
+  earned XP, normal leveling and unrelated companion data; complete even when
+  no award is needed so rejoining cannot farm XP. Use private SoA script copies
+  for new recruitment actors, preserving existing actors and ToB behavior.
+  Retain recognized existing catch-up providers, including SCS customization.
+- Replace **430** with reader-level scroll casting: arcane and divine scrolls use
+  the reader's active caster level of that type; other legitimate readers use half
+  their highest active class level, rounded down, minimum 1. Dormant dual classes
+  do not count. The installer resolves the installed spells, including Spell
+  Revisions, keeps scroll learning and genuine fixed protection scrolls unchanged,
+  and reports ambiguous abilities it leaves alone. Windows EEex; install after all
+  spell and item changes and reinstall 430 if they change later.
+- Add optional, experimental **650/651**: BG1 161,000 and SoD 500,000 campaign
+  caps with excess XP banked for later campaigns (651 adds a 2,950,000 SoA cap).
+  Existing XP and levels are kept on adoption. Dual-classing keeps old- and
+  new-class XP separate. With no bank, a dual between level thresholds counts the
+  retired level's installed `XPLEVEL` threshold and drops the progress above it,
+  as in vanilla: a Fighter 7 at 80,000 XP uses 64,000 of BG1's cap, leaving
+  97,000. A positive bank keeps the exact pre-dual usable XP. The default
+  character record's Class tab shows **Banked XP** with the usable limit and when
+  the bank becomes usable; other interfaces keep the notices and the
+  `CBMBank_Status()` console command. Do not remove 650 or EEex from a run with
+  banked XP: uninstalling does not cash out the bank.
+- The first launches in a real game (CEBG lab: game 2.7.3.0, EEex 1.2) found
+  startup problems that offline checks could not show; all are fixed:
+  - **430** accepts the 16-byte jump EEex really writes at its Unmarshal hook.
+  - **650** accepts the call form EEex writes for its stats hooks (`40 E8`),
+    writes its code bytes unsigned, hands 64-bit DLL addresses to EEex's
+    assembler as numbers (the game's Lua rounded them to scientific notation in
+    text), and starts once the game object exists instead of when its file
+    loads. Scroll casting starts the bank first, because it chains onto the
+    bank's actor hook.
+  - Both now start in the lab: banking reports that it initialized and scroll
+    casting verifies its native carriers. Gameplay acceptance is still pending.
+- If banking cannot start, it logs why, and Imoen's Spellhold XP (620) and the
+  237/238 catch-up keep their pre-650 behavior.
+- Add optional **660 — Degrodel: hand over the Helm of Balduran or keep it and
+  fight him**. Handing it over keeps the normal reward and ending. Refusing makes
+  Degrodel stay and fight with the same servants; you keep the helm and the
+  quest closes with a short journal note. No extra difficulty is added. Supports
+  EET and BG:EE, with or without SCS. The installer skips with a reason, changing
+  nothing, when the hand-in cannot be identified safely. See the
+  [Degrodel guide](docs/degrodel-fight.md).
+- No unrelated defaults changed. In-game acceptance of 237/238, 430, 650/651 and
+  660 is still pending; see the component guides for the short checks.
+
 ## v0.2.0-alpha.10 - 2026-10-07
 
 The alpha.9 tag was an unpublished release candidate. Alpha.10 includes its

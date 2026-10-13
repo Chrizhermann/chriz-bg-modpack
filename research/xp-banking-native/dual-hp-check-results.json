@@ -1,0 +1,174 @@
+{
+  "profiles": [
+    {
+      "version": "2.6.6.0",
+      "exe_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+      "getHP": 2361968,
+      "gameTimestamp": 1620326323,
+      "gameSize": 55771136,
+      "manualCall": {
+        "rva": 2882920,
+        "bytes": "e8030df8ff"
+      },
+      "contribution": {
+        "rva": 2403761,
+        "bytes": "4403e841ffc7"
+      },
+      "limits": "No installer or native reward publication; hook-site observation only",
+      "entries": {
+        "reset": {
+          "rva": 2880096,
+          "span": 5,
+          "bytes": "48895c2418"
+        },
+        "commit": {
+          "rva": 2844912,
+          "span": 5,
+          "bytes": "48895c2418"
+        },
+        "cancel": {
+          "rva": 2824080,
+          "span": 8,
+          "bytes": "405741574883ec38"
+        }
+      },
+      "functions": {
+        "setActive": {
+          "rva": 3878768,
+          "bytes": "48895c241048896c24184889742420574883ec408d42a7418be9418bd88bf248"
+        },
+        "setInactive": {
+          "rva": 3880976,
+          "bytes": "48895c241048896c24184889742420574883ec408d42a7418be9418bd88bf248"
+        },
+        "getActive": {
+          "rva": 3785776,
+          "bytes": "4883ec288d42a74c8bc183f82d77254183b8a44e000000b8c81d0000b9201100"
+        },
+        "getInactive": {
+          "rva": 3786704,
+          "bytes": "4883ec288d42a74c8bc183f82d77284183b8a44e000000b8c81d0000b9201100"
+        },
+        "getHP": {
+          "rva": 2361968,
+          "bytes": "40555356574154415541564157488dac24b8f3ffff4881ec480d0000488b0585"
+        }
+      },
+      "choiceCalls": [
+        {
+          "rva": 2874555,
+          "bytes": "e8505b0f00",
+          "inactive": true
+        },
+        {
+          "rva": 2874569,
+          "bytes": "e8a2520f00",
+          "inactive": false
+        },
+        {
+          "rva": 2874727,
+          "bytes": "e8a45a0f00",
+          "inactive": true
+        },
+        {
+          "rva": 2874734,
+          "bytes": "e8fd510f00",
+          "inactive": false
+        }
+      ]
+    },
+    {
+      "version": "2.7.3.0",
+      "exe_sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+      "getHP": 2362576,
+      "gameTimestamp": 1780012861,
+      "gameSize": 55779328,
+      "manualCall": {
+        "rva": 2884584,
+        "bytes": "e8e308f8ff"
+      },
+      "contribution": {
+        "rva": 2404369,
+        "bytes": "4403e841ffc7"
+      },
+      "limits": "No installer or native reward publication; hook-site observation only",
+      "entries": {
+        "reset": {
+          "rva": 2881760,
+          "span": 5,
+          "bytes": "48895c2418"
+        },
+        "commit": {
+          "rva": 2846576,
+          "span": 5,
+          "bytes": "48895c2418"
+        },
+        "cancel": {
+          "rva": 2825744,
+          "span": 8,
+          "bytes": "405741574883ec38"
+        }
+      },
+      "functions": {
+        "setActive": {
+          "rva": 3880368,
+          "bytes": "48895c241048896c24184889742420574883ec408d42a7418be9418bd88bf248"
+        },
+        "setInactive": {
+          "rva": 3882576,
+          "bytes": "48895c241048896c24184889742420574883ec408d42a7418be9418bd88bf248"
+        },
+        "getActive": {
+          "rva": 3787376,
+          "bytes": "4883ec288d42a74c8bc183f82d77254183b8a44e000000b8c81d0000b9201100"
+        },
+        "getInactive": {
+          "rva": 3788304,
+          "bytes": "4883ec288d42a74c8bc183f82d77284183b8a44e000000b8c81d0000b9201100"
+        },
+        "getHP": {
+          "rva": 2362576,
+          "bytes": "40555356574154415541564157488dac24b8f3ffff4881ec480d0000488b05e5"
+        }
+      },
+      "choiceCalls": [
+        {
+          "rva": 2876219,
+          "bytes": "e8105b0f00",
+          "inactive": true
+        },
+        {
+          "rva": 2876233,
+          "bytes": "e862520f00",
+          "inactive": false
+        },
+        {
+          "rva": 2876391,
+          "bytes": "e8645a0f00",
+          "inactive": true
+        },
+        {
+          "rva": 2876398,
+          "bytes": "e8bd510f00",
+          "inactive": false
+        }
+      ]
+    }
+  ],
+  "instruction_checks": 68,
+  "scope": "Compiled HP/proficiency observation thunks versus actual native boundaries; no native HP/RNG/UI acceptance",
+  "source_sha256": {
+    "dual_hp_check.ps1": "7e0a4c772fbc527bd94a5dc2ce30f66e4a5342a29bb7cd9e8168bb4968859432",
+    "dual_hp_observer.cpp": "39af03dfb909c61c0c604f53e79084fd52cefc6ff30e5a31ffb6d61448ab7b39",
+    "dual_hp_observer.h": "668946d17b5d1069270984f49af0573b5150e2a992163e99e0a1319a37fda8ba",
+    "dual_hp_observer_test.cpp": "610cd8ae06875b2cdb3203f44c5e4ab2b5a3eae037f46e18e264abf0253a22c6",
+    "dual_hp_probe.py": "6a11de953690d38f7b1e324d724cb48cb4a5e253233ec0538343ce7e5990e488",
+    "dual_hp_replacement.lua": "2cd1cae1158a5c791f08beb2428a916d2150fbeb86c6263786d2b4639d6f3bef",
+    "dual_hp_replacement_check.py": "75ca4bb214dc56431d10ee2cdd7d251758fbec45e18f6412b276bc2f4ed4612f",
+    "dual_hp_thunks.asm": "8f8967794d4f5667bf9d2a0b457eb73f6558e243272f6c6fafaebcec44391e98",
+    "dual_choice_observer.cpp": "e972b9107be0ef0a984e8833d1f278dc2fd1a1b757c19afe047d92176a300d5c",
+    "dual_choice_observer.h": "6acd3534493d1145566e432f1e73e15a08974478b8c4a871cca85b949a14ca05",
+    "dual_choice_observer_test.cpp": "8d7d1dcd36e556ac5c25518bbab98767fbf236d714212dc9473dbfc923cebee3",
+    "dual_choice_thunks.asm": "1f96eebcf226cc28d5d916f5b16c8dea3290022a9649bc945ba9ec09815afe56"
+  }
+}

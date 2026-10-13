@@ -1,0 +1,110 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameSprite::SetActiveProficiency+0x0 [0x1403b2f70, 0x1403b3100)
+00000001403b2f70  mov      qword ptr [rsp + 0x10], rbx
+00000001403b2f75  mov      qword ptr [rsp + 0x18], rbp
+00000001403b2f7a  mov      qword ptr [rsp + 0x20], rsi
+00000001403b2f7f  push     rdi
+00000001403b2f80  sub      rsp, 0x40
+00000001403b2f84  lea      eax, [rdx - 0x59]
+00000001403b2f87  mov      ebp, r9d
+00000001403b2f8a  mov      ebx, r8d
+00000001403b2f8d  mov      esi, edx
+00000001403b2f8f  mov      rdi, rcx
+00000001403b2f92  cmp      eax, 0x2d
+00000001403b2f95  ja       0x1403b30e2
+00000001403b2f9b  cmp      dword ptr [rdi + 0x4ea4], 0
+00000001403b2fa2  mov      eax, 0x1dc8
+00000001403b2fa7  mov      ecx, 0x1120
+00000001403b2fac  mov      qword ptr [rsp + 0x50], r14
+00000001403b2fb1  cmove    ecx, eax
+00000001403b2fb4  add      rcx, rdi
+00000001403b2fb7  call     0x1401519b0 ; CDerivedStats::GetAtOffset+0x0
+00000001403b2fbc  mov      r14d, eax
+00000001403b2fbf  mov      dword ptr [rsp + 0x30], 1
+00000001403b2fc7  mov      ecx, ebx
+00000001403b2fc9  mov      dword ptr [rsp + 0x28], 1
+00000001403b2fd1  and      ecx, 7
+00000001403b2fd4  mov      dword ptr [rsp + 0x20], esi
+00000001403b2fd8  and      r14d, 0xfffffff8
+00000001403b2fdc  mov      edx, 0xe9
+00000001403b2fe1  or       r14d, ecx
+00000001403b2fe4  xor      r9d, r9d
+00000001403b2fe7  mov      r8d, r14d
+00000001403b2fea  lea      rcx, [rdi + 0x4a00]
+00000001403b2ff1  call     0x1401e5270 ; CGameEffectList::ModifyAllOfType+0x0
+00000001403b2ff6  test     eax, eax
+00000001403b2ff8  jne      0x1403b30c2
+00000001403b2ffe  test     ebx, ebx
+00000001403b3000  je       0x1403b30dd
+00000001403b3006  mov      ecx, 0x158
+00000001403b300b  call     0x1404f6aa8 ; operator_new+0x0
+00000001403b3010  mov      rbx, rax
+00000001403b3013  test     rax, rax
+00000001403b3016  je       0x1403b3033
+00000001403b3018  mov      rcx, rax
+00000001403b301b  call     0x14014c4b0 ; CGameEffect::CGameEffect+0x0
+00000001403b3020  lea      rax, [rip + 0x1e2561]
+00000001403b3027  mov      dword ptr [rbx + 0x10], 0xe9
+00000001403b302e  mov      qword ptr [rbx], rax
+00000001403b3031  jmp      0x1403b3035 ; CGameSprite::SetActiveProficiency+0xc5
+00000001403b3033  xor      ebx, ebx
+00000001403b3035  mov      dword ptr [rbx + 0x20], esi
+00000001403b3038  mov      dword ptr [rbx + 0x1c], r14d
+00000001403b303c  movzx    eax, word ptr [rip + 0x1dd6cd]
+00000001403b3043  mov      dword ptr [rbx + 0x24], eax
+00000001403b3046  test     ebp, ebp
+00000001403b3048  je       0x1403b306e
+00000001403b304a  mov      rax, qword ptr [rdi]
+00000001403b304d  xor      r9d, r9d
+00000001403b3050  movzx    r8d, byte ptr [rip + 0x1f8d58]
+00000001403b3058  mov      rdx, rbx
+00000001403b305b  mov      rcx, rdi
+00000001403b305e  mov      dword ptr [rsp + 0x20], 1
+00000001403b3066  call     qword ptr [rax + 0xe8]
+00000001403b306c  jmp      0x1403b30dd ; CGameSprite::SetActiveProficiency+0x16d
+00000001403b306e  mov      ecx, 0x20
+00000001403b3073  call     0x1404f6aa8 ; operator_new+0x0
+00000001403b3078  mov      rdx, rax
+00000001403b307b  test     rax, rax
+00000001403b307e  je       0x1403b30a8
+00000001403b3080  mov      eax, dword ptr [rdi + 0x48]
+00000001403b3083  mov      dword ptr [rdx + 0xc], eax
+00000001403b3086  mov      dword ptr [rdx + 8], eax
+00000001403b3089  lea      rax, [rip + 0x1db998]
+00000001403b3090  mov      qword ptr [rdx], rax
+00000001403b3093  mov      qword ptr [rdx + 0x10], rbx
+00000001403b3097  mov      byte ptr [rdx + 0x1a], 0
+00000001403b309b  movzx    eax, word ptr [rip + 0x1da8c6]
+00000001403b30a2  mov      word ptr [rdx + 0x18], ax
+00000001403b30a6  jmp      0x1403b30aa ; CGameSprite::SetActiveProficiency+0x13a
+00000001403b30a8  xor      edx, edx
+00000001403b30aa  mov      rcx, qword ptr [rip + 0x2b1fef]
+00000001403b30b1  xor      r8d, r8d
+00000001403b30b4  add      rcx, 0x1768
+00000001403b30bb  call     0x140204c60 ; CMessageHandler::AddMessage+0x0
+00000001403b30c0  jmp      0x1403b30dd ; CGameSprite::SetActiveProficiency+0x16d
+00000001403b30c2  test     ebp, ebp
+00000001403b30c4  je       0x1403b30dd
+00000001403b30c6  mov      edx, 1
+00000001403b30cb  mov      dword ptr [rdi + 0x4ba4], 1
+00000001403b30d5  mov      rcx, rdi
+00000001403b30d8  call     0x1403ab390 ; CGameSprite::ProcessEffectList+0x0
+00000001403b30dd  mov      r14, qword ptr [rsp + 0x50]
+00000001403b30e2  mov      rbx, qword ptr [rsp + 0x58]
+00000001403b30e7  mov      rbp, qword ptr [rsp + 0x60]
+00000001403b30ec  mov      rsi, qword ptr [rsp + 0x68]
+00000001403b30f1  add      rsp, 0x40
+00000001403b30f5  pop      rdi
+00000001403b30f6  ret
+00000001403b30f7  int3
+00000001403b30f8  int3
+00000001403b30f9  int3
+00000001403b30fa  int3
+00000001403b30fb  int3
+00000001403b30fc  int3
+00000001403b30fd  int3
+00000001403b30fe  int3
+00000001403b30ff  int3

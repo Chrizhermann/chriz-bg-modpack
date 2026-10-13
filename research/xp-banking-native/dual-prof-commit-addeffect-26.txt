@@ -1,0 +1,162 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameSprite::AddEffect+0x0 [0x140386cd0, 0x140386f60)
+0000000140386cd0  mov      qword ptr [rsp + 0x18], rsi
+0000000140386cd5  mov      qword ptr [rsp + 0x20], rdi
+0000000140386cda  mov      qword ptr [rsp + 0x10], rdx
+0000000140386cdf  push     r14
+0000000140386ce1  sub      rsp, 0x50
+0000000140386ce5  mov      rax, qword ptr [rcx]
+0000000140386ce8  mov      esi, r9d
+0000000140386ceb  movzx    r14d, r8b
+0000000140386cef  mov      rdi, rcx
+0000000140386cf2  call     qword ptr [rax + 0x20]
+0000000140386cf5  movzx    edx, byte ptr [rip + 0x2d3624]
+0000000140386cfc  mov      r10, rax
+0000000140386cff  cmp      byte ptr [rax + 8], dl
+0000000140386d02  jne      0x140386d5f
+0000000140386d04  movzx    edx, byte ptr [rip + 0x2d3616]
+0000000140386d0b  cmp      byte ptr [rax + 9], dl
+0000000140386d0e  jne      0x140386d5f
+0000000140386d10  movzx    edx, byte ptr [rip + 0x2d360b]
+0000000140386d17  cmp      byte ptr [rax + 0xa], dl
+0000000140386d1a  jne      0x140386d5f
+0000000140386d1c  movzx    ecx, byte ptr [rip + 0x2d3600]
+0000000140386d23  cmp      byte ptr [rax + 0xb], cl
+0000000140386d26  jne      0x140386d5f
+0000000140386d28  movzx    eax, byte ptr [rip + 0x2d35fe]
+0000000140386d2f  cmp      byte ptr [r10 + 0x15], al
+0000000140386d33  jne      0x140386d5f
+0000000140386d35  movzx    eax, byte ptr [rip + 0x2d35f3]
+0000000140386d3c  cmp      byte ptr [r10 + 0x17], al
+0000000140386d40  jne      0x140386d5f
+0000000140386d42  movzx    eax, byte ptr [rip + 0x2d35e5]
+0000000140386d49  cmp      byte ptr [r10 + 0x16], al
+0000000140386d4d  jne      0x140386d5f
+0000000140386d4f  mov      eax, dword ptr [rip + 0x2d35cf]
+0000000140386d55  cmp      dword ptr [r10 + 0xc], eax
+0000000140386d59  je       0x140386f48
+0000000140386d5f  lea      rdx, [rsp + 0x68]
+0000000140386d64  mov      qword ptr [rsp + 0x60], rbx
+0000000140386d69  mov      rcx, rdi
+0000000140386d6c  call     0x14038f290 ; CGameSprite::CheckSevenEyes+0x0
+0000000140386d71  mov      rbx, qword ptr [rsp + 0x68]
+0000000140386d76  lea      rax, [rdi + 0x4c86]
+0000000140386d7d  mov      qword ptr [rsp + 0x40], rax
+0000000140386d82  lea      rcx, [rdi + 0x4c85]
+0000000140386d89  mov      qword ptr [rsp + 0x38], rcx
+0000000140386d8e  lea      rdx, [rdi + 0x4c84]
+0000000140386d95  mov      qword ptr [rsp + 0x30], rdx
+0000000140386d9a  lea      r10, [rdi + 0x4c83]
+0000000140386da1  lea      r11, [rdi + 0x4c82]
+0000000140386da8  mov      qword ptr [rsp + 0x28], r10
+0000000140386dad  mov      rdx, rdi
+0000000140386db0  mov      qword ptr [rsp + 0x20], r11
+0000000140386db5  lea      r9, [rdi + 0x4c81]
+0000000140386dbc  mov      rcx, rbx
+0000000140386dbf  lea      r8, [rdi + 0x4c80]
+0000000140386dc6  call     0x1401cc4b0 ; CGameEffect::CheckAdd+0x0
+0000000140386dcb  test     eax, eax
+0000000140386dcd  jne      0x140386e04
+0000000140386dcf  test     esi, esi
+0000000140386dd1  jne      0x140386dec
+0000000140386dd3  test     rbx, rbx
+0000000140386dd6  je       0x140386f18
+0000000140386ddc  mov      rax, qword ptr [rbx]
+0000000140386ddf  lea      edx, [rsi + 1]
+0000000140386de2  mov      rcx, rbx
+0000000140386de5  call     qword ptr [rax]
+0000000140386de7  jmp      0x140386f18 ; CGameSprite::AddEffect+0x248
+0000000140386dec  mov      rax, qword ptr [rbx]
+0000000140386def  mov      rdx, rdi
+0000000140386df2  mov      rcx, rbx
+0000000140386df5  call     qword ptr [rax + 0x20]
+0000000140386df8  mov      rax, qword ptr [rbx]
+0000000140386dfb  mov      rdx, rdi
+0000000140386dfe  mov      rcx, rbx
+0000000140386e01  call     qword ptr [rax + 0x48]
+0000000140386e04  cmp      dword ptr [rsp + 0x80], 0
+0000000140386e0c  mov      dword ptr [rdi + 0x4ba4], 1
+0000000140386e16  je       0x140386ea9
+0000000140386e1c  lea      rdx, [rdi + 0x1120]
+0000000140386e23  lea      rcx, [rdi + 0x1dc8]
+0000000140386e2a  call     0x14014f080 ; CDerivedStats::operator=+0x0
+0000000140386e2f  mov      rax, qword ptr [rbx]
+0000000140386e32  mov      rdx, rdi
+0000000140386e35  mov      rcx, rbx
+0000000140386e38  call     qword ptr [rax + 0x18]
+0000000140386e3b  cmp      dword ptr [rbx + 0x114], 0
+0000000140386e42  je       0x140386e56
+0000000140386e44  mov      rax, qword ptr [rbx]
+0000000140386e47  mov      edx, 1
+0000000140386e4c  mov      rcx, rbx
+0000000140386e4f  call     qword ptr [rax]
+0000000140386e51  jmp      0x140386f43 ; CGameSprite::AddEffect+0x273
+0000000140386e56  lea      rcx, [rdi + 0x2128]
+0000000140386e5d  lea      rdx, [rdi + 0x1480]
+0000000140386e64  call     0x1401f86b0 ; CImmunitiesAIType::operator==+0x0
+0000000140386e69  test     eax, eax
+0000000140386e6b  jne      0x140386ea9
+0000000140386e6d  lea      ecx, [rax + 0x48]
+0000000140386e70  call     0x1404f6aa8 ; operator_new+0x0
+0000000140386e75  test     rax, rax
+0000000140386e78  je       0x140386e90
+0000000140386e7a  mov      r8d, dword ptr [rdi + 0x48]
+0000000140386e7e  lea      rdx, [rdi + 0x1480]
+0000000140386e85  mov      r9d, r8d
+0000000140386e88  mov      rcx, rax
+0000000140386e8b  call     0x140386c70 ; CMessageUpdateImmunities::CMessageUpdateImmunities+0x0
+0000000140386e90  mov      rcx, qword ptr [rip + 0x2de209]
+0000000140386e97  xor      r8d, r8d
+0000000140386e9a  add      rcx, 0x1768
+0000000140386ea1  mov      rdx, rax
+0000000140386ea4  call     0x140204c60 ; CMessageHandler::AddMessage+0x0
+0000000140386ea9  cmp      r14b, byte ptr [rip + 0x224f00]
+0000000140386eb0  je       0x140386edf
+0000000140386eb2  cmp      dword ptr [rbx + 0x10], 0x2a
+0000000140386eb6  jne      0x140386ebe
+0000000140386eb8  cmp      dword ptr [rbx + 0x20], 0
+0000000140386ebc  je       0x140386ec7
+0000000140386ebe  cmp      dword ptr [rbx + 0x20], 0x200
+0000000140386ec5  jne      0x140386eeb
+0000000140386ec7  mov      rdx, qword ptr [rdi + 0x49b8]
+0000000140386ece  lea      rcx, [rdi + 0x49b0]
+0000000140386ed5  mov      r8, rbx
+0000000140386ed8  call     0x140406950 ; CPtrList::InsertBefore+0x0
+0000000140386edd  jmp      0x140386f18 ; CGameSprite::AddEffect+0x248
+0000000140386edf  movzx    eax, word ptr [rip + 0x20980a]
+0000000140386ee6  cmp      dword ptr [rbx + 0x24], eax
+0000000140386ee9  jne      0x140386ef4
+0000000140386eeb  lea      rcx, [rdi + 0x49b0]
+0000000140386ef2  jmp      0x140386f10 ; CGameSprite::AddEffect+0x240
+0000000140386ef4  test     dword ptr [rdi + 0x578], 0x800
+0000000140386efe  je       0x140386f09
+0000000140386f00  cmp      dword ptr [rbx + 0x10], 0xbb
+0000000140386f07  jne      0x140386f18
+0000000140386f09  lea      rcx, [rdi + 0x4a00]
+0000000140386f10  mov      rdx, rbx
+0000000140386f13  call     0x140406720 ; CObList::AddTail+0x0
+0000000140386f18  mov      rax, qword ptr [rip + 0x2de181]
+0000000140386f1f  mov      rcx, qword ptr [rax + 0x1090]
+0000000140386f26  cmp      byte ptr [rcx + 0x3fa4], 0
+0000000140386f2d  jne      0x140386f43
+0000000140386f2f  cmp      dword ptr [rsp + 0x80], 0
+0000000140386f37  je       0x140386f43
+0000000140386f39  xor      edx, edx
+0000000140386f3b  mov      rcx, rdi
+0000000140386f3e  call     0x1403ab390 ; CGameSprite::ProcessEffectList+0x0
+0000000140386f43  mov      rbx, qword ptr [rsp + 0x60]
+0000000140386f48  mov      rsi, qword ptr [rsp + 0x70]
+0000000140386f4d  mov      rdi, qword ptr [rsp + 0x78]
+0000000140386f52  add      rsp, 0x50
+0000000140386f56  pop      r14
+0000000140386f58  ret
+0000000140386f59  int3
+0000000140386f5a  int3
+0000000140386f5b  int3
+0000000140386f5c  int3
+0000000140386f5d  int3
+0000000140386f5e  int3
+0000000140386f5f  int3

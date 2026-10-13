@@ -1,0 +1,4 @@
+{
+  "scenarios": 48,
+  "scope": "Actual Lua modules, synthetic host memory and real DLL exports; no game/hook installation"
+}

@@ -1,0 +1,610 @@
+{
+  "2.6": {
+    "cases": [
+      {
+        "calls": [
+          [
+            "GA",
+            "ALPHA"
+          ],
+          [
+            "AP",
+            "BETA"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "ALPHA",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "BETA",
+            "timing": 9
+          }
+        ],
+        "cloned": 2,
+        "freed": 2,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [
+          [
+            "GA",
+            "FIRST"
+          ],
+          [
+            "AP",
+            "SECOND"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "FIRST",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "SECOND",
+            "timing": 9
+          }
+        ],
+        "cloned": 2,
+        "freed": 2,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [],
+        "markers": [],
+        "cloned": 0,
+        "freed": 1,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          }
+        ],
+        "cloned": 24,
+        "freed": 24,
+        "dormant_fixture": true
+      }
+    ],
+    "native_executed": [
+      "CompleteCharacterHighLevelAbilities full body",
+      "CResRef CString copy/uppercase encoding",
+      "native min"
+    ],
+    "adapters": [
+      "heap allocation/free",
+      "CString copy/Left/Right/destruction",
+      "CObArray storage",
+      "effect construction",
+      "AddSpecialAbility/FireSpell/AddEffect sinks"
+    ],
+    "game_launched": false,
+    "spells_executed": false
+  },
+  "2.7": {
+    "cases": [
+      {
+        "calls": [
+          [
+            "GA",
+            "ALPHA"
+          ],
+          [
+            "AP",
+            "BETA"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "ALPHA",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "BETA",
+            "timing": 9
+          }
+        ],
+        "cloned": 2,
+        "freed": 2,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [
+          [
+            "GA",
+            "FIRST"
+          ],
+          [
+            "AP",
+            "SECOND"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "FIRST",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "SECOND",
+            "timing": 9
+          }
+        ],
+        "cloned": 2,
+        "freed": 2,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [],
+        "markers": [],
+        "cloned": 0,
+        "freed": 1,
+        "dormant_fixture": true
+      },
+      {
+        "calls": [
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ],
+          [
+            "GA",
+            "A"
+          ]
+        ],
+        "markers": [
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          },
+          {
+            "opcode": 313,
+            "resource": "A",
+            "timing": 9
+          }
+        ],
+        "cloned": 24,
+        "freed": 24,
+        "dormant_fixture": true
+      }
+    ],
+    "native_executed": [
+      "CompleteCharacterHighLevelAbilities full body",
+      "CResRef CString copy/uppercase encoding",
+      "native min"
+    ],
+    "adapters": [
+      "heap allocation/free",
+      "CString copy/Left/Right/destruction",
+      "CObArray storage",
+      "effect construction",
+      "AddSpecialAbility/FireSpell/AddEffect sinks"
+    ],
+    "game_launched": false,
+    "spells_executed": false
+  }
+}

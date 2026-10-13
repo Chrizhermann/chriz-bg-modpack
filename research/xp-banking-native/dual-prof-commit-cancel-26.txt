@@ -1,0 +1,212 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::CancelLevelUp+0x0 [0x1402b1790, 0x1402b1ac0)
+00000001402b1790  push     rdi
+00000001402b1792  push     r15
+00000001402b1794  sub      rsp, 0x38
+00000001402b1798  mov      rax, qword ptr [rip + 0x3b3901]
+00000001402b179f  lea      rdx, [rsp + 0x50]
+00000001402b17a4  mov      rdi, rcx
+00000001402b17a7  mov      ecx, dword ptr [rcx + 0x770]
+00000001402b17ad  mov      r15, qword ptr [rax + 0x1090]
+00000001402b17b4  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402b17b9  test     al, al
+00000001402b17bb  jne      0x1402b1a8b
+00000001402b17c1  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b17c6  mov      eax, 4
+00000001402b17cb  mov      rdx, qword ptr [rdi + 0x9a0]
+00000001402b17d2  add      rcx, 0x560
+00000001402b17d9  mov      qword ptr [rsp + 0x58], rbx
+00000001402b17de  mov      qword ptr [rsp + 0x30], rsi
+00000001402b17e3  mov      qword ptr [rsp + 0x28], r12
+00000001402b17e8  mov      qword ptr [rsp + 0x20], r14
+00000001402b17ed  nop      dword ptr [rax]
+00000001402b17f0  lea      rcx, [rcx + 0x80]
+00000001402b17f7  movups   xmm0, xmmword ptr [rdx]
+00000001402b17fa  lea      rdx, [rdx + 0x80]
+00000001402b1801  movups   xmmword ptr [rcx - 0x80], xmm0
+00000001402b1805  movups   xmm1, xmmword ptr [rdx - 0x70]
+00000001402b1809  movups   xmmword ptr [rcx - 0x70], xmm1
+00000001402b180d  movups   xmm0, xmmword ptr [rdx - 0x60]
+00000001402b1811  movups   xmmword ptr [rcx - 0x60], xmm0
+00000001402b1815  movups   xmm1, xmmword ptr [rdx - 0x50]
+00000001402b1819  movups   xmmword ptr [rcx - 0x50], xmm1
+00000001402b181d  movups   xmm0, xmmword ptr [rdx - 0x40]
+00000001402b1821  movups   xmmword ptr [rcx - 0x40], xmm0
+00000001402b1825  movups   xmm1, xmmword ptr [rdx - 0x30]
+00000001402b1829  movups   xmmword ptr [rcx - 0x30], xmm1
+00000001402b182d  movups   xmm0, xmmword ptr [rdx - 0x20]
+00000001402b1831  movups   xmmword ptr [rcx - 0x20], xmm0
+00000001402b1835  movups   xmm1, xmmword ptr [rdx - 0x10]
+00000001402b1839  movups   xmmword ptr [rcx - 0x10], xmm1
+00000001402b183d  sub      rax, 1
+00000001402b1841  jne      0x1402b17f0
+00000001402b1843  movups   xmm0, xmmword ptr [rdx]
+00000001402b1846  movups   xmmword ptr [rcx], xmm0
+00000001402b1849  movups   xmm1, xmmword ptr [rdx + 0x10]
+00000001402b184d  movups   xmmword ptr [rcx + 0x10], xmm1
+00000001402b1851  movups   xmm0, xmmword ptr [rdx + 0x20]
+00000001402b1855  movups   xmmword ptr [rcx + 0x20], xmm0
+00000001402b1859  movups   xmm1, xmmword ptr [rdx + 0x30]
+00000001402b185d  movups   xmmword ptr [rcx + 0x30], xmm1
+00000001402b1861  movups   xmm0, xmmword ptr [rdx + 0x40]
+00000001402b1865  movups   xmmword ptr [rcx + 0x40], xmm0
+00000001402b1869  movups   xmm1, xmmword ptr [rdx + 0x50]
+00000001402b186d  movups   xmmword ptr [rcx + 0x50], xmm1
+00000001402b1871  mov      rax, qword ptr [rdx + 0x60]
+00000001402b1875  mov      edx, 0x268
+00000001402b187a  mov      qword ptr [rcx + 0x60], rax
+00000001402b187e  mov      rcx, qword ptr [rdi + 0x9a0]
+00000001402b1885  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402b188a  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b188f  xor      r12d, r12d
+00000001402b1892  mov      rdx, qword ptr [rdi + 0x9a8]
+00000001402b1899  add      rcx, 0x1120
+00000001402b18a0  mov      qword ptr [rdi + 0x9a0], r12
+00000001402b18a7  call     0x14014f080 ; CDerivedStats::operator=+0x0
+00000001402b18ac  mov      rbx, qword ptr [rdi + 0x9a8]
+00000001402b18b3  test     rbx, rbx
+00000001402b18b6  je       0x1402b18cd
+00000001402b18b8  mov      rcx, rbx
+00000001402b18bb  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+00000001402b18c0  mov      edx, 0xca8
+00000001402b18c5  mov      rcx, rbx
+00000001402b18c8  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402b18cd  mov      rcx, qword ptr [rdi + 0x9d0]
+00000001402b18d4  mov      qword ptr [rdi + 0x9a8], r12
+00000001402b18db  test     rcx, rcx
+00000001402b18de  je       0x1402b18ea
+00000001402b18e0  mov      rax, qword ptr [rcx]
+00000001402b18e3  mov      edx, 1
+00000001402b18e8  call     qword ptr [rax]
+00000001402b18ea  mov      ecx, dword ptr [rdi + 0x8e0]
+00000001402b18f0  lea      rsi, [rdi + 0x964]
+00000001402b18f7  mov      rax, qword ptr [rsp + 0x50]
+00000001402b18fc  mov      ebx, r12d
+00000001402b18ff  mov      qword ptr [rdi + 0x9d0], r12
+00000001402b1906  mov      dword ptr [rax + 0x4e40], ecx
+00000001402b190c  mov      dword ptr [rdi + 0x8e0], r12d
+00000001402b1913  nop      dword ptr [rax]
+00000001402b1917  nop      word ptr [rax + rax]
+00000001402b1920  mov      r8d, dword ptr [rsi]
+00000001402b1923  mov      edx, ebx
+00000001402b1925  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b192a  call     0x140373da0 ; CGameSprite::SetMaxMemorizedSpellsPriest+0x0
+00000001402b192f  inc      ebx
+00000001402b1931  lea      rsi, [rsi + 4]
+00000001402b1935  cmp      ebx, 7
+00000001402b1938  jl       0x1402b1920
+00000001402b193a  mov      ebx, r12d
+00000001402b193d  lea      rsi, [rdi + 0x940]
+00000001402b1944  nop      dword ptr [rax]
+00000001402b1948  nop      dword ptr [rax + rax]
+00000001402b1950  mov      r8d, dword ptr [rsi]
+00000001402b1953  mov      edx, ebx
+00000001402b1955  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b195a  call     0x140373d20 ; CGameSprite::SetMaxMemorizedSpellsMage+0x0
+00000001402b195f  inc      ebx
+00000001402b1961  lea      rsi, [rsi + 4]
+00000001402b1965  cmp      ebx, 9
+00000001402b1968  jl       0x1402b1950
+00000001402b196a  movsx    r14d, word ptr [r15 + 0x19ca]
+00000001402b1972  mov      esi, r12d
+00000001402b1975  test     r14d, r14d
+00000001402b1978  jle      0x1402b19ca
+00000001402b197a  mov      qword ptr [rsp + 0x60], rbp
+00000001402b197f  mov      rbp, r12
+00000001402b1982  nop      dword ptr [rax]
+00000001402b1986  nop      word ptr [rax + rax]
+00000001402b1990  mov      rax, qword ptr [rdi + 0x988]
+00000001402b1997  mov      edx, esi
+00000001402b1999  mov      rcx, r15
+00000001402b199c  movsx    ebx, byte ptr [rax + rbp]
+00000001402b19a0  call     0x140245d00 ; CRuleTables::GetProficiencyId+0x0
+00000001402b19a5  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b19aa  mov      edx, eax
+00000001402b19ac  mov      r9d, 1
+00000001402b19b2  mov      r8d, ebx
+00000001402b19b5  call     0x1403b2f70 ; CGameSprite::SetActiveProficiency+0x0
+00000001402b19ba  inc      esi
+00000001402b19bc  lea      rbp, [rbp + 8]
+00000001402b19c0  cmp      esi, r14d
+00000001402b19c3  jl       0x1402b1990
+00000001402b19c5  mov      rbp, qword ptr [rsp + 0x60]
+00000001402b19ca  mov      r14, qword ptr [rsp + 0x20]
+00000001402b19cf  lea      rsi, [rip - 0x2b19d6]
+00000001402b19d6  mov      ebx, r12d
+00000001402b19d9  nop      dword ptr [rax]
+00000001402b19e0  movzx    edx, bl
+00000001402b19e3  cmp      edx, 7
+00000001402b19e6  ja       0x1402b1a2c
+00000001402b19e8  mov      ecx, dword ptr [rsi + rdx*4 + 0x2b1a94]
+00000001402b19ef  add      rcx, rsi
+00000001402b19f2  jmp      rcx
+00000001402b19f4  mov      eax, dword ptr [rdi + 0x784]
+00000001402b19fa  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b19fc  mov      eax, dword ptr [rdi + 0x788]
+00000001402b1a02  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a04  mov      eax, dword ptr [rdi + 0x78c]
+00000001402b1a0a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a0c  mov      eax, dword ptr [rdi + 0x790]
+00000001402b1a12  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a14  mov      eax, dword ptr [rdi + 0x794]
+00000001402b1a1a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a1c  mov      eax, dword ptr [rdi + 0x798]
+00000001402b1a22  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a24  mov      eax, dword ptr [rdi + 0x79c]
+00000001402b1a2a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a2c  mov      eax, r12d
+00000001402b1a2f  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b1a34  movzx    r8d, al
+00000001402b1a38  call     0x1403755c0 ; CGameSprite::SetSkillValue+0x0
+00000001402b1a3d  inc      ebx
+00000001402b1a3f  cmp      ebx, 8
+00000001402b1a42  jl       0x1402b19e0
+00000001402b1a44  lea      rcx, [rip + 0x2dbfd5]
+00000001402b1a4b  call     0x1403da410 ; uiPop+0x0
+00000001402b1a50  mov      rcx, qword ptr [rip + 0x3b3649]
+00000001402b1a57  xor      edx, edx
+00000001402b1a59  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b1a60  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402b1a65  mov      rcx, qword ptr [rip + 0x3b3634]
+00000001402b1a6c  mov      rax, qword ptr [rcx]
+00000001402b1a6f  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402b1a76  call     qword ptr [rax + 0xf0]
+00000001402b1a7c  mov      r12, qword ptr [rsp + 0x28]
+00000001402b1a81  mov      rsi, qword ptr [rsp + 0x30]
+00000001402b1a86  mov      rbx, qword ptr [rsp + 0x58]
+00000001402b1a8b  add      rsp, 0x38
+00000001402b1a8f  pop      r15
+00000001402b1a91  pop      rdi
+00000001402b1a92  ret
+00000001402b1a93  nop
+00000001402b1a94  hlt
+00000001402b1a95  sbb      dword ptr [rbx], ebp
+00000001402b1a97  add      ah, bh
+00000001402b1a99  sbb      dword ptr [rbx], ebp
+00000001402b1a9b  add      byte ptr [rdx + rbx], al
+00000001402b1a9e  sub      eax, dword ptr [rax]
+00000001402b1aa0  or       al, 0x1a
+00000001402b1aa2  sub      eax, dword ptr [rax]
+00000001402b1aa4  adc      al, 0x1a
+00000001402b1aa6  sub      eax, dword ptr [rax]
+00000001402b1aa8  sbb      al, 0x1a
+00000001402b1aaa  sub      eax, dword ptr [rax]
+00000001402b1aac  and      al, 0x1a
+00000001402b1aae  sub      eax, dword ptr [rax]
+00000001402b1ab0  or       al, 0x1a
+00000001402b1ab2  sub      eax, dword ptr [rax]
+00000001402b1ab4  int3
+00000001402b1ab5  int3
+00000001402b1ab6  int3
+00000001402b1ab7  int3
+00000001402b1ab8  int3
+00000001402b1ab9  int3
+00000001402b1aba  int3
+00000001402b1abb  int3
+00000001402b1abc  int3
+00000001402b1abd  int3
+00000001402b1abe  int3
+00000001402b1abf  int3

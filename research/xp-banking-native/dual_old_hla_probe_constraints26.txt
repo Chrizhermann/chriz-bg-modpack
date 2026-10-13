@@ -1,0 +1,237 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::AbilityCountInEffectList+0x0 [0x1402b0610, 0x1402b06b0)
+00000001402b0610  mov      qword ptr [rsp + 8], rbx
+00000001402b0615  push     rdi
+00000001402b0616  sub      rsp, 0x20
+00000001402b061a  mov      rax, qword ptr [rip + 0x3ab4ef]
+00000001402b0621  mov      rcx, r8
+00000001402b0624  mov      qword ptr [rsp + 0x38], rax
+00000001402b0629  mov      rbx, rdx
+00000001402b062c  mov      rax, qword ptr [r8]
+00000001402b062f  lea      rdx, [rsp + 0x40]
+00000001402b0634  xor      edi, edi
+00000001402b0636  mov      r8d, dword ptr [rax - 8]
+00000001402b063a  add      r8d, -3
+00000001402b063e  call     0x1403feaf0 ; CString::Right+0x0
+00000001402b0643  mov      rdx, rax
+00000001402b0646  lea      rcx, [rsp + 0x38]
+00000001402b064b  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b0650  lea      rcx, [rsp + 0x40]
+00000001402b0655  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b065a  mov      rbx, qword ptr [rbx + 0x4a08]
+00000001402b0661  test     rbx, rbx
+00000001402b0664  je       0x1402b0699
+00000001402b0666  nop      word ptr [rax + rax]
+00000001402b0670  mov      rcx, qword ptr [rbx + 0x10]
+00000001402b0674  cmp      dword ptr [rcx + 0x10], 0x139
+00000001402b067b  jne      0x1402b0691
+00000001402b067d  add      rcx, 0x30
+00000001402b0681  lea      rdx, [rsp + 0x38]
+00000001402b0686  call     0x1403ff0e0 ; CResRef::operator==+0x0
+00000001402b068b  test     eax, eax
+00000001402b068d  je       0x1402b0691
+00000001402b068f  inc      edi
+00000001402b0691  mov      rbx, qword ptr [rbx]
+00000001402b0694  test     rbx, rbx
+00000001402b0697  jne      0x1402b0670
+00000001402b0699  lea      rcx, [rsp + 0x38]
+00000001402b069e  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b06a3  mov      rbx, qword ptr [rsp + 0x30]
+00000001402b06a8  mov      eax, edi
+00000001402b06aa  add      rsp, 0x20
+00000001402b06ae  pop      rdi
+00000001402b06af  ret
+
+CScreenCreateChar::AbilityExistsInEffectList+0x0 [0x1402b06b0, 0x1402b0760)
+00000001402b06b0  mov      qword ptr [rsp + 8], rbx
+00000001402b06b5  push     rdi
+00000001402b06b6  sub      rsp, 0x20
+00000001402b06ba  mov      rax, qword ptr [rip + 0x3ab44f]
+00000001402b06c1  mov      rcx, r8
+00000001402b06c4  mov      qword ptr [rsp + 0x38], rax
+00000001402b06c9  mov      rbx, rdx
+00000001402b06cc  mov      rax, qword ptr [r8]
+00000001402b06cf  lea      rdx, [rsp + 0x40]
+00000001402b06d4  xor      edi, edi
+00000001402b06d6  mov      r8d, dword ptr [rax - 8]
+00000001402b06da  add      r8d, -3
+00000001402b06de  call     0x1403feaf0 ; CString::Right+0x0
+00000001402b06e3  mov      rdx, rax
+00000001402b06e6  lea      rcx, [rsp + 0x38]
+00000001402b06eb  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b06f0  lea      rcx, [rsp + 0x40]
+00000001402b06f5  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b06fa  mov      rbx, qword ptr [rbx + 0x4a08]
+00000001402b0701  test     rbx, rbx
+00000001402b0704  je       0x1402b073e
+00000001402b0706  nop      word ptr [rax + rax]
+00000001402b0710  mov      rcx, qword ptr [rbx + 0x10]
+00000001402b0714  cmp      dword ptr [rcx + 0x10], 0x139
+00000001402b071b  jne      0x1402b072f
+00000001402b071d  add      rcx, 0x30
+00000001402b0721  lea      rdx, [rsp + 0x38]
+00000001402b0726  call     0x1403ff0e0 ; CResRef::operator==+0x0
+00000001402b072b  test     eax, eax
+00000001402b072d  jne      0x1402b0739
+00000001402b072f  mov      rbx, qword ptr [rbx]
+00000001402b0732  test     rbx, rbx
+00000001402b0735  jne      0x1402b0710
+00000001402b0737  jmp      0x1402b073e ; CScreenCreateChar::AbilityExistsInEffectList+0x8e
+00000001402b0739  mov      edi, 1
+00000001402b073e  lea      rcx, [rsp + 0x38]
+00000001402b0743  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b0748  mov      rbx, qword ptr [rsp + 0x30]
+00000001402b074d  mov      eax, edi
+00000001402b074f  add      rsp, 0x20
+00000001402b0753  pop      rdi
+00000001402b0754  ret
+00000001402b0755  int3
+00000001402b0756  int3
+00000001402b0757  int3
+00000001402b0758  int3
+00000001402b0759  int3
+00000001402b075a  int3
+00000001402b075b  int3
+00000001402b075c  int3
+00000001402b075d  int3
+00000001402b075e  int3
+00000001402b075f  int3
+
+CScreenCreateChar::CountInSelectedList+0x0 [0x1402b3f50, 0x1402b4000)
+00000001402b3f50  push     rbp
+00000001402b3f52  push     rdi
+00000001402b3f53  push     r14
+00000001402b3f55  sub      rsp, 0x20
+00000001402b3f59  xor      edi, edi
+00000001402b3f5b  mov      r14, rdx
+00000001402b3f5e  mov      rbp, rcx
+00000001402b3f61  cmp      qword ptr [rcx + 0x9e8], rdi
+00000001402b3f68  jne      0x1402b3f75
+00000001402b3f6a  xor      eax, eax
+00000001402b3f6c  add      rsp, 0x20
+00000001402b3f70  pop      r14
+00000001402b3f72  pop      rdi
+00000001402b3f73  pop      rbp
+00000001402b3f74  ret
+00000001402b3f75  mov      qword ptr [rsp + 0x48], rbx
+00000001402b3f7a  mov      ebx, edi
+00000001402b3f7c  cmp      byte ptr [rcx + 0xa08], bl
+00000001402b3f82  jbe      0x1402b3fe2
+00000001402b3f84  mov      qword ptr [rsp + 0x50], rsi
+00000001402b3f89  lea      rsi, [rcx + 0x9f0]
+00000001402b3f90  mov      rax, qword ptr [rbp + 0x9e8]
+00000001402b3f97  movzx    edx, byte ptr [rsi]
+00000001402b3f9a  mov      rcx, qword ptr [rax + 8]
+00000001402b3f9e  mov      rdx, qword ptr [rcx + rdx*8]
+00000001402b3fa2  lea      rcx, [rsp + 0x40]
+00000001402b3fa7  add      rdx, 0x10
+00000001402b3fab  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b3fb0  mov      rdx, qword ptr [r14]
+00000001402b3fb3  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b3fb8  call     0x140502d6c ; _mbscmp+0x0
+00000001402b3fbd  test     eax, eax
+00000001402b3fbf  jne      0x1402b3fc3
+00000001402b3fc1  inc      edi
+00000001402b3fc3  lea      rcx, [rsp + 0x40]
+00000001402b3fc8  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b3fcd  movzx    ecx, byte ptr [rbp + 0xa08]
+00000001402b3fd4  inc      ebx
+00000001402b3fd6  inc      rsi
+00000001402b3fd9  cmp      ebx, ecx
+00000001402b3fdb  jl       0x1402b3f90
+00000001402b3fdd  mov      rsi, qword ptr [rsp + 0x50]
+00000001402b3fe2  mov      rbx, qword ptr [rsp + 0x48]
+00000001402b3fe7  mov      eax, edi
+00000001402b3fe9  add      rsp, 0x20
+00000001402b3fed  pop      r14
+00000001402b3fef  pop      rdi
+00000001402b3ff0  pop      rbp
+00000001402b3ff1  ret
+00000001402b3ff2  int3
+00000001402b3ff3  int3
+00000001402b3ff4  int3
+00000001402b3ff5  int3
+00000001402b3ff6  int3
+00000001402b3ff7  int3
+00000001402b3ff8  int3
+00000001402b3ff9  int3
+00000001402b3ffa  int3
+00000001402b3ffb  int3
+00000001402b3ffc  int3
+00000001402b3ffd  int3
+00000001402b3ffe  int3
+00000001402b3fff  int3
+
+CScreenCreateChar::ExistsInSelectedList+0x0 [0x1402b43a0, 0x1402b4470)
+00000001402b43a0  push     rbp
+00000001402b43a2  push     r14
+00000001402b43a4  push     r15
+00000001402b43a6  sub      rsp, 0x20
+00000001402b43aa  xor      r14d, r14d
+00000001402b43ad  mov      r15, rdx
+00000001402b43b0  mov      rbp, rcx
+00000001402b43b3  cmp      qword ptr [rcx + 0x9e8], r14
+00000001402b43ba  jne      0x1402b43c8
+00000001402b43bc  xor      eax, eax
+00000001402b43be  add      rsp, 0x20
+00000001402b43c2  pop      r15
+00000001402b43c4  pop      r14
+00000001402b43c6  pop      rbp
+00000001402b43c7  ret
+00000001402b43c8  mov      qword ptr [rsp + 0x48], rbx
+00000001402b43cd  mov      ebx, r14d
+00000001402b43d0  cmp      byte ptr [rcx + 0xa08], bl
+00000001402b43d6  jbe      0x1402b444f
+00000001402b43d8  mov      qword ptr [rsp + 0x50], rsi
+00000001402b43dd  lea      rsi, [rcx + 0x9f0]
+00000001402b43e4  mov      qword ptr [rsp + 0x58], rdi
+00000001402b43e9  nop      dword ptr [rax]
+00000001402b43f0  mov      rax, qword ptr [rbp + 0x9e8]
+00000001402b43f7  movzx    edx, byte ptr [rsi]
+00000001402b43fa  mov      rcx, qword ptr [rax + 8]
+00000001402b43fe  mov      rdx, qword ptr [rcx + rdx*8]
+00000001402b4402  lea      rcx, [rsp + 0x40]
+00000001402b4407  add      rdx, 0x10
+00000001402b440b  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b4410  mov      rdx, qword ptr [r15]
+00000001402b4413  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b4418  call     0x140502d6c ; _mbscmp+0x0
+00000001402b441d  lea      rcx, [rsp + 0x40]
+00000001402b4422  mov      edi, eax
+00000001402b4424  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b4429  test     edi, edi
+00000001402b442b  je       0x1402b443f
+00000001402b442d  movzx    eax, byte ptr [rbp + 0xa08]
+00000001402b4434  inc      ebx
+00000001402b4436  inc      rsi
+00000001402b4439  cmp      ebx, eax
+00000001402b443b  jl       0x1402b43f0
+00000001402b443d  jmp      0x1402b4445 ; CScreenCreateChar::ExistsInSelectedList+0xa5
+00000001402b443f  mov      r14d, 1
+00000001402b4445  mov      rsi, qword ptr [rsp + 0x50]
+00000001402b444a  mov      rdi, qword ptr [rsp + 0x58]
+00000001402b444f  mov      rbx, qword ptr [rsp + 0x48]
+00000001402b4454  mov      eax, r14d
+00000001402b4457  add      rsp, 0x20
+00000001402b445b  pop      r15
+00000001402b445d  pop      r14
+00000001402b445f  pop      rbp
+00000001402b4460  ret
+00000001402b4461  int3
+00000001402b4462  int3
+00000001402b4463  int3
+00000001402b4464  int3
+00000001402b4465  int3
+00000001402b4466  int3
+00000001402b4467  int3
+00000001402b4468  int3
+00000001402b4469  int3
+00000001402b446a  int3
+00000001402b446b  int3
+00000001402b446c  int3
+00000001402b446d  int3
+00000001402b446e  int3
+00000001402b446f  int3

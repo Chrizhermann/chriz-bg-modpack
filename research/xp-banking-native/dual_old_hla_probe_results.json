@@ -1,0 +1,1360 @@
+{
+  "2.6": {
+    "cases": 62,
+    "table_constants": {
+      "FIRST_LEVEL": "FIRST_LEVEL",
+      "RATE": "RATE",
+      "CHANGE_LEVEL": "CHANGE_LEVEL",
+      "NEW_RATE": "NEW_RATE",
+      "CLASS_LEVELUP_ABBREVIATIONS": "LUAbbr",
+      "CLASS_LEVELUP_PREFIX": "LU",
+      "NUM_LEVELUP_ABILITIES": "LUNumAb"
+    },
+    "native_dual_old18_to22_active5_count": 0,
+    "private_old_fighter18_to22_count": 3,
+    "fixtures": [
+      {
+        "class": 1,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 1,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 1,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 1,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 1,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 2,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 2,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 3,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 3,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 4,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 4,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 5,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 5,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 6,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 6,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 11,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 11,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 12,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 12,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 19,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 19,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 20,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 20,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 21,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 21,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 10,
+        "count": 6
+      },
+      {
+        "fractional_rate": true,
+        "before": 6,
+        "after": 10,
+        "count": 5
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 6,
+        "count": 1
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 5,
+        "count": 0
+      },
+      {
+        "fractional_rate": true,
+        "before": 5,
+        "after": 6,
+        "count": 0
+      }
+    ],
+    "count_inputs": "rules, private AI, before stats, after stats, flags output",
+    "stubs": [
+      "GetClassString uses synthetic class row",
+      "installed C2DArray cells",
+      "CString assignment/destruction",
+      "sscanf integer/float conversion",
+      "GetDeny maps synthetic dual actor id"
+    ],
+    "native_executed": [
+      "GetNumLevelUpAbilities full body",
+      "GetActiveInactiveClasses",
+      "GetLevel/GetLevelField",
+      "SetLevel",
+      "native float arithmetic and min24"
+    ],
+    "game_launched": false,
+    "old_kit_catalog": {
+      "entry_rva": "0x241690",
+      "resource_demand_rva": "0x24185b",
+      "old_class": 11,
+      "old_kit": "0x34568000",
+      "synthetic_installed_abbreviation": "ZZOLD",
+      "requested_table": "LUZZOLD",
+      "private_sprite_unchanged": true,
+      "scope": "actual native class/kit/ABBREV/prefix selection; resource parsing and picker not executed",
+      "extra_stubs": [
+        "allocator",
+        "ASCII string comparison/constructor/Format"
+      ]
+    },
+    "eligibility": {
+      "cases": 43,
+      "fixtures": [
+        {
+          "args": {},
+          "allowed": 1
+        },
+        {
+          "args": {
+            "max_rank": 0
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "minimum": 2
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD"
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "selected": [
+              "GA_OLD"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "selected": [
+              "AP_OLD"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "earned": [
+              "old"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "excluded": "AP_X",
+            "selected": [
+              "GA_X"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "excluded": "AP_X",
+            "earned": [
+              "x"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "selected": [
+              "GA_A"
+            ],
+            "earned": [
+              "A"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "selected": [
+              "ga_a"
+            ],
+            "earned": [
+              "A"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 20,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 40,
+          "allowed": 1
+        }
+      ],
+      "alignment_results": {
+        "ALL_GOOD": {
+          "0x11": 0,
+          "0x21": 0,
+          "0x31": 0,
+          "0x13": 1,
+          "0x23": 1,
+          "0x33": 1,
+          "0x22": 1
+        },
+        "ALL_EVIL": {
+          "0x11": 1,
+          "0x21": 1,
+          "0x31": 1,
+          "0x13": 0,
+          "0x23": 0,
+          "0x33": 0,
+          "0x22": 1
+        }
+      },
+      "native_executed": [
+        "CheckAbilityEnabled",
+        "AbilityCountInEffectList",
+        "AbilityExistsInEffectList",
+        "CountInSelectedList",
+        "ExistsInSelectedList",
+        "CResRef::operator==",
+        "GetAIType"
+      ],
+      "stubs": [
+        "CString allocation/copy/Right/destruction",
+        "ASCII _mbscmp"
+      ],
+      "game_launched": false
+    }
+  },
+  "2.7": {
+    "cases": 62,
+    "table_constants": {
+      "FIRST_LEVEL": "FIRST_LEVEL",
+      "RATE": "RATE",
+      "CHANGE_LEVEL": "CHANGE_LEVEL",
+      "NEW_RATE": "NEW_RATE",
+      "CLASS_LEVELUP_ABBREVIATIONS": "LUAbbr",
+      "CLASS_LEVELUP_PREFIX": "LU",
+      "NUM_LEVELUP_ABILITIES": "LUNumAb"
+    },
+    "native_dual_old18_to22_active5_count": 0,
+    "private_old_fighter18_to22_count": 3,
+    "fixtures": [
+      {
+        "class": 1,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 1,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 1,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 1,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 1,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 2,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 2,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 2,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 3,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 3,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 3,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 4,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 4,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 4,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 5,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 5,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 5,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 6,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 6,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 6,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 11,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 11,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 11,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 12,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 12,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 12,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 19,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 19,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 19,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 20,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 20,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 20,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 19,
+        "count": 0,
+        "raw_count": 0
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 20,
+        "count": 1,
+        "raw_count": 1
+      },
+      {
+        "class": 21,
+        "before": 20,
+        "after": 23,
+        "count": 3,
+        "raw_count": 3
+      },
+      {
+        "class": 21,
+        "before": 18,
+        "after": 24,
+        "count": 5,
+        "raw_count": 5
+      },
+      {
+        "class": 21,
+        "before": 0,
+        "after": 70,
+        "count": 24,
+        "raw_count": 51
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 10,
+        "count": 6
+      },
+      {
+        "fractional_rate": true,
+        "before": 6,
+        "after": 10,
+        "count": 5
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 6,
+        "count": 1
+      },
+      {
+        "fractional_rate": true,
+        "before": 4,
+        "after": 5,
+        "count": 0
+      },
+      {
+        "fractional_rate": true,
+        "before": 5,
+        "after": 6,
+        "count": 0
+      }
+    ],
+    "count_inputs": "rules, private AI, before stats, after stats, flags output",
+    "stubs": [
+      "GetClassString uses synthetic class row",
+      "installed C2DArray cells",
+      "CString assignment/destruction",
+      "sscanf integer/float conversion",
+      "GetDeny maps synthetic dual actor id"
+    ],
+    "native_executed": [
+      "GetNumLevelUpAbilities full body",
+      "GetActiveInactiveClasses",
+      "GetLevel/GetLevelField",
+      "SetLevel",
+      "native float arithmetic and min24"
+    ],
+    "game_launched": false,
+    "old_kit_catalog": {
+      "entry_rva": "0x2418f0",
+      "resource_demand_rva": "0x241abb",
+      "old_class": 11,
+      "old_kit": "0x34568000",
+      "synthetic_installed_abbreviation": "ZZOLD",
+      "requested_table": "LUZZOLD",
+      "private_sprite_unchanged": true,
+      "scope": "actual native class/kit/ABBREV/prefix selection; resource parsing and picker not executed",
+      "extra_stubs": [
+        "allocator",
+        "ASCII string comparison/constructor/Format"
+      ]
+    },
+    "eligibility": {
+      "cases": 43,
+      "fixtures": [
+        {
+          "args": {},
+          "allowed": 1
+        },
+        {
+          "args": {
+            "max_rank": 0
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "minimum": 2
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD"
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "selected": [
+              "GA_OLD"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "selected": [
+              "AP_OLD"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "prereq": "GA_OLD",
+            "earned": [
+              "old"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "excluded": "AP_X",
+            "selected": [
+              "GA_X"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "args": {
+            "excluded": "AP_X",
+            "earned": [
+              "x"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "selected": [
+              "GA_A"
+            ],
+            "earned": [
+              "A"
+            ]
+          },
+          "allowed": 0
+        },
+        {
+          "args": {
+            "selected": [
+              "ga_a"
+            ],
+            "earned": [
+              "A"
+            ]
+          },
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 0,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 1,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 20,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 20,
+          "rank": 40,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 1,
+          "allowed": 0
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 20,
+          "allowed": 1
+        },
+        {
+          "projection_prefix_size": 19,
+          "rank": 40,
+          "allowed": 1
+        }
+      ],
+      "alignment_results": {
+        "ALL_GOOD": {
+          "0x11": 0,
+          "0x21": 0,
+          "0x31": 0,
+          "0x13": 1,
+          "0x23": 1,
+          "0x33": 1,
+          "0x22": 1
+        },
+        "ALL_EVIL": {
+          "0x11": 1,
+          "0x21": 1,
+          "0x31": 1,
+          "0x13": 0,
+          "0x23": 0,
+          "0x33": 0,
+          "0x22": 1
+        }
+      },
+      "native_executed": [
+        "CheckAbilityEnabled",
+        "AbilityCountInEffectList",
+        "AbilityExistsInEffectList",
+        "CountInSelectedList",
+        "ExistsInSelectedList",
+        "CResRef::operator==",
+        "GetAIType"
+      ],
+      "stubs": [
+        "CString allocation/copy/Right/destruction",
+        "ASCII _mbscmp"
+      ],
+      "game_launched": false
+    }
+  }
+}

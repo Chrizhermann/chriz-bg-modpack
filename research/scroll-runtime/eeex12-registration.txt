@@ -1,0 +1,314 @@
+CGameEffectList::Override_Unmarshal
+{"strings": [1087152], "refs": [177085]}
+
+0002B3BD  488d15ece20d00                   lea rdx, [rip + 0xde2ec]
+0002B3C4  488d4dd0                         lea rcx, [rbp - 0x30]
+0002B3C8  e86384feff                       call 0x180013830
+0002B3CD  90                               nop
+0002B3CE  4c8d4df0                         lea r9, [rbp - 0x10]
+0002B3D2  41b801000000                     mov r8d, 1
+0002B3D8  488d55d0                         lea rdx, [rbp - 0x30]
+0002B3DC  488d0ddd6d1000                   lea rcx, [rip + 0x106ddd]
+0002B3E3  ff15bfdc0a00                     call qword ptr [rip + 0xadcbf]
+0002B3E9  84c0                             test al, al
+0002B3EB  7434                             je 0x18002b421
+0002B3ED  488b05a4dc0a00                   mov rax, qword ptr [rip + 0xadca4]
+0002B3F4  488b38                           mov rdi, qword ptr [rax]
+0002B3F7  488d5dd0                         lea rbx, [rbp - 0x30]
+0002B3FB  48837de807                       cmp qword ptr [rbp - 0x18], 7
+0002B400  480f475dd0                       cmova rbx, qword ptr [rbp - 0x30]
+0002B405  b901000000                       mov ecx, 1
+0002B40A  ff15b0e50a00                     call qword ptr [rip + 0xae5b0]
+0002B410  488bc8                           mov rcx, rax
+0002B413  4c8bc3                           mov r8, rbx
+0002B416  488d1513de0d00                   lea rdx, [rip + 0xdde13]
+0002B41D  ffd7                             call rdi
+0002B41F  eb19                             jmp 0x18002b43a
+0002B421  4c8d058828feff                   lea r8, [rip - 0x1d778]
+0002B428  488b55f0                         mov rdx, qword ptr [rbp - 0x10]
+0002B42C  488d0d8d6d1000                   lea rcx, [rip + 0x106d8d]
+0002B433  ff1567dc0a00                     call qword ptr [rip + 0xadc67]
+0002B439  90                               nop
+0002B43A  488b45e8                         mov rax, qword ptr [rbp - 0x18]
+0002B43E  4883f807                         cmp rax, 7
+0002B442  763a                             jbe 0x18002b47e
+0002B444  488d144502000000                 lea rdx, [rax*2 + 2]
+0002B44C  488b4dd0                         mov rcx, qword ptr [rbp - 0x30]
+0002B450  4881fa00100000                   cmp rdx, 0x1000
+0002B457  7220                             jb 0x18002b479
+0002B459  4c8b41f8                         mov r8, qword ptr [rcx - 8]
+0002B45D  492bc8                           sub rcx, r8
+0002B460  4883e908                         sub rcx, 8
+0002B464  4883f91f                         cmp rcx, 0x1f
+0002B468  0f8721340000                     ja 0x18002e88f
+0002B46E  488d144529000000                 lea rdx, [rax*2 + 0x29]
+0002B476  498bc8                           mov rcx, r8
+0002B479  e842820a00                       call 0x1800d36c0
+0002B47E  488d157be20d00                   lea rdx, [rip + 0xde27b]
+0002B485  488d4dd0                         lea rcx, [rbp - 0x30]
+0002B489  e8a283feff                       call 0x180013830
+0002B48E  90                               nop
+0002B48F  4c8d4df0                         lea r9, [rbp - 0x10]
+0002B493  41b801000000                     mov r8d, 1
+0002B499  488d55d0                         lea rdx, [rbp - 0x30]
+0002B49D  488d0d1c6d1000                   lea rcx, [rip + 0x106d1c]
+0002B4A4  ff15fedb0a00                     call qword ptr [rip + 0xadbfe]
+0002B4AA  84c0                             test al, al
+0002B4AC  7434                             je 0x18002b4e2
+0002B4AE  488b05e3db0a00                   mov rax, qword ptr [rip + 0xadbe3]
+0002B4B5  488b38                           mov rdi, qword ptr [rax]
+0002B4B8  488d5dd0                         lea rbx, [rbp - 0x30]
+0002B4BC  48                               .byte 0x48
+
+EEex::Opcode_Hook_OnCopy
+{"strings": [1091984], "refs": [188515]}
+
+0002E063  488d1526c90d00                   lea rdx, [rip + 0xdc926]
+0002E06A  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E06E  e8bd57feff                       call 0x180013830
+0002E073  90                               nop
+0002E074  488d1575f0fdff                   lea rdx, [rip - 0x20f8b]
+0002E07B  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E07F  e8acc8ffff                       call 0x18002a930
+0002E084  90                               nop
+0002E085  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E089  e83257feff                       call 0x1800137c0
+0002E08E  488d1533c90d00                   lea rdx, [rip + 0xdc933]
+0002E095  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E099  e89257feff                       call 0x180013830
+0002E09E  90                               nop
+0002E09F  488d159af0fdff                   lea rdx, [rip - 0x20f66]
+0002E0A6  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0AA  e881c8ffff                       call 0x18002a930
+0002E0AF  90                               nop
+0002E0B0  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0B4  e80757feff                       call 0x1800137c0
+0002E0B9  488d1550c90d00                   lea rdx, [rip + 0xdc950]
+0002E0C0  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0C4  e86757feff                       call 0x180013830
+0002E0C9  90                               nop
+0002E0CA  488d15bfecfdff                   lea rdx, [rip - 0x21341]
+0002E0D1  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0D5  e856c8ffff                       call 0x18002a930
+0002E0DA  90                               nop
+0002E0DB  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0DF  e8dc56feff                       call 0x1800137c0
+0002E0E4  488d15a5c90d00                   lea rdx, [rip + 0xdc9a5]
+0002E0EB  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0EF  e83c57feff                       call 0x180013830
+0002E0F4  90                               nop
+0002E0F5  488d15d4ecfdff                   lea rdx, [rip - 0x2132c]
+0002E0FC  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E100  e82bc8ffff                       call 0x18002a930
+0002E105  90                               nop
+0002E106  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E10A  e8b156feff                       call 0x1800137c0
+0002E10F  488d15bac90d00                   lea rdx, [rip + 0xdc9ba]
+0002E116  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E11A  e81157feff                       call 0x180013830
+0002E11F  90                               nop
+0002E120  488d15a9f1fdff                   lea rdx, [rip - 0x20e57]
+0002E127  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E12B  e800c8ffff                       call 0x18002a930
+0002E130  90                               nop
+0002E131  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E135  e88656feff                       call 0x1800137c0
+0002E13A  488d15dfc90d00                   lea rdx, [rip + 0xdc9df]
+0002E141  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E145  e8e656feff                       call 0x180013830
+0002E14A  90                               nop
+0002E14B  488d15bef1fdff                   lea rdx, [rip - 0x20e42]
+0002E152  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E156  e8d5c7ffff                       call 0x18002a930
+0002E15B  90                               nop
+0002E15C  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E160  e8                               .byte 0xe8
+0002E161  5b                               pop rbx
+0002E162  56                               push rsi
+
+EEex::Opcode_Hook_OnDestruct
+{"strings": [1092040], "refs": [188558]}
+
+0002E08E  488d1533c90d00                   lea rdx, [rip + 0xdc933]
+0002E095  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E099  e89257feff                       call 0x180013830
+0002E09E  90                               nop
+0002E09F  488d159af0fdff                   lea rdx, [rip - 0x20f66]
+0002E0A6  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0AA  e881c8ffff                       call 0x18002a930
+0002E0AF  90                               nop
+0002E0B0  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0B4  e80757feff                       call 0x1800137c0
+0002E0B9  488d1550c90d00                   lea rdx, [rip + 0xdc950]
+0002E0C0  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0C4  e86757feff                       call 0x180013830
+0002E0C9  90                               nop
+0002E0CA  488d15bfecfdff                   lea rdx, [rip - 0x21341]
+0002E0D1  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0D5  e856c8ffff                       call 0x18002a930
+0002E0DA  90                               nop
+0002E0DB  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0DF  e8dc56feff                       call 0x1800137c0
+0002E0E4  488d15a5c90d00                   lea rdx, [rip + 0xdc9a5]
+0002E0EB  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E0EF  e83c57feff                       call 0x180013830
+0002E0F4  90                               nop
+0002E0F5  488d15d4ecfdff                   lea rdx, [rip - 0x2132c]
+0002E0FC  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E100  e82bc8ffff                       call 0x18002a930
+0002E105  90                               nop
+0002E106  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E10A  e8b156feff                       call 0x1800137c0
+0002E10F  488d15bac90d00                   lea rdx, [rip + 0xdc9ba]
+0002E116  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E11A  e81157feff                       call 0x180013830
+0002E11F  90                               nop
+0002E120  488d15a9f1fdff                   lea rdx, [rip - 0x20e57]
+0002E127  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E12B  e800c8ffff                       call 0x18002a930
+0002E130  90                               nop
+0002E131  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E135  e88656feff                       call 0x1800137c0
+0002E13A  488d15dfc90d00                   lea rdx, [rip + 0xdc9df]
+0002E141  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E145  e8e656feff                       call 0x180013830
+0002E14A  90                               nop
+0002E14B  488d15bef1fdff                   lea rdx, [rip - 0x20e42]
+0002E152  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E156  e8d5c7ffff                       call 0x18002a930
+0002E15B  90                               nop
+0002E15C  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E160  e85b56feff                       call 0x1800137c0
+0002E165  488d151cca0d00                   lea rdx, [rip + 0xdca1c]
+0002E16C  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E170  e8bb56feff                       call 0x180013830
+0002E175  90                               nop
+0002E176  488d15d3f1fdff                   lea rdx, [rip - 0x20e2d]
+0002E17D  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E181  e8aac7ffff                       call 0x18002a930
+0002E186  90                               nop
+0002E187  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E18B  e8                               .byte 0xe8
+0002E18C  30                               .byte 0x30
+0002E18D  56                               push rsi
+
+EEex::Sprite_Hook_OnDestruct
+{"strings": [1092552], "refs": [188816]}
+
+0002E190  488d1531ca0d00                   lea rdx, [rip + 0xdca31]
+0002E197  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E19B  e89056feff                       call 0x180013830
+0002E1A0  90                               nop
+0002E1A1  488d15e8f1fdff                   lea rdx, [rip - 0x20e18]
+0002E1A8  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1AC  e87fc7ffff                       call 0x18002a930
+0002E1B1  90                               nop
+0002E1B2  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1B6  e80556feff                       call 0x1800137c0
+0002E1BB  488d154eca0d00                   lea rdx, [rip + 0xdca4e]
+0002E1C2  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1C6  e86556feff                       call 0x180013830
+0002E1CB  90                               nop
+0002E1CC  488d155df5fdff                   lea rdx, [rip - 0x20aa3]
+0002E1D3  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1D7  e854c7ffff                       call 0x18002a930
+0002E1DC  90                               nop
+0002E1DD  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1E1  e8da55feff                       call 0x1800137c0
+0002E1E6  488d1583ca0d00                   lea rdx, [rip + 0xdca83]
+0002E1ED  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E1F1  e83a56feff                       call 0x180013830
+0002E1F6  90                               nop
+0002E1F7  488d1572f5fdff                   lea rdx, [rip - 0x20a8e]
+0002E1FE  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E202  e829c7ffff                       call 0x18002a930
+0002E207  90                               nop
+0002E208  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E20C  e8af55feff                       call 0x1800137c0
+0002E211  488d15b8ca0d00                   lea rdx, [rip + 0xdcab8]
+0002E218  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E21C  e80f56feff                       call 0x180013830
+0002E221  90                               nop
+0002E222  488d1587f5fdff                   lea rdx, [rip - 0x20a79]
+0002E229  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E22D  e8fec6ffff                       call 0x18002a930
+0002E232  90                               nop
+0002E233  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E237  e88455feff                       call 0x1800137c0
+0002E23C  488d15ddca0d00                   lea rdx, [rip + 0xdcadd]
+0002E243  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E247  e8e455feff                       call 0x180013830
+0002E24C  90                               nop
+0002E24D  488d15bcfcfdff                   lea rdx, [rip - 0x20344]
+0002E254  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E258  e8d3c6ffff                       call 0x18002a930
+0002E25D  90                               nop
+0002E25E  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E262  e85955feff                       call 0x1800137c0
+0002E267  488d1512cb0d00                   lea rdx, [rip + 0xdcb12]
+0002E26E  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E272  e8b955feff                       call 0x180013830
+0002E277  90                               nop
+0002E278  488d15d1fcfdff                   lea rdx, [rip - 0x2032f]
+0002E27F  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E283  e8a8c6ffff                       call 0x18002a930
+0002E288  90                               nop
+0002E289  488d4dd0                         lea rcx, [rbp - 0x30]
+0002E28D  e8                               .byte 0xe8
+0002E28E  2e55                             push rbp
+
+CGameEffect::DecodeEffectFromBase
+{"strings": [1120864], "refs": [723695]}
+
+000B0AEF  488d156a0f0600                   lea rdx, [rip + 0x60f6a]
+000B0AF6  488d8d80240000                   lea rcx, [rbp + 0x2480]
+000B0AFD  e82e2df6ff                       call 0x180013830
+000B0B02  90                               nop
+000B0B03  488d8d80240000                   lea rcx, [rbp + 0x2480]
+000B0B0A  e811750000                       call 0x1800b8020
+000B0B0F  90                               nop
+000B0B10  488d8d80240000                   lea rcx, [rbp + 0x2480]
+000B0B17  e8a42cf6ff                       call 0x1800137c0
+000B0B1C  488d15ed0f0600                   lea rdx, [rip + 0x60fed]
+000B0B23  488d8da0240000                   lea rcx, [rbp + 0x24a0]
+000B0B2A  e8012df6ff                       call 0x180013830
+000B0B2F  90                               nop
+000B0B30  488d15d90c0800                   lea rdx, [rip + 0x80cd9]
+000B0B37  488d8da0240000                   lea rcx, [rbp + 0x24a0]
+000B0B3E  e87d0e0000                       call 0x1800b19c0
+000B0B43  90                               nop
+000B0B44  488d8da0240000                   lea rcx, [rbp + 0x24a0]
+000B0B4B  e8702cf6ff                       call 0x1800137c0
+000B0B50  488d15890f0600                   lea rdx, [rip + 0x60f89]
+000B0B57  488d8dc0240000                   lea rcx, [rbp + 0x24c0]
+000B0B5E  e8cd2cf6ff                       call 0x180013830
+000B0B63  90                               nop
+000B0B64  488d157d0c0800                   lea rdx, [rip + 0x80c7d]
+000B0B6B  488d8dc0240000                   lea rcx, [rbp + 0x24c0]
+000B0B72  e8490e0000                       call 0x1800b19c0
+000B0B77  90                               nop
+000B0B78  488d8dc0240000                   lea rcx, [rbp + 0x24c0]
+000B0B7F  e83c2cf6ff                       call 0x1800137c0
+000B0B84  488d15fd0f0600                   lea rdx, [rip + 0x60ffd]
+000B0B8B  488d8de0240000                   lea rcx, [rbp + 0x24e0]
+000B0B92  e8992cf6ff                       call 0x180013830
+000B0B97  90                               nop
+000B0B98  488d8de0240000                   lea rcx, [rbp + 0x24e0]
+000B0B9F  e84c750000                       call 0x1800b80f0
+000B0BA4  90                               nop
+000B0BA5  488d8de0240000                   lea rcx, [rbp + 0x24e0]
+000B0BAC  e80f2cf6ff                       call 0x1800137c0
+000B0BB1  488d15900f0600                   lea rdx, [rip + 0x60f90]
+000B0BB8  488d8d00250000                   lea rcx, [rbp + 0x2500]
+000B0BBF  e86c2cf6ff                       call 0x180013830
+000B0BC4  90                               nop
+000B0BC5  488d8d00250000                   lea rcx, [rbp + 0x2500]
+000B0BCC  e8ef750000                       call 0x1800b81c0
+000B0BD1  90                               nop
+000B0BD2  488d8d00250000                   lea rcx, [rbp + 0x2500]
+000B0BD9  e8e22bf6ff                       call 0x1800137c0
+000B0BDE  488d152b100600                   lea rdx, [rip + 0x6102b]
+000B0BE5  488d8d20250000                   lea rcx, [rbp + 0x2520]
+000B0BEC  e8                               .byte 0xe8
+000B0BED  3f                               .byte 0x3f
+000B0BEE  2c                               .byte 0x2c

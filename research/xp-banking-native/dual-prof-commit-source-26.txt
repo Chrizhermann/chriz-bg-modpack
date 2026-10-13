@@ -1,0 +1,555 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameSprite::SetInactiveProficiency+0x0 [0x1403b3810, 0x1403b39a0)
+00000001403b3810  mov      qword ptr [rsp + 0x10], rbx
+00000001403b3815  mov      qword ptr [rsp + 0x18], rbp
+00000001403b381a  mov      qword ptr [rsp + 0x20], rsi
+00000001403b381f  push     rdi
+00000001403b3820  sub      rsp, 0x40
+00000001403b3824  lea      eax, [rdx - 0x59]
+00000001403b3827  mov      ebp, r9d
+00000001403b382a  mov      ebx, r8d
+00000001403b382d  mov      esi, edx
+00000001403b382f  mov      rdi, rcx
+00000001403b3832  cmp      eax, 0x2d
+00000001403b3835  ja       0x1403b3985
+00000001403b383b  cmp      dword ptr [rdi + 0x4ea4], 0
+00000001403b3842  mov      eax, 0x1dc8
+00000001403b3847  mov      ecx, 0x1120
+00000001403b384c  mov      qword ptr [rsp + 0x50], r14
+00000001403b3851  cmove    ecx, eax
+00000001403b3854  add      rcx, rdi
+00000001403b3857  call     0x1401519b0 ; CDerivedStats::GetAtOffset+0x0
+00000001403b385c  mov      ecx, ebx
+00000001403b385e  mov      dword ptr [rsp + 0x30], 1
+00000001403b3866  and      ecx, 7
+00000001403b3869  mov      dword ptr [rsp + 0x28], 1
+00000001403b3871  shl      ecx, 3
+00000001403b3874  mov      r14d, eax
+00000001403b3877  and      r14d, 0xffffffc7
+00000001403b387b  mov      dword ptr [rsp + 0x20], esi
+00000001403b387f  or       r14d, ecx
+00000001403b3882  mov      edx, 0xe9
+00000001403b3887  mov      r8d, r14d
+00000001403b388a  lea      rcx, [rdi + 0x4a00]
+00000001403b3891  xor      r9d, r9d
+00000001403b3894  call     0x1401e5270 ; CGameEffectList::ModifyAllOfType+0x0
+00000001403b3899  test     eax, eax
+00000001403b389b  jne      0x1403b3965
+00000001403b38a1  test     ebx, ebx
+00000001403b38a3  je       0x1403b3980
+00000001403b38a9  mov      ecx, 0x158
+00000001403b38ae  call     0x1404f6aa8 ; operator_new+0x0
+00000001403b38b3  mov      rbx, rax
+00000001403b38b6  test     rax, rax
+00000001403b38b9  je       0x1403b38d6
+00000001403b38bb  mov      rcx, rax
+00000001403b38be  call     0x14014c4b0 ; CGameEffect::CGameEffect+0x0
+00000001403b38c3  lea      rax, [rip + 0x1e1cbe]
+00000001403b38ca  mov      dword ptr [rbx + 0x10], 0xe9
+00000001403b38d1  mov      qword ptr [rbx], rax
+00000001403b38d4  jmp      0x1403b38d8 ; CGameSprite::SetInactiveProficiency+0xc8
+00000001403b38d6  xor      ebx, ebx
+00000001403b38d8  mov      dword ptr [rbx + 0x20], esi
+00000001403b38db  mov      dword ptr [rbx + 0x1c], r14d
+00000001403b38df  movzx    eax, word ptr [rip + 0x1dce2a]
+00000001403b38e6  mov      dword ptr [rbx + 0x24], eax
+00000001403b38e9  test     ebp, ebp
+00000001403b38eb  je       0x1403b3911
+00000001403b38ed  mov      rax, qword ptr [rdi]
+00000001403b38f0  xor      r9d, r9d
+00000001403b38f3  movzx    r8d, byte ptr [rip + 0x1f84b5]
+00000001403b38fb  mov      rdx, rbx
+00000001403b38fe  mov      rcx, rdi
+00000001403b3901  mov      dword ptr [rsp + 0x20], 1
+00000001403b3909  call     qword ptr [rax + 0xe8]
+00000001403b390f  jmp      0x1403b3980 ; CGameSprite::SetInactiveProficiency+0x170
+00000001403b3911  mov      ecx, 0x20
+00000001403b3916  call     0x1404f6aa8 ; operator_new+0x0
+00000001403b391b  mov      rdx, rax
+00000001403b391e  test     rax, rax
+00000001403b3921  je       0x1403b394b
+00000001403b3923  mov      eax, dword ptr [rdi + 0x48]
+00000001403b3926  mov      dword ptr [rdx + 0xc], eax
+00000001403b3929  mov      dword ptr [rdx + 8], eax
+00000001403b392c  lea      rax, [rip + 0x1db0f5]
+00000001403b3933  mov      qword ptr [rdx], rax
+00000001403b3936  mov      qword ptr [rdx + 0x10], rbx
+00000001403b393a  mov      byte ptr [rdx + 0x1a], 0
+00000001403b393e  movzx    eax, word ptr [rip + 0x1da023]
+00000001403b3945  mov      word ptr [rdx + 0x18], ax
+00000001403b3949  jmp      0x1403b394d ; CGameSprite::SetInactiveProficiency+0x13d
+00000001403b394b  xor      edx, edx
+00000001403b394d  mov      rcx, qword ptr [rip + 0x2b174c]
+00000001403b3954  xor      r8d, r8d
+00000001403b3957  add      rcx, 0x1768
+00000001403b395e  call     0x140204c60 ; CMessageHandler::AddMessage+0x0
+00000001403b3963  jmp      0x1403b3980 ; CGameSprite::SetInactiveProficiency+0x170
+00000001403b3965  test     ebp, ebp
+00000001403b3967  je       0x1403b3980
+00000001403b3969  mov      edx, 1
+00000001403b396e  mov      dword ptr [rdi + 0x4ba4], 1
+00000001403b3978  mov      rcx, rdi
+00000001403b397b  call     0x1403ab390 ; CGameSprite::ProcessEffectList+0x0
+00000001403b3980  mov      r14, qword ptr [rsp + 0x50]
+00000001403b3985  mov      rbx, qword ptr [rsp + 0x58]
+00000001403b398a  mov      rbp, qword ptr [rsp + 0x60]
+00000001403b398f  mov      rsi, qword ptr [rsp + 0x68]
+00000001403b3994  add      rsp, 0x40
+00000001403b3998  pop      rdi
+00000001403b3999  ret
+00000001403b399a  int3
+00000001403b399b  int3
+00000001403b399c  int3
+00000001403b399d  int3
+00000001403b399e  int3
+00000001403b399f  int3
+
+CGameEffectList::ModifyAllOfType+0x0 [0x1401e5270, 0x1401e52f0)
+00000001401e5270  sub      rsp, 8
+00000001401e5274  mov      r10, qword ptr [rcx + 8]
+00000001401e5278  xor      r11d, r11d
+00000001401e527b  test     r10, r10
+00000001401e527e  je       0x1401e52e7
+00000001401e5280  mov      qword ptr [rsp + 0x10], rbx
+00000001401e5285  mov      ebx, dword ptr [rsp + 0x38]
+00000001401e5289  mov      qword ptr [rsp + 0x18], rsi
+00000001401e528e  mov      qword ptr [rsp], rdi
+00000001401e5292  mov      edi, dword ptr [rsp + 0x30]
+00000001401e5296  movzx    esi, dx
+00000001401e5299  mov      edx, dword ptr [rsp + 0x40]
+00000001401e529d  nop      dword ptr [rax]
+00000001401e52a0  mov      rcx, qword ptr [r10 + 0x10]
+00000001401e52a4  mov      r10, qword ptr [r10]
+00000001401e52a7  cmp      esi, dword ptr [rcx + 0x10]
+00000001401e52aa  jne      0x1401e52d4
+00000001401e52ac  test     ebx, ebx
+00000001401e52ae  je       0x1401e52b5
+00000001401e52b0  cmp      edi, dword ptr [rcx + 0x20]
+00000001401e52b3  jne      0x1401e52d4
+00000001401e52b5  test     edx, edx
+00000001401e52b7  je       0x1401e52bf
+00000001401e52b9  cmp      dword ptr [rcx + 0x24], 9
+00000001401e52bd  jne      0x1401e52d4
+00000001401e52bf  mov      r11d, 1
+00000001401e52c5  test     r9d, r9d
+00000001401e52c8  je       0x1401e52d0
+00000001401e52ca  add      dword ptr [rcx + 0x1c], r8d
+00000001401e52ce  jmp      0x1401e52d4 ; CGameEffectList::ModifyAllOfType+0x64
+00000001401e52d0  mov      dword ptr [rcx + 0x1c], r8d
+00000001401e52d4  test     r10, r10
+00000001401e52d7  jne      0x1401e52a0
+00000001401e52d9  mov      rdi, qword ptr [rsp]
+00000001401e52dd  mov      rsi, qword ptr [rsp + 0x18]
+00000001401e52e2  mov      rbx, qword ptr [rsp + 0x10]
+00000001401e52e7  mov      eax, r11d
+00000001401e52ea  add      rsp, 8
+00000001401e52ee  ret
+00000001401e52ef  int3
+
+CGameEffectProficiency::ApplyEffect+0x0 [0x1401bc9a0, 0x1401bd050)
+00000001401bc9a0  mov      r8d, dword ptr [rcx + 0x20]
+00000001401bc9a4  movzx    eax, r8w
+00000001401bc9a8  add      eax, -0x59
+00000001401bc9ab  shr      r8d, 0x10
+00000001401bc9af  test     r8w, r8w
+00000001401bc9b3  jne      0x1401bcc8a
+00000001401bc9b9  cmp      eax, 0x2d
+00000001401bc9bc  ja       0x1401bcc84
+00000001401bc9c2  cdqe
+00000001401bc9c4  lea      r8, [rip - 0x1bc9cb]
+00000001401bc9cb  mov      eax, dword ptr [r8 + rax*4 + 0x1bcee0]
+00000001401bc9d3  add      rax, r8
+00000001401bc9d6  jmp      rax
+00000001401bc9d8  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bc9db  mov      dword ptr [rdx + 0x1218], eax
+00000001401bc9e1  mov      eax, 1
+00000001401bc9e6  ret
+00000001401bc9e7  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bc9ea  mov      dword ptr [rdx + 0x121c], eax
+00000001401bc9f0  mov      eax, 1
+00000001401bc9f5  ret
+00000001401bc9f6  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bc9f9  mov      dword ptr [rdx + 0x1220], eax
+00000001401bc9ff  mov      eax, 1
+00000001401bca04  ret
+00000001401bca05  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca08  mov      dword ptr [rdx + 0x1224], eax
+00000001401bca0e  mov      eax, 1
+00000001401bca13  ret
+00000001401bca14  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca17  mov      dword ptr [rdx + 0x1228], eax
+00000001401bca1d  mov      eax, 1
+00000001401bca22  ret
+00000001401bca23  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca26  mov      dword ptr [rdx + 0x122c], eax
+00000001401bca2c  mov      eax, 1
+00000001401bca31  ret
+00000001401bca32  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca35  mov      dword ptr [rdx + 0x1230], eax
+00000001401bca3b  mov      eax, 1
+00000001401bca40  ret
+00000001401bca41  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca44  mov      dword ptr [rdx + 0x1234], eax
+00000001401bca4a  mov      eax, 1
+00000001401bca4f  ret
+00000001401bca50  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca53  mov      dword ptr [rdx + 0x1238], eax
+00000001401bca59  mov      eax, 1
+00000001401bca5e  ret
+00000001401bca5f  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca62  mov      dword ptr [rdx + 0x123c], eax
+00000001401bca68  mov      eax, 1
+00000001401bca6d  ret
+00000001401bca6e  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca71  mov      dword ptr [rdx + 0x1240], eax
+00000001401bca77  mov      eax, 1
+00000001401bca7c  ret
+00000001401bca7d  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca80  mov      dword ptr [rdx + 0x1244], eax
+00000001401bca86  mov      eax, 1
+00000001401bca8b  ret
+00000001401bca8c  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca8f  mov      dword ptr [rdx + 0x1248], eax
+00000001401bca95  mov      eax, 1
+00000001401bca9a  ret
+00000001401bca9b  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bca9e  mov      dword ptr [rdx + 0x124c], eax
+00000001401bcaa4  mov      eax, 1
+00000001401bcaa9  ret
+00000001401bcaaa  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcaad  mov      dword ptr [rdx + 0x1250], eax
+00000001401bcab3  mov      eax, 1
+00000001401bcab8  ret
+00000001401bcab9  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcabc  mov      dword ptr [rdx + 0x1254], eax
+00000001401bcac2  mov      eax, 1
+00000001401bcac7  ret
+00000001401bcac8  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcacb  mov      dword ptr [rdx + 0x1258], eax
+00000001401bcad1  mov      eax, 1
+00000001401bcad6  ret
+00000001401bcad7  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcada  mov      dword ptr [rdx + 0x125c], eax
+00000001401bcae0  mov      eax, 1
+00000001401bcae5  ret
+00000001401bcae6  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcae9  mov      dword ptr [rdx + 0x1260], eax
+00000001401bcaef  mov      eax, 1
+00000001401bcaf4  ret
+00000001401bcaf5  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcaf8  mov      dword ptr [rdx + 0x1264], eax
+00000001401bcafe  mov      eax, 1
+00000001401bcb03  ret
+00000001401bcb04  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb07  mov      dword ptr [rdx + 0x1268], eax
+00000001401bcb0d  mov      eax, 1
+00000001401bcb12  ret
+00000001401bcb13  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb16  mov      dword ptr [rdx + 0x126c], eax
+00000001401bcb1c  mov      eax, 1
+00000001401bcb21  ret
+00000001401bcb22  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb25  mov      dword ptr [rdx + 0x1270], eax
+00000001401bcb2b  mov      eax, 1
+00000001401bcb30  ret
+00000001401bcb31  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb34  mov      dword ptr [rdx + 0x1274], eax
+00000001401bcb3a  mov      eax, 1
+00000001401bcb3f  ret
+00000001401bcb40  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb43  mov      dword ptr [rdx + 0x1278], eax
+00000001401bcb49  mov      eax, 1
+00000001401bcb4e  ret
+00000001401bcb4f  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb52  mov      dword ptr [rdx + 0x127c], eax
+00000001401bcb58  mov      eax, 1
+00000001401bcb5d  ret
+00000001401bcb5e  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb61  mov      dword ptr [rdx + 0x1280], eax
+00000001401bcb67  mov      eax, 1
+00000001401bcb6c  ret
+00000001401bcb6d  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb70  mov      dword ptr [rdx + 0x1284], eax
+00000001401bcb76  mov      eax, 1
+00000001401bcb7b  ret
+00000001401bcb7c  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb7f  mov      dword ptr [rdx + 0x1288], eax
+00000001401bcb85  mov      eax, 1
+00000001401bcb8a  ret
+00000001401bcb8b  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb8e  mov      dword ptr [rdx + 0x128c], eax
+00000001401bcb94  mov      eax, 1
+00000001401bcb99  ret
+00000001401bcb9a  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcb9d  mov      dword ptr [rdx + 0x1290], eax
+00000001401bcba3  mov      eax, 1
+00000001401bcba8  ret
+00000001401bcba9  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbac  mov      dword ptr [rdx + 0x1294], eax
+00000001401bcbb2  mov      eax, 1
+00000001401bcbb7  ret
+00000001401bcbb8  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbbb  mov      dword ptr [rdx + 0x1298], eax
+00000001401bcbc1  mov      eax, 1
+00000001401bcbc6  ret
+00000001401bcbc7  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbca  mov      dword ptr [rdx + 0x129c], eax
+00000001401bcbd0  mov      eax, 1
+00000001401bcbd5  ret
+00000001401bcbd6  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbd9  mov      dword ptr [rdx + 0x12a0], eax
+00000001401bcbdf  mov      eax, 1
+00000001401bcbe4  ret
+00000001401bcbe5  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbe8  mov      dword ptr [rdx + 0x12a4], eax
+00000001401bcbee  mov      eax, 1
+00000001401bcbf3  ret
+00000001401bcbf4  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcbf7  mov      dword ptr [rdx + 0x12a8], eax
+00000001401bcbfd  mov      eax, 1
+00000001401bcc02  ret
+00000001401bcc03  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc06  mov      dword ptr [rdx + 0x12ac], eax
+00000001401bcc0c  mov      eax, 1
+00000001401bcc11  ret
+00000001401bcc12  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc15  mov      dword ptr [rdx + 0x12b0], eax
+00000001401bcc1b  mov      eax, 1
+00000001401bcc20  ret
+00000001401bcc21  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc24  mov      dword ptr [rdx + 0x12b4], eax
+00000001401bcc2a  mov      eax, 1
+00000001401bcc2f  ret
+00000001401bcc30  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc33  mov      dword ptr [rdx + 0x12b8], eax
+00000001401bcc39  mov      eax, 1
+00000001401bcc3e  ret
+00000001401bcc3f  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc42  mov      dword ptr [rdx + 0x12bc], eax
+00000001401bcc48  mov      eax, 1
+00000001401bcc4d  ret
+00000001401bcc4e  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc51  mov      dword ptr [rdx + 0x12c0], eax
+00000001401bcc57  mov      eax, 1
+00000001401bcc5c  ret
+00000001401bcc5d  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc60  mov      dword ptr [rdx + 0x12c4], eax
+00000001401bcc66  mov      eax, 1
+00000001401bcc6b  ret
+00000001401bcc6c  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc6f  mov      dword ptr [rdx + 0x12c8], eax
+00000001401bcc75  mov      eax, 1
+00000001401bcc7a  ret
+00000001401bcc7b  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcc7e  mov      dword ptr [rdx + 0x12cc], eax
+00000001401bcc84  mov      eax, 1
+00000001401bcc89  ret
+00000001401bcc8a  cmp      eax, 0x2d
+00000001401bcc8d  ja       0x1401bceda
+00000001401bcc93  cdqe
+00000001401bcc95  lea      r8, [rip - 0x1bcc9c]
+00000001401bcc9c  mov      eax, dword ptr [r8 + rax*4 + 0x1bcf98]
+00000001401bcca4  add      rax, r8
+00000001401bcca7  jmp      rax
+00000001401bcca9  lea      r8, [rdx + 0x2b68]
+00000001401bccb0  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bccb5  lea      r8, [rdx + 0x2b6c]
+00000001401bccbc  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bccc1  lea      r8, [rdx + 0x2b70]
+00000001401bccc8  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcccd  lea      r8, [rdx + 0x1224]
+00000001401bccd4  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bccd9  lea      r8, [rdx + 0x2b78]
+00000001401bcce0  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcce5  lea      r8, [rdx + 0x2b7c]
+00000001401bccec  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bccf1  lea      r8, [rdx + 0x2b80]
+00000001401bccf8  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bccfd  lea      r8, [rdx + 0x2b84]
+00000001401bcd04  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd09  lea      r8, [rdx + 0x2b88]
+00000001401bcd10  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd15  lea      r8, [rdx + 0x2b8c]
+00000001401bcd1c  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd21  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bcd24  add      dword ptr [rdx + 0x2b90], eax
+00000001401bcd2a  mov      r8, qword ptr [rsp + 8]
+00000001401bcd2f  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd34  lea      r8, [rdx + 0x2b94]
+00000001401bcd3b  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd40  lea      r8, [rdx + 0x2b98]
+00000001401bcd47  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd4c  lea      r8, [rdx + 0x2b9c]
+00000001401bcd53  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd58  lea      r8, [rdx + 0x2ba0]
+00000001401bcd5f  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd64  lea      r8, [rdx + 0x2ba4]
+00000001401bcd6b  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd70  lea      r8, [rdx + 0x2ba8]
+00000001401bcd77  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd7c  lea      r8, [rdx + 0x2bac]
+00000001401bcd83  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd88  lea      r8, [rdx + 0x2bb0]
+00000001401bcd8f  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcd94  lea      r8, [rdx + 0x2bb4]
+00000001401bcd9b  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcda0  lea      r8, [rdx + 0x2bb8]
+00000001401bcda7  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcdac  lea      r8, [rdx + 0x2bbc]
+00000001401bcdb3  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcdb8  lea      r8, [rdx + 0x2bc0]
+00000001401bcdbf  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcdc4  lea      r8, [rdx + 0x2bc4]
+00000001401bcdcb  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcdd0  lea      r8, [rdx + 0x2bc8]
+00000001401bcdd7  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcddc  lea      r8, [rdx + 0x2bcc]
+00000001401bcde3  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcde8  lea      r8, [rdx + 0x2bd0]
+00000001401bcdef  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcdf4  lea      r8, [rdx + 0x2bd4]
+00000001401bcdfb  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce00  lea      r8, [rdx + 0x2bd8]
+00000001401bce07  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce0c  lea      r8, [rdx + 0x2bdc]
+00000001401bce13  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce18  lea      r8, [rdx + 0x2be0]
+00000001401bce1f  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce24  lea      r8, [rdx + 0x2be4]
+00000001401bce2b  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce2d  lea      r8, [rdx + 0x2be8]
+00000001401bce34  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce36  lea      r8, [rdx + 0x2bec]
+00000001401bce3d  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce3f  lea      r8, [rdx + 0x2bf0]
+00000001401bce46  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce48  lea      r8, [rdx + 0x2bf4]
+00000001401bce4f  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce51  lea      r8, [rdx + 0x2bf8]
+00000001401bce58  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce5a  lea      r8, [rdx + 0x2bfc]
+00000001401bce61  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce63  lea      r8, [rdx + 0x2c00]
+00000001401bce6a  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce6c  lea      r8, [rdx + 0x2c04]
+00000001401bce73  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce75  lea      r8, [rdx + 0x2c08]
+00000001401bce7c  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce7e  lea      r8, [rdx + 0x2c0c]
+00000001401bce85  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce87  lea      r8, [rdx + 0x2c10]
+00000001401bce8e  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce90  lea      r8, [rdx + 0x2c14]
+00000001401bce97  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bce99  lea      r8, [rdx + 0x2c18]
+00000001401bcea0  jmp      0x1401bcea9 ; CGameEffectProficiency::ApplyEffect+0x509
+00000001401bcea2  lea      r8, [rdx + 0x2c1c]
+00000001401bcea9  cmp      dword ptr [rcx + 0xcc], 0
+00000001401bceb0  je       0x1401bcece
+00000001401bceb2  cmp      dword ptr [rcx + 0x48], 0
+00000001401bceb6  mov      eax, dword ptr [rcx + 0x1c]
+00000001401bceb9  mov      dword ptr [rcx + 0xcc], 0
+00000001401bcec3  je       0x1401bcecb
+00000001401bcec5  sub      eax, dword ptr [rdx + 0x1ec4]
+00000001401bcecb  mov      dword ptr [rcx + 0x60], eax
+00000001401bcece  mov      eax, dword ptr [rcx + 0x60]
+00000001401bced1  add      dword ptr [r8], eax
+00000001401bced4  mov      eax, 1
+00000001401bced9  ret
+00000001401bceda  xor      eax, eax
+00000001401bcedc  ret
+00000001401bcedd  nop      dword ptr [rax]
+00000001401bcee0  fmul     st(1)
+00000001401bcee2  sbb      eax, dword ptr [rax]
+00000001401bcee4  out      0xc9, eax
+00000001401bcee6  sbb      eax, dword ptr [rax]
+00000001401bcee8  test     cl, 0x1b
+00000001401bceeb  add      byte ptr [rip + 0x14001bca], al
+00000001401bcef1  retf     0x1b
+00000001401bcef4  and      ecx, edx
+00000001401bcef6  sbb      eax, dword ptr [rax]
+00000001401bcef8  xor      cl, dl
+00000001401bcefa  sbb      eax, dword ptr [rax]
+00000001401bcefc  retf     0x1b
+00000001401bcf00  push     rax
+00000001401bcf01  retf     0x1b
+00000001401bcf04  pop      rdi
+00000001401bcf05  retf     0x1b
+00000001401bcf08  outsb    dx, byte ptr [rsi]
+00000001401bcf09  retf     0x1b
+00000001401bcf0c  jge      0x1401bced8
+00000001401bcf0e  sbb      eax, dword ptr [rax]
+00000001401bcf10  mov      edx, cs
+00000001401bcf12  sbb      eax, dword ptr [rax]
+00000001401bcf14  wait
+00000001401bcf15  retf     0x1b
+00000001401bcf18  stosb    byte ptr [rdi], al
+00000001401bcf19  retf     0x1b
+00000001401bcf1c  mov      ecx, 0xc8001bca
+00000001401bcf21  retf     0x1b
+00000001401bcf24  xlatb
+00000001401bcf25  retf     0x1b
+00000001401bcf28  out      0xca, al
+00000001401bcf2a  sbb      eax, dword ptr [rax]
+00000001401bcf2c  cmc
+00000001401bcf2d  retf     0x1b
+00000001401bcf30  add      al, 0xcb
+00000001401bcf32  sbb      eax, dword ptr [rax]
+00000001401bcf34  adc      ecx, ebx
+00000001401bcf36  sbb      eax, dword ptr [rax]
+00000001401bcf38  and      cl, bl
+00000001401bcf3a  sbb      eax, dword ptr [rax]
+00000001401bcf3c  xor      ebx, ecx
+00000001401bcf3e  sbb      eax, dword ptr [rax]
+00000001401bcf40  retf
+00000001401bcf42  sbb      eax, dword ptr [rax]
+00000001401bcf44  retfq
+00000001401bcf46  sbb      eax, dword ptr [rax]
+00000001401bcf48  pop      rsi
+00000001401bcf49  retf
+00000001401bcf4a  sbb      eax, dword ptr [rax]
+00000001401bcf4c  insd     dword ptr [rdi], dx
+00000001401bcf4d  retf
+00000001401bcf4e  sbb      eax, dword ptr [rax]
+00000001401bcf50  jl       0x1401bcf1d
+00000001401bcf52  sbb      eax, dword ptr [rax]
+00000001401bcf54  mov      ecx, ebx
+00000001401bcf56  sbb      eax, dword ptr [rax]
+
+CGameSprite::GetInactiveProficiency+0x0 [0x14039c7d0, 0x14039c820)
+000000014039c7d0  sub      rsp, 0x28
+000000014039c7d4  lea      eax, [rdx - 0x59]
+000000014039c7d7  mov      r8, rcx
+000000014039c7da  cmp      eax, 0x2d
+000000014039c7dd  ja       0x14039c807
+000000014039c7df  cmp      dword ptr [r8 + 0x4ea4], 0
+000000014039c7e7  mov      eax, 0x1dc8
+000000014039c7ec  mov      ecx, 0x1120
+000000014039c7f1  cmove    ecx, eax
+000000014039c7f4  add      rcx, r8
+000000014039c7f7  call     0x1401519b0 ; CDerivedStats::GetAtOffset+0x0
+000000014039c7fc  sar      eax, 3
+000000014039c7ff  and      eax, 7
+000000014039c802  add      rsp, 0x28
+000000014039c806  ret
+000000014039c807  mov      eax, 0xffffffff
+000000014039c80c  add      rsp, 0x28
+000000014039c810  ret
+000000014039c811  int3
+000000014039c812  int3
+000000014039c813  int3
+000000014039c814  int3
+000000014039c815  int3
+000000014039c816  int3
+000000014039c817  int3
+000000014039c818  int3
+000000014039c819  int3
+000000014039c81a  int3
+000000014039c81b  int3
+000000014039c81c  int3
+000000014039c81d  int3
+000000014039c81e  int3
+000000014039c81f  int3

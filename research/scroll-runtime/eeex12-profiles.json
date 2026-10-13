@@ -1,0 +1,489 @@
+{
+  "decode_profile": {
+    "version": "2.7.3.0",
+    "source": "%BG2EE_273_ROOT%\\Baldur.exe",
+    "sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "preferred_base": 5368709120,
+    "game_timestamp": 1780012861,
+    "decoder": {
+      "name": "CGameEffect::DecodeEffectFromBase",
+      "rva": 1977648,
+      "size": 176,
+      "sha256": "7a6ba29b0ff856d27b15e695f4c3e0b860d5a1051348968dcaf96ad8d0ed55c4"
+    },
+    "unmarshal_tail": {
+      "name": "CGameEffectList::Unmarshal",
+      "rva": 2001134,
+      "size": 274,
+      "sha256": "6cfc330faefad7d4f1595f57889cf1c3cb90e9bf969d4d359cedff599ca42ba5"
+    },
+    "unmarshal_head": "48895c241048896c241857415641",
+    "eeex_source": "%BG2EE_273_ROOT%\\EEex.dll",
+    "eeex_sha256": "adc09b72951a28fed7b56ca1eba530f54c90505a495432f97401ea3c9b19a4c9",
+    "eeex_version": "1.2",
+    "eeex_timestamp": 1786305876,
+    "eeex_size": 1306624,
+    "eeex_entry": 868224,
+    "eeex_override": {
+      "name": "CGameEffectList::Override_Unmarshal",
+      "rva": 56496,
+      "size": 606,
+      "sha256": "ba950effc928a5d9728a4858ac83b1801b5c352bdf1d0f6dcbb98ecbcefa8e56"
+    },
+    "eeex_registration": {
+      "name": "CGameEffectList::Override_Unmarshal registration",
+      "rva": 177085,
+      "size": 125,
+      "sha256": "8de6e5abdc862e28a5c9b171ed9879ec740688dad872f40f4f261cc0345ada41"
+    },
+    "decode_pointer_rva": 1253544
+  },
+  "lifecycle_profile": {
+    "version": "2.7.3.0",
+    "eeex_version": "1.2",
+    "source": "%BG2EE_273_ROOT%\\EEex.dll",
+    "sha256": "adc09b72951a28fed7b56ca1eba530f54c90505a495432f97401ea3c9b19a4c9",
+    "timestamp": 1786305876,
+    "entries": [
+      {
+        "name": "effect_copy",
+        "body": {
+          "name": "EEex::Opcode_Hook_OnCopy",
+          "rva": 53488,
+          "size": 80,
+          "sha256": "4287eaedde1a5ce111bd1dd8f4cda70bca7ff9474cf9256f64075d34c224c534"
+        },
+        "registration": {
+          "name": "EEex::Opcode_Hook_OnCopy registration",
+          "rva": 188515,
+          "size": 43,
+          "sha256": "4f162a2107880710905a4b203f6c4347421ded93a016dd3b2463642cf55154d0"
+        },
+        "prefix": "4c8bdc49895310"
+      },
+      {
+        "name": "effect_destroy",
+        "body": {
+          "name": "EEex::Opcode_Hook_OnDestruct",
+          "rva": 53568,
+          "size": 64,
+          "sha256": "01816d7835567cedeb9316f1c53e5765643b827d9c19e6e8faa1aa5e4acce824"
+        },
+        "registration": {
+          "name": "EEex::Opcode_Hook_OnDestruct registration",
+          "rva": 188558,
+          "size": 43,
+          "sha256": "7beb2c3f69cfad268227ce6a938ce999568d249b5fd6e700a71f9db5044247f9"
+        },
+        "prefix": "4c8bdc49894b08"
+      },
+      {
+        "name": "actor_destroy",
+        "body": {
+          "name": "EEex::Sprite_Hook_OnDestruct",
+          "rva": 54160,
+          "size": 64,
+          "sha256": "e627b6bca0b17694a5d2bbddf5f8ecb9a1cc9e79010c32d475076a27b52b585c"
+        },
+        "registration": {
+          "name": "EEex::Sprite_Hook_OnDestruct registration",
+          "rva": 188816,
+          "size": 43,
+          "sha256": "b48c984e8acb6f35e3afac73c703a3c53495702d931e0beacaa97e068ce11c69"
+        },
+        "prefix": "4c8bdc49894b08"
+      }
+    ]
+  },
+  "pointer_registration": {
+    "name": "DecodeEffectFromBase pointer registration",
+    "rva": 723695,
+    "size": 45,
+    "sha256": "54fb866201ae4c4787a0f7b348bb56e05ea083eb889a6843cb0e5e4f9db60e8f"
+  },
+  "pointer_resolver": {
+    "name": "DecodeEffectFromBase pointer resolver",
+    "rva": 753696,
+    "size": 195,
+    "sha256": "90b74cf3327dfef54d2705f84e2f1f233c7e71dc68cf3aecb841f7322f08a862"
+  },
+  "comparisons": [
+    {
+      "label": "CGameEffectList::Override_Unmarshal",
+      "normalized_sha256": "b8708368f999af3d5dcc019dc37c0425ba8c5053e21795bb9e997132dc93a0db",
+      "equal": true,
+      "eeex12_references": [
+        {
+          "offset": 21,
+          "kind": "rip",
+          "target": 1228864,
+          "prefix": "2\ufffd\ufffd-\ufffd+"
+        },
+        {
+          "offset": 96,
+          "kind": "rip",
+          "target": 1253488,
+          "prefix": ""
+        },
+        {
+          "offset": 148,
+          "kind": "rip",
+          "target": 1252944,
+          "prefix": ""
+        },
+        {
+          "offset": 205,
+          "kind": "rip",
+          "target": 1252912,
+          "prefix": ""
+        },
+        {
+          "offset": 255,
+          "kind": "rip",
+          "target": 1083272,
+          "prefix": "P\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 339,
+          "kind": "branch",
+          "target": 174064
+        },
+        {
+          "offset": 360,
+          "kind": "rip",
+          "target": 889792,
+          "prefix": "\f\ufffd\u0012"
+        },
+        {
+          "offset": 379,
+          "kind": "rip",
+          "target": 889624,
+          "prefix": "\ufffd\ufffd\u0012"
+        },
+        {
+          "offset": 395,
+          "kind": "rip",
+          "target": 891328,
+          "prefix": ":\ufffd\u0012"
+        },
+        {
+          "offset": 404,
+          "kind": "rip",
+          "target": 1078064,
+          "prefix": "[!][EEex.dll] EEex_Sprite_LuaHook_ReadExtraEffectListUnmarshal() failed, the gam"
+        },
+        {
+          "offset": 411,
+          "kind": "rip",
+          "target": 888960,
+          "prefix": ",\ufffd\u0012"
+        },
+        {
+          "offset": 419,
+          "kind": "rip",
+          "target": 1253552,
+          "prefix": ""
+        },
+        {
+          "offset": 440,
+          "kind": "branch",
+          "target": 87216
+        },
+        {
+          "offset": 474,
+          "kind": "rip",
+          "target": 1077656,
+          "prefix": "EEEX_UUID"
+        },
+        {
+          "offset": 481,
+          "kind": "branch",
+          "target": 870546
+        },
+        {
+          "offset": 518,
+          "kind": "rip",
+          "target": 1253544,
+          "prefix": ""
+        },
+        {
+          "offset": 536,
+          "kind": "rip",
+          "target": 1252944,
+          "prefix": ""
+        },
+        {
+          "offset": 585,
+          "kind": "branch",
+          "target": 865024
+        }
+      ],
+      "eeex131_references": [
+        {
+          "offset": 21,
+          "kind": "rip",
+          "target": 1249344,
+          "prefix": "2\ufffd\ufffd-\ufffd+"
+        },
+        {
+          "offset": 96,
+          "kind": "rip",
+          "target": 1274648,
+          "prefix": ""
+        },
+        {
+          "offset": 148,
+          "kind": "rip",
+          "target": 1274024,
+          "prefix": ""
+        },
+        {
+          "offset": 205,
+          "kind": "rip",
+          "target": 1273992,
+          "prefix": ""
+        },
+        {
+          "offset": 255,
+          "kind": "rip",
+          "target": 1102176,
+          "prefix": "\ufffd\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 339,
+          "kind": "branch",
+          "target": 182224
+        },
+        {
+          "offset": 360,
+          "kind": "rip",
+          "target": 906176,
+          "prefix": "l\ufffd\u0012"
+        },
+        {
+          "offset": 379,
+          "kind": "rip",
+          "target": 906008,
+          "prefix": "\u0012\ufffd\u0012"
+        },
+        {
+          "offset": 395,
+          "kind": "rip",
+          "target": 907712,
+          "prefix": "\ufffd\u0004\u0013"
+        },
+        {
+          "offset": 404,
+          "kind": "rip",
+          "target": 1096992,
+          "prefix": "[!][EEex.dll] EEex_Sprite_LuaHook_ReadExtraEffectListUnmarshal() failed, the gam"
+        },
+        {
+          "offset": 411,
+          "kind": "rip",
+          "target": 905344,
+          "prefix": "\ufffd\ufffd\u0012"
+        },
+        {
+          "offset": 419,
+          "kind": "rip",
+          "target": 1274721,
+          "prefix": ""
+        },
+        {
+          "offset": 440,
+          "kind": "branch",
+          "target": 92928
+        },
+        {
+          "offset": 474,
+          "kind": "rip",
+          "target": 1096536,
+          "prefix": "EEEX_UUID"
+        },
+        {
+          "offset": 481,
+          "kind": "branch",
+          "target": 885810
+        },
+        {
+          "offset": 518,
+          "kind": "rip",
+          "target": 1274712,
+          "prefix": ""
+        },
+        {
+          "offset": 536,
+          "kind": "rip",
+          "target": 1274024,
+          "prefix": ""
+        },
+        {
+          "offset": 585,
+          "kind": "branch",
+          "target": 880272
+        }
+      ]
+    },
+    {
+      "label": "EEex::Opcode_Hook_OnCopy",
+      "normalized_sha256": "cba6242de1677cec8963e8b77d999289b252f8013df60b403083f254e583ab18",
+      "equal": true,
+      "eeex12_references": [
+        {
+          "offset": 15,
+          "kind": "rip",
+          "target": 1084784,
+          "prefix": ""
+        },
+        {
+          "offset": 38,
+          "kind": "rip",
+          "target": 1077296,
+          "prefix": "EEex::Opcode_Hook_OnCopy"
+        },
+        {
+          "offset": 61,
+          "kind": "branch",
+          "target": 25600
+        }
+      ],
+      "eeex131_references": [
+        {
+          "offset": 15,
+          "kind": "rip",
+          "target": 1071088,
+          "prefix": "0\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 38,
+          "kind": "rip",
+          "target": 1096176,
+          "prefix": "EEex::Opcode_Hook_OnCopy"
+        },
+        {
+          "offset": 61,
+          "kind": "branch",
+          "target": 25600
+        }
+      ]
+    },
+    {
+      "label": "EEex::Opcode_Hook_OnDestruct",
+      "normalized_sha256": "348b220cc91e7bef41bd9508dc62e73f3a4ae8155bc6222f93520f3a33d844a0",
+      "equal": true,
+      "eeex12_references": [
+        {
+          "offset": 11,
+          "kind": "rip",
+          "target": 1054616,
+          "prefix": "p\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 34,
+          "kind": "rip",
+          "target": 1077328,
+          "prefix": "EEex::Opcode_Hook_OnDestruct"
+        },
+        {
+          "offset": 49,
+          "kind": "branch",
+          "target": 25600
+        }
+      ],
+      "eeex131_references": [
+        {
+          "offset": 11,
+          "kind": "rip",
+          "target": 1072552,
+          "prefix": "\ufffd\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 34,
+          "kind": "rip",
+          "target": 1096208,
+          "prefix": "EEex::Opcode_Hook_OnDestruct"
+        },
+        {
+          "offset": 49,
+          "kind": "branch",
+          "target": 25600
+        }
+      ]
+    },
+    {
+      "label": "EEex::Sprite_Hook_OnDestruct",
+      "normalized_sha256": "348b220cc91e7bef41bd9508dc62e73f3a4ae8155bc6222f93520f3a33d844a0",
+      "equal": true,
+      "eeex12_references": [
+        {
+          "offset": 11,
+          "kind": "rip",
+          "target": 1068904,
+          "prefix": "\ufffd\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 34,
+          "kind": "rip",
+          "target": 1077624,
+          "prefix": "EEex::Sprite_Hook_OnDestruct"
+        },
+        {
+          "offset": 49,
+          "kind": "branch",
+          "target": 25600
+        }
+      ],
+      "eeex131_references": [
+        {
+          "offset": 11,
+          "kind": "rip",
+          "target": 1086840,
+          "prefix": "\ufffd\ufffd\u0001\ufffd\u0001"
+        },
+        {
+          "offset": 34,
+          "kind": "rip",
+          "target": 1096504,
+          "prefix": "EEex::Sprite_Hook_OnDestruct"
+        },
+        {
+          "offset": 49,
+          "kind": "branch",
+          "target": 25600
+        }
+      ]
+    }
+  ],
+  "lifecycle_native_cases": [
+    {
+      "name": "effect_copy",
+      "original_and_trampoline_equal": true,
+      "preserved_native_argument_order": [
+        3405644547,
+        3405644290
+      ],
+      "trampoline": "4c8bdc49895310ff2500000000f7d0008001000000",
+      "unwind": "01070000"
+    },
+    {
+      "name": "effect_destroy",
+      "original_and_trampoline_equal": true,
+      "preserved_native_argument_order": [
+        3405644290
+      ],
+      "trampoline": "4c8bdc49894b08ff250000000047d1008001000000",
+      "unwind": "01070000"
+    },
+    {
+      "name": "actor_destroy",
+      "original_and_trampoline_equal": true,
+      "preserved_native_argument_order": [
+        3405644290
+      ],
+      "trampoline": "4c8bdc49894b08ff250000000097d3008001000000",
+      "unwind": "01070000"
+    }
+  ],
+  "scope": "Read-only pinned EEex1.2 DLL and Unicorn. Only matching installed BG2EE2.7.3.0 profile; no claim for another1.2 binary."
+}

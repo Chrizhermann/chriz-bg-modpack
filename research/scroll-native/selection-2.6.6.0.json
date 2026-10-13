@@ -1,0 +1,1843 @@
+{
+  "version": "2.6.6.0",
+  "exe_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+  "image_base": "0x140000000",
+  "status": "offline native selector emulation only",
+  "windows": [
+    {
+      "function": "CGameEffect::FireSpell",
+      "modes": "146/2",
+      "start": "0x1401e445d",
+      "stop": "0x1401e44c8",
+      "window_sha256": "7d9fcff369d44866272161e33dfde1ad567e60505f257ad2dab3578a518a7edd",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameAIBase::FireSpell",
+      "modes": "146/1 message",
+      "start": "0x14016ab11",
+      "stop": "0x14016ab91",
+      "window_sha256": "e89781769ecb05ba068eaee757b6366aaaa22f777bd84ba5bf3534dc7037c58d",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameAIBase::FireSpellPoint",
+      "modes": "148/1 and 148/2",
+      "start": "0x14016b8f2",
+      "stop": "0x14016b96b",
+      "window_sha256": "7864801d3312cb79e35d61474e1f972e587ec118c7e1029e6206eb54dc414811",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameAIBase::ForceSpell",
+      "modes": "146/0 action",
+      "start": "0x14016c63b",
+      "stop": "0x14016c694",
+      "window_sha256": "d655399c640765d3d2101c9d69bb96d745dc2d787d7b86838f240ced9ace7308",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameAIBase::ForceSpellPoint",
+      "modes": "148/0 action",
+      "start": "0x14016d63a",
+      "stop": "0x14016d68b",
+      "window_sha256": "a94b2817ed7fbaaa7c8bfcd74465bd28c26fd2ba041d69ddb3d6ea26f966ecdf",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameSprite::Spell",
+      "modes": "EEex special-bit SpellNoDec selection",
+      "start": "0x1403b47ad",
+      "stop": "0x1403b4800",
+      "window_sha256": "3a452a44e023063f8378270b67a56e3b6140e9a384564e025c6daae9efaf5ae9",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    },
+    {
+      "function": "CGameSprite::SpellPoint",
+      "modes": "EEex special-bit SpellPointNoDec selection",
+      "start": "0x1403b645b",
+      "stop": "0x1403b64be",
+      "window_sha256": "4fb1d6ca89d6a03df0733898dbe2ded93db768e1c731a3bf922d2b1a58455758",
+      "cases": [
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 5,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 10,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 15,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 19,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 25,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            6,
+            12,
+            20
+          ],
+          "level": 30,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 1,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 3,
+          "chosen": 0
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 5,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 6,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 7,
+          "chosen": 1
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 10,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 12,
+          "chosen": 2
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 15,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 19,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 20,
+          "chosen": 3
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 25,
+          "chosen": 4
+        },
+        {
+          "headers": [
+            1,
+            5,
+            10,
+            15,
+            25
+          ],
+          "level": 30,
+          "chosen": 4
+        }
+      ],
+      "resource_actor_writes": 0
+    }
+  ],
+  "passed": 168
+}

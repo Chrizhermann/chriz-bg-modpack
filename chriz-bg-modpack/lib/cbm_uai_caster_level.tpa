@@ -1,73 +1,33 @@
-// =====================================================================
-//  cbm_uai_caster_level   (component @430)
-//  "Use Any Item" scroll casting at a fair caster level for non-casters
-// =====================================================================
-//
-//  PROBLEM (CDTweaks #2170 side-effect):
-//   CDTweaks #2170 ("Cast Spells from Scrolls ... at Character Level") sets
-//   opcode 146/148 parameter1 = 0 on every Type-3 ("use magic") item ability
-//   header. Per the IESDP op146/148 spec, the casting-level field has three
-//   modes (parameter2): 0 = normal cast at the specified level (0 -> caster
-//   level); 1 = instant cast at caster level; 2 = instant cast at specified
-//   level (EE-only). With parameter1 = 0 (or parameter2 = 1) the engine casts
-//   at the USER'S class caster level. A non-caster (pure Thief, Fighter/Thief,
-//   etc.) using the Use Any Item HLA has 0 levels in the spell's class, so the
-//   Beamdog engine FLOORS the cast to caster level 1 -> scrolls fire at minimum
-//   dice / fewest missiles / shortest duration.
-//
-//  WHY THIS APPROACH (not per-user, not opcode 191):
-//   The engine resolves item-cast level at CAST time from the item's own
-//   op146/148 casting-level field, which is shared by every user of the item;
-//   none of the three param2 modes is per-caster. opcode 191 (casting-level
-//   bonus, stats 79/80) is NOT read on the param1=0 item-cast path on the
-//   Beamdog engine (IESDP: "no actual affect in-game"; confirmed by CamDawg's
-//   own #2170 docs and an empirical non-caster test). EEex v0.11.0-alpha exposes
-//   no hookable point for CGameSprite::GetCasterLevel, and EEex op403 fires only
-//   AFTER the cast resolves -- too late for the level-gated ability headers that
-//   carry per-level scaling (Magic Missile, damage spells), which are selected
-//   at cast time. So the ONLY engine-supported root-cause fix is the one #2170
-//   itself uses: write the casting-level field on the item -- here, a fair fixed
-//   level instead of 0. This is the same mechanism as the Scroll Caster Level
-//   mod / EET_Tweaks #3010.
-//
-//  FIX:
-//   For every SCROLL item (category 11), for each Type-3 ability header, every
-//   op146/148 effect that would floor a non-caster -- parameter1 == 0 (cast at
-//   caster level) OR parameter2 == 1 (instant at caster level) -- set
-//   parameter1 = CBM_UAI_CL and parameter2 = 0 ("normal casting at the specified
-//   level"). Headers that already carry a deliberate fixed level (parameter1 != 0
-//   with parameter2 != 1, e.g. the CDIA*/CDID* level-10 scrolls) are LEFT ALONE.
-//
-//  EFFECT: a non-caster reading a scroll via UAI casts it at CBM_UAI_CL, which
-//   drives correct ability-header selection at cast time (so Magic Missile,
-//   per-level damage spells, etc. scale properly). Scribed casting and wands/rods
-//   keep #2170's own-level behaviour (scoped to scrolls). A real caster only sees
-//   the fixed level when reading a scroll *directly* (rare); most scroll spells
-//   cap at <= CL10 anyway, so real-caster impact is negligible.
-// =====================================================================
-
-OUTER_SET CBM_UAI_CL = 15      // caster level used for otherwise-floored scroll item-casts
-
-COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
-  READ_SHORT 0x1c cbm_cat
-  PATCH_IF (cbm_cat = 11) BEGIN                       // category 11 = Scrolls
-    GET_OFFSET_ARRAY cbm_abils ITM_V10_HEADERS
-    PHP_EACH cbm_abils AS cbm_ai => cbm_ab BEGIN
-      READ_BYTE (cbm_ab + 0x0) cbm_atype
-      PATCH_IF (cbm_atype = 3) BEGIN                  // Type-3 "magical" ability (the cast header)
-        GET_OFFSET_ARRAY2 cbm_fxs cbm_ab ITM_V10_HEAD_EFFECTS
-        PHP_EACH cbm_fxs AS cbm_fi => cbm_fo BEGIN
-          READ_SHORT (cbm_fo + 0x0) cbm_op
-          READ_LONG  (cbm_fo + 0x4) cbm_p1
-          READ_LONG  (cbm_fo + 0x8) cbm_p2
-          PATCH_IF (((cbm_op = 146) OR (cbm_op = 148)) AND ((cbm_p1 = 0) OR (cbm_p2 = 1))) BEGIN
-            WRITE_LONG (cbm_fo + 0x4) CBM_UAI_CL      // parameter1 = casting level
-            WRITE_LONG (cbm_fo + 0x8) 0               // parameter2 = 0 (normal cast at specified level)
-          END
-        END
-      END
-    END
-  END
-  BUT_ONLY
-
-PRINT ~[cbm_uai] Scroll item-cast headers re-stamped to caster level %CBM_UAI_CL% for non-caster (UAI) use.~
+// Component430: per-reader scroll casting. No ITM/SPL gameplay bytes change.
+// Install after spell/item providers; the resource policy is built from the
+// effective installed override+KEY/BIF resources and reverified at startup.
+ACTION_IF NOT ("%WEIDU_OS%" STRING_EQUAL_CASE "win32") BEGIN
+  FAIL @1430
+END
+ACTION_IF NOT (FILE_EXISTS ~EEex.dll~ AND FILE_EXISTS ~EEex_scripts/EEex_Modules.lua~) BEGIN
+  FAIL @1431
+END
+ACTION_IF NOT (FILE_EXISTS ~chriz-bg-modpack/scroll-casting/CBMScroll.dll~ AND
+               FILE_EXISTS ~chriz-bg-modpack/scroll-casting/tools/CBMSPolicy.exe~) BEGIN
+  FAIL @1432
+END
+AT_NOW cbm_scroll_policy_result ~chriz-bg-modpack\scroll-casting\tools\CBMSPolicy.exe --game-root "." --output-dir "weidu_external/chriz-bg-modpack/scroll-policy-work" --installer-staging~ EXACT
+ACTION_IF (cbm_scroll_policy_result != 0 AND cbm_scroll_policy_result != 2) BEGIN
+  FAIL @1433
+END
+ACTION_IF NOT (FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.bin~ AND
+               FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.json~) BEGIN
+  FAIL @1433
+END
+COPY ~chriz-bg-modpack/scroll-casting/CBMScroll.dll~ ~CBMScroll.dll~
+COPY ~chriz-bg-modpack/scroll-casting/CBMS_Startup.lua~ ~CBMScroll/CBMS_Startup.lua~
+COPY ~chriz-bg-modpack/scroll-casting/CBMS_ScrollMarshal.lua~ ~CBMScroll/CBMS_ScrollMarshal.lua~
+COPY ~chriz-bg-modpack/scroll-casting/policy_resource.lua~ ~CBMScroll/policy_resource.lua~
+COPY ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.bin~ ~CBMScroll/CBMSPOL1.bin~
+COPY ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.json~ ~CBMScroll/CBMSPOL1.json~
+// EEex loads this file before its initialized-listener pass. One explicit
+// early entry avoids an order-dependent additional M_ auto-loader.
+APPEND_OUTER ~EEex_scripts/EEex_Modules.lua~ ~dofile("CBMScroll/CBMS_Startup.lua")~
+  UNLESS ~CBMScroll/CBMS_Startup.lua~ KEEP_CRLF
+ACTION_IF cbm_scroll_policy_result = 2 BEGIN PRINT @1434 END
+PRINT @1435

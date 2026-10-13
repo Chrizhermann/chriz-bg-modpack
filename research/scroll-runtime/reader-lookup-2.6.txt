@@ -1,0 +1,87 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameObjectArray::GetDeny+0x0 [0x140276490, 0x1402764f0)
+0000000140276490  mov      qword ptr [rdx], 0
+0000000140276497  cmp      ecx, -1
+000000014027649a  je       0x1402764e5
+000000014027649c  mov      eax, ecx
+000000014027649e  mov      r8d, 0x7fff
+00000001402764a4  sar      eax, 0x10
+00000001402764a7  and      ax, r8w
+00000001402764ab  cmp      word ptr [rip + 0x416f82], ax
+00000001402764b2  jl       0x1402764e5
+00000001402764b4  test     cx, cx
+00000001402764b7  js       0x1402764e5
+00000001402764b9  cmp      word ptr [rip + 0x416f78], cx
+00000001402764c0  jle      0x1402764e5
+00000001402764c2  movzx    eax, ax
+00000001402764c5  lea      r8, [rip + 0x416f84]
+00000001402764cc  shl      rax, 4
+00000001402764d0  cmp      word ptr [rax + r8], cx
+00000001402764d5  je       0x1402764da
+00000001402764d7  mov      al, 2
+00000001402764d9  ret
+00000001402764da  mov      rax, qword ptr [rax + r8 + 8]
+00000001402764df  mov      qword ptr [rdx], rax
+00000001402764e2  xor      al, al
+00000001402764e4  ret
+00000001402764e5  mov      al, 3
+00000001402764e7  ret
+00000001402764e8  int3
+00000001402764e9  int3
+00000001402764ea  int3
+00000001402764eb  int3
+00000001402764ec  int3
+00000001402764ed  int3
+00000001402764ee  int3
+00000001402764ef  int3
+
+CDerivedStats::GetMaximumLevel+0x0 [0x140152bd0, 0x140152c60)
+0000000140152bd0  movzx    eax, dl
+0000000140152bd3  mov      r8, rcx
+0000000140152bd6  dec      eax
+0000000140152bd8  cmp      eax, 0x14
+0000000140152bdb  ja       0x140152c35
+0000000140152bdd  lea      rcx, [rip - 0x152be4]
+0000000140152be4  cdqe
+0000000140152be6  movzx    eax, byte ptr [rcx + rax + 0x152c48]
+0000000140152bee  mov      edx, dword ptr [rcx + rax*4 + 0x152c3c]
+0000000140152bf5  add      rdx, rcx
+0000000140152bf8  jmp      rdx
+0000000140152bfa  movzx    eax, word ptr [r8 + 0x46]
+0000000140152bff  ret
+0000000140152c00  movzx    eax, word ptr [r8 + 0x46]
+0000000140152c05  movzx    ecx, word ptr [r8 + 0x48]
+0000000140152c0a  cmp      ax, cx
+0000000140152c0d  cmovae   cx, ax
+0000000140152c11  movzx    eax, cl
+0000000140152c14  ret
+0000000140152c15  movzx    eax, word ptr [r8 + 0x46]
+0000000140152c1a  movzx    ecx, word ptr [r8 + 0x4a]
+0000000140152c1f  cmp      word ptr [r8 + 0x48], cx
+0000000140152c24  cmovae   cx, word ptr [r8 + 0x48]
+0000000140152c2a  cmp      ax, cx
+0000000140152c2d  cmovae   cx, ax
+0000000140152c31  movzx    eax, cl
+0000000140152c34  ret
+0000000140152c35  movzx    eax, byte ptr [r8 + 0x46]
+0000000140152c3a  ret
+0000000140152c3b  nop
+0000000140152c3c  cli
+0000000140152c3d  sub      edx, dword ptr [rip + 0x152c0000]
+0000000140152c43  add      byte ptr [rip + 0x152c], dl
+0000000140152c49  add      byte ptr [rax], al
+0000000140152c4b  add      byte ptr [rax], al
+0000000140152c4d  add      byte ptr [rcx], al
+0000000140152c4f  add      dword ptr [rcx], eax
+0000000140152c51  add      al, byte ptr [rax]
+0000000140152c53  add      byte ptr [rcx], al
+0000000140152c55  add      dword ptr [rcx], eax
+0000000140152c57  add      dword ptr [rdx], eax
+0000000140152c59  add      dword ptr [rax], eax
+0000000140152c5b  add      byte ptr [rax], al
+0000000140152c5d  int3
+0000000140152c5e  int3
+0000000140152c5f  int3

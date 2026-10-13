@@ -1,0 +1,19 @@
+{
+  "profiles": {
+    "2.6": {
+      "entry_trampoline_checks": 30,
+      "game_sha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+      "eeex_sha256": "85a49bbe19c310ec597160952c30793de1cd89451975208969b785c9d5f69626"
+    },
+    "2.7": {
+      "entry_trampoline_checks": 30,
+      "game_sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+      "eeex_sha256": "62e110a27bc1ae0530afc276bb5adf41609d133ab499bae3456f046dedef0e35"
+    },
+    "2.7-collection-1.2": {
+      "entry_trampoline_checks": 10,
+      "eeex_sha256": "adc09b72951a28fed7b56ca1eba530f54c90505a495432f97401ea3c9b19a4c9"
+    }
+  },
+  "game_launched": false
+}

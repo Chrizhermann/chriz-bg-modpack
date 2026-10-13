@@ -1,0 +1,182 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameEffectApplySpell::ApplyEffect+0x0 [0x1401a7200, 0x1401a72c0)
+00000001401a7200  mov      qword ptr [rsp + 0x10], rbx
+00000001401a7205  mov      qword ptr [rsp + 0x18], rsi
+00000001401a720a  push     rdi
+00000001401a720b  sub      rsp, 0x30
+00000001401a720f  xor      edi, edi
+00000001401a7211  mov      rbx, rcx
+00000001401a7214  mov      ecx, dword ptr [rcx + 0x110]
+00000001401a721a  mov      rsi, rdx
+00000001401a721d  mov      qword ptr [rsp + 0x40], rdi
+00000001401a7222  cmp      ecx, -1
+00000001401a7225  je       0x1401a7252
+00000001401a7227  lea      rdx, [rsp + 0x40]
+00000001401a722c  call     0x140276700 ; CGameObjectArray::GetDeny+0x0
+00000001401a7231  test     al, al
+00000001401a7233  jne      0x1401a7252
+00000001401a7235  mov      rcx, qword ptr [rsp + 0x40]
+00000001401a723a  mov      rax, qword ptr [rcx]
+00000001401a723d  call     qword ptr [rax + 8]
+00000001401a7240  cmp      al, byte ptr [rip + 0x3f24d9]
+00000001401a7246  mov      rcx, qword ptr [rsp + 0x40]
+00000001401a724b  cmovne   rcx, rdi
+00000001401a724f  mov      rdi, rcx
+00000001401a7252  mov      rax, qword ptr [rip + 0x4c02ef]
+00000001401a7259  mov      r9, rdi
+00000001401a725c  mov      edx, dword ptr [rbx + 0x20]
+00000001401a725f  mov      r8, rsi
+00000001401a7262  mov      rcx, qword ptr [rax + 0x1090]
+00000001401a7269  mov      eax, dword ptr [rbx + 0x1c]
+00000001401a726c  mov      dword ptr [rsp + 0x20], eax
+00000001401a7270  call     0x14024a3c0 ; CRuleTables::IsProtectedFromSpell+0x0
+00000001401a7275  test     eax, eax
+00000001401a7277  je       0x1401a729f
+00000001401a7279  mov      eax, dword ptr [rbx + 0x110]
+00000001401a727f  lea      rdx, [rbx + 0x30]
+00000001401a7283  mov      dword ptr [rsp + 0x28], eax
+00000001401a7287  xor      r9d, r9d
+00000001401a728a  mov      eax, dword ptr [rbx + 0xc8]
+00000001401a7290  mov      r8, rsi
+00000001401a7293  mov      rcx, rbx
+00000001401a7296  mov      dword ptr [rsp + 0x20], eax
+00000001401a729a  call     0x1401e4570 ; CGameEffect::FireSpell+0x0
+00000001401a729f  mov      rsi, qword ptr [rsp + 0x50]
+00000001401a72a4  mov      eax, 1
+00000001401a72a9  mov      dword ptr [rbx + 0x114], eax
+00000001401a72af  mov      rbx, qword ptr [rsp + 0x48]
+00000001401a72b4  add      rsp, 0x30
+00000001401a72b8  pop      rdi
+00000001401a72b9  ret
+00000001401a72ba  int3
+00000001401a72bb  int3
+00000001401a72bc  int3
+00000001401a72bd  int3
+00000001401a72be  int3
+00000001401a72bf  int3
+
+CGameEffectRepeatingApplyEffect::ApplyEffect+0x0 [0x1401bfd70, 0x1401bff20)
+00000001401bfd70  mov      qword ptr [rsp + 0x18], rbx
+00000001401bfd75  mov      qword ptr [rsp + 0x20], rbp
+00000001401bfd7a  push     rsi
+00000001401bfd7b  push     rdi
+00000001401bfd7c  push     r14
+00000001401bfd7e  sub      rsp, 0x40
+00000001401bfd82  mov      rax, qword ptr [rip + 0x4a4c4f]
+00000001401bfd89  xor      rax, rsp
+00000001401bfd8c  mov      qword ptr [rsp + 0x30], rax
+00000001401bfd91  mov      rdi, rcx
+00000001401bfd94  mov      rsi, rdx
+00000001401bfd97  mov      ecx, 0x40
+00000001401bfd9c  call     0x1404f7a88 ; operator_new+0x0
+00000001401bfda1  xor      r14d, r14d
+00000001401bfda4  test     rax, rax
+00000001401bfda7  je       0x1401bfdb6
+00000001401bfda9  mov      rcx, rax
+00000001401bfdac  call     0x1401a3e80 ; CPersistantEffectApplyEffect::CPersistantEffectApplyEffect+0x0
+00000001401bfdb1  mov      rbx, rax
+00000001401bfdb4  jmp      0x1401bfdb9 ; CGameEffectRepeatingApplyEffect::ApplyEffect+0x49
+00000001401bfdb6  mov      rbx, r14
+00000001401bfdb9  mov      eax, dword ptr [rdi + 0x110]
+00000001401bfdbf  lea      rcx, [rbx + 0x30]
+00000001401bfdc3  mov      dword ptr [rbx + 0x14], eax
+00000001401bfdc6  lea      r8, [rsp + 0x20]
+00000001401bfdcb  mov      rax, qword ptr [rdi + 0x30]
+00000001401bfdcf  lea      rdx, [rsp + 0x28]
+00000001401bfdd4  movzx    ebp, word ptr [rdi + 0x20]
+00000001401bfdd8  mov      qword ptr [rsp + 0x20], rax
+00000001401bfddd  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401bfde2  mov      qword ptr [rbx + 0x38], rdi
+00000001401bfde6  mov      eax, dword ptr [rdi + 0x24]
+00000001401bfde9  mov      edx, dword ptr [rdi + 0x28]
+00000001401bfdec  cmp      eax, 6
+00000001401bfdef  ja       0x1401bfdfb
+00000001401bfdf1  mov      ecx, 0x49
+00000001401bfdf6  bt       ecx, eax
+00000001401bfdf9  jb       0x1401bfe08
+00000001401bfdfb  cmp      eax, 0x1000
+00000001401bfe00  mov      ecx, 0x7fffffff
+00000001401bfe05  cmovne   edx, ecx
+00000001401bfe08  movzx    ecx, bp
+00000001401bfe0b  mov      ebp, 1
+00000001401bfe10  test     ecx, ecx
+00000001401bfe12  je       0x1401bfe60
+00000001401bfe14  sub      ecx, 2
+00000001401bfe17  je       0x1401bfe4f
+00000001401bfe19  sub      ecx, ebp
+00000001401bfe1b  je       0x1401bfe3a
+00000001401bfe1d  cmp      ecx, ebp
+00000001401bfe1f  jne      0x1401bfe8c
+00000001401bfe21  mov      dword ptr [rbx + 0x20], 0x10003
+00000001401bfe28  movzx    eax, word ptr [rdi + 0x60]
+00000001401bfe2c  mov      word ptr [rbx + 0x24], ax
+00000001401bfe30  movzx    eax, word ptr [rdi + 0x1c]
+00000001401bfe34  mov      word ptr [rbx + 0x18], ax
+00000001401bfe38  jmp      0x1401bfe75 ; CGameEffectRepeatingApplyEffect::ApplyEffect+0x105
+00000001401bfe3a  mov      dword ptr [rbx + 0x20], 0x10003
+00000001401bfe41  mov      word ptr [rbx + 0x24], bp
+00000001401bfe45  movzx    eax, word ptr [rdi + 0x1c]
+00000001401bfe49  mov      word ptr [rbx + 0x18], ax
+00000001401bfe4d  jmp      0x1401bfe75 ; CGameEffectRepeatingApplyEffect::ApplyEffect+0x105
+00000001401bfe4f  mov      dword ptr [rbx + 0x20], 0x10002
+00000001401bfe56  movzx    eax, word ptr [rdi + 0x1c]
+00000001401bfe5a  mov      word ptr [rbx + 0x24], ax
+00000001401bfe5e  jmp      0x1401bfe71 ; CGameEffectRepeatingApplyEffect::ApplyEffect+0x101
+00000001401bfe60  mov      word ptr [rbx + 0x20], r14w
+00000001401bfe65  movzx    eax, word ptr [rdi + 0x1c]
+00000001401bfe69  mov      word ptr [rbx + 0x22], ax
+00000001401bfe6d  mov      word ptr [rbx + 0x24], bp
+00000001401bfe71  mov      word ptr [rbx + 0x18], bp
+00000001401bfe75  mov      rax, qword ptr [rip + 0x4a76cc]
+00000001401bfe7c  mov      rcx, qword ptr [rax + 0x1090]
+00000001401bfe83  sub      edx, dword ptr [rcx + 0x3fa0]
+00000001401bfe89  mov      dword ptr [rbx + 0x28], edx
+00000001401bfe8c  movzx    r8d, word ptr [rbx + 0x18]
+00000001401bfe91  test     r8w, r8w
+00000001401bfe95  je       0x1401bfec4
+00000001401bfe97  mov      rax, qword ptr [rip + 0x4a76aa]
+00000001401bfe9e  mov      rcx, qword ptr [rax + 0x1090]
+00000001401bfea5  mov      eax, 0x88888889
+00000001401bfeaa  mov      edx, dword ptr [rcx + 0x3fa0]
+00000001401bfeb0  sub      edx, dword ptr [rdi + 0x6c]
+00000001401bfeb3  mul      edx
+00000001401bfeb5  movsx    ecx, r8w
+00000001401bfeb9  mov      eax, edx
+00000001401bfebb  xor      edx, edx
+00000001401bfebd  shr      eax, 3
+00000001401bfec0  div      ecx
+00000001401bfec2  jmp      0x1401bfec8 ; CGameEffectRepeatingApplyEffect::ApplyEffect+0x158
+00000001401bfec4  movzx    edx, r14w
+00000001401bfec8  mov      word ptr [rbx + 0x1a], dx
+00000001401bfecc  mov      edx, dword ptr [rdi + 0x64]
+00000001401bfecf  test     edx, edx
+00000001401bfed1  je       0x1401bfedb
+00000001401bfed3  mov      rcx, rbx
+00000001401bfed6  call     0x1401e8840 ; CPersistantEffectDamage::SlowPoison+0x0
+00000001401bfedb  mov      edx, dword ptr [rdi + 0x48]
+00000001401bfede  test     edx, edx
+00000001401bfee0  je       0x1401bfeea
+00000001401bfee2  mov      rcx, rsi
+00000001401bfee5  call     0x140349120 ; CGameSprite::AddPortraitIcon+0x0
+00000001401bfeea  lea      rcx, [rsi + 0x1a08]
+00000001401bfef1  mov      rdx, rbx
+00000001401bfef4  call     0x1404075c0 ; CObList::AddTail+0x0
+00000001401bfef9  mov      eax, ebp
+00000001401bfefb  mov      rcx, qword ptr [rsp + 0x30]
+00000001401bff00  xor      rcx, rsp
+00000001401bff03  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401bff08  mov      rbx, qword ptr [rsp + 0x70]
+00000001401bff0d  mov      rbp, qword ptr [rsp + 0x78]
+00000001401bff12  add      rsp, 0x40
+00000001401bff16  pop      r14
+00000001401bff18  pop      rdi
+00000001401bff19  pop      rsi
+00000001401bff1a  ret
+00000001401bff1b  int3
+00000001401bff1c  int3
+00000001401bff1d  int3
+00000001401bff1e  int3
+00000001401bff1f  int3

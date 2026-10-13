@@ -1,0 +1,12 @@
+{
+  "pyinstaller": "6.22.3",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "sha256": "387575bd1f70d18ced0e65e798a63e487469a19cfcba9748deee1d0b2dfdeea9",
+  "sourceTextNormalization": "LF",
+  "sources": {
+    "build_installed_policy.py": "534e8af5d7dead3066ff2dd49353b7429509ae67f9f26915b4fdcbe156b5b852",
+    "installed_resources.py": "dbc1aa29a7a2a8ed54c74607343cb9129decbb77f0cf8d8bd59f226a8b8c2de4",
+    "policy_table.py": "d7357205815aef26aeb613d9fbb3172bf933fccb6051b493311cfadae6f1bcd4",
+    "extract_key_resource.py": "ff4f49ef6b792d6e594b1fbe9cb3f3eeafeda326e06e75c28c30fa11222632b2"
+  }
+}

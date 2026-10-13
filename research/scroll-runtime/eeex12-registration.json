@@ -1,0 +1,172 @@
+{
+  "source": "%BG2EE_273_ROOT%\\EEex.dll",
+  "sha256": "adc09b72951a28fed7b56ca1eba530f54c90505a495432f97401ea3c9b19a4c9",
+  "base": 6442450944,
+  "timestamp": 1786305876,
+  "image_size": 1306624,
+  "entry": 868224,
+  "labels": {
+    "CGameEffectList::Override_Unmarshal": {
+      "strings": [
+        1087152
+      ],
+      "refs": [
+        177085
+      ]
+    },
+    "EEex::Opcode_Hook_OnCopy": {
+      "strings": [
+        1091984
+      ],
+      "refs": [
+        188515
+      ]
+    },
+    "EEex::Opcode_Hook_OnDestruct": {
+      "strings": [
+        1092040
+      ],
+      "refs": [
+        188558
+      ]
+    },
+    "EEex::Sprite_Hook_OnDestruct": {
+      "strings": [
+        1092552
+      ],
+      "refs": [
+        188816
+      ]
+    },
+    "CGameEffect::DecodeEffectFromBase": {
+      "strings": [
+        1120864
+      ],
+      "refs": [
+        723695
+      ]
+    }
+  },
+  "definitions": [
+    {
+      "label": "CGameEffectList::Override_Unmarshal",
+      "body": {
+        "name": "CGameEffectList::Override_Unmarshal",
+        "rva": 56496,
+        "size": 606,
+        "sha256": "ba950effc928a5d9728a4858ac83b1801b5c352bdf1d0f6dcbb98ecbcefa8e56"
+      },
+      "registration": {
+        "name": "CGameEffectList::Override_Unmarshal registration",
+        "rva": 177085,
+        "size": 125,
+        "sha256": "8de6e5abdc862e28a5c9b171ed9879ec740688dad872f40f4f261cc0345ada41"
+      },
+      "prefix": "40555356574154",
+      "unwind_ranges": [
+        {
+          "begin": 56496,
+          "end": 56680,
+          "unwind": 1161588,
+          "header": "19230800"
+        },
+        {
+          "begin": 56680,
+          "end": 56731,
+          "unwind": 1161616,
+          "header": "21080200"
+        },
+        {
+          "begin": 56731,
+          "end": 57066,
+          "unwind": 1161636,
+          "header": "21080200"
+        },
+        {
+          "begin": 57066,
+          "end": 57074,
+          "unwind": 1161656,
+          "header": "21000000"
+        },
+        {
+          "begin": 57074,
+          "end": 57102,
+          "unwind": 1161672,
+          "header": "21000000"
+        }
+      ]
+    },
+    {
+      "label": "EEex::Opcode_Hook_OnCopy",
+      "body": {
+        "name": "EEex::Opcode_Hook_OnCopy",
+        "rva": 53488,
+        "size": 80,
+        "sha256": "4287eaedde1a5ce111bd1dd8f4cda70bca7ff9474cf9256f64075d34c224c534"
+      },
+      "registration": {
+        "name": "EEex::Opcode_Hook_OnCopy registration",
+        "rva": 188515,
+        "size": 43,
+        "sha256": "4f162a2107880710905a4b203f6c4347421ded93a016dd3b2463642cf55154d0"
+      },
+      "prefix": "4c8bdc49895310",
+      "unwind_ranges": [
+        {
+          "begin": 53488,
+          "end": 53559,
+          "unwind": 1161028,
+          "header": "010f0100"
+        }
+      ]
+    },
+    {
+      "label": "EEex::Opcode_Hook_OnDestruct",
+      "body": {
+        "name": "EEex::Opcode_Hook_OnDestruct",
+        "rva": 53568,
+        "size": 64,
+        "sha256": "01816d7835567cedeb9316f1c53e5765643b827d9c19e6e8faa1aa5e4acce824"
+      },
+      "registration": {
+        "name": "EEex::Opcode_Hook_OnDestruct registration",
+        "rva": 188558,
+        "size": 43,
+        "sha256": "7beb2c3f69cfad268227ce6a938ce999568d249b5fd6e700a71f9db5044247f9"
+      },
+      "prefix": "4c8bdc49894b08",
+      "unwind_ranges": [
+        {
+          "begin": 53568,
+          "end": 53627,
+          "unwind": 1161020,
+          "header": "010b0100"
+        }
+      ]
+    },
+    {
+      "label": "EEex::Sprite_Hook_OnDestruct",
+      "body": {
+        "name": "EEex::Sprite_Hook_OnDestruct",
+        "rva": 54160,
+        "size": 64,
+        "sha256": "e627b6bca0b17694a5d2bbddf5f8ecb9a1cc9e79010c32d475076a27b52b585c"
+      },
+      "registration": {
+        "name": "EEex::Sprite_Hook_OnDestruct registration",
+        "rva": 188816,
+        "size": 43,
+        "sha256": "b48c984e8acb6f35e3afac73c703a3c53495702d931e0beacaa97e068ce11c69"
+      },
+      "prefix": "4c8bdc49894b08",
+      "unwind_ranges": [
+        {
+          "begin": 54160,
+          "end": 54219,
+          "unwind": 1161020,
+          "header": "010b0100"
+        }
+      ]
+    }
+  ]
+}

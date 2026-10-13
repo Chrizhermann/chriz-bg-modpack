@@ -1,0 +1,86 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetNextLevelSubClass+0x0 [0x140242990, 0x140242ad0)
+0000000140242990  mov      qword ptr [rsp + 0x10], rbx
+0000000140242995  mov      qword ptr [rsp + 0x18], rbp
+000000014024299a  mov      qword ptr [rsp + 0x20], rsi
+000000014024299f  push     rdi
+00000001402429a0  push     r14
+00000001402429a2  push     r15
+00000001402429a4  sub      rsp, 0x50
+00000001402429a8  mov      rax, qword ptr [rip + 0x419161]
+00000001402429af  mov      rsi, rcx
+00000001402429b2  mov      rcx, qword ptr [rsp + 0x98]
+00000001402429ba  movzx    edi, r9b
+00000001402429be  mov      qword ptr [rsp + 0x38], rax
+00000001402429c3  movzx    r14d, r8b
+00000001402429c7  mov      qword ptr [rsp + 0x30], rax
+00000001402429cc  movzx    r15d, dl
+00000001402429d0  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+00000001402429d5  mov      rcx, qword ptr [rsp + 0x98]
+00000001402429dd  movzx    ebx, al
+00000001402429e0  movzx    eax, byte ptr [rsp + 0x90]
+00000001402429e8  movzx    r9d, dil
+00000001402429ec  movzx    r8d, r14b
+00000001402429f0  mov      byte ptr [rsp + 0x20], al
+00000001402429f4  movzx    edx, r15b
+00000001402429f8  call     0x1401532c0 ; CDerivedStats::GetXP+0x0
+00000001402429fd  mov      r9d, 0x4000
+0000000140242a03  lea      rdx, [rsp + 0x40]
+0000000140242a08  movzx    r8d, r14b
+0000000140242a0c  mov      rcx, rsi
+0000000140242a0f  mov      ebp, eax
+0000000140242a11  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+0000000140242a16  mov      rdx, rax
+0000000140242a19  lea      rcx, [rsp + 0x30]
+0000000140242a1e  call     0x1403fce30 ; CString::operator=+0x0
+0000000140242a23  lea      rcx, [rsp + 0x40]
+0000000140242a28  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242a2d  nop      dword ptr [rax]
+0000000140242a30  movzx    edi, bl
+0000000140242a33  lea      rdx, [rip + 0x3c4316]
+0000000140242a3a  inc      bl
+0000000140242a3c  lea      rcx, [rsp + 0x38]
+0000000140242a41  movzx    r8d, bl
+0000000140242a45  call     0x1403fe080 ; CString::Format+0x0
+0000000140242a4a  lea      r8, [rsp + 0x30]
+0000000140242a4f  lea      rdx, [rsp + 0x38]
+0000000140242a54  lea      rcx, [rsi + 0x9a0]
+0000000140242a5b  call     0x1401151c0 ; C2DArray::GetAt+0x0
+0000000140242a60  lea      r8, [rsp + 0x70]
+0000000140242a65  lea      rdx, [rip + 0x3c42e4]
+0000000140242a6c  mov      rcx, qword ptr [rax]
+0000000140242a6f  call     0x1400580f0 ; sscanf+0x0
+0000000140242a74  mov      eax, dword ptr [rsp + 0x70]
+0000000140242a78  cmp      ebp, eax
+0000000140242a7a  jb       0x140242a81
+0000000140242a7c  cmp      eax, -1
+0000000140242a7f  jne      0x140242a30
+0000000140242a81  mov      rcx, qword ptr [rsp + 0x98]
+0000000140242a89  movzx    r9d, dil
+0000000140242a8d  movzx    r8d, r14b
+0000000140242a91  movzx    edx, r15b
+0000000140242a95  call     0x140153de0 ; CDerivedStats::SetLevel+0x0
+0000000140242a9a  lea      rcx, [rsp + 0x30]
+0000000140242a9f  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242aa4  lea      rcx, [rsp + 0x38]
+0000000140242aa9  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242aae  lea      r11, [rsp + 0x50]
+0000000140242ab3  mov      rbx, qword ptr [r11 + 0x28]
+0000000140242ab7  mov      rbp, qword ptr [r11 + 0x30]
+0000000140242abb  mov      rsi, qword ptr [r11 + 0x38]
+0000000140242abf  mov      rsp, r11
+0000000140242ac2  pop      r15
+0000000140242ac4  pop      r14
+0000000140242ac6  pop      rdi
+0000000140242ac7  ret
+0000000140242ac8  int3
+0000000140242ac9  int3
+0000000140242aca  int3
+0000000140242acb  int3
+0000000140242acc  int3
+0000000140242acd  int3
+0000000140242ace  int3
+0000000140242acf  int3

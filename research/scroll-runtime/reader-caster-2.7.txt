@@ -1,0 +1,273 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CDerivedStats::GetPriestLevelCast+0x0 [0x140152f40, 0x140153130)
+0000000140152f40  mov      qword ptr [rsp + 8], rbx
+0000000140152f45  push     rbp
+0000000140152f46  mov      rbp, rsp
+0000000140152f49  sub      rsp, 0x20
+0000000140152f4d  movzx    eax, dl
+0000000140152f50  mov      rbx, rcx
+0000000140152f53  dec      eax
+0000000140152f55  cmp      eax, 0x14
+0000000140152f58  ja       0x1401530a5
+0000000140152f5e  lea      rcx, [rip - 0x152f65]
+0000000140152f65  cdqe
+0000000140152f67  mov      r8d, dword ptr [rcx + rax*4 + 0x1530d8]
+0000000140152f6f  add      r8, rcx
+0000000140152f72  jmp      r8
+0000000140152f75  movzx    r8d, dl
+0000000140152f79  jmp      0x1401530af ; CDerivedStats::GetPriestLevelCast+0x16f
+0000000140152f7e  movzx    r8d, byte ptr [rip + 0x439f9e]
+0000000140152f86  jmp      0x1401530af ; CDerivedStats::GetPriestLevelCast+0x16f
+0000000140152f8b  cmp      dword ptr [rip + 0x5d7a96], 2
+0000000140152f92  lea      r9, [rbp + 0x20]
+0000000140152f96  mov      dword ptr [rbp + 0x18], 1
+0000000140152f9d  movzx    r8d, dl
+0000000140152fa1  mov      rcx, rbx
+0000000140152fa4  jne      0x140152fdb
+0000000140152fa6  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152fab  mov      rax, qword ptr [rbp + 0x20]
+0000000140152faf  lea      rdx, [rbp + 0x18]
+0000000140152fb3  movzx    ecx, byte ptr [rax]
+0000000140152fb6  movsx    eax, word ptr [rbx + 0xd6]
+0000000140152fbd  add      ecx, eax
+0000000140152fbf  mov      dword ptr [rbp + 0x20], ecx
+0000000140152fc2  lea      rcx, [rbp + 0x20]
+0000000140152fc6  call     0x140407bb0 ; max+0x0
+0000000140152fcb  mov      ecx, eax
+0000000140152fcd  movzx    eax, cl
+0000000140152fd0  mov      rbx, qword ptr [rsp + 0x30]
+0000000140152fd5  add      rsp, 0x20
+0000000140152fd9  pop      rbp
+0000000140152fda  ret
+0000000140152fdb  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152fe0  mov      rax, qword ptr [rbp + 0x20]
+0000000140152fe4  lea      rcx, [rbp + 0x20]
+0000000140152fe8  movsx    edx, word ptr [rbx + 0xd6]
+0000000140152fef  movzx    eax, byte ptr [rax]
+0000000140152ff2  add      eax, -7
+0000000140152ff5  add      eax, edx
+0000000140152ff7  lea      rdx, [rbp + 0x18]
+0000000140152ffb  mov      dword ptr [rbp + 0x20], eax
+0000000140152ffe  call     0x140407bb0 ; max+0x0
+0000000140153003  movzx    ecx, al
+0000000140153006  mov      rbx, qword ptr [rsp + 0x30]
+000000014015300b  add      rsp, 0x20
+000000014015300f  pop      rbp
+0000000140153010  ret
+0000000140153011  cmp      dword ptr [rip + 0x5d7a10], 2
+0000000140153018  lea      r9, [rbp + 0x20]
+000000014015301c  mov      dword ptr [rbp + 0x18], 1
+0000000140153023  movzx    r8d, dl
+0000000140153027  mov      rcx, rbx
+000000014015302a  jne      0x14015305f
+000000014015302c  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140153031  mov      rax, qword ptr [rbp + 0x20]
+0000000140153035  movsx    edx, word ptr [rbx + 0xd6]
+000000014015303c  movzx    ecx, byte ptr [rax]
+000000014015303f  add      edx, ecx
+0000000140153041  lea      rcx, [rbp + 0x20]
+0000000140153045  mov      dword ptr [rbp + 0x20], edx
+0000000140153048  lea      rdx, [rbp + 0x18]
+000000014015304c  call     0x140407bb0 ; max+0x0
+0000000140153051  movzx    ecx, al
+0000000140153054  mov      rbx, qword ptr [rsp + 0x30]
+0000000140153059  add      rsp, 0x20
+000000014015305d  pop      rbp
+000000014015305e  ret
+000000014015305f  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140153064  mov      rax, qword ptr [rbp + 0x20]
+0000000140153068  lea      rcx, [rbp + 0x20]
+000000014015306c  movsx    edx, word ptr [rbx + 0xd6]
+0000000140153073  movzx    eax, byte ptr [rax]
+0000000140153076  add      eax, -8
+0000000140153079  add      eax, edx
+000000014015307b  lea      rdx, [rbp + 0x18]
+000000014015307f  mov      dword ptr [rbp + 0x20], eax
+0000000140153082  call     0x140407bb0 ; max+0x0
+0000000140153087  movzx    ecx, al
+000000014015308a  mov      rbx, qword ptr [rsp + 0x30]
+000000014015308f  add      rsp, 0x20
+0000000140153093  pop      rbp
+0000000140153094  ret
+0000000140153095  mov      cl, 1
+0000000140153097  movzx    eax, cl
+000000014015309a  mov      rbx, qword ptr [rsp + 0x30]
+000000014015309f  add      rsp, 0x20
+00000001401530a3  pop      rbp
+00000001401530a4  ret
+00000001401530a5  mov      dl, 3
+00000001401530a7  movzx    r8d, byte ptr [rip + 0x439e6d]
+00000001401530af  lea      r9, [rbp + 0x20]
+00000001401530b3  mov      rcx, rbx
+00000001401530b6  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+00000001401530bb  mov      rax, qword ptr [rbp + 0x20]
+00000001401530bf  movzx    ecx, byte ptr [rbx + 0xd6]
+00000001401530c6  mov      rbx, qword ptr [rsp + 0x30]
+00000001401530cb  add      cl, byte ptr [rax]
+00000001401530cd  movzx    eax, cl
+00000001401530d0  add      rsp, 0x20
+00000001401530d4  pop      rbp
+00000001401530d5  ret
+00000001401530d6  nop
+00000001401530d8  xchg     ebp, eax
+00000001401530d9  xor      byte ptr [rip + 0x15309500], dl
+00000001401530df  add      byte ptr [rbp + 0x2f], dh
+00000001401530e2  adc      eax, 0x15309500
+00000001401530e7  add      byte ptr [rbp + 0x11001530], dl
+00000001401530ed  xor      byte ptr [rip + 0x15309500], dl
+00000001401530f3  add      byte ptr [rdi - 0x6affead0], ah
+00000001401530f9  xor      byte ptr [rip + 0x15309500], dl
+00000001401530ff  add      byte ptr [rbp + 0x2f], dh
+0000000140153102  adc      eax, 0x152f8b00
+0000000140153107  add      byte ptr [rbp - 0x58ffead0], dl
+000000014015310d  xor      byte ptr [rip + 0x1530a700], dl
+0000000140153113  add      byte ptr [rsi + 0x2f], bh
+0000000140153116  adc      eax, 0x1530a700
+000000014015311b  add      byte ptr [rdi - 0x6affead0], ah
+0000000140153121  xor      byte ptr [rip + 0x15309500], dl
+0000000140153127  add      byte ptr [rbp + 0x2f], dh
+000000014015312a  adc      eax, 0xcccccc00
+000000014015312f  int3
+
+CDerivedStats::GetWizardLevelCast+0x0 [0x140153430, 0x1401534d0)
+0000000140153430  push     rbx
+0000000140153432  sub      rsp, 0x20
+0000000140153436  movzx    eax, dl
+0000000140153439  mov      rbx, rcx
+000000014015343c  dec      eax
+000000014015343e  cmp      eax, 0x14
+0000000140153441  ja       0x140153474
+0000000140153443  lea      rcx, [rip - 0x15344a]
+000000014015344a  cdqe
+000000014015344c  movzx    eax, byte ptr [rcx + rax + 0x1534b0]
+0000000140153454  mov      r8d, dword ptr [rcx + rax*4 + 0x1534a4]
+000000014015345c  add      r8, rcx
+000000014015345f  jmp      r8
+0000000140153462  movzx    r8d, byte ptr [rip + 0x439ab4]
+000000014015346a  jmp      0x14015347e ; CDerivedStats::GetWizardLevelCast+0x4e
+000000014015346c  mov      al, 1
+000000014015346e  add      rsp, 0x20
+0000000140153472  pop      rbx
+0000000140153473  ret
+0000000140153474  mov      dl, 1
+0000000140153476  movzx    r8d, byte ptr [rip + 0x439a9c]
+000000014015347e  lea      r9, [rsp + 0x40]
+0000000140153483  mov      rcx, rbx
+0000000140153486  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+000000014015348b  mov      rax, qword ptr [rsp + 0x40]
+0000000140153490  movzx    ecx, byte ptr [rbx + 0xd4]
+0000000140153497  add      cl, byte ptr [rax]
+0000000140153499  movzx    eax, cl
+000000014015349c  add      rsp, 0x20
+00000001401534a0  pop      rbx
+00000001401534a1  ret
+00000001401534a2  nop
+00000001401534a4  jbe      0x1401534da
+00000001401534a6  adc      eax, 0x15346c00
+00000001401534ab  add      byte ptr [rdx + 0x34], ah
+00000001401534ae  adc      eax, 0x1010000
+00000001401534b3  add      dword ptr [rdx], eax
+00000001401534b5  add      dword ptr [rax], eax
+00000001401534b7  add      dword ptr [rcx], eax
+00000001401534b9  add      byte ptr [rcx], al
+00000001401534bb  add      dword ptr [rax], eax
+00000001401534bd  add      byte ptr [rcx], al
+00000001401534bf  add      dword ptr [rax], eax
+00000001401534c1  add      dword ptr [rax], eax
+00000001401534c3  add      dword ptr [rcx], eax
+00000001401534c5  int3
+00000001401534c6  int3
+00000001401534c7  int3
+00000001401534c8  int3
+00000001401534c9  int3
+00000001401534ca  int3
+00000001401534cb  int3
+00000001401534cc  int3
+00000001401534cd  int3
+00000001401534ce  int3
+00000001401534cf  int3
+
+DIRECT CALL/JMP XREFS (executable sections; function-name attribution is nearest preceding symbol)
+0x14011e0af call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CAIObjectType::IsUsableSubClass+0x1f
+0x140156944 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0x1e4
+0x14015716b call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0xa0b
+0x1401572ad call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0xb4d
+0x1401573ef call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0xc8f
+0x14015c705 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0x5fa5
+0x14015c7ba call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0x605a
+0x14015c86c call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameAIBase::EvaluateStatusTrigger+0x610c
+0x1401aa9e4 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameEffectCopySelf::ApplyEffect+0x3b4
+0x1401b7e54 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameEffectLevel::ApplyEffect+0xb4
+0x1401b8cc1 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameEffectLevelDrain::ApplyEffect+0x131
+0x1401e43d2 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameEffect::EqualClass+0x42
+0x1401e5ca2 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameEffectLevelDrain::OnAddSpecific+0xb2
+0x140239ee3 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::Add25StartEquipment+0x43
+0x14023b250 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetBackstabMultiplier+0x30
+0x14023b7ac call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetBaseLore+0x4c
+0x14023c8cd call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetClassAPRBonus+0x3d
+0x14023e403 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetClassStringLower+0x103
+0x14023eaac call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetClassStringMixed+0xfc
+0x14023faf0 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetCripplingStrike+0x30
+0x1402408e2 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetHPCONBonusTotal+0x32
+0x140240d3f call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetHitPoints+0x6f
+0x1402412ac call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetInnateClassSkill+0x4c
+0x140241998 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetLevelUpAbilities+0xa8
+0x14024206c call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetMaxMemorizedSpellsMage+0x13c
+0x140242924 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetNextLevel+0x34
+0x140242ec7 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetNumLevelUpAbilities+0x57
+0x14024610d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetProficiencySlots+0x3d
+0x140247101 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetSavingThrow+0x51
+0x14024766d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetSetSnareLimit+0x4d
+0x140247f00 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetSneakAttack+0x30
+0x140249180 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetTHAC0+0x40
+0x1402493d3 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetTHAC0+0x293
+0x14024959f call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetThiefSkillPercentage+0x8f
+0x1402496f4 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetThiefSkillsDual+0x44
+0x1402497cb call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetThiefSkillsLevelUp+0x4b
+0x1402498db call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetThiefSkillsStart+0x4b
+0x140249e77 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CRuleTables::GetXPCap+0x37
+0x1402643e3 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfButtonArray::OnLButtonPressed+0xe03
+0x1402654a8 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfButtonArray::OnRButtonPressed+0x718
+0x1402704ba call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::CharacterExport+0xea
+0x140271c1d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::CheckItemUsable+0x36d
+0x14028c898 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::SelectToolbar+0xd8
+0x140290202 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::SwapItemPersonal+0x2e2
+0x140296393 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::UpdatePartyToExpansionPack+0x173
+0x14029710c call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CInfGame::UpdatePartyToExpansionPack+0xeec
+0x1402a9652 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCharacter::MakeDualClass+0x8b2
+0x1402aab34 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCharacter::OnErrorButtonClick+0x134
+0x1402b1a0f call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::CanSpendProficiencySlots+0xaf
+0x1402b2f12 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::CompleteCharacterClass+0x92
+0x1402b4b2d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::GetCharacterVersion+0x2d
+0x1402b5c52 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ImportCharacter+0x1c2
+0x1402b5ce7 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ImportCharacter+0x257
+0x1402b602c call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ImportCharacter+0x59c
+0x1402b6252 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ImportCharacter+0x7c2
+0x1402b6fef call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::LevelUp+0x7f
+0x1402b7bf2 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::MakeDualClass+0x8c2
+0x1402b96cb call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::OnDoneButtonClick+0x6ab
+0x1402bbdf5 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::OnLevelUp+0x245
+0x1402bbf10 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::OnLevelUp+0x360
+0x1402bbf57 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::OnLevelUp+0x3a7
+0x1402be140 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::OnProficiencyPlusMinusButtonClick+0xa0
+0x1402bfb91 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ResetLevelUpPanel+0x2b1
+0x1402c043d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ResetLevelUpPanel+0xb5d
+0x1402c222a call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ResetProficienciesPanel+0x2fa
+0x1402c3a1a call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::ShowNextSpellScreen+0x2fa
+0x1402c6623 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::UpdateMainPanel+0x373
+0x1402c7929 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::UpdateProficienciesPanel+0x129
+0x1402c890d call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CScreenCreateChar::UpdateProficienciesPanel+0x110d
+0x14034ed71 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::CheckStatsChange+0x551
+0x1403544d0 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::GetExperience+0x80
+0x140355351 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::GetExperienceEntry+0xb1
+0x140355eac call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::GetKitDescription+0x2c
+0x140357b5c call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::GetNumQuickWeaponSlots+0x3c
+0x14035abd6 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::GetStatBreakdown+0x2b6
+0x14037ab04 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::Unmarshal+0x724
+0x14037ac3b call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::Unmarshal+0x85b
+0x14037b65a call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::Unmarshal+0x58a
+0x140384ab0 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::UpdateLuaStats+0x57d0
+0x14039dcc7 call 0x14011d9d0 CAIObjectType::GetActiveInactiveClasses FROM CGameSprite::Hide+0x117

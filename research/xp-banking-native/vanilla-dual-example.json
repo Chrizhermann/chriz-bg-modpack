@@ -1,0 +1,17 @@
+{
+  "source_bif": "%BG2EE_266_ROOT%\\data\\Default.bif",
+  "resource": "XPLEVEL.2DA",
+  "source": "KEY/BIF; override bypassed",
+  "sha256": "f5f70503cfe92348056b940b90a29f0f408a125c64ab0d6aa0ec685adc2ffac0",
+  "fighter": {
+    "6": 32000,
+    "7": 64000,
+    "8": 125000,
+    "9": 250000,
+    "10": 500000
+  },
+  "get_next_level_xp_column": "Input level formatted unchanged as %d; retired input level is 7",
+  "bg1_cap": 161000,
+  "fighter7_retired_threshold": 64000,
+  "active_allowance": 97000
+}

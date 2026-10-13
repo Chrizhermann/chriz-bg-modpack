@@ -1,0 +1,241 @@
+{
+  "version": "2.7.3.0",
+  "sha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+  "message_action_constructor_returns": [
+    1738603,
+    1739207
+  ],
+  "fire_message_vtable_rva": 5836176,
+  "fire_message_vtable_slots": [
+    1462784,
+    1144752,
+    1145760,
+    1650304,
+    2145760,
+    2209968,
+    2174416
+  ],
+  "functions": [
+    {
+      "label": "apply146",
+      "rva": 1737904,
+      "size": 1008,
+      "prefix": "405556574157488dac2448ffffff4881ecb8010000488b050cc54b004833c448",
+      "unwind": "19590a0059e4360051343e001501370006f0047003600250",
+      "signature": {
+        "name": "apply146",
+        "rva": 1737904,
+        "size": 1008,
+        "sha256": "1b5759207e31ccc1c0973774cee961a6b99af1d38414ee77d061b43a719755fd"
+      },
+      "instructions": [
+        "001a84b0 push rbp",
+        "001a84b2 push rsi",
+        "001a84b3 push rdi",
+        "001a84b4 push r15",
+        "001a84b6 lea rbp, [rsp - 0xb8]",
+        "001a84be sub rsp, 0x1b8",
+        "001a84c5 mov rax, qword ptr [rip + 0x4bc50c]",
+        "001a84cc xor rax, rsp",
+        "001a84cf mov qword ptr [rbp + 0xa0], rax",
+        "001a84d6 xor edi, edi",
+        "001a84d8 mov r15, rdx",
+        "001a84db mov dword ptr [rsp + 0x50], edi",
+        "001a84df mov rsi, rcx",
+        "001a84e2 mov eax, dword ptr [rcx + 0x110]",
+        "001a84e8 cmp eax, -1",
+        "001a84eb jne 0x1401a84f6"
+      ]
+    },
+    {
+      "label": "apply148",
+      "rva": 1738912,
+      "size": 576,
+      "prefix": "48895c2418488974242055574156488d6c24b94881ecf0000000488b0517c14b",
+      "unwind": "192809001a6425001a3424001a011e000ee00c700b500000",
+      "signature": {
+        "name": "apply148",
+        "rva": 1738912,
+        "size": 576,
+        "sha256": "32e38218c443d569094faeceb2efa575711ce46da22c97a9cea26f92e656e3b6"
+      },
+      "instructions": [
+        "001a88a0 mov qword ptr [rsp + 0x18], rbx",
+        "001a88a5 mov qword ptr [rsp + 0x20], rsi",
+        "001a88aa push rbp",
+        "001a88ab push rdi",
+        "001a88ac push r14",
+        "001a88ae lea rbp, [rsp - 0x47]",
+        "001a88b3 sub rsp, 0xf0",
+        "001a88ba mov rax, qword ptr [rip + 0x4bc117]",
+        "001a88c1 xor rax, rsp",
+        "001a88c4 mov qword ptr [rbp + 0x37], rax",
+        "001a88c8 cmp dword ptr [rcx + 0x20], 0",
+        "001a88cc mov r14, rdx",
+        "001a88cf mov rdi, rcx",
+        "001a88d2 je 0x1401a8913",
+        "001a88d4 mov dword ptr [rsp + 0x38], 1",
+        "001a88dc lea r8, [rcx + 0x88]"
+      ]
+    },
+    {
+      "label": "action_default",
+      "rva": 1142032,
+      "size": 224,
+      "prefix": "40534883ec50c7442440ffffffff488bd9c6442438004883c108c64424300045",
+      "unwind": "0106020006920230",
+      "signature": {
+        "name": "action_default",
+        "rva": 1142032,
+        "size": 224,
+        "sha256": "44d8c7dfb2643bdf19070e231ab6ca5e8284dc60d09af4f1f8f5026e26d12315"
+      },
+      "instructions": [
+        "00116d10 push rbx",
+        "00116d12 sub rsp, 0x50",
+        "00116d16 mov dword ptr [rsp + 0x40], 0xffffffff",
+        "00116d1e mov rbx, rcx",
+        "00116d21 mov byte ptr [rsp + 0x38], 0",
+        "00116d26 add rcx, 8",
+        "00116d2a mov byte ptr [rsp + 0x30], 0",
+        "00116d2f xor r9d, r9d",
+        "00116d32 mov byte ptr [rsp + 0x28], 0",
+        "00116d37 xor r8d, r8d",
+        "00116d3a xor edx, edx",
+        "00116d3c mov byte ptr [rsp + 0x20], 0",
+        "00116d41 call 0x14011ba20",
+        "00116d46 mov dword ptr [rsp + 0x40], 0xffffffff",
+        "00116d4e lea rcx, [rbx + 0x20]",
+        "00116d52 mov byte ptr [rsp + 0x38], 0"
+      ]
+    },
+    {
+      "label": "add_message",
+      "rva": 2117312,
+      "size": 416,
+      "prefix": "48895c24084889742410574883ec20488b02488bf1488bca418bf8488bdaff50",
+      "unwind": "010f06000f6407000f3406000f320b70",
+      "signature": {
+        "name": "add_message",
+        "rva": 2117312,
+        "size": 416,
+        "sha256": "79ea30178550631a484432e6faf0a931e3e791b0d1a344a2cdaf8fe003c224c6"
+      },
+      "instructions": [
+        "00204ec0 mov qword ptr [rsp + 8], rbx",
+        "00204ec5 mov qword ptr [rsp + 0x10], rsi",
+        "00204eca push rdi",
+        "00204ecb sub rsp, 0x20",
+        "00204ecf mov rax, qword ptr [rdx]",
+        "00204ed2 mov rsi, rcx",
+        "00204ed5 mov rcx, rdx",
+        "00204ed8 mov edi, r8d",
+        "00204edb mov rbx, rdx",
+        "00204ede call qword ptr [rax + 8]",
+        "00204ee1 movsx r9d, ax",
+        "00204ee5 dec r9d",
+        "00204ee8 cmp r9d, 5",
+        "00204eec ja 0x140205026",
+        "00204ef2 lea rcx, [rip - 0x204ef9]",
+        "00204ef9 movsxd rax, r9d"
+      ]
+    },
+    {
+      "label": "fire_message_run",
+      "rva": 2174416,
+      "size": 208,
+      "prefix": "40534883ec60488b05fb1b45004833c44889442458488bd98b490883f9ff0f84",
+      "unwind": "1915020006b20230",
+      "signature": {
+        "name": "fire_message_run",
+        "rva": 2174416,
+        "size": 208,
+        "sha256": "bb5875b2c08935ff7eeb324f421db082e9de94269b998c6f0cbd1f1b6504a94b"
+      },
+      "instructions": [
+        "00212dd0 push rbx",
+        "00212dd2 sub rsp, 0x60",
+        "00212dd6 mov rax, qword ptr [rip + 0x451bfb]",
+        "00212ddd xor rax, rsp",
+        "00212de0 mov qword ptr [rsp + 0x58], rax",
+        "00212de5 mov rbx, rcx",
+        "00212de8 mov ecx, dword ptr [rcx + 8]",
+        "00212deb cmp ecx, -1",
+        "00212dee je 0x140212e89",
+        "00212df4 cmp dword ptr [rbx + 0x18], -1",
+        "00212df8 je 0x140212e89",
+        "00212dfe lea rdx, [rsp + 0x48]",
+        "00212e03 call 0x140276700",
+        "00212e08 test al, al",
+        "00212e0a jne 0x140212e89",
+        "00212e0c mov rcx, qword ptr [rsp + 0x48]"
+      ]
+    },
+    {
+      "label": "fire_message_destroy",
+      "rva": 1462784,
+      "size": 80,
+      "prefix": "48895c2408574883ec20488bf98bda4883c110e828852900488d05417b420048",
+      "unwind": "010a04000a3406000a320670",
+      "signature": {
+        "name": "fire_message_destroy",
+        "rva": 1462784,
+        "size": 80,
+        "sha256": "752fb420af2482cd0317f7c0b138299b2fc433e027af823bf38301d28a952e76"
+      },
+      "instructions": [
+        "00165200 mov qword ptr [rsp + 8], rbx",
+        "00165205 push rdi",
+        "00165206 sub rsp, 0x20",
+        "0016520a mov rdi, rcx",
+        "0016520d mov ebx, edx",
+        "0016520f add rcx, 0x10",
+        "00165213 call 0x1403fd740",
+        "00165218 lea rax, [rip + 0x427b41]",
+        "0016521f mov qword ptr [rdi], rax",
+        "00165222 test bl, 1",
+        "00165225 je 0x140165234",
+        "00165227 mov edx, 0x20",
+        "0016522c mov rcx, rdi",
+        "0016522f call 0x14045e690",
+        "00165234 mov rbx, qword ptr [rsp + 0x30]",
+        "00165239 mov rax, rdi"
+      ]
+    }
+  ],
+  "fire_message_destroy_body": [
+    "00165200 mov qword ptr [rsp + 8], rbx",
+    "00165205 push rdi",
+    "00165206 sub rsp, 0x20",
+    "0016520a mov rdi, rcx",
+    "0016520d mov ebx, edx",
+    "0016520f add rcx, 0x10",
+    "00165213 call 0x1403fd740",
+    "00165218 lea rax, [rip + 0x427b41]",
+    "0016521f mov qword ptr [rdi], rax",
+    "00165222 test bl, 1",
+    "00165225 je 0x140165234",
+    "00165227 mov edx, 0x20",
+    "0016522c mov rcx, rdi",
+    "0016522f call 0x14045e690",
+    "00165234 mov rbx, qword ptr [rsp + 0x30]",
+    "00165239 mov rax, rdi",
+    "0016523c add rsp, 0x20",
+    "00165240 pop rdi",
+    "00165241 ret ",
+    "00165242 int3 ",
+    "00165243 int3 ",
+    "00165244 int3 ",
+    "00165245 int3 ",
+    "00165246 int3 ",
+    "00165247 int3 ",
+    "00165248 int3 ",
+    "00165249 int3 ",
+    "0016524a int3 ",
+    "0016524b int3 ",
+    "0016524c int3 ",
+    "0016524d int3 ",
+    "0016524e int3 ",
+    "0016524f int3 "
+  ]
+}

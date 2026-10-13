@@ -1,0 +1,9 @@
+; UNINSTALLED research label extension. Shared shape checked on the two recorded builds.
+; Never deploy before the full ledger/lifecycle and native-bridge gates pass.
+[CBMBank::CheckStatsChangeGetXPCap]
+Pattern=488BD6498BCDE8????????4C8D442450488BCE488D542451448BF0
+Operations=ADD 6
+
+[CBMBank::GetXPCap]
+Pattern=488BD6498BCDE8????????4C8D442450488BCE488D542451448BF0
+Operations=ADD 7, PUSH, READ DWORD, ADD, ADD 4

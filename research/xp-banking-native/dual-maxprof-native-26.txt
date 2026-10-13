@@ -1,0 +1,74 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetMaximumProficiency+0x0 [0x140242420, 0x140242530)
+0000000140242420  mov      qword ptr [rsp + 0x10], rbx
+0000000140242425  mov      qword ptr [rsp + 0x18], rbp
+000000014024242a  push     rsi
+000000014024242b  push     rdi
+000000014024242c  push     r14
+000000014024242e  sub      rsp, 0x20
+0000000140242432  movsx    edi, word ptr [rcx + 0x180]
+0000000140242439  mov      ebp, edx
+000000014024243b  mov      rsi, rcx
+000000014024243e  lea      rdx, [rip + 0x44aa3b]
+0000000140242445  lea      rcx, [rsp + 0x58]
+000000014024244a  dec      edi
+000000014024244c  mov      r14d, r8d
+000000014024244f  call     0x1403fcd00 ; CString::CString+0x0
+0000000140242454  cmp      ebp, 1
+0000000140242457  jle      0x1402424d1
+0000000140242459  lea      rdx, [rip + 0x44aa40]
+0000000140242460  lea      rcx, [rsp + 0x58]
+0000000140242465  call     0x1403fce30 ; CString::operator=+0x0
+000000014024246a  mov      ebx, 2
+000000014024246f  cmp      edi, ebx
+0000000140242471  jle      0x1402424d1
+0000000140242473  nop      dword ptr [rax]
+0000000140242477  nop      word ptr [rax + rax]
+0000000140242480  mov      rax, qword ptr [rsi + 0x160]
+0000000140242487  movsxd   rcx, ebx
+000000014024248a  lea      rdx, [rax + rcx*8]
+000000014024248e  lea      rcx, [rsp + 0x40]
+0000000140242493  call     0x1403fcd00 ; CString::CString+0x0
+0000000140242498  mov      rcx, qword ptr [rsp + 0x40]
+000000014024249d  call     0x140502d40 ; atoi+0x0
+00000001402424a2  cmp      eax, ebp
+00000001402424a4  jg       0x1402424c7
+00000001402424a6  lea      rdx, [rsp + 0x40]
+00000001402424ab  lea      rcx, [rsp + 0x58]
+00000001402424b0  call     0x1403fce30 ; CString::operator=+0x0
+00000001402424b5  lea      rcx, [rsp + 0x40]
+00000001402424ba  call     0x1403fce00 ; CString::~CString+0x0
+00000001402424bf  inc      ebx
+00000001402424c1  cmp      ebx, edi
+00000001402424c3  jl       0x140242480
+00000001402424c5  jmp      0x1402424d1 ; CRuleTables::GetMaximumProficiency+0xb1
+00000001402424c7  lea      rcx, [rsp + 0x40]
+00000001402424cc  call     0x1403fce00 ; CString::~CString+0x0
+00000001402424d1  mov      r9d, 0x4000
+00000001402424d7  lea      rdx, [rsp + 0x40]
+00000001402424dc  movzx    r8d, r14b
+00000001402424e0  mov      rcx, rsi
+00000001402424e3  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+00000001402424e8  mov      r8, rax
+00000001402424eb  lea      rcx, [rsi + 0x150]
+00000001402424f2  lea      rdx, [rsp + 0x58]
+00000001402424f7  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402424fc  mov      rcx, qword ptr [rax]
+00000001402424ff  call     0x140502d40 ; atoi+0x0
+0000000140242504  lea      rcx, [rsp + 0x40]
+0000000140242509  mov      ebx, eax
+000000014024250b  call     0x1403fce00 ; CString::~CString+0x0
+0000000140242510  lea      rcx, [rsp + 0x58]
+0000000140242515  call     0x1403fce00 ; CString::~CString+0x0
+000000014024251a  mov      rbp, qword ptr [rsp + 0x50]
+000000014024251f  mov      eax, ebx
+0000000140242521  mov      rbx, qword ptr [rsp + 0x48]
+0000000140242526  add      rsp, 0x20
+000000014024252a  pop      r14
+000000014024252c  pop      rdi
+000000014024252d  pop      rsi
+000000014024252e  ret
+000000014024252f  int3

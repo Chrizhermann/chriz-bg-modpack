@@ -1,0 +1,24 @@
+// Inspect PE headers through virtual copies; never write executable/loader files.
+ACTION_FOR_EACH cbmb_native IN ~Baldur.exe~ ~EEex.dll~ ~LuaBindings.dll~ ~LuaProvider.dll~ ~InfinityLoaderDLL.dll~ BEGIN
+  COPY - ~%cbmb_native%~ ~.../cbmb-pe~
+    PATCH_IF BUFFER_LENGTH < 0x40 BEGIN PATCH_FAIL ~Campaign XP: truncated native module %cbmb_native%.~ END
+    READ_SHORT 0 cbmb_mz
+    READ_LONG 0x3c cbmb_pe
+    PATCH_IF cbmb_mz != 0x5a4d OR cbmb_pe < 0x40 OR cbmb_pe > BUFFER_LENGTH - 0x58 BEGIN
+      PATCH_FAIL ~Campaign XP: %cbmb_native% is not a valid Windows native module.~
+    END
+    READ_LONG cbmb_pe cbmb_signature
+    READ_SHORT (cbmb_pe + 4) cbmb_machine
+    READ_SHORT (cbmb_pe + 0x18) cbmb_optional
+    PATCH_IF cbmb_signature != 0x4550 OR cbmb_machine != 0x8664 OR cbmb_optional != 0x20b BEGIN
+      PATCH_FAIL ~Campaign XP: %cbmb_native% must be a Windows x64 PE module.~
+    END
+END
+// Exact engine/EEex version, function and hook ABI checks execute at startup,
+// before any hook is published. Presence/PE checks do not waive those checks.
+INCLUDE ~chriz-bg-modpack/campaign-xp/bank_recruitment_patch.tpa~
+LAF cbmbank_patch_recruitment END
+COPY ~chriz-bg-modpack/campaign-xp/m_cbmbnk.lua~ ~override/M_CBMBNK.lua~
+     ~chriz-bg-modpack/campaign-xp/cbmbkcfg.lua~ ~override/CBMBKCFG.lua~
+     ~chriz-bg-modpack/campaign-xp/cbmdold.menu~ ~override/CBMDOLD.menu~
+PRINT @1653

@@ -1,0 +1,18 @@
+[
+  {
+    "version": "2.6",
+    "exeSha256": "fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580",
+    "rva": "0x1cb160",
+    "bodySha256": "b82b9164057049bbca1f2f7cbe5c98e3edf3595bc09aa1ab53ace0912e626c86",
+    "cases": 24,
+    "noCallsOrExternalBranches": true
+  },
+  {
+    "version": "2.7",
+    "exeSha256": "b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57",
+    "rva": "0x1cb370",
+    "bodySha256": "b82b9164057049bbca1f2f7cbe5c98e3edf3595bc09aa1ab53ace0912e626c86",
+    "cases": 24,
+    "noCallsOrExternalBranches": true
+  }
+]

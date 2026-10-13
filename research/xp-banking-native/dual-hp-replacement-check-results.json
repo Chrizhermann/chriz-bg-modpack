@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "runtime": "Lua5.1",
+      "passed": 25
+    },
+    {
+      "runtime": "LuaJIT2.1",
+      "passed": 25
+    }
+  ],
+  "game_run": false,
+  "native_mutation_tested": false
+}

@@ -1,0 +1,2191 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameSprite::Copy+0x0 [0x140350c00, 0x140351040)
+0000000140350c00  mov      qword ptr [rsp + 0x10], rbx
+0000000140350c05  mov      qword ptr [rsp + 0x18], rsi
+0000000140350c0a  push     rbp
+0000000140350c0b  push     rdi
+0000000140350c0c  push     r13
+0000000140350c0e  push     r14
+0000000140350c10  push     r15
+0000000140350c12  lea      rbp, [rsp - 0x100]
+0000000140350c1a  sub      rsp, 0x200
+0000000140350c21  mov      rax, qword ptr [rip + 0x3118f0]
+0000000140350c28  xor      rax, rsp
+0000000140350c2b  mov      qword ptr [rbp + 0xf0], rax
+0000000140350c32  mov      esi, dword ptr [rbp + 0x150]
+0000000140350c38  mov      r13d, r8d
+0000000140350c3b  mov      dword ptr [rsp + 0x6c], edx
+0000000140350c3f  mov      r15, rcx
+0000000140350c42  xor      edx, edx
+0000000140350c44  lea      rcx, [rbp - 0x80]
+0000000140350c48  mov      r8d, 0x160
+0000000140350c4e  mov      edi, r9d
+0000000140350c51  call     0x1404f9b90 ; memset+0x0
+0000000140350c56  xor      ebx, ebx
+0000000140350c58  mov      byte ptr [rsp + 0x20], dil
+0000000140350c5d  lea      r9, [rsp + 0x68]
+0000000140350c62  mov      qword ptr [rbp + 0xe0], rbx
+0000000140350c69  lea      r8, [rsp + 0x60]
+0000000140350c6e  mov      rcx, r15
+0000000140350c71  lea      rdx, [rsp + 0x78]
+0000000140350c76  call     0x1403609b0 ; CGameSprite::Marshal+0x0
+0000000140350c7b  mov      ecx, 0x5388
+0000000140350c80  call     0x1404f6aa8 ; operator_new+0x0
+0000000140350c85  test     rax, rax
+0000000140350c88  je       0x140350cda
+0000000140350c8a  mov      r8d, dword ptr [rsp + 0x60]
+0000000140350c8f  xor      r9d, r9d
+0000000140350c92  mov      rdx, qword ptr [rsp + 0x78]
+0000000140350c97  mov      dword ptr [rsp + 0x50], esi
+0000000140350c9b  mov      word ptr [rsp + 0x48], bx
+0000000140350ca0  mov      qword ptr [rsp + 0x70], 0xffffffffffffffff
+0000000140350ca9  mov      rcx, qword ptr [rsp + 0x70]
+0000000140350cae  mov      qword ptr [rsp + 0x40], rcx
+0000000140350cb3  mov      rcx, rax
+0000000140350cb6  mov      dword ptr [rsp + 0x38], 0x7fffffff
+0000000140350cbe  mov      word ptr [rsp + 0x30], bx
+0000000140350cc3  mov      word ptr [rsp + 0x28], bx
+0000000140350cc8  mov      dword ptr [rsp + 0x20], 0xffffffff
+0000000140350cd0  call     0x140341220 ; CGameSprite::CGameSprite+0x0
+0000000140350cd5  mov      r14, rax
+0000000140350cd8  jmp      0x140350cdd ; CGameSprite::Copy+0xdd
+0000000140350cda  mov      r14, rbx
+0000000140350cdd  mov      byte ptr [r14 + 0x533c], 1
+0000000140350ce5  lea      r8, [r15 + 0x540]
+0000000140350cec  mov      rax, qword ptr [rip + 0x30ae1d]
+0000000140350cf3  lea      rdx, [rsp + 0x70]
+0000000140350cf8  lea      rcx, [r14 + 0x540]
+0000000140350cff  mov      qword ptr [rsp + 0x60], rax
+0000000140350d04  call     0x1403fef40 ; CResRef::operator=+0x0
+0000000140350d09  lea      rdx, [rsp + 0x70]
+0000000140350d0e  lea      rcx, [r14 + 0x540]
+0000000140350d15  call     0x1403ff630 ; CResRef::GetResRefStr+0x0
+0000000140350d1a  mov      rdx, rax
+0000000140350d1d  lea      rcx, [rsp + 0x60]
+0000000140350d22  call     0x1403fce30 ; CString::operator=+0x0
+0000000140350d27  lea      rcx, [rsp + 0x70]
+0000000140350d2c  call     0x1403fce00 ; CString::~CString+0x0
+0000000140350d31  mov      rax, qword ptr [rsp + 0x60]
+0000000140350d36  movzx    ecx, byte ptr [rax]
+0000000140350d39  cmp      cl, 0x2a
+0000000140350d3c  je       0x140350d45
+0000000140350d3e  mov      byte ptr [r14 + 0x5314], cl
+0000000140350d45  lea      rcx, [rsp + 0x60]
+0000000140350d4a  call     0x1403fce00 ; CString::~CString+0x0
+0000000140350d4f  mov      rcx, qword ptr [rsp + 0x78]
+0000000140350d54  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140350d59  and      dword ptr [r14 + 0x568], 0xfffff7ff
+0000000140350d64  xor      r8d, r8d
+0000000140350d67  mov      rax, qword ptr [r14]
+0000000140350d6a  mov      rcx, r14
+0000000140350d6d  movzx    edx, word ptr [rip + 0x23d7f4]
+0000000140350d74  call     qword ptr [rax + 0x120]
+0000000140350d7a  lea      rdx, [rip + 0x29969c]
+0000000140350d81  lea      rcx, [rsp + 0x78]
+0000000140350d86  call     0x1403fee80 ; CResRef::CResRef+0x0
+0000000140350d8b  lea      rcx, [r14 + 0x4c64]
+0000000140350d92  lea      r8, [rsp + 0x78]
+0000000140350d97  lea      rdx, [rsp + 0x70]
+0000000140350d9c  call     0x1403fef40 ; CResRef::operator=+0x0
+0000000140350da1  lea      rdx, [rip + 0x299675]
+0000000140350da8  lea      rcx, [rsp + 0x78]
+0000000140350dad  call     0x1403fcd70 ; CString::CString+0x0
+0000000140350db2  lea      rcx, [r14 + 0x4c6c]
+0000000140350db9  lea      r8, [rsp + 0x78]
+0000000140350dbe  lea      rdx, [rsp + 0x70]
+0000000140350dc3  call     0x1403fef50 ; CResRef::operator=+0x0
+0000000140350dc8  lea      rcx, [rsp + 0x78]
+0000000140350dcd  call     0x1403fce00 ; CString::~CString+0x0
+0000000140350dd2  cmp      byte ptr [r15 + 0x3a28], bl
+0000000140350dd9  je       0x140350e01
+0000000140350ddb  xor      r8d, r8d
+0000000140350dde  lea      rdx, [rbp - 0x80]
+0000000140350de2  mov      rcx, r15
+0000000140350de5  call     0x140360500 ; CGameSprite::Marshal+0x0
+0000000140350dea  xor      r9d, r9d
+0000000140350ded  lea      rdx, [rbp - 0x80]
+0000000140350df1  xor      r8d, r8d
+0000000140350df4  mov      rcx, r14
+0000000140350df7  call     0x14037aa90 ; CGameSprite::Unmarshal+0x0
+0000000140350dfc  jmp      0x140350e89 ; CGameSprite::Copy+0x289
+0000000140350e01  mov      ecx, 0x10
+0000000140350e06  call     0x1404f6aa8 ; operator_new+0x0
+0000000140350e0b  mov      rsi, rax
+0000000140350e0e  test     rax, rax
+0000000140350e11  je       0x140350e4a
+0000000140350e13  mov      ecx, 0x110
+0000000140350e18  call     0x1404f6aa8 ; operator_new+0x0
+0000000140350e1d  mov      rdi, rax
+0000000140350e20  test     rax, rax
+0000000140350e23  je       0x140350e3e
+0000000140350e25  xor      edx, edx
+0000000140350e27  mov      r8d, 0x110
+0000000140350e2d  mov      rcx, rax
+0000000140350e30  call     0x1404f9b90 ; memset+0x0
+0000000140350e35  mov      qword ptr [rsi], rdi
+0000000140350e38  mov      qword ptr [rsi + 8], rbx
+0000000140350e3c  jmp      0x140350e4d ; CGameSprite::Copy+0x24d
+0000000140350e3e  mov      rdi, rbx
+0000000140350e41  mov      qword ptr [rsi], rbx
+0000000140350e44  mov      qword ptr [rsi + 8], rbx
+0000000140350e48  jmp      0x140350e4d ; CGameSprite::Copy+0x24d
+0000000140350e4a  mov      rsi, rbx
+0000000140350e4d  mov      rdi, qword ptr [rsi]
+0000000140350e50  mov      rdx, rsi
+0000000140350e53  mov      rcx, r15
+0000000140350e56  call     0x140361560 ; CGameSprite::Marshal+0x0
+0000000140350e5b  mov      rdx, rdi
+0000000140350e5e  mov      rcx, r14
+0000000140350e61  call     0x14035f470 ; CGameSprite::LoadAreaInformation+0x0
+0000000140350e66  mov      rcx, qword ptr [rsi + 8]
+0000000140350e6a  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140350e6f  mov      rcx, qword ptr [rsi]
+0000000140350e72  mov      edx, 0x110
+0000000140350e77  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140350e7c  mov      edx, 0x10
+0000000140350e81  mov      rcx, rsi
+0000000140350e84  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140350e89  test     r13d, r13d
+0000000140350e8c  jne      0x140350ef4
+0000000140350e8e  mov      dword ptr [r14 + 0x574], ebx
+0000000140350e95  lea      rdi, [r14 + 0xfc0]
+0000000140350e9c  mov      esi, ebx
+0000000140350e9e  nop
+0000000140350ea0  mov      rcx, qword ptr [rdi]
+0000000140350ea3  test     rcx, rcx
+0000000140350ea6  je       0x140350ee9
+0000000140350ea8  cmp      esi, 0xa
+0000000140350eab  je       0x140350ee9
+0000000140350ead  test     byte ptr [rcx + 0x24], 8
+0000000140350eb1  jne      0x140350ebc
+0000000140350eb3  call     0x1401fb430 ; CItem::GetFlagsFile+0x0
+0000000140350eb8  test     al, 4
+0000000140350eba  jne      0x140350ee9
+0000000140350ebc  mov      rcx, qword ptr [rdi]
+0000000140350ebf  mov      r9d, 1
+0000000140350ec5  mov      r8d, esi
+0000000140350ec8  mov      dword ptr [rsp + 0x20], ebx
+0000000140350ecc  mov      rdx, r14
+0000000140350ecf  call     0x140200810 ; CItem::Unequip+0x0
+0000000140350ed4  mov      rcx, qword ptr [rdi]
+0000000140350ed7  test     rcx, rcx
+0000000140350eda  je       0x140350ee6
+0000000140350edc  mov      rax, qword ptr [rcx]
+0000000140350edf  mov      edx, 1
+0000000140350ee4  call     qword ptr [rax]
+0000000140350ee6  mov      qword ptr [rdi], rbx
+0000000140350ee9  inc      esi
+0000000140350eeb  add      rdi, 8
+0000000140350eef  cmp      esi, 0x27
+0000000140350ef2  jl       0x140350ea0
+0000000140350ef4  cmp      dword ptr [rsp + 0x6c], ebx
+0000000140350ef8  je       0x140351007
+0000000140350efe  lea      rax, [r14 + 0xfc8]
+0000000140350f05  mov      rcx, qword ptr [rax - 8]
+0000000140350f09  test     rcx, rcx
+0000000140350f0c  je       0x140350f17
+0000000140350f0e  cmp      ebx, 0xa
+0000000140350f11  je       0x140350f17
+0000000140350f13  or       dword ptr [rcx + 0x24], 8
+0000000140350f17  mov      rcx, qword ptr [rax]
+0000000140350f1a  test     rcx, rcx
+0000000140350f1d  je       0x140350f28
+0000000140350f1f  cmp      ebx, 9
+0000000140350f22  je       0x140350f28
+0000000140350f24  or       dword ptr [rcx + 0x24], 8
+0000000140350f28  mov      rcx, qword ptr [rax + 8]
+0000000140350f2c  test     rcx, rcx
+0000000140350f2f  je       0x140350f3a
+0000000140350f31  cmp      ebx, 8
+0000000140350f34  je       0x140350f3a
+0000000140350f36  or       dword ptr [rcx + 0x24], 8
+0000000140350f3a  mov      rcx, qword ptr [rax + 0x10]
+0000000140350f3e  test     rcx, rcx
+0000000140350f41  je       0x140350f4c
+0000000140350f43  cmp      ebx, 7
+0000000140350f46  je       0x140350f4c
+0000000140350f48  or       dword ptr [rcx + 0x24], 8
+0000000140350f4c  mov      rcx, qword ptr [rax + 0x18]
+0000000140350f50  test     rcx, rcx
+0000000140350f53  je       0x140350f5e
+0000000140350f55  cmp      ebx, 6
+0000000140350f58  je       0x140350f5e
+0000000140350f5a  or       dword ptr [rcx + 0x24], 8
+0000000140350f5e  mov      rcx, qword ptr [rax + 0x20]
+0000000140350f62  test     rcx, rcx
+0000000140350f65  je       0x140350f70
+0000000140350f67  cmp      ebx, 5
+0000000140350f6a  je       0x140350f70
+0000000140350f6c  or       dword ptr [rcx + 0x24], 8
+0000000140350f70  mov      rcx, qword ptr [rax + 0x28]
+0000000140350f74  test     rcx, rcx
+0000000140350f77  je       0x140350f82
+0000000140350f79  cmp      ebx, 4
+0000000140350f7c  je       0x140350f82
+0000000140350f7e  or       dword ptr [rcx + 0x24], 8
+0000000140350f82  mov      rcx, qword ptr [rax + 0x30]
+0000000140350f86  test     rcx, rcx
+0000000140350f89  je       0x140350f94
+0000000140350f8b  cmp      ebx, 3
+0000000140350f8e  je       0x140350f94
+0000000140350f90  or       dword ptr [rcx + 0x24], 8
+0000000140350f94  mov      rcx, qword ptr [rax + 0x38]
+0000000140350f98  test     rcx, rcx
+0000000140350f9b  je       0x140350fa6
+0000000140350f9d  cmp      ebx, 2
+0000000140350fa0  je       0x140350fa6
+0000000140350fa2  or       dword ptr [rcx + 0x24], 8
+0000000140350fa6  mov      rcx, qword ptr [rax + 0x40]
+0000000140350faa  test     rcx, rcx
+0000000140350fad  je       0x140350fb8
+0000000140350faf  cmp      ebx, 1
+0000000140350fb2  je       0x140350fb8
+0000000140350fb4  or       dword ptr [rcx + 0x24], 8
+0000000140350fb8  mov      rcx, qword ptr [rax + 0x48]
+0000000140350fbc  test     rcx, rcx
+0000000140350fbf  je       0x140350fc9
+0000000140350fc1  test     ebx, ebx
+0000000140350fc3  je       0x140350fc9
+0000000140350fc5  or       dword ptr [rcx + 0x24], 8
+0000000140350fc9  mov      rcx, qword ptr [rax + 0x50]
+0000000140350fcd  test     rcx, rcx
+0000000140350fd0  je       0x140350fdb
+0000000140350fd2  cmp      ebx, -1
+0000000140350fd5  je       0x140350fdb
+0000000140350fd7  or       dword ptr [rcx + 0x24], 8
+0000000140350fdb  mov      rcx, qword ptr [rax + 0x58]
+0000000140350fdf  test     rcx, rcx
+0000000140350fe2  je       0x140350fed
+0000000140350fe4  cmp      ebx, -2
+0000000140350fe7  je       0x140350fed
+0000000140350fe9  or       dword ptr [rcx + 0x24], 8
+0000000140350fed  add      ebx, 0xd
+0000000140350ff0  add      rax, 0x68
+0000000140350ff4  cmp      ebx, 0x27
+0000000140350ff7  jl       0x140350f05
+0000000140350ffd  mov      byte ptr [r14 + 0x3a28], 0
+0000000140351005  jmp      0x14035100e ; CGameSprite::Copy+0x40e
+0000000140351007  mov      byte ptr [r14 + 0x3a28], bl
+000000014035100e  mov      rax, r14
+0000000140351011  mov      rcx, qword ptr [rbp + 0xf0]
+0000000140351018  xor      rcx, rsp
+000000014035101b  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140351020  lea      r11, [rsp + 0x200]
+0000000140351028  mov      rbx, qword ptr [r11 + 0x38]
+000000014035102c  mov      rsi, qword ptr [r11 + 0x40]
+0000000140351030  mov      rsp, r11
+0000000140351033  pop      r15
+0000000140351035  pop      r14
+0000000140351037  pop      r13
+0000000140351039  pop      rdi
+000000014035103a  pop      rbp
+000000014035103b  ret
+000000014035103c  int3
+000000014035103d  int3
+000000014035103e  int3
+000000014035103f  int3
+
+CGameSprite::Marshal+0x0 [0x140360500, 0x1403609b0)
+0000000140360500  mov      qword ptr [rsp + 0x18], rbx
+0000000140360505  push     rbp
+0000000140360506  push     rsi
+0000000140360507  push     rdi
+0000000140360508  push     r12
+000000014036050a  push     r13
+000000014036050c  push     r14
+000000014036050e  push     r15
+0000000140360510  sub      rsp, 0x60
+0000000140360514  mov      rax, qword ptr [rip + 0x301ffd]
+000000014036051b  xor      rax, rsp
+000000014036051e  mov      qword ptr [rsp + 0x50], rax
+0000000140360523  xor      ebp, ebp
+0000000140360525  mov      rbx, rdx
+0000000140360528  mov      word ptr [rdx], bp
+000000014036052b  mov      rdi, rcx
+000000014036052e  movzx    eax, bp
+0000000140360531  cmp      dword ptr [rcx + 0x3c00], ebp
+0000000140360537  je       0x140360541
+0000000140360539  mov      eax, 1
+000000014036053e  mov      word ptr [rdx], ax
+0000000140360541  mov      r15d, 0x8000
+0000000140360547  cmp      r8b, 1
+000000014036054b  jne      0x140360554
+000000014036054d  or       ax, r15w
+0000000140360551  mov      word ptr [rdx], ax
+0000000140360554  mov      rax, qword ptr [rip + 0x304b45]
+000000014036055b  mov      edx, dword ptr [rcx + 0x48]
+000000014036055e  mov      rcx, qword ptr [rax + 0x1090]
+0000000140360565  call     0x140276300 ; CInfGame::GetCharacterPortraitNum+0x0
+000000014036056a  lea      rcx, [rdi + 0x540]
+0000000140360571  mov      word ptr [rbx + 2], ax
+0000000140360575  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+000000014036057a  lea      r9, [rsp + 0x30]
+000000014036057f  mov      byte ptr [rsp + 0x20], 1
+0000000140360584  lea      r8, [rsp + 0x40]
+0000000140360589  lea      rdx, [rsp + 0x48]
+000000014036058e  mov      rcx, qword ptr [rax]
+0000000140360591  mov      qword ptr [rbx + 0xc], rcx
+0000000140360595  mov      byte ptr [rbx + 0xf7], cl
+000000014036059b  mov      rcx, rdi
+000000014036059e  mov      byte ptr [rbx + 0xc], 0x2a
+00000001403605a2  call     0x1403609b0 ; CGameSprite::Marshal+0x0
+00000001403605a7  mov      rax, qword ptr [rsp + 0x48]
+00000001403605ac  xor      r14b, r14b
+00000001403605af  mov      qword ptr [rbx + 0x160], rax
+00000001403605b6  mov      esi, ebp
+00000001403605b8  mov      eax, dword ptr [rsp + 0x40]
+00000001403605bc  mov      dword ptr [rbx + 8], eax
+00000001403605bf  movzx    eax, word ptr [rsp + 0x30]
+00000001403605c4  mov      dword ptr [rbx + 0x14], eax
+00000001403605c7  nop      word ptr [rax + rax]
+00000001403605d0  mov      rax, qword ptr [rip + 0x304ac9]
+00000001403605d7  mov      edx, esi
+00000001403605d9  mov      rcx, qword ptr [rax + 0x1090]
+00000001403605e0  call     0x140276330 ; CInfGame::GetCharacterSlot+0x0
+00000001403605e5  cmp      eax, dword ptr [rdi + 0x48]
+00000001403605e8  je       0x1403605f3
+00000001403605ea  inc      esi
+00000001403605ec  cmp      esi, 6
+00000001403605ef  jl       0x1403605d0
+00000001403605f1  jmp      0x1403605f6 ; CGameSprite::Marshal+0xf6
+00000001403605f3  mov      r14b, 1
+00000001403605f6  mov      rcx, qword ptr [rdi + 0x18]
+00000001403605fa  test     rcx, rcx
+00000001403605fd  jne      0x1403606e1
+0000000140360603  cmp      r14b, 1
+0000000140360607  jne      0x1403606e1
+000000014036060d  lea      rcx, [rsp + 0x40]
+0000000140360612  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+0000000140360617  mov      rcx, qword ptr [rdi + 0x3928]
+000000014036061e  lea      rdx, [rip + 0x24c0af]
+0000000140360625  call     0x14050d840 ; _stricmp+0x0
+000000014036062a  test     eax, eax
+000000014036062c  jne      0x1403606b4
+0000000140360632  lea      rdx, [rip + 0x289de4]
+0000000140360639  lea      rcx, [rdi + 0x3a20]
+0000000140360640  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140360645  test     eax, eax
+0000000140360647  je       0x1403606b4
+0000000140360649  lea      r8, [rdi + 0x3a20]
+0000000140360650  lea      rdx, [rsp + 0x48]
+0000000140360655  lea      rcx, [rsp + 0x40]
+000000014036065a  call     0x1403fef40 ; CResRef::operator=+0x0
+000000014036065f  mov      rax, qword ptr [rip + 0x304a3a]
+0000000140360666  lea      r8, [rsp + 0x38]
+000000014036066b  lea      rdx, [rsp + 0x34]
+0000000140360670  mov      rcx, qword ptr [rax + 0x1090]
+0000000140360677  movzx    eax, byte ptr [rcx + 0x6590]
+000000014036067e  mov      rcx, qword ptr [rcx + rax*8 + 0x6598]
+0000000140360686  add      rcx, 0x5c8
+000000014036068d  call     0x14029f820 ; CInfinity::GetViewPosition+0x0
+0000000140360692  movzx    eax, word ptr [rsp + 0x34]
+0000000140360697  lea      rdx, [rbx + 0x18]
+000000014036069b  mov      word ptr [rbx + 0x24], ax
+000000014036069f  lea      rcx, [rsp + 0x40]
+00000001403606a4  movzx    eax, word ptr [rsp + 0x38]
+00000001403606a9  mov      word ptr [rbx + 0x26], ax
+00000001403606ad  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001403606b2  jmp      0x140360733 ; CGameSprite::Marshal+0x233
+00000001403606b4  lea      r8, [rip + 0x2396bd]
+00000001403606bb  lea      rdx, [rsp + 0x48]
+00000001403606c0  lea      rcx, [rsp + 0x40]
+00000001403606c5  call     0x1403ff020 ; CResRef::operator=+0x0
+00000001403606ca  or       word ptr [rbx], r15w
+00000001403606ce  lea      rdx, [rbx + 0x18]
+00000001403606d2  lea      rcx, [rsp + 0x40]
+00000001403606d7  mov      dword ptr [rbx + 0x24], ebp
+00000001403606da  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001403606df  jmp      0x140360733 ; CGameSprite::Marshal+0x233
+00000001403606e1  lea      rdx, [rbx + 0x18]
+00000001403606e5  test     rcx, rcx
+00000001403606e8  je       0x140360724
+00000001403606ea  add      rcx, 0x204
+00000001403606f1  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001403606f6  mov      rcx, qword ptr [rdi + 0x18]
+00000001403606fa  lea      r8, [rsp + 0x38]
+00000001403606ff  add      rcx, 0x5c8
+0000000140360706  lea      rdx, [rsp + 0x34]
+000000014036070b  call     0x14029f820 ; CInfinity::GetViewPosition+0x0
+0000000140360710  movzx    eax, word ptr [rsp + 0x34]
+0000000140360715  mov      word ptr [rbx + 0x24], ax
+0000000140360719  movzx    eax, word ptr [rsp + 0x38]
+000000014036071e  mov      word ptr [rbx + 0x26], ax
+0000000140360722  jmp      0x140360733 ; CGameSprite::Marshal+0x233
+0000000140360724  lea      rcx, [rdi + 0x3a20]
+000000014036072b  call     0x1403ff620 ; CResRef::GetResRef+0x0
+0000000140360730  mov      dword ptr [rbx + 0x24], ebp
+0000000140360733  movzx    eax, word ptr [rdi + 0xc]
+0000000140360737  lea      rcx, [rbx + 0x94]
+000000014036073e  mov      word ptr [rbx + 0x20], ax
+0000000140360742  lea      rdx, [rdi + 0x373c]
+0000000140360749  movzx    eax, word ptr [rdi + 0x10]
+000000014036074d  mov      r12d, 4
+0000000140360753  mov      word ptr [rbx + 0x22], ax
+0000000140360757  mov      r8d, r12d
+000000014036075a  movzx    eax, byte ptr [rdi + 0x3a29]
+0000000140360761  mov      word ptr [rbx + 0x28], ax
+0000000140360765  nop      word ptr [rax + rax]
+0000000140360770  movzx    eax, word ptr [rdx - 2]
+0000000140360774  lea      rdx, [rdx + 0x34]
+0000000140360778  mov      word ptr [rcx - 8], ax
+000000014036077c  lea      rcx, [rcx + 2]
+0000000140360780  movzx    eax, word ptr [rdx - 0x34]
+0000000140360784  mov      word ptr [rcx - 2], ax
+0000000140360788  sub      r8, 1
+000000014036078c  jne      0x140360770
+000000014036078e  mov      r15d, 3
+0000000140360794  lea      rsi, [rdi + 0x380e]
+000000014036079b  mov      r13d, r15d
+000000014036079e  lea      r14, [rbx + 0x9c]
+00000001403607a5  mov      rdx, r14
+00000001403607a8  mov      rcx, rsi
+00000001403607ab  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001403607b0  add      r14, 8
+00000001403607b4  add      rsi, 0x34
+00000001403607b8  sub      r13, 1
+00000001403607bc  jne      0x1403607a5
+00000001403607be  lea      rcx, [rbx + 0xba]
+00000001403607c5  lea      rdx, [rdi + 0x38a8]
+00000001403607cc  nop      dword ptr [rax]
+00000001403607d0  movzx    eax, word ptr [rdx - 2]
+00000001403607d4  lea      rdx, [rdx + 0x34]
+00000001403607d8  mov      word ptr [rcx - 6], ax
+00000001403607dc  lea      rcx, [rcx + 2]
+00000001403607e0  movzx    eax, word ptr [rdx - 0x34]
+00000001403607e4  mov      word ptr [rcx - 2], ax
+00000001403607e8  sub      r15, 1
+00000001403607ec  jne      0x1403607d0
+00000001403607ee  mov      eax, dword ptr [rdi + 0x3938]
+00000001403607f4  lea      rsi, [rdi + 0x3968]
+00000001403607fb  mov      dword ptr [rbx + 0xe4], eax
+0000000140360801  lea      r15, [rbx + 0x128]
+0000000140360808  mov      eax, dword ptr [rdi + 0x393c]
+000000014036080e  mov      r14, rbp
+0000000140360811  mov      dword ptr [rbx + 0xe8], eax
+0000000140360817  mov      r13, r12
+000000014036081a  mov      eax, dword ptr [rdi + 0x3940]
+0000000140360820  mov      dword ptr [rbx + 0xec], eax
+0000000140360826  mov      eax, dword ptr [rdi + 0x3944]
+000000014036082c  mov      dword ptr [rbx + 0xf0], eax
+0000000140360832  movzx    eax, byte ptr [rdi + 0x3948]
+0000000140360839  mov      byte ptr [rbx + 0xf4], al
+000000014036083f  mov      eax, dword ptr [rdi + 0x394c]
+0000000140360845  mov      dword ptr [rbx + 0xf8], eax
+000000014036084b  mov      eax, dword ptr [rdi + 0x3950]
+0000000140360851  mov      dword ptr [rbx + 0xfc], eax
+0000000140360857  mov      eax, dword ptr [rdi + 0x3954]
+000000014036085d  mov      dword ptr [rbx + 0x100], eax
+0000000140360863  mov      eax, dword ptr [rdi + 0x3958]
+0000000140360869  mov      dword ptr [rbx + 0x104], eax
+000000014036086f  nop
+0000000140360870  movzx    eax, word ptr [rsi + 8]
+0000000140360874  lea      rdx, [rbx + 0x108]
+000000014036087b  add      rdx, r14
+000000014036087e  mov      word ptr [r15], ax
+0000000140360882  mov      rcx, rsi
+0000000140360885  call     0x1403ff620 ; CResRef::GetResRef+0x0
+000000014036088a  add      rsi, 0x18
+000000014036088e  lea      r15, [r15 + 2]
+0000000140360892  add      r14, 8
+0000000140360896  sub      r13, 1
+000000014036089a  jne      0x140360870
+000000014036089c  lea      rsi, [rdi + 0x39c8]
+00000001403608a3  lea      r14, [rbx + 0x150]
+00000001403608aa  nop      word ptr [rax + rax]
+00000001403608b0  movzx    eax, word ptr [rsi + 8]
+00000001403608b4  lea      rdx, [rbx + 0x130]
+00000001403608bb  add      rdx, rbp
+00000001403608be  mov      word ptr [r14], ax
+00000001403608c2  mov      rcx, rsi
+00000001403608c5  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001403608ca  add      rsi, 0x18
+00000001403608ce  lea      r14, [r14 + 2]
+00000001403608d2  add      rbp, 8
+00000001403608d6  sub      r12, 1
+00000001403608da  jne      0x1403608b0
+00000001403608dc  movzx    eax, word ptr [rdi + 0x3bd0]
+00000001403608e3  lea      rcx, [rbx + 0x2c]
+00000001403608e7  mov      r8, rdi
+00000001403608ea  mov      word ptr [rbx + 0x2a], ax
+00000001403608ee  sub      r8, rbx
+00000001403608f1  mov      edx, 0x18
+00000001403608f6  nop      word ptr [rax + rax]
+0000000140360900  mov      eax, dword ptr [r8 + rcx + 0x3b44]
+0000000140360908  mov      dword ptr [rcx], eax
+000000014036090a  lea      rcx, [rcx + 4]
+000000014036090e  sub      rdx, 1
+0000000140360912  jne      0x140360900
+0000000140360914  test     dword ptr [rdi + 0x568], 0x800
+000000014036091e  je       0x140360932
+0000000140360920  mov      qword ptr [rdi + 0x560], 0xffffffffffffffff
+000000014036092b  mov      ecx, 0xffffffff
+0000000140360930  jmp      0x140360938 ; CGameSprite::Marshal+0x438
+0000000140360932  mov      ecx, dword ptr [rdi + 0x560]
+0000000140360938  cmp      ecx, -1
+000000014036093b  jne      0x140360958
+000000014036093d  mov      rdx, qword ptr [rdi + 0x3928]
+0000000140360944  lea      rcx, [rbx + 0xc0]
+000000014036094b  mov      r8d, 0x20
+0000000140360951  call     0x1405093f0 ; strncpy+0x0
+0000000140360956  jmp      0x14036095f ; CGameSprite::Marshal+0x45f
+0000000140360958  mov      byte ptr [rbx + 0xc0], 0
+000000014036095f  mov      eax, dword ptr [rdi + 0x3b60]
+0000000140360965  lea      rdx, [rbx + 0x158]
+000000014036096c  lea      rcx, [rdi + 0x4e68]
+0000000140360973  mov      dword ptr [rbx + 0xe0], eax
+0000000140360979  call     0x1403ff620 ; CResRef::GetResRef+0x0
+000000014036097e  mov      rcx, qword ptr [rsp + 0x50]
+0000000140360983  xor      rcx, rsp
+0000000140360986  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014036098b  mov      rbx, qword ptr [rsp + 0xb0]
+0000000140360993  add      rsp, 0x60
+0000000140360997  pop      r15
+0000000140360999  pop      r14
+000000014036099b  pop      r13
+000000014036099d  pop      r12
+000000014036099f  pop      rdi
+00000001403609a0  pop      rsi
+00000001403609a1  pop      rbp
+00000001403609a2  ret
+00000001403609a3  int3
+00000001403609a4  int3
+00000001403609a5  int3
+00000001403609a6  int3
+00000001403609a7  int3
+00000001403609a8  int3
+00000001403609a9  int3
+00000001403609aa  int3
+00000001403609ab  int3
+00000001403609ac  int3
+00000001403609ad  int3
+00000001403609ae  int3
+00000001403609af  int3
+
+CGameSprite::Marshal+0x0 [0x1403609b0, 0x140361560)
+00000001403609b0  push     rbx
+00000001403609b2  push     rbp
+00000001403609b3  push     rsi
+00000001403609b4  push     rdi
+00000001403609b5  push     r12
+00000001403609b7  push     r13
+00000001403609b9  push     r14
+00000001403609bb  push     r15
+00000001403609bd  sub      rsp, 0xf8
+00000001403609c4  mov      rax, qword ptr [rip + 0x301b4d]
+00000001403609cb  xor      rax, rsp
+00000001403609ce  mov      qword ptr [rsp + 0xe0], rax
+00000001403609d6  mov      rax, qword ptr [rip + 0x3046c3]
+00000001403609dd  xor      r12d, r12d
+00000001403609e0  mov      r13, rcx
+00000001403609e3  mov      qword ptr [rsp + 0x60], r8
+00000001403609e8  mov      ebp, r12d
+00000001403609eb  mov      qword ptr [rsp + 0x58], rdx
+00000001403609f0  mov      rsi, r9
+00000001403609f3  mov      dword ptr [rsp + 0x44], r12d
+00000001403609f8  mov      rcx, qword ptr [rax + 0x10c8]
+00000001403609ff  mov      r14, r8
+0000000140360a02  mov      r15, rdx
+0000000140360a05  cmp      qword ptr [rcx + 0x50], rbp
+0000000140360a09  je       0x140360c0c
+0000000140360a0f  mov      rax, qword ptr [rcx]
+0000000140360a12  xor      edx, edx
+0000000140360a14  call     qword ptr [rax + 0x1c0]
+0000000140360a1a  cmp      eax, -1
+0000000140360a1d  je       0x140360c05
+0000000140360a23  mov      rax, qword ptr [rip + 0x304676]
+0000000140360a2a  mov      edx, dword ptr [r13 + 0x48]
+0000000140360a2e  mov      rcx, qword ptr [rax + 0x1090]
+0000000140360a35  mov      rdi, qword ptr [rax + 0x10c8]
+0000000140360a3c  call     0x140276300 ; CInfGame::GetCharacterPortraitNum+0x0
+0000000140360a41  movsx    ebx, ax
+0000000140360a44  xor      edx, edx
+0000000140360a46  mov      rax, qword ptr [rdi]
+0000000140360a49  mov      rcx, rdi
+0000000140360a4c  call     qword ptr [rax + 0x1c0]
+0000000140360a52  cmp      eax, ebx
+0000000140360a54  jne      0x140360c05
+0000000140360a5a  mov      rbx, qword ptr [r13 + 0x1100]
+0000000140360a61  mov      ebp, 1
+0000000140360a66  mov      dword ptr [rsp + 0x44], ebp
+0000000140360a6a  test     rbx, rbx
+0000000140360a6d  je       0x140360a76
+0000000140360a6f  mov      qword ptr [r13 + 0x1100], r12
+0000000140360a76  mov      ecx, dword ptr [r13 + 0x568]
+0000000140360a7d  mov      eax, ecx
+0000000140360a7f  btr      eax, 0x10
+0000000140360a83  mov      byte ptr [r13 + 0x58b], 1
+0000000140360a8b  bts      ecx, 0x10
+0000000140360a8f  test     ebp, ebp
+0000000140360a91  cmove    ecx, eax
+0000000140360a94  mov      dword ptr [r13 + 0x568], ecx
+0000000140360a9b  mov      ecx, dword ptr [r13 + 0x578]
+0000000140360aa2  mov      eax, ecx
+0000000140360aa4  bts      eax, 0x13
+0000000140360aa8  btr      ecx, 0x13
+0000000140360aac  cmp      dword ptr [r13 + 0x3bf8], r12d
+0000000140360ab3  cmove    ecx, eax
+0000000140360ab6  movzx    eax, word ptr [r13 + 0x4e40]
+0000000140360abe  sub      word ptr [r13 + 0x57c], ax
+0000000140360ac6  xor      edx, edx
+0000000140360ac8  sub      word ptr [r13 + 0x57e], ax
+0000000140360ad0  sub      word ptr [r13 + 0x1124], ax
+0000000140360ad8  xor      eax, eax
+0000000140360ada  mov      dword ptr [r13 + 0x578], ecx
+0000000140360ae1  mov      edi, eax
+0000000140360ae3  mov      ebx, eax
+0000000140360ae5  lea      rcx, [rsp + 0x90]
+0000000140360aed  mov      qword ptr [rsp + 0x50], rax
+0000000140360af2  mov      ebp, eax
+0000000140360af4  lea      r8d, [rax + 0x50]
+0000000140360af8  mov      dword ptr [rsp + 0x40], ebx
+0000000140360afc  mov      qword ptr [rsp + 0x68], rax
+0000000140360b01  call     0x1404f9b90 ; memset+0x0
+0000000140360b06  mov      qword ptr [r15], rdi
+0000000140360b09  lea      rdx, [r13 + 0x7d0]
+0000000140360b10  mov      dword ptr [r14], ebp
+0000000140360b13  movzx    eax, word ptr [r13 + 0x4756]
+0000000140360b1b  mov      word ptr [rsi], ax
+0000000140360b1e  mov      esi, 7
+0000000140360b23  mov      qword ptr [rsp + 0x78], rsi
+0000000140360b28  mov      r8d, esi
+0000000140360b2b  nop      dword ptr [rax + rax]
+0000000140360b30  mov      ecx, dword ptr [rdx + 0x10]
+0000000140360b33  cmp      ecx, 0x1e
+0000000140360b36  jbe      0x140360b4c
+0000000140360b38  mov      rax, qword ptr [rdx]
+0000000140360b3b  xor      ecx, ecx
+0000000140360b3d  test     rax, rax
+0000000140360b40  je       0x140360b4c
+0000000140360b42  mov      rax, qword ptr [rax]
+0000000140360b45  inc      ecx
+0000000140360b47  test     rax, rax
+0000000140360b4a  jne      0x140360b42
+0000000140360b4c  add      edi, ecx
+0000000140360b4e  add      rdx, 0x38
+0000000140360b52  sub      r8, 1
+0000000140360b56  jne      0x140360b30
+0000000140360b58  mov      r10d, 9
+0000000140360b5e  lea      rdx, [r13 + 0x958]
+0000000140360b65  mov      qword ptr [rsp + 0x80], r10
+0000000140360b6d  mov      r8d, r10d
+0000000140360b70  mov      ecx, dword ptr [rdx + 0x10]
+0000000140360b73  cmp      ecx, 0x1e
+0000000140360b76  jbe      0x140360b8c
+0000000140360b78  mov      rax, qword ptr [rdx]
+0000000140360b7b  xor      ecx, ecx
+0000000140360b7d  test     rax, rax
+0000000140360b80  je       0x140360b8c
+0000000140360b82  mov      rax, qword ptr [rax]
+0000000140360b85  inc      ecx
+0000000140360b87  test     rax, rax
+0000000140360b8a  jne      0x140360b82
+0000000140360b8c  add      edi, ecx
+0000000140360b8e  add      rdx, 0x38
+0000000140360b92  sub      r8, 1
+0000000140360b96  jne      0x140360b70
+0000000140360b98  mov      ecx, dword ptr [r13 + 0xb60]
+0000000140360b9f  cmp      ecx, 0x1e
+0000000140360ba2  jbe      0x140360bbc
+0000000140360ba4  mov      rax, qword ptr [r13 + 0xb50]
+0000000140360bab  xor      ecx, ecx
+0000000140360bad  test     rax, rax
+0000000140360bb0  je       0x140360bbc
+0000000140360bb2  mov      rax, qword ptr [rax]
+0000000140360bb5  inc      ecx
+0000000140360bb7  test     rax, rax
+0000000140360bba  jne      0x140360bb2
+0000000140360bbc  add      edi, ecx
+0000000140360bbe  mov      r11, 0xffffffffffffffff
+0000000140360bc5  mov      dword ptr [rsp + 0x70], edi
+0000000140360bc9  je       0x140360d2e
+0000000140360bcf  mov      ebx, edi
+0000000140360bd1  mov      eax, 0xc
+0000000140360bd6  mul      rbx
+0000000140360bd9  cmovo    rax, r11
+0000000140360bdd  mov      rcx, rax
+0000000140360be0  call     0x1404f67e4 ; operator_new[]+0x0
+0000000140360be5  mov      r12, rax
+0000000140360be8  test     rax, rax
+0000000140360beb  je       0x140360c45
+0000000140360bed  test     edi, edi
+0000000140360bef  je       0x140360c48
+0000000140360bf1  lea      r8, [rdi + rdi*2]
+0000000140360bf5  xor      edx, edx
+0000000140360bf7  shl      r8, 2
+0000000140360bfb  mov      rcx, rax
+0000000140360bfe  call     0x1404f9b90 ; memset+0x0
+0000000140360c03  jmp      0x140360c48 ; CGameSprite::Marshal+0x298
+0000000140360c05  mov      rax, qword ptr [rip + 0x304494]
+0000000140360c0c  mov      rbx, qword ptr [r13 + 0x1100]
+0000000140360c13  test     rbx, rbx
+0000000140360c16  je       0x140360a76
+0000000140360c1c  mov      rdi, qword ptr [rax + 0x10c8]
+0000000140360c23  mov      ebp, 1
+0000000140360c28  mov      dword ptr [rsp + 0x44], ebp
+0000000140360c2c  mov      rcx, qword ptr [rdi + 0x50]
+0000000140360c30  test     rcx, rcx
+0000000140360c33  je       0x140360c3c
+0000000140360c35  mov      rax, qword ptr [rcx]
+0000000140360c38  mov      edx, ebp
+0000000140360c3a  call     qword ptr [rax]
+0000000140360c3c  mov      qword ptr [rdi + 0x50], rbx
+0000000140360c40  jmp      0x140360a6f ; CGameSprite::Marshal+0xbf
+0000000140360c45  xor      r12d, r12d
+0000000140360c48  xor      r8d, r8d
+0000000140360c4b  lea      r10, [r13 + 0x7d8]
+0000000140360c52  mov      r11, rsi
+0000000140360c55  mov      r9, qword ptr [r10]
+0000000140360c58  test     r9, r9
+0000000140360c5b  je       0x140360c86
+0000000140360c5d  nop      dword ptr [rax]
+0000000140360c60  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360c64  lea      rcx, [r8 + r8*2]
+0000000140360c68  mov      r9, qword ptr [r9 + 8]
+0000000140360c6c  inc      r8d
+0000000140360c6f  movsd    xmm0, qword ptr [rdx]
+0000000140360c73  movsd    qword ptr [r12 + rcx*4], xmm0
+0000000140360c79  mov      eax, dword ptr [rdx + 8]
+0000000140360c7c  mov      dword ptr [r12 + rcx*4 + 8], eax
+0000000140360c81  test     r9, r9
+0000000140360c84  jne      0x140360c60
+0000000140360c86  add      r10, 0x38
+0000000140360c8a  sub      r11, 1
+0000000140360c8e  jne      0x140360c55
+0000000140360c90  lea      r10, [r13 + 0x960]
+0000000140360c97  mov      r11d, 9
+0000000140360c9d  nop      dword ptr [rax]
+0000000140360ca0  mov      r9, qword ptr [r10]
+0000000140360ca3  test     r9, r9
+0000000140360ca6  je       0x140360cd6
+0000000140360ca8  nop      dword ptr [rax + rax]
+0000000140360cb0  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360cb4  lea      rcx, [r8 + r8*2]
+0000000140360cb8  mov      r9, qword ptr [r9 + 8]
+0000000140360cbc  inc      r8d
+0000000140360cbf  movsd    xmm0, qword ptr [rdx]
+0000000140360cc3  movsd    qword ptr [r12 + rcx*4], xmm0
+0000000140360cc9  mov      eax, dword ptr [rdx + 8]
+0000000140360ccc  mov      dword ptr [r12 + rcx*4 + 8], eax
+0000000140360cd1  test     r9, r9
+0000000140360cd4  jne      0x140360cb0
+0000000140360cd6  add      r10, 0x38
+0000000140360cda  sub      r11, 1
+0000000140360cde  jne      0x140360ca0
+0000000140360ce0  mov      r9, qword ptr [r13 + 0xb58]
+0000000140360ce7  test     r9, r9
+0000000140360cea  je       0x140360d17
+0000000140360cec  nop      dword ptr [rax]
+0000000140360cf0  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360cf4  lea      rcx, [r8 + r8*2]
+0000000140360cf8  mov      r9, qword ptr [r9 + 8]
+0000000140360cfc  lea      r8d, [r8 + 1]
+0000000140360d00  movsd    xmm0, qword ptr [rdx]
+0000000140360d04  movsd    qword ptr [r12 + rcx*4], xmm0
+0000000140360d0a  mov      eax, dword ptr [rdx + 8]
+0000000140360d0d  mov      dword ptr [r12 + rcx*4 + 8], eax
+0000000140360d12  test     r9, r9
+0000000140360d15  jne      0x140360cf0
+0000000140360d17  mov      ebx, dword ptr [rsp + 0x40]
+0000000140360d1b  lea      eax, [rdi + rdi*2]
+0000000140360d1e  mov      r10d, 9
+0000000140360d24  shl      eax, 2
+0000000140360d27  add      dword ptr [r14], eax
+0000000140360d2a  lea      r11, [r10 - 0xa]
+0000000140360d2e  lea      r14, [r13 + 0xb80]
+0000000140360d35  mov      r9, rsi
+0000000140360d38  lea      r15, [r13 + 0xc10]
+0000000140360d3f  mov      rdx, r14
+0000000140360d42  mov      r8, r15
+0000000140360d45  mov      rax, qword ptr [rdx]
+0000000140360d48  test     rax, rax
+0000000140360d4b  je       0x140360d77
+0000000140360d4d  inc      ebx
+0000000140360d4f  mov      dword ptr [rax + 8], ebp
+0000000140360d52  mov      ecx, dword ptr [r8 + 0x10]
+0000000140360d56  cmp      ecx, 0x64
+0000000140360d59  jbe      0x140360d6f
+0000000140360d5b  mov      rax, qword ptr [r8]
+0000000140360d5e  xor      ecx, ecx
+0000000140360d60  test     rax, rax
+0000000140360d63  je       0x140360d6f
+0000000140360d65  mov      rax, qword ptr [rax]
+0000000140360d68  inc      ecx
+0000000140360d6a  test     rax, rax
+0000000140360d6d  jne      0x140360d65
+0000000140360d6f  mov      rax, qword ptr [rdx]
+0000000140360d72  add      ebp, ecx
+0000000140360d74  mov      dword ptr [rax + 0xc], ecx
+0000000140360d77  add      rdx, 8
+0000000140360d7b  add      r8, 0x38
+0000000140360d7f  sub      r9, 1
+0000000140360d83  jne      0x140360d45
+0000000140360d85  lea      rdi, [r13 + 0xbb8]
+0000000140360d8c  mov      r9, r10
+0000000140360d8f  lea      rsi, [r13 + 0xd98]
+0000000140360d96  mov      rdx, rdi
+0000000140360d99  mov      r8, rsi
+0000000140360d9c  nop      dword ptr [rax]
+0000000140360da0  mov      rax, qword ptr [rdx]
+0000000140360da3  test     rax, rax
+0000000140360da6  je       0x140360dd2
+0000000140360da8  inc      ebx
+0000000140360daa  mov      dword ptr [rax + 8], ebp
+0000000140360dad  mov      ecx, dword ptr [r8 + 0x10]
+0000000140360db1  cmp      ecx, 0x64
+0000000140360db4  jbe      0x140360dca
+0000000140360db6  mov      rax, qword ptr [r8]
+0000000140360db9  xor      ecx, ecx
+0000000140360dbb  test     rax, rax
+0000000140360dbe  je       0x140360dca
+0000000140360dc0  mov      rax, qword ptr [rax]
+0000000140360dc3  inc      ecx
+0000000140360dc5  test     rax, rax
+0000000140360dc8  jne      0x140360dc0
+0000000140360dca  mov      rax, qword ptr [rdx]
+0000000140360dcd  add      ebp, ecx
+0000000140360dcf  mov      dword ptr [rax + 0xc], ecx
+0000000140360dd2  add      rdx, 8
+0000000140360dd6  add      r8, 0x38
+0000000140360dda  sub      r9, 1
+0000000140360dde  jne      0x140360da0
+0000000140360de0  mov      rax, qword ptr [r13 + 0xc00]
+0000000140360de7  mov      dword ptr [rsp + 0x40], ebx
+0000000140360deb  mov      dword ptr [rsp + 0x48], ebp
+0000000140360def  test     rax, rax
+0000000140360df2  je       0x140360e3a
+0000000140360df4  inc      ebx
+0000000140360df6  mov      dword ptr [rax + 8], ebp
+0000000140360df9  mov      ecx, dword ptr [r13 + 0xfa0]
+0000000140360e00  mov      dword ptr [rsp + 0x40], ebx
+0000000140360e04  cmp      ecx, 0x64
+0000000140360e07  jbe      0x140360e2a
+0000000140360e09  mov      rax, qword ptr [r13 + 0xf90]
+0000000140360e10  xor      ecx, ecx
+0000000140360e12  test     rax, rax
+0000000140360e15  je       0x140360e2a
+0000000140360e17  nop      word ptr [rax + rax]
+0000000140360e20  mov      rax, qword ptr [rax]
+0000000140360e23  inc      ecx
+0000000140360e25  test     rax, rax
+0000000140360e28  jne      0x140360e20
+0000000140360e2a  mov      rax, qword ptr [r13 + 0xc00]
+0000000140360e31  add      ebp, ecx
+0000000140360e33  mov      dword ptr [rsp + 0x48], ebp
+0000000140360e37  mov      dword ptr [rax + 0xc], ecx
+0000000140360e3a  test     ebx, ebx
+0000000140360e3c  je       0x140361024
+0000000140360e42  mov      eax, 0x10
+0000000140360e47  mul      rbx
+0000000140360e4a  cmovo    rax, r11
+0000000140360e4e  mov      rcx, rax
+0000000140360e51  call     0x1404f67e4 ; operator_new[]+0x0
+0000000140360e56  mov      qword ptr [rsp + 0x50], rax
+0000000140360e5b  test     rax, rax
+0000000140360e5e  je       0x140360e80
+0000000140360e60  test     rbx, rbx
+0000000140360e63  je       0x140360e7b
+0000000140360e65  shl      rbx, 4
+0000000140360e69  xor      edx, edx
+0000000140360e6b  mov      r8, rbx
+0000000140360e6e  mov      rcx, rax
+0000000140360e71  mov      rbx, rax
+0000000140360e74  call     0x1404f9b90 ; memset+0x0
+0000000140360e79  jmp      0x140360e87 ; CGameSprite::Marshal+0x4d7
+0000000140360e7b  mov      rbx, rax
+0000000140360e7e  jmp      0x140360e87 ; CGameSprite::Marshal+0x4d7
+0000000140360e80  xor      ebx, ebx
+0000000140360e82  mov      qword ptr [rsp + 0x50], rbx
+0000000140360e87  test     ebp, ebp
+0000000140360e89  je       0x140360ed1
+0000000140360e8b  mov      rcx, 0xffffffffffffffff
+0000000140360e92  mov      ebx, ebp
+0000000140360e94  mov      eax, 0xc
+0000000140360e99  mul      rbx
+0000000140360e9c  cmovo    rax, rcx
+0000000140360ea0  mov      rcx, rax
+0000000140360ea3  call     0x1404f67e4 ; operator_new[]+0x0
+0000000140360ea8  mov      qword ptr [rsp + 0x68], rax
+0000000140360ead  test     rax, rax
+0000000140360eb0  je       0x140361012
+0000000140360eb6  test     ebp, ebp
+0000000140360eb8  je       0x140360ecc
+0000000140360eba  lea      r8, [rbx + rbx*2]
+0000000140360ebe  xor      edx, edx
+0000000140360ec0  shl      r8, 2
+0000000140360ec4  mov      rcx, rax
+0000000140360ec7  call     0x1404f9b90 ; memset+0x0
+0000000140360ecc  mov      rbx, qword ptr [rsp + 0x50]
+0000000140360ed1  mov      r11, qword ptr [rsp + 0x68]
+0000000140360ed6  xor      r10d, r10d
+0000000140360ed9  xor      r8d, r8d
+0000000140360edc  lea      eax, [r10 + 7]
+0000000140360ee0  mov      rcx, qword ptr [r14]
+0000000140360ee3  test     rcx, rcx
+0000000140360ee6  je       0x140360f2a
+0000000140360ee8  movups   xmm0, xmmword ptr [rcx]
+0000000140360eeb  mov      eax, r10d
+0000000140360eee  inc      r10d
+0000000140360ef1  add      rax, rax
+0000000140360ef4  movups   xmmword ptr [rbx + rax*8], xmm0
+0000000140360ef8  mov      r9, qword ptr [r15]
+0000000140360efb  test     r9, r9
+0000000140360efe  je       0x140360f25
+0000000140360f00  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360f04  lea      rcx, [r8 + r8*2]
+0000000140360f08  mov      r9, qword ptr [r9]
+0000000140360f0b  inc      r8d
+0000000140360f0e  movsd    xmm0, qword ptr [rdx]
+0000000140360f12  movsd    qword ptr [r11 + rcx*4], xmm0
+0000000140360f18  mov      eax, dword ptr [rdx + 8]
+0000000140360f1b  mov      dword ptr [r11 + rcx*4 + 8], eax
+0000000140360f20  test     r9, r9
+0000000140360f23  jne      0x140360f00
+0000000140360f25  mov      rax, qword ptr [rsp + 0x78]
+0000000140360f2a  add      r14, 8
+0000000140360f2e  add      r15, 0x38
+0000000140360f32  sub      rax, 1
+0000000140360f36  mov      qword ptr [rsp + 0x78], rax
+0000000140360f3b  jne      0x140360ee0
+0000000140360f3d  mov      eax, 9
+0000000140360f42  mov      rcx, qword ptr [rdi]
+0000000140360f45  test     rcx, rcx
+0000000140360f48  je       0x140360f8f
+0000000140360f4a  movups   xmm0, xmmword ptr [rcx]
+0000000140360f4d  mov      eax, r10d
+0000000140360f50  inc      r10d
+0000000140360f53  add      rax, rax
+0000000140360f56  movups   xmmword ptr [rbx + rax*8], xmm0
+0000000140360f5a  mov      r9, qword ptr [rsi]
+0000000140360f5d  test     r9, r9
+0000000140360f60  je       0x140360f87
+0000000140360f62  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360f66  lea      rcx, [r8 + r8*2]
+0000000140360f6a  mov      r9, qword ptr [r9]
+0000000140360f6d  inc      r8d
+0000000140360f70  movsd    xmm0, qword ptr [rdx]
+0000000140360f74  movsd    qword ptr [r11 + rcx*4], xmm0
+0000000140360f7a  mov      eax, dword ptr [rdx + 8]
+0000000140360f7d  mov      dword ptr [r11 + rcx*4 + 8], eax
+0000000140360f82  test     r9, r9
+0000000140360f85  jne      0x140360f62
+0000000140360f87  mov      rax, qword ptr [rsp + 0x80]
+0000000140360f8f  add      rdi, 8
+0000000140360f93  add      rsi, 0x38
+0000000140360f97  sub      rax, 1
+0000000140360f9b  mov      qword ptr [rsp + 0x80], rax
+0000000140360fa3  jne      0x140360f42
+0000000140360fa5  mov      rcx, qword ptr [r13 + 0xc00]
+0000000140360fac  test     rcx, rcx
+0000000140360faf  je       0x140360ff6
+0000000140360fb1  movups   xmm0, xmmword ptr [rcx]
+0000000140360fb4  mov      eax, r10d
+0000000140360fb7  add      rax, rax
+0000000140360fba  movups   xmmword ptr [rbx + rax*8], xmm0
+0000000140360fbe  mov      r9, qword ptr [r13 + 0xf90]
+0000000140360fc5  test     r9, r9
+0000000140360fc8  je       0x140360ff6
+0000000140360fca  nop      word ptr [rax + rax]
+0000000140360fd0  mov      rdx, qword ptr [r9 + 0x10]
+0000000140360fd4  lea      rcx, [r8 + r8*2]
+0000000140360fd8  mov      r9, qword ptr [r9]
+0000000140360fdb  lea      r8d, [r8 + 1]
+0000000140360fdf  movsd    xmm0, qword ptr [rdx]
+0000000140360fe3  movsd    qword ptr [r11 + rcx*4], xmm0
+0000000140360fe9  mov      eax, dword ptr [rdx + 8]
+0000000140360fec  mov      dword ptr [r11 + rcx*4 + 8], eax
+0000000140360ff1  test     r9, r9
+0000000140360ff4  jne      0x140360fd0
+0000000140360ff6  mov      eax, dword ptr [rsp + 0x40]
+0000000140360ffa  lea      ecx, [rbp*2]
+0000000140361001  mov      rsi, qword ptr [rsp + 0x60]
+0000000140361006  add      ecx, ebp
+0000000140361008  shl      eax, 4
+000000014036100b  lea      eax, [rax + rcx*4]
+000000014036100e  add      dword ptr [rsi], eax
+0000000140361010  jmp      0x140361029 ; CGameSprite::Marshal+0x679
+0000000140361012  mov      rbx, qword ptr [rsp + 0x50]
+0000000140361017  xor      r11d, r11d
+000000014036101a  mov      qword ptr [rsp + 0x68], r11
+000000014036101f  jmp      0x140360ed6 ; CGameSprite::Marshal+0x526
+0000000140361024  mov      rsi, qword ptr [rsp + 0x60]
+0000000140361029  mov      rax, qword ptr [rip + 0x304070]
+0000000140361030  mov      edx, dword ptr [r13 + 0x48]
+0000000140361034  mov      rcx, qword ptr [rax + 0x1090]
+000000014036103b  call     0x140276300 ; CInfGame::GetCharacterPortraitNum+0x0
+0000000140361040  cmp      ax, -1
+0000000140361044  je       0x14036109b
+0000000140361046  xor      ebp, ebp
+0000000140361048  lea      rbx, [r13 + 0xfc0]
+000000014036104f  mov      edi, ebp
+0000000140361051  mov      rcx, qword ptr [rbx]
+0000000140361054  test     rcx, rcx
+0000000140361057  je       0x140361090
+0000000140361059  add      rcx, 0x10
+000000014036105d  lea      rdx, [rip + 0x24b65c]
+0000000140361064  call     0x1403ff140 ; CResRef::operator==+0x0
+0000000140361069  test     eax, eax
+000000014036106b  je       0x140361090
+000000014036106d  xor      r8d, r8d
+0000000140361070  movzx    edx, di
+0000000140361073  mov      rcx, r13
+0000000140361076  call     0x140379a50 ; CGameSprite::Unequip+0x0
+000000014036107b  mov      rcx, qword ptr [rbx]
+000000014036107e  test     rcx, rcx
+0000000140361081  je       0x14036108d
+0000000140361083  mov      rax, qword ptr [rcx]
+0000000140361086  mov      edx, 1
+000000014036108b  call     qword ptr [rax]
+000000014036108d  mov      qword ptr [rbx], rbp
+0000000140361090  inc      edi
+0000000140361092  add      rbx, 8
+0000000140361096  cmp      edi, 0x27
+0000000140361099  jl       0x140361051
+000000014036109b  mov      edx, dword ptr [rsp + 0x44]
+000000014036109f  lea      rcx, [r13 + 0xfc0]
+00000001403610a6  movzx    ebx, byte ptr [rsp + 0x160]
+00000001403610ae  lea      r9, [rsp + 0x44]
+00000001403610b3  mov      dword ptr [rsp + 0x28], edx
+00000001403610b7  lea      r8, [rsp + 0x60]
+00000001403610bc  lea      rdx, [rsp + 0x90]
+00000001403610c4  mov      dword ptr [rsp + 0x20], ebx
+00000001403610c8  call     0x1403617d0 ; CGameSpriteEquipment::Marshal+0x0
+00000001403610cd  mov      r14d, dword ptr [rsp + 0x44]
+00000001403610d2  lea      eax, [r14 + 4]
+00000001403610d6  lea      ecx, [rax + rax*4]
+00000001403610d9  shl      ecx, 2
+00000001403610dc  add      dword ptr [rsi], ecx
+00000001403610de  test     bl, bl
+00000001403610e0  je       0x1403610f9
+00000001403610e2  mov      rcx, qword ptr [r13 + 0x4eb8]
+00000001403610e9  mov      rdx, r13
+00000001403610ec  call     0x140253340 ; CVariableHash::MarshalToCharacter+0x0
+00000001403610f1  xor      r9d, r9d
+00000001403610f4  mov      r8b, 1
+00000001403610f7  jmp      0x140361110 ; CGameSprite::Marshal+0x760
+00000001403610f9  mov      eax, 0xffff
+00000001403610fe  mov      r9d, 1
+0000000140361104  mov      word ptr [rsp + 0xda], ax
+000000014036110c  movzx    r8d, r9b
+0000000140361110  lea      rdx, [rsp + 0x88]
+0000000140361118  mov      dword ptr [rsp + 0x20], 1
+0000000140361120  lea      rcx, [r13 + 0x4a00]
+0000000140361127  call     0x1401e4ed0 ; CGameEffectList::Marshal+0x0
+000000014036112c  movsxd   rcx, eax
+000000014036112f  mov      edi, 0x2d4
+0000000140361134  movabs   rax, 0xf83e0f83e0f83e1
+000000014036113e  mul      rcx
+0000000140361141  mov      rbp, rdx
+0000000140361144  shr      rbp, 4
+0000000140361148  imul     eax, ebp, 0x108
+000000014036114e  add      eax, edi
+0000000140361150  add      dword ptr [rsi], eax
+0000000140361152  movsxd   rcx, dword ptr [rsi]
+0000000140361155  call     0x1404f67e4 ; operator_new[]+0x0
+000000014036115a  mov      rbx, qword ptr [rsp + 0x58]
+000000014036115f  xor      edx, edx
+0000000140361161  mov      rcx, rax
+0000000140361164  mov      qword ptr [rbx], rax
+0000000140361167  movsxd   r8, dword ptr [rsi]
+000000014036116a  call     0x1404f9b90 ; memset+0x0
+000000014036116f  mov      rax, qword ptr [rbx]
+0000000140361172  movabs   rcx, 0x302e315620455243
+000000014036117c  mov      edx, 4
+0000000140361181  mov      qword ptr [rax], rcx
+0000000140361184  lea      rax, [r13 + 0x560]
+000000014036118b  mov      rcx, qword ptr [rbx]
+000000014036118e  add      rcx, 8
+0000000140361192  lea      rcx, [rcx + 0x80]
+0000000140361199  movups   xmm0, xmmword ptr [rax]
+000000014036119c  lea      rax, [rax + 0x80]
+00000001403611a3  movups   xmmword ptr [rcx - 0x80], xmm0
+00000001403611a7  movups   xmm1, xmmword ptr [rax - 0x70]
+00000001403611ab  movups   xmmword ptr [rcx - 0x70], xmm1
+00000001403611af  movups   xmm0, xmmword ptr [rax - 0x60]
+00000001403611b3  movups   xmmword ptr [rcx - 0x60], xmm0
+00000001403611b7  movups   xmm1, xmmword ptr [rax - 0x50]
+00000001403611bb  movups   xmmword ptr [rcx - 0x50], xmm1
+00000001403611bf  movups   xmm0, xmmword ptr [rax - 0x40]
+00000001403611c3  movups   xmmword ptr [rcx - 0x40], xmm0
+00000001403611c7  movups   xmm1, xmmword ptr [rax - 0x30]
+00000001403611cb  movups   xmmword ptr [rcx - 0x30], xmm1
+00000001403611cf  movups   xmm0, xmmword ptr [rax - 0x20]
+00000001403611d3  movups   xmmword ptr [rcx - 0x20], xmm0
+00000001403611d7  movups   xmm1, xmmword ptr [rax - 0x10]
+00000001403611db  movups   xmmword ptr [rcx - 0x10], xmm1
+00000001403611df  sub      rdx, 1
+00000001403611e3  jne      0x140361192
+00000001403611e5  movups   xmm0, xmmword ptr [rax]
+00000001403611e8  movups   xmmword ptr [rcx], xmm0
+00000001403611eb  movups   xmm1, xmmword ptr [rax + 0x10]
+00000001403611ef  movups   xmmword ptr [rcx + 0x10], xmm1
+00000001403611f3  movups   xmm0, xmmword ptr [rax + 0x20]
+00000001403611f7  movups   xmmword ptr [rcx + 0x20], xmm0
+00000001403611fb  movups   xmm1, xmmword ptr [rax + 0x30]
+00000001403611ff  movups   xmmword ptr [rcx + 0x30], xmm1
+0000000140361203  movups   xmm0, xmmword ptr [rax + 0x40]
+0000000140361207  movups   xmmword ptr [rcx + 0x40], xmm0
+000000014036120b  movups   xmm1, xmmword ptr [rax + 0x50]
+000000014036120f  movups   xmmword ptr [rcx + 0x50], xmm1
+0000000140361213  mov      rax, qword ptr [rax + 0x60]
+0000000140361217  mov      qword ptr [rcx + 0x60], rax
+000000014036121b  lea      rcx, [r13 + 0x4b68]
+0000000140361222  mov      rsi, qword ptr [rbx]
+0000000140361225  movzx    eax, byte ptr [r13 + 0x4b70]
+000000014036122d  add      rsi, 0x270
+0000000140361234  mov      byte ptr [rsi], al
+0000000140361236  movzx    eax, byte ptr [r13 + 0x4b59]
+000000014036123e  mov      byte ptr [rsi + 1], al
+0000000140361241  movzx    eax, byte ptr [r13 + 0x4b72]
+0000000140361249  mov      byte ptr [rsi + 2], al
+000000014036124c  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+0000000140361251  mov      byte ptr [rsi + 3], al
+0000000140361254  movzx    eax, byte ptr [r13 + 0x4b7d]
+000000014036125c  mov      byte ptr [rsi + 4], al
+000000014036125f  movzx    eax, byte ptr [r13 + 0x4b7e]
+0000000140361267  mov      byte ptr [rsi + 5], al
+000000014036126a  mov      rcx, qword ptr [rip + 0x303e27]
+0000000140361271  cmp      byte ptr [rcx + 0x2c9], 1
+0000000140361278  jne      0x1403612d0
+000000014036127a  mov      eax, dword ptr [r13 + 0x50]
+000000014036127e  cmp      dword ptr [rcx + 0x374], eax
+0000000140361284  je       0x1403612d0
+0000000140361286  mov      rcx, qword ptr [r13 + 0xfd0]
+000000014036128d  test     rcx, rcx
+0000000140361290  je       0x1403612d0
+0000000140361292  add      rcx, 0x10
+0000000140361296  lea      rdx, [rip + 0x24b42f]
+000000014036129d  call     0x1403ff140 ; CResRef::operator==+0x0
+00000001403612a2  test     eax, eax
+00000001403612a4  je       0x1403612d0
+00000001403612a6  movzx    eax, byte ptr [r13 + 0x4b7e]
+00000001403612ae  movzx    ecx, byte ptr [rip + 0x22ac9b]
+00000001403612b5  cmp      al, cl
+00000001403612b7  jne      0x1403612c5
+00000001403612b9  movzx    eax, byte ptr [rip + 0x22ac91]
+00000001403612c0  mov      byte ptr [rsi + 5], al
+00000001403612c3  jmp      0x1403612d0 ; CGameSprite::Marshal+0x920
+00000001403612c5  cmp      al, byte ptr [rip + 0x22ac86]
+00000001403612cb  jne      0x1403612d0
+00000001403612cd  mov      byte ptr [rsi + 5], cl
+00000001403612d0  movzx    eax, byte ptr [r13 + 0x4b7f]
+00000001403612d8  lea      rdx, [r13 + 0x488]
+00000001403612df  mov      byte ptr [rsi + 0xb], al
+00000001403612e2  lea      rcx, [rsi + 0x10]
+00000001403612e6  mov      eax, dword ptr [r13 + 0x4b74]
+00000001403612ed  mov      r8d, 0x20
+00000001403612f3  mov      dword ptr [rsi + 0xc], eax
+00000001403612f6  mov      eax, dword ptr [r13 + 0x4b78]
+00000001403612fd  mov      dword ptr [rsi + 6], eax
+0000000140361300  movzx    eax, byte ptr [r13 + 0x4b7c]
+0000000140361308  mov      byte ptr [rsi + 0xa], al
+000000014036130b  call     0x1405093f0 ; strncpy+0x0
+0000000140361310  lea      rdx, [rsi + 0x5c]
+0000000140361314  lea      rcx, [r13 + 0x4c64]
+000000014036131b  call     0x1403ff620 ; CResRef::GetResRef+0x0
+0000000140361320  mov      ebx, dword ptr [rsp + 0x70]
+0000000140361324  test     ebx, ebx
+0000000140361326  je       0x14036135b
+0000000140361328  mov      rcx, qword ptr [rsp + 0x58]
+000000014036132d  lea      r8, [rbx + rbx*2]
+0000000140361331  mov      dword ptr [rsi + 0x30], edi
+0000000140361334  mov      rdx, r12
+0000000140361337  mov      dword ptr [rsi + 0x34], ebx
+000000014036133a  shl      r8, 2
+000000014036133e  mov      rcx, qword ptr [rcx]
+0000000140361341  add      rcx, rdi
+0000000140361344  call     0x1404f9730 ; memcpy+0x0
+0000000140361349  lea      eax, [rbx + rbx*2]
+000000014036134c  mov      rcx, r12
+000000014036134f  lea      edi, [rax*4 + 0x2d4]
+0000000140361356  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+000000014036135b  mov      ebx, dword ptr [rsp + 0x40]
+000000014036135f  test     ebx, ebx
+0000000140361361  je       0x1403613cd
+0000000140361363  mov      rax, qword ptr [rsp + 0x58]
+0000000140361368  mov      r8d, ebx
+000000014036136b  mov      rdx, qword ptr [rsp + 0x50]
+0000000140361370  mov      dword ptr [rsi + 0x38], edi
+0000000140361373  mov      dword ptr [rsi + 0x3c], ebx
+0000000140361376  mov      ecx, edi
+0000000140361378  add      rcx, qword ptr [rax]
+000000014036137b  shl      r8, 4
+000000014036137f  call     0x1404f9730 ; memcpy+0x0
+0000000140361384  mov      rcx, qword ptr [rsp + 0x50]
+0000000140361389  shl      ebx, 4
+000000014036138c  add      edi, ebx
+000000014036138e  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140361393  mov      ebx, dword ptr [rsp + 0x48]
+0000000140361397  test     ebx, ebx
+0000000140361399  je       0x1403613cd
+000000014036139b  mov      rax, qword ptr [rsp + 0x58]
+00000001403613a0  lea      r8, [rbx + rbx*2]
+00000001403613a4  mov      rdx, qword ptr [rsp + 0x68]
+00000001403613a9  mov      dword ptr [rsi + 0x40], edi
+00000001403613ac  mov      dword ptr [rsi + 0x44], ebx
+00000001403613af  mov      ecx, edi
+00000001403613b1  add      rcx, qword ptr [rax]
+00000001403613b4  shl      r8, 2
+00000001403613b8  call     0x1404f9730 ; memcpy+0x0
+00000001403613bd  mov      rcx, qword ptr [rsp + 0x68]
+00000001403613c2  lea      eax, [rbx + rbx*2]
+00000001403613c5  lea      edi, [rdi + rax*4]
+00000001403613c8  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001403613cd  movaps   xmm0, xmmword ptr [rsp + 0x90]
+00000001403613d5  movaps   xmm1, xmmword ptr [rsp + 0xa0]
+00000001403613dd  mov      rdx, qword ptr [rsp + 0x58]
+00000001403613e2  mov      dword ptr [rsi + 0x48], edi
+00000001403613e5  mov      ecx, edi
+00000001403613e7  add      edi, 0x50
+00000001403613ea  mov      rax, qword ptr [rdx]
+00000001403613ed  movups   xmmword ptr [rcx + rax], xmm0
+00000001403613f1  movaps   xmm0, xmmword ptr [rsp + 0xb0]
+00000001403613f9  movups   xmmword ptr [rcx + rax + 0x10], xmm1
+00000001403613fe  movaps   xmm1, xmmword ptr [rsp + 0xc0]
+0000000140361406  movups   xmmword ptr [rcx + rax + 0x20], xmm0
+000000014036140b  movaps   xmm0, xmmword ptr [rsp + 0xd0]
+0000000140361413  movups   xmmword ptr [rcx + rax + 0x30], xmm1
+0000000140361418  movups   xmmword ptr [rcx + rax + 0x40], xmm0
+000000014036141d  test     r14d, r14d
+0000000140361420  je       0x140361456
+0000000140361422  mov      dword ptr [rsi + 0x4c], edi
+0000000140361425  lea      r8, [r14 + r14*4]
+0000000140361429  mov      dword ptr [rsi + 0x50], r14d
+000000014036142d  mov      ecx, edi
+000000014036142f  add      rcx, qword ptr [rdx]
+0000000140361432  mov      rdx, qword ptr [rsp + 0x60]
+0000000140361437  shl      r8, 2
+000000014036143b  call     0x1404f9730 ; memcpy+0x0
+0000000140361440  mov      rcx, qword ptr [rsp + 0x60]
+0000000140361445  lea      eax, [r14 + r14*4]
+0000000140361449  lea      edi, [rdi + rax*4]
+000000014036144c  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140361451  mov      rdx, qword ptr [rsp + 0x58]
+0000000140361456  test     ebp, ebp
+0000000140361458  je       0x140361488
+000000014036145a  mov      dword ptr [rsi + 0x54], edi
+000000014036145d  mov      dword ptr [rsi + 0x58], ebp
+0000000140361460  mov      eax, ebp
+0000000140361462  imul     r8, rax, 0x108
+0000000140361469  mov      ecx, edi
+000000014036146b  add      rcx, qword ptr [rdx]
+000000014036146e  mov      rdx, qword ptr [rsp + 0x88]
+0000000140361476  call     0x1404f9730 ; memcpy+0x0
+000000014036147b  mov      rcx, qword ptr [rsp + 0x88]
+0000000140361483  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140361488  movzx    eax, word ptr [r13 + 0x4e40]
+0000000140361490  lea      rdx, [rip + 0x288f86]
+0000000140361497  add      word ptr [r13 + 0x57c], ax
+000000014036149f  lea      rcx, [rsp + 0x60]
+00000001403614a4  add      word ptr [r13 + 0x57e], ax
+00000001403614ac  add      word ptr [r13 + 0x1124], ax
+00000001403614b4  mov      rbx, qword ptr [r13 + 0x49f0]
+00000001403614bb  call     0x1403fee80 ; CResRef::CResRef+0x0
+00000001403614c0  xor      edi, edi
+00000001403614c2  lea      rcx, [r13 + 0x49b0]
+00000001403614c9  mov      dword ptr [rsp + 0x30], edi
+00000001403614cd  mov      rsi, 0xffffffffffffffff
+00000001403614d4  mov      r8d, 0xba
+00000001403614da  mov      r9, rbx
+00000001403614dd  mov      rax, qword ptr [rax]
+00000001403614e0  mov      rdx, r13
+00000001403614e3  mov      qword ptr [rsp + 0x28], rax
+00000001403614e8  mov      dword ptr [rsp + 0x20], esi
+00000001403614ec  call     0x1401e78c0 ; CGameEffectList::RemoveAllOfType+0x0
+00000001403614f1  mov      rbx, qword ptr [r13 + 0x4a40]
+00000001403614f8  lea      rdx, [rip + 0x288f1e]
+00000001403614ff  lea      rcx, [rsp + 0x60]
+0000000140361504  call     0x1403fee80 ; CResRef::CResRef+0x0
+0000000140361509  mov      dword ptr [rsp + 0x30], edi
+000000014036150d  lea      rcx, [r13 + 0x4a00]
+0000000140361514  mov      r8d, 0xba
+000000014036151a  mov      r9, rbx
+000000014036151d  mov      rdx, r13
+0000000140361520  mov      rax, qword ptr [rax]
+0000000140361523  mov      qword ptr [rsp + 0x28], rax
+0000000140361528  mov      dword ptr [rsp + 0x20], esi
+000000014036152c  call     0x1401e78c0 ; CGameEffectList::RemoveAllOfType+0x0
+0000000140361531  mov      rcx, qword ptr [rsp + 0xe0]
+0000000140361539  xor      rcx, rsp
+000000014036153c  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140361541  add      rsp, 0xf8
+0000000140361548  pop      r15
+000000014036154a  pop      r14
+000000014036154c  pop      r13
+000000014036154e  pop      r12
+0000000140361550  pop      rdi
+0000000140361551  pop      rsi
+0000000140361552  pop      rbp
+0000000140361553  pop      rbx
+0000000140361554  ret
+0000000140361555  int3
+0000000140361556  int3
+0000000140361557  int3
+0000000140361558  int3
+0000000140361559  int3
+000000014036155a  int3
+000000014036155b  int3
+000000014036155c  int3
+000000014036155d  int3
+000000014036155e  int3
+000000014036155f  int3
+
+CGameSprite::Marshal+0x0 [0x140361560, 0x1403617d0)
+0000000140361560  mov      qword ptr [rsp + 0x18], rbx
+0000000140361565  push     rbp
+0000000140361566  push     rsi
+0000000140361567  push     rdi
+0000000140361568  sub      rsp, 0x30
+000000014036156c  xor      ebp, ebp
+000000014036156e  mov      rdi, rdx
+0000000140361571  mov      esi, ebp
+0000000140361573  mov      rbx, rcx
+0000000140361576  cmp      qword ptr [rcx + 0x18], rsi
+000000014036157a  jne      0x1403615a3
+000000014036157c  mov      rax, qword ptr [rip + 0x303b1d]
+0000000140361583  lea      esi, [rbp + 1]
+0000000140361586  mov      qword ptr [rsp + 0x50], rbp
+000000014036158b  mov      r8, qword ptr [rax + 0x1090]
+0000000140361592  mov      rax, qword ptr [r8 + 0x65f8]
+0000000140361599  mov      qword ptr [rcx + 0x18], rax
+000000014036159d  mov      eax, ebp
+000000014036159f  mov      qword ptr [rcx + 0xc], rax
+00000001403615a3  and      dword ptr [rcx + 0x568], 0x7fffffff
+00000001403615ad  xor      edx, edx
+00000001403615af  mov      rcx, qword ptr [rdi]
+00000001403615b2  mov      r8d, 0x110
+00000001403615b8  call     0x1404f9b90 ; memset+0x0
+00000001403615bd  lea      rcx, [rbx + 0x540]
+00000001403615c4  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+00000001403615c9  mov      rcx, qword ptr [rdi]
+00000001403615cc  movabs   r9, 0x3ff0000000000000
+00000001403615d6  mov      rax, qword ptr [rax]
+00000001403615d9  mov      qword ptr [rcx + 0x80], rax
+00000001403615e0  mov      rcx, qword ptr [rdi]
+00000001403615e3  movzx    eax, byte ptr [rcx + 0x80]
+00000001403615ea  mov      byte ptr [rcx + 0x2e], al
+00000001403615ed  mov      rax, qword ptr [rdi]
+00000001403615f0  mov      byte ptr [rax + 0x80], 0x2a
+00000001403615f7  mov      edx, dword ptr [rbx + 0xc]
+00000001403615fa  cmp      edx, -0x64
+00000001403615fd  jge      0x14036160e
+00000001403615ff  mov      dword ptr [rbx + 0xc], 0xffffff9c
+0000000140361606  mov      r8d, 0xff9c
+000000014036160c  jmp      0x14036162a ; CGameSprite::Marshal+0xca
+000000014036160e  mov      rax, qword ptr [rbx + 0x18]
+0000000140361612  movzx    r8d, dx
+0000000140361616  mov      ecx, dword ptr [rax + 0x678]
+000000014036161c  add      ecx, 0x64
+000000014036161f  cmp      edx, ecx
+0000000140361621  jle      0x140361638
+0000000140361623  mov      dword ptr [rbx + 0xc], ecx
+0000000140361626  movzx    r8d, cx
+000000014036162a  mov      qword ptr [rbx + 0x46f0], rbp
+0000000140361631  mov      qword ptr [rbx + 0x46f8], r9
+0000000140361638  mov      edx, dword ptr [rbx + 0x10]
+000000014036163b  cmp      edx, -0x64
+000000014036163e  jge      0x140361649
+0000000140361640  mov      dword ptr [rbx + 0x10], 0xffffff9c
+0000000140361647  jmp      0x14036165d ; CGameSprite::Marshal+0xfd
+0000000140361649  mov      rax, qword ptr [rbx + 0x18]
+000000014036164d  mov      ecx, dword ptr [rax + 0x67c]
+0000000140361653  add      ecx, 0x64
+0000000140361656  cmp      edx, ecx
+0000000140361658  jle      0x14036166b
+000000014036165a  mov      dword ptr [rbx + 0x10], ecx
+000000014036165d  mov      qword ptr [rbx + 0x46f0], rbp
+0000000140361664  mov      qword ptr [rbx + 0x46f8], r9
+000000014036166b  mov      rax, qword ptr [rdi]
+000000014036166e  mov      word ptr [rax + 0x20], r8w
+0000000140361673  movzx    eax, word ptr [rbx + 0x10]
+0000000140361677  mov      rcx, qword ptr [rdi]
+000000014036167a  mov      word ptr [rcx + 0x22], ax
+000000014036167e  movzx    eax, word ptr [rbx + 0x554]
+0000000140361685  mov      rcx, qword ptr [rdi]
+0000000140361688  mov      word ptr [rcx + 0x24], ax
+000000014036168c  movzx    eax, word ptr [rbx + 0x558]
+0000000140361693  mov      rcx, qword ptr [rdi]
+0000000140361696  mov      word ptr [rcx + 0x26], ax
+000000014036169a  movzx    eax, word ptr [rbx + 0x548]
+00000001403616a1  mov      rcx, qword ptr [rdi]
+00000001403616a4  mov      word ptr [rcx + 0x2c], ax
+00000001403616a8  mov      eax, dword ptr [rbx + 0x54c]
+00000001403616ae  cmp      eax, -1
+00000001403616b1  jne      0x1403616bf
+00000001403616b3  mov      rax, qword ptr [rdi]
+00000001403616b6  mov      dword ptr [rax + 0x38], 0xffffffff
+00000001403616bd  jmp      0x1403616d0 ; CGameSprite::Marshal+0x170
+00000001403616bf  movzx    ecx, byte ptr [rip + 0x23c03e]
+00000001403616c6  xor      edx, edx
+00000001403616c8  div      ecx
+00000001403616ca  mov      rcx, qword ptr [rdi]
+00000001403616cd  mov      dword ptr [rcx + 0x38], eax
+00000001403616d0  mov      rcx, qword ptr [rdi]
+00000001403616d3  mov      r8b, 1
+00000001403616d6  movzx    eax, word ptr [rbx + 0x550]
+00000001403616dd  mov      word ptr [rcx + 0x3c], ax
+00000001403616e1  mov      rcx, qword ptr [rdi]
+00000001403616e4  movzx    eax, word ptr [rbx + 0x552]
+00000001403616eb  mov      word ptr [rcx + 0x3e], ax
+00000001403616ef  movzx    edx, byte ptr [rip + 0x23c011]
+00000001403616f6  mov      ecx, dword ptr [rbx + 0x55c]
+00000001403616fc  call     0x1403ff3e0 ; CUtil::BarrelShiftRight+0x0
+0000000140361701  mov      rcx, qword ptr [rdi]
+0000000140361704  lea      r8, [rsp + 0x50]
+0000000140361709  lea      rdx, [rsp + 0x58]
+000000014036170e  mov      byte ptr [rsp + 0x20], 1
+0000000140361713  mov      dword ptr [rcx + 0x40], eax
+0000000140361716  mov      rcx, rbx
+0000000140361719  mov      r9, qword ptr [rdi]
+000000014036171c  add      r9, 0x34
+0000000140361720  call     0x1403609b0 ; CGameSprite::Marshal+0x0
+0000000140361725  mov      rax, qword ptr [rsp + 0x58]
+000000014036172a  mov      qword ptr [rdi + 8], rax
+000000014036172e  mov      rcx, qword ptr [rdi]
+0000000140361731  mov      eax, dword ptr [rsp + 0x50]
+0000000140361735  mov      dword ptr [rcx + 0x8c], eax
+000000014036173b  cmp      qword ptr [rbx + 0x300], rbp
+0000000140361742  je       0x140361757
+0000000140361744  mov      rdx, qword ptr [rdi]
+0000000140361747  lea      rcx, [rbx + 0x3b68]
+000000014036174e  add      rdx, 0x78
+0000000140361752  call     0x1403ff620 ; CResRef::GetResRef+0x0
+0000000140361757  mov      rcx, qword ptr [rdi]
+000000014036175a  lea      rdx, [rbx + 0x30]
+000000014036175e  mov      eax, dword ptr [rbx + 0x3b60]
+0000000140361764  mov      dword ptr [rcx + 0x44], eax
+0000000140361767  lea      rcx, [rsp + 0x50]
+000000014036176c  call     0x1403fcd00 ; CString::CString+0x0
+0000000140361771  mov      rdx, qword ptr [rsp + 0x50]
+0000000140361776  mov      r8d, 0x20
+000000014036177c  mov      rcx, qword ptr [rdi]
+000000014036177f  call     0x1405093f0 ; strncpy+0x0
+0000000140361784  lea      rcx, [rsp + 0x50]
+0000000140361789  call     0x1403fce00 ; CString::~CString+0x0
+000000014036178e  xor      edx, edx
+0000000140361790  mov      rcx, rbx
+0000000140361793  call     0x140357290 ; CGameSprite::GetName+0x0
+0000000140361798  mov      rcx, qword ptr [rdi]
+000000014036179b  mov      r8d, 0x20
+00000001403617a1  add      rcx, 0x90
+00000001403617a8  mov      rdx, qword ptr [rax]
+00000001403617ab  call     0x1405093f0 ; strncpy+0x0
+00000001403617b0  test     esi, esi
+00000001403617b2  je       0x1403617b8
+00000001403617b4  mov      qword ptr [rbx + 0x18], rbp
+00000001403617b8  mov      rbx, qword ptr [rsp + 0x60]
+00000001403617bd  add      rsp, 0x30
+00000001403617c1  pop      rdi
+00000001403617c2  pop      rsi
+00000001403617c3  pop      rbp
+00000001403617c4  ret
+00000001403617c5  int3
+00000001403617c6  int3
+00000001403617c7  int3
+00000001403617c8  int3
+00000001403617c9  int3
+00000001403617ca  int3
+00000001403617cb  int3
+00000001403617cc  int3
+00000001403617cd  int3
+00000001403617ce  int3
+00000001403617cf  int3
+
+CInfGame::CharacterImport+0x0 [0x1402706b0, 0x140270d00)
+00000001402706b0  push     rbp
+00000001402706b2  push     rbx
+00000001402706b3  push     rsi
+00000001402706b4  push     rdi
+00000001402706b5  push     r12
+00000001402706b7  push     r14
+00000001402706b9  lea      rbp, [rsp - 8]
+00000001402706be  sub      rsp, 0x108
+00000001402706c5  mov      rax, qword ptr [rip + 0x3f1e4c]
+00000001402706cc  xor      rax, rsp
+00000001402706cf  mov      qword ptr [rbp - 8], rax
+00000001402706d3  lea      rcx, [rbp - 0x70]
+00000001402706d7  mov      byte ptr [rsp + 0x60], r9b
+00000001402706dc  mov      rsi, r8
+00000001402706df  mov      r12, rdx
+00000001402706e2  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+00000001402706e7  xor      r14d, r14d
+00000001402706ea  lea      r8, [rip + 0x379d2c]
+00000001402706f1  lea      rdx, [rsp + 0x70]
+00000001402706f6  mov      qword ptr [rbp - 0x78], r14
+00000001402706fa  lea      rcx, [rbp - 0x70]
+00000001402706fe  call     0x1403ff020 ; CResRef::operator=+0x0
+0000000140270703  lea      rcx, [rbp - 0x80]
+0000000140270707  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014027070c  lea      r8, [rip + 0x379d0a]
+0000000140270713  mov      qword ptr [rsp + 0x78], r14
+0000000140270718  lea      rdx, [rsp + 0x70]
+000000014027071d  lea      rcx, [rbp - 0x80]
+0000000140270721  call     0x1403ff020 ; CResRef::operator=+0x0
+0000000140270726  mov      rax, qword ptr [rip + 0x3eb3e3]
+000000014027072d  lea      rcx, [rbp - 0x50]
+0000000140270731  mov      qword ptr [rbp - 0x58], rax
+0000000140270735  call     0x14040c6e0 ; CSound::CSound+0x0
+000000014027073a  mov      rdx, r12
+000000014027073d  lea      rcx, [rsp + 0x70]
+0000000140270742  call     0x1403fedd0 ; CResRef::CResRef+0x0
+0000000140270747  mov      rax, qword ptr [rbp - 0x70]
+000000014027074b  cmp      rax, qword ptr [rsp + 0x70]
+0000000140270750  je       0x1402707e7
+0000000140270756  cmp      qword ptr [rbp - 0x78], r14
+000000014027075a  je       0x140270779
+000000014027075c  lea      rdx, [rip + 0x379cba]
+0000000140270763  lea      rcx, [rbp - 0x70]
+0000000140270767  call     0x1403ff220 ; CResRef::operator!=+0x0
+000000014027076c  test     eax, eax
+000000014027076e  je       0x140270779
+0000000140270770  mov      rcx, qword ptr [rbp - 0x78]
+0000000140270774  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270779  lea      rdx, [rip + 0x379c9d]
+0000000140270780  lea      rcx, [rsp + 0x70]
+0000000140270785  call     0x1403ff140 ; CResRef::operator==+0x0
+000000014027078a  test     eax, eax
+000000014027078c  je       0x1402707a8
+000000014027078e  lea      r8, [rip + 0x379c88]
+0000000140270795  mov      qword ptr [rbp - 0x78], r14
+0000000140270799  lea      rdx, [rbp - 0x68]
+000000014027079d  lea      rcx, [rbp - 0x70]
+00000001402707a1  call     0x1403ff020 ; CResRef::operator=+0x0
+00000001402707a6  jmp      0x1402707e7 ; CInfGame::CharacterImport+0x137
+00000001402707a8  xor      r8d, r8d
+00000001402707ab  lea      rcx, [rsp + 0x70]
+00000001402707b0  mov      edx, 0x3fa
+00000001402707b5  call     0x140402950 ; dimmGetResObject+0x0
+00000001402707ba  lea      rdx, [rbp - 0x68]
+00000001402707be  lea      rcx, [rbp - 0x70]
+00000001402707c2  test     rax, rax
+00000001402707c5  jne      0x1402707d9
+00000001402707c7  lea      r8, [rip + 0x379c4f]
+00000001402707ce  mov      qword ptr [rbp - 0x78], r14
+00000001402707d2  call     0x1403ff020 ; CResRef::operator=+0x0
+00000001402707d7  jmp      0x1402707e7 ; CInfGame::CharacterImport+0x137
+00000001402707d9  lea      r8, [rsp + 0x70]
+00000001402707de  mov      qword ptr [rbp - 0x78], rax
+00000001402707e2  call     0x1403fef40 ; CResRef::operator=+0x0
+00000001402707e7  lea      rcx, [rbp - 0x78]
+00000001402707eb  mov      qword ptr [rsp + 0x140], r13
+00000001402707f3  call     0x14017fe80 ; CBiographyFile::GetData+0x0
+00000001402707f8  lea      rcx, [rbp - 0x78]
+00000001402707fc  mov      rdi, rax
+00000001402707ff  call     0x14017fe90 ; CBiographyFile::GetDataSize+0x0
+0000000140270804  lea      ebx, [rax - 0x64]
+0000000140270807  cmp      ebx, 0xa
+000000014027080a  jl       0x140270c63
+0000000140270810  movzx    eax, byte ptr [rdi + 5]
+0000000140270814  lea      r13, [rdi + 8]
+0000000140270818  add      al, 0xd
+000000014027081a  shl      al, 4
+000000014027081d  add      al, byte ptr [rdi + 7]
+0000000140270820  mov      byte ptr [rsi], al
+0000000140270822  sub      ebx, dword ptr [r13 + 0x24]
+0000000140270826  js       0x140270c63
+000000014027082c  mov      ecx, 0x5388
+0000000140270831  call     0x1404f6aa8 ; operator_new+0x0
+0000000140270836  mov      rcx, rax
+0000000140270839  test     rax, rax
+000000014027083c  je       0x140270c63
+0000000140270842  mov      edx, dword ptr [r13 + 0x20]
+0000000140270846  xor      r9d, r9d
+0000000140270849  mov      r8d, dword ptr [r13 + 0x24]
+000000014027084d  add      rdx, rdi
+0000000140270850  mov      dword ptr [rsp + 0x50], 1
+0000000140270858  mov      word ptr [rsp + 0x48], r14w
+000000014027085e  mov      qword ptr [rsp + 0x70], 0xffffffffffffffff
+0000000140270867  mov      rax, qword ptr [rsp + 0x70]
+000000014027086c  mov      qword ptr [rsp + 0x40], rax
+0000000140270871  mov      dword ptr [rsp + 0x38], 0x7fffffff
+0000000140270879  mov      word ptr [rsp + 0x30], r14w
+000000014027087f  mov      word ptr [rsp + 0x28], r14w
+0000000140270885  mov      dword ptr [rsp + 0x20], 0xffffffff
+000000014027088d  call     0x140341220 ; CGameSprite::CGameSprite+0x0
+0000000140270892  mov      rsi, rax
+0000000140270895  test     rax, rax
+0000000140270898  je       0x140270c63
+000000014027089e  test     ebx, ebx
+00000001402708a0  jne      0x140270c63
+00000001402708a6  mov      rdx, r12
+00000001402708a9  mov      qword ptr [rsp + 0x100], r15
+00000001402708b1  lea      rcx, [rsp + 0x70]
+00000001402708b6  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402708bb  lea      rdx, [rsp + 0x70]
+00000001402708c0  mov      rcx, rsi
+00000001402708c3  call     0x140374780 ; CGameSprite::SetResRef+0x0
+00000001402708c8  xor      eax, eax
+00000001402708ca  lea      r8d, [rbx + 0x20]
+00000001402708ce  mov      rdx, r13
+00000001402708d1  mov      qword ptr [rbp - 0x30], rax
+00000001402708d5  lea      rcx, [rbp - 0x30]
+00000001402708d9  mov      qword ptr [rbp - 0x28], rax
+00000001402708dd  mov      qword ptr [rbp - 0x20], rax
+00000001402708e1  mov      qword ptr [rbp - 0x18], rax
+00000001402708e5  mov      byte ptr [rbp - 0x10], al
+00000001402708e8  call     0x1405093f0 ; strncpy+0x0
+00000001402708ed  lea      rdx, [rbp - 0x30]
+00000001402708f1  lea      rcx, [rsp + 0x70]
+00000001402708f6  call     0x1403fcd70 ; CString::CString+0x0
+00000001402708fb  lea      rcx, [rsi + 0x3928]
+0000000140270902  lea      rdx, [rsp + 0x70]
+0000000140270907  call     0x1403fce30 ; CString::operator=+0x0
+000000014027090c  lea      rcx, [rsp + 0x70]
+0000000140270911  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270916  lea      rbx, [r13 + 0x28]
+000000014027091a  mov      r14d, 4
+0000000140270920  lea      rdi, [rsi + 0x371c]
+0000000140270927  nop      word ptr [rax + rax]
+0000000140270930  movzx    r8d, word ptr [rbx + 8]
+0000000140270935  mov      r9, rdi
+0000000140270938  movzx    edx, word ptr [rbx]
+000000014027093b  mov      rcx, rsi
+000000014027093e  call     0x14035eaa0 ; CGameSprite::InitQuickItemData+0x0
+0000000140270943  add      rdi, 0x34
+0000000140270947  lea      rbx, [rbx + 2]
+000000014027094b  sub      r14, 1
+000000014027094f  jne      0x140270930
+0000000140270951  mov      r14d, 3
+0000000140270957  lea      rbx, [r13 + 0x38]
+000000014027095b  mov      r15d, r14d
+000000014027095e  lea      rdi, [rsi + 0x37ec]
+0000000140270965  nop      word ptr [rax + rax]
+0000000140270970  mov      rdx, rbx
+0000000140270973  lea      rcx, [rbp - 0x68]
+0000000140270977  call     0x1403feec0 ; CResRef::CResRef+0x0
+000000014027097c  mov      r8, rdi
+000000014027097f  mov      rcx, rsi
+0000000140270982  mov      rdx, qword ptr [rax]
+0000000140270985  call     0x14035ecb0 ; CGameSprite::InitQuickSpellData+0x0
+000000014027098a  add      rdi, 0x34
+000000014027098e  add      rbx, 8
+0000000140270992  sub      r15, 1
+0000000140270996  jne      0x140270970
+0000000140270998  mov      r15, qword ptr [rsp + 0x100]
+00000001402709a0  lea      rbx, [r13 + 0x50]
+00000001402709a4  lea      rdi, [rsi + 0x3888]
+00000001402709ab  nop      dword ptr [rax + rax]
+00000001402709b0  movzx    r8d, word ptr [rbx + 6]
+00000001402709b5  mov      r9, rdi
+00000001402709b8  movzx    edx, word ptr [rbx]
+00000001402709bb  mov      rcx, rsi
+00000001402709be  call     0x14035eaa0 ; CGameSprite::InitQuickItemData+0x0
+00000001402709c3  add      rdi, 0x34
+00000001402709c7  lea      rbx, [rbx + 2]
+00000001402709cb  sub      r14, 1
+00000001402709cf  jne      0x1402709b0
+00000001402709d1  mov      rdx, r12
+00000001402709d4  lea      rcx, [rsp + 0x70]
+00000001402709d9  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402709de  mov      rax, qword ptr [rbp - 0x80]
+00000001402709e2  cmp      rax, qword ptr [rsp + 0x70]
+00000001402709e7  je       0x140270a87
+00000001402709ed  cmp      qword ptr [rsp + 0x78], r14
+00000001402709f2  je       0x140270a12
+00000001402709f4  lea      rdx, [rip + 0x379a22]
+00000001402709fb  lea      rcx, [rbp - 0x80]
+00000001402709ff  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270a04  test     eax, eax
+0000000140270a06  je       0x140270a12
+0000000140270a08  mov      rcx, qword ptr [rsp + 0x78]
+0000000140270a0d  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270a12  lea      rdx, [rip + 0x379a04]
+0000000140270a19  lea      rcx, [rsp + 0x70]
+0000000140270a1e  call     0x1403ff140 ; CResRef::operator==+0x0
+0000000140270a23  test     eax, eax
+0000000140270a25  je       0x140270a46
+0000000140270a27  lea      r8, [rip + 0x3799ef]
+0000000140270a2e  mov      qword ptr [rsp + 0x78], 0
+0000000140270a37  lea      rdx, [rbp - 0x68]
+0000000140270a3b  lea      rcx, [rbp - 0x80]
+0000000140270a3f  call     0x1403ff020 ; CResRef::operator=+0x0
+0000000140270a44  jmp      0x140270a87 ; CInfGame::CharacterImport+0x3d7
+0000000140270a46  xor      r8d, r8d
+0000000140270a49  lea      rcx, [rsp + 0x70]
+0000000140270a4e  mov      edx, 0x3fe
+0000000140270a53  call     0x140402950 ; dimmGetResObject+0x0
+0000000140270a58  lea      rdx, [rbp - 0x68]
+0000000140270a5c  lea      rcx, [rbp - 0x80]
+0000000140270a60  test     rax, rax
+0000000140270a63  jne      0x140270a78
+0000000140270a65  lea      r8, [rip + 0x3799b1]
+0000000140270a6c  mov      qword ptr [rsp + 0x78], rax
+0000000140270a71  call     0x1403ff020 ; CResRef::operator=+0x0
+0000000140270a76  jmp      0x140270a87 ; CInfGame::CharacterImport+0x3d7
+0000000140270a78  lea      r8, [rsp + 0x70]
+0000000140270a7d  mov      qword ptr [rsp + 0x78], rax
+0000000140270a82  call     0x1403fef40 ; CResRef::operator=+0x0
+0000000140270a87  lea      rdx, [rip + 0x37998f]
+0000000140270a8e  lea      rcx, [rbp - 0x80]
+0000000140270a92  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270a97  test     eax, eax
+0000000140270a99  je       0x140270b25
+0000000140270a9f  mov      rax, qword ptr [rip + 0x3f45fa]
+0000000140270aa6  mov      rcx, qword ptr [rax + 0x1090]
+0000000140270aad  cmp      dword ptr [rcx + 0x9688], 0
+0000000140270ab4  jne      0x140270b25
+0000000140270ab6  movzx    eax, byte ptr [rsp + 0x60]
+0000000140270abb  cmp      al, 6
+0000000140270abd  jae      0x140270b25
+0000000140270abf  movzx    edi, al
+0000000140270ac2  lea      rcx, [rsp + 0x78]
+0000000140270ac7  add      edi, 0xf0000d
+0000000140270acd  call     0x14017fe90 ; CBiographyFile::GetDataSize+0x0
+0000000140270ad2  lea      rcx, [rsp + 0x78]
+0000000140270ad7  mov      ebx, eax
+0000000140270ad9  call     0x14017fe80 ; CBiographyFile::GetData+0x0
+0000000140270ade  mov      rdx, rax
+0000000140270ae1  lea      rcx, [rsp + 0x70]
+0000000140270ae6  mov      r8d, ebx
+0000000140270ae9  call     0x1403fde80 ; CString::CString+0x0
+0000000140270aee  mov      rdx, rax
+0000000140270af1  lea      rcx, [rbp - 0x58]
+0000000140270af5  call     0x1403fce30 ; CString::operator=+0x0
+0000000140270afa  lea      rcx, [rsp + 0x70]
+0000000140270aff  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270b04  mov      rcx, qword ptr [rip + 0x3f4595]
+0000000140270b0b  lea      r8, [rbp - 0x58]
+0000000140270b0f  add      rcx, 0x1184
+0000000140270b16  mov      edx, edi
+0000000140270b18  call     0x14041f600 ; CTlkFileOverride::Add+0x0
+0000000140270b1d  mov      dword ptr [rsi + 0x724], edi
+0000000140270b23  jmp      0x140270b3f ; CInfGame::CharacterImport+0x48f
+0000000140270b25  mov      eax, dword ptr [rsi + 0x724]
+0000000140270b2b  sub      eax, 0xf0000d
+0000000140270b30  cmp      eax, 5
+0000000140270b33  ja       0x140270b3f
+0000000140270b35  mov      dword ptr [rsi + 0x724], 0xffffffff
+0000000140270b3f  lea      rdx, [rsi + 0x594]
+0000000140270b46  lea      rcx, [rbp - 0x60]
+0000000140270b4a  call     0x1403feec0 ; CResRef::CResRef+0x0
+0000000140270b4f  lea      rdx, [rsp + 0x68]
+0000000140270b54  lea      rcx, [rbp - 0x60]
+0000000140270b58  call     0x1403ff630 ; CResRef::GetResRefStr+0x0
+0000000140270b5d  mov      rax, qword ptr [rsp + 0x68]
+0000000140270b62  movsxd   rcx, dword ptr [rax - 8]
+0000000140270b66  cmp      byte ptr [rcx + rax - 1], 0x4c
+0000000140270b6b  jne      0x140270bdd
+0000000140270b6d  lea      rcx, [rbp - 0x60]
+0000000140270b71  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+0000000140270b76  mov      rcx, rax
+0000000140270b79  mov      edx, 1
+0000000140270b7e  call     0x140404ad0 ; dimmResourceExists+0x0
+0000000140270b83  test     eax, eax
+0000000140270b85  jne      0x140270bdd
+0000000140270b87  mov      rax, qword ptr [rsp + 0x68]
+0000000140270b8c  lea      rcx, [rsp + 0x68]
+0000000140270b91  mov      r8b, 0x4d
+0000000140270b94  mov      edx, dword ptr [rax - 8]
+0000000140270b97  dec      edx
+0000000140270b99  call     0x1403fddf0 ; CString::SetAt+0x0
+0000000140270b9e  lea      r8, [rsp + 0x68]
+0000000140270ba3  lea      rdx, [rbp - 0x68]
+0000000140270ba7  lea      rcx, [rbp - 0x60]
+0000000140270bab  call     0x1403fef50 ; CResRef::operator=+0x0
+0000000140270bb0  lea      rcx, [rbp - 0x60]
+0000000140270bb4  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+0000000140270bb9  mov      rcx, rax
+0000000140270bbc  mov      edx, 1
+0000000140270bc1  call     0x140404ad0 ; dimmResourceExists+0x0
+0000000140270bc6  test     eax, eax
+0000000140270bc8  je       0x140270bdd
+0000000140270bca  lea      rcx, [rbp - 0x60]
+0000000140270bce  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+0000000140270bd3  mov      rcx, qword ptr [rax]
+0000000140270bd6  mov      qword ptr [rsi + 0x594], rcx
+0000000140270bdd  mov      ebx, dword ptr [rsi + 0x48]
+0000000140270be0  lea      rcx, [rsp + 0x68]
+0000000140270be5  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270bea  lea      rcx, [rbp - 0x50]
+0000000140270bee  call     0x14040c8a0 ; CSound::~CSound+0x0
+0000000140270bf3  lea      rcx, [rbp - 0x58]
+0000000140270bf7  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270bfc  cmp      qword ptr [rsp + 0x78], 0
+0000000140270c02  je       0x140270c22
+0000000140270c04  lea      rdx, [rip + 0x379812]
+0000000140270c0b  lea      rcx, [rbp - 0x80]
+0000000140270c0f  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270c14  test     eax, eax
+0000000140270c16  je       0x140270c22
+0000000140270c18  mov      rcx, qword ptr [rsp + 0x78]
+0000000140270c1d  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270c22  cmp      qword ptr [rbp - 0x78], 0
+0000000140270c27  mov      qword ptr [rsp + 0x78], 0
+0000000140270c30  je       0x140270c4f
+0000000140270c32  lea      rdx, [rip + 0x3797e4]
+0000000140270c39  lea      rcx, [rbp - 0x70]
+0000000140270c3d  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270c42  test     eax, eax
+0000000140270c44  je       0x140270c4f
+0000000140270c46  mov      rcx, qword ptr [rbp - 0x78]
+0000000140270c4a  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270c4f  mov      rcx, r12
+0000000140270c52  mov      qword ptr [rbp - 0x78], 0
+0000000140270c5a  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270c5f  mov      eax, ebx
+0000000140270c61  jmp      0x140270cd0 ; CInfGame::CharacterImport+0x620
+0000000140270c63  lea      rcx, [rbp - 0x50]
+0000000140270c67  call     0x14040c8a0 ; CSound::~CSound+0x0
+0000000140270c6c  lea      rcx, [rbp - 0x58]
+0000000140270c70  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270c75  cmp      qword ptr [rsp + 0x78], r14
+0000000140270c7a  je       0x140270c9a
+0000000140270c7c  lea      rdx, [rip + 0x37979a]
+0000000140270c83  lea      rcx, [rbp - 0x80]
+0000000140270c87  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270c8c  test     eax, eax
+0000000140270c8e  je       0x140270c9a
+0000000140270c90  mov      rcx, qword ptr [rsp + 0x78]
+0000000140270c95  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270c9a  mov      qword ptr [rsp + 0x78], r14
+0000000140270c9f  cmp      qword ptr [rbp - 0x78], r14
+0000000140270ca3  je       0x140270cc2
+0000000140270ca5  lea      rdx, [rip + 0x379771]
+0000000140270cac  lea      rcx, [rbp - 0x70]
+0000000140270cb0  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140270cb5  test     eax, eax
+0000000140270cb7  je       0x140270cc2
+0000000140270cb9  mov      rcx, qword ptr [rbp - 0x78]
+0000000140270cbd  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+0000000140270cc2  mov      rcx, r12
+0000000140270cc5  mov      qword ptr [rbp - 0x78], r14
+0000000140270cc9  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270cce  xor      eax, eax
+0000000140270cd0  mov      r13, qword ptr [rsp + 0x140]
+0000000140270cd8  mov      rcx, qword ptr [rbp - 8]
+0000000140270cdc  xor      rcx, rsp
+0000000140270cdf  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140270ce4  add      rsp, 0x108
+0000000140270ceb  pop      r14
+0000000140270ced  pop      r12
+0000000140270cef  pop      rdi
+0000000140270cf0  pop      rsi
+0000000140270cf1  pop      rbx
+0000000140270cf2  pop      rbp
+0000000140270cf3  ret
+0000000140270cf4  int3
+0000000140270cf5  int3
+0000000140270cf6  int3
+0000000140270cf7  int3
+0000000140270cf8  int3
+0000000140270cf9  int3
+0000000140270cfa  int3
+0000000140270cfb  int3
+0000000140270cfc  int3
+0000000140270cfd  int3
+0000000140270cfe  int3
+0000000140270cff  int3
+
+CInfGame::CharacterExport+0x0 [0x140270170, 0x1402706b0)
+0000000140270170  mov      r11, rsp
+0000000140270173  push     rbp
+0000000140270174  push     rsi
+0000000140270175  push     r13
+0000000140270177  lea      rbp, [r11 - 0x5f]
+000000014027017b  sub      rsp, 0xe0
+0000000140270182  mov      rax, qword ptr [rip + 0x3f238f]
+0000000140270189  xor      rax, rsp
+000000014027018c  mov      qword ptr [rbp + 0x17], rax
+0000000140270190  mov      dword ptr [rbp - 0x2d], r9d
+0000000140270194  mov      r13, r8
+0000000140270197  mov      rsi, rcx
+000000014027019a  cmp      edx, -1
+000000014027019d  je       0x140270687
+00000001402701a3  mov      eax, edx
+00000001402701a5  mov      ecx, 0x7fff
+00000001402701aa  sar      eax, 0x10
+00000001402701ad  and      ax, cx
+00000001402701b0  cmp      word ptr [rip + 0x41d27d], ax
+00000001402701b7  jl       0x140270687
+00000001402701bd  test     dx, dx
+00000001402701c0  js       0x140270687
+00000001402701c6  cmp      word ptr [rip + 0x41d26b], dx
+00000001402701cd  jle      0x140270687
+00000001402701d3  mov      qword ptr [r11 - 0x30], r14
+00000001402701d7  movzx    r14d, ax
+00000001402701db  lea      rax, [rip + 0x41d26e]
+00000001402701e2  add      r14, r14
+00000001402701e5  cmp      word ptr [rax + r14*8], dx
+00000001402701ea  jne      0x14027067f
+00000001402701f0  mov      r14, qword ptr [rax + r14*8 + 8]
+00000001402701f5  lea      r9, [rbp - 0x31]
+00000001402701f9  mov      qword ptr [r11 + 8], rbx
+00000001402701fd  lea      r8, [rbp - 0x49]
+0000000140270201  mov      qword ptr [r11 - 0x20], rdi
+0000000140270205  lea      rdx, [rbp - 0x19]
+0000000140270209  mov      qword ptr [r11 - 0x28], r12
+000000014027020d  mov      rcx, r14
+0000000140270210  mov      qword ptr [r11 - 0x38], r15
+0000000140270214  mov      byte ptr [rsp + 0x20], 0
+0000000140270219  call     0x1403609b0 ; CGameSprite::Marshal+0x0
+000000014027021e  mov      eax, dword ptr [rbp - 0x49]
+0000000140270221  add      eax, 0x64
+0000000140270224  movsxd   rbx, eax
+0000000140270227  mov      rcx, rbx
+000000014027022a  mov      dword ptr [rbp - 0x41], eax
+000000014027022d  call     0x1404f67e4 ; operator_new[]+0x0
+0000000140270232  mov      r8, rbx
+0000000140270235  mov      qword ptr [rbp - 0x39], rax
+0000000140270239  xor      edx, edx
+000000014027023b  mov      rcx, rax
+000000014027023e  mov      rdi, rax
+0000000140270241  call     0x1404f9b90 ; memset+0x0
+0000000140270246  mov      rdx, qword ptr [r14]
+0000000140270249  mov      rcx, r14
+000000014027024c  call     qword ptr [rdx + 0x20]
+000000014027024f  mov      rcx, rax
+0000000140270252  lea      r8, [rbp - 0x59]
+0000000140270256  lea      rdx, [rbp - 0x58]
+000000014027025a  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+000000014027025f  movzx    ecx, byte ptr [rbp - 0x59]
+0000000140270263  cmp      byte ptr [rbp - 0x58], cl
+0000000140270266  je       0x1402702a0
+0000000140270268  mov      rax, qword ptr [r14]
+000000014027026b  mov      rcx, r14
+000000014027026e  call     qword ptr [rax + 0x20]
+0000000140270271  mov      rcx, rax
+0000000140270274  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+0000000140270279  movzx    r8d, byte ptr [rbp - 0x59]
+000000014027027e  lea      rcx, [r14 + 0x1120]
+0000000140270285  movzx    r9d, byte ptr [rbp - 0x58]
+000000014027028a  movzx    edx, al
+000000014027028d  mov      byte ptr [rsp + 0x20], r8b
+0000000140270292  call     0x1401532c0 ; CDerivedStats::GetXP+0x0
+0000000140270297  add      eax, dword ptr [r14 + 0x570]
+000000014027029e  jmp      0x1402702a7 ; CInfGame::CharacterExport+0x137
+00000001402702a0  mov      eax, dword ptr [r14 + 0x570]
+00000001402702a7  cmp      dword ptr [rsi + 0x9684], 0
+00000001402702ae  jne      0x1402702c2
+00000001402702b0  cmp      eax, dword ptr [rip + 0x3ea2a2]
+00000001402702b6  movabs   rax, 0x302e325620524843
+00000001402702c0  jbe      0x1402702cc
+00000001402702c2  movabs   rax, 0x312e325620524843
+00000001402702cc  mov      qword ptr [rdi], rax
+00000001402702cf  lea      r12, [rdi + 8]
+00000001402702d3  xor      eax, eax
+00000001402702d5  xor      edx, edx
+00000001402702d7  mov      qword ptr [r12], rax
+00000001402702db  mov      rcx, r14
+00000001402702de  mov      qword ptr [r12 + 8], rax
+00000001402702e3  mov      qword ptr [r12 + 0x10], rax
+00000001402702e8  mov      qword ptr [r12 + 0x18], rax
+00000001402702ed  call     0x140357290 ; CGameSprite::GetName+0x0
+00000001402702f2  mov      r8d, 0x20
+00000001402702f8  mov      rcx, r12
+00000001402702fb  mov      rdx, qword ptr [rax]
+00000001402702fe  call     0x1405093f0 ; strncpy+0x0
+0000000140270303  lea      rcx, [r12 + 0x30]
+0000000140270308  mov      r8d, 4
+000000014027030e  lea      rdx, [r14 + 0x373c]
+0000000140270315  nop      word ptr [rax + rax]
+0000000140270320  movzx    eax, word ptr [rdx - 2]
+0000000140270324  lea      rdx, [rdx + 0x34]
+0000000140270328  mov      word ptr [rcx - 8], ax
+000000014027032c  lea      rcx, [rcx + 2]
+0000000140270330  movzx    eax, word ptr [rdx - 0x34]
+0000000140270334  mov      word ptr [rcx - 2], ax
+0000000140270338  sub      r8, 1
+000000014027033c  jne      0x140270320
+000000014027033e  mov      esi, 3
+0000000140270343  lea      rbx, [r14 + 0x380e]
+000000014027034a  mov      r15d, esi
+000000014027034d  lea      rdi, [r12 + 0x38]
+0000000140270352  mov      rdx, rdi
+0000000140270355  mov      rcx, rbx
+0000000140270358  call     0x1403ff620 ; CResRef::GetResRef+0x0
+000000014027035d  add      rdi, 8
+0000000140270361  add      rbx, 0x34
+0000000140270365  sub      r15, 1
+0000000140270369  jne      0x140270352
+000000014027036b  mov      r15, qword ptr [rsp + 0xc0]
+0000000140270373  lea      rcx, [r12 + 0x56]
+0000000140270378  lea      rdx, [r14 + 0x38a8]
+000000014027037f  nop
+0000000140270380  movzx    eax, word ptr [rdx - 2]
+0000000140270384  lea      rdx, [rdx + 0x34]
+0000000140270388  mov      word ptr [rcx - 6], ax
+000000014027038c  lea      rcx, [rcx + 2]
+0000000140270390  movzx    eax, word ptr [rdx - 0x34]
+0000000140270394  mov      word ptr [rcx - 2], ax
+0000000140270398  sub      rsi, 1
+000000014027039c  jne      0x140270380
+000000014027039e  mov      rbx, qword ptr [rbp - 0x39]
+00000001402703a2  mov      dword ptr [r12 + 0x20], 0x64
+00000001402703ab  mov      eax, dword ptr [rbp - 0x49]
+00000001402703ae  mov      dword ptr [r12 + 0x24], eax
+00000001402703b3  movsxd   r8, dword ptr [rbp - 0x49]
+00000001402703b7  lea      rcx, [rbx + 0x64]
+00000001402703bb  mov      rdx, qword ptr [rbp - 0x19]
+00000001402703bf  call     0x1404f9730 ; memcpy+0x0
+00000001402703c4  mov      rcx, qword ptr [rbp - 0x19]
+00000001402703c8  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402703cd  lea      rdx, [rip + 0x32e3ac]
+00000001402703d4  lea      rcx, [rbp - 0x51]
+00000001402703d8  call     0x1403fcd70 ; CString::CString+0x0
+00000001402703dd  mov      rdx, qword ptr [r13]
+00000001402703e1  lea      rcx, [rbp - 0x51]
+00000001402703e5  mov      r8d, 0x3fa
+00000001402703eb  call     0x1404046d0 ; dimmRemoveResource+0x0
+00000001402703f0  lea      rcx, [rbp - 0x51]
+00000001402703f4  call     0x1403fce00 ; CString::~CString+0x0
+00000001402703f9  lea      rdx, [rip + 0x32e380]
+0000000140270400  lea      rcx, [rbp - 0x51]
+0000000140270404  call     0x1403fcd70 ; CString::CString+0x0
+0000000140270409  mov      rdx, qword ptr [r13]
+000000014027040d  lea      rcx, [rbp - 0x51]
+0000000140270411  mov      r8d, 0x3fe
+0000000140270417  call     0x1404046d0 ; dimmRemoveResource+0x0
+000000014027041c  lea      rcx, [rbp - 0x51]
+0000000140270420  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270425  lea      rdx, [rip + 0x32e354]
+000000014027042c  lea      rcx, [rbp - 0x51]
+0000000140270430  call     0x1403fcd70 ; CString::CString+0x0
+0000000140270435  mov      eax, dword ptr [rbp - 0x41]
+0000000140270438  lea      rcx, [rbp - 0x51]
+000000014027043c  mov      rdx, qword ptr [r13]
+0000000140270440  mov      r9, rbx
+0000000140270443  mov      r8d, 0x3fa
+0000000140270449  mov      dword ptr [rsp + 0x20], eax
+000000014027044d  call     0x140404810 ; dimmReplaceResourceWithData+0x0
+0000000140270452  lea      rcx, [rbp - 0x51]
+0000000140270456  call     0x1403fce00 ; CString::~CString+0x0
+000000014027045b  mov      rcx, rbx
+000000014027045e  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+0000000140270463  mov      rax, qword ptr [rip + 0x3eb6a6]
+000000014027046a  lea      rcx, [rbp - 9]
+000000014027046e  mov      ebx, dword ptr [r14 + 0x724]
+0000000140270475  mov      qword ptr [rbp - 0x11], rax
+0000000140270479  call     0x14040c6e0 ; CSound::CSound+0x0
+000000014027047e  mov      rcx, qword ptr [rip + 0x3f4c1b]
+0000000140270485  lea      r8, [rbp - 0x11]
+0000000140270489  add      rcx, 0x1150
+0000000140270490  xor      r9d, r9d
+0000000140270493  mov      edx, ebx
+0000000140270495  call     0x140416460 ; CTlkTable::Fetch+0x0
+000000014027049a  mov      rcx, qword ptr [rbp - 0x11]
+000000014027049e  lea      rdx, [rip + 0x379f78]
+00000001402704a5  call     0x140502d6c ; _mbscmp+0x0
+00000001402704aa  mov      r12, qword ptr [rsp + 0xd0]
+00000001402704b2  test     eax, eax
+00000001402704b4  je       0x1402704fe
+00000001402704b6  lea      rdx, [rip + 0x32e2c3]
+00000001402704bd  lea      rcx, [rbp - 0x51]
+00000001402704c1  call     0x1403fcd70 ; CString::CString+0x0
+00000001402704c6  mov      rax, qword ptr [rbp - 0x11]
+00000001402704ca  lea      rcx, [rbp - 0x11]
+00000001402704ce  mov      rdi, qword ptr [r13]
+00000001402704d2  xor      edx, edx
+00000001402704d4  mov      ebx, dword ptr [rax - 8]
+00000001402704d7  call     0x1403fda40 ; CString::GetBuffer+0x0
+00000001402704dc  mov      r9, rax
+00000001402704df  mov      dword ptr [rsp + 0x20], ebx
+00000001402704e3  mov      r8d, 0x3fe
+00000001402704e9  lea      rcx, [rbp - 0x51]
+00000001402704ed  mov      rdx, rdi
+00000001402704f0  call     0x140404810 ; dimmReplaceResourceWithData+0x0
+00000001402704f5  lea      rcx, [rbp - 0x51]
+00000001402704f9  call     0x1403fce00 ; CString::~CString+0x0
+00000001402704fe  mov      rcx, qword ptr [rip + 0x3f4b93]
+0000000140270505  call     0x140419270 ; CChitin::IsTouchUI+0x0
+000000014027050a  test     eax, eax
+000000014027050c  je       0x14027065d
+0000000140270512  mov      rax, qword ptr [rip + 0x3eb5f7]
+0000000140270519  mov      ecx, 0x3fa
+000000014027051e  mov      qword ptr [rbp - 0x39], rax
+0000000140270522  mov      qword ptr [rbp - 0x41], rax
+0000000140270526  mov      qword ptr [rbp - 0x51], rax
+000000014027052a  call     0x140400b50 ; chTypeToExt+0x0
+000000014027052f  mov      rdi, qword ptr [r13]
+0000000140270533  lea      rcx, [rip + 0x32e246]
+000000014027053a  mov      rbx, rax
+000000014027053d  call     0x140404a50 ; dimmResolveFileName+0x0
+0000000140270542  mov      r8, rax
+0000000140270545  mov      qword ptr [rsp + 0x20], rbx
+000000014027054a  mov      r9, rdi
+000000014027054d  lea      rdx, [rip + 0x32e244]
+0000000140270554  lea      rcx, [rbp - 0x39]
+0000000140270558  call     0x1403fe080 ; CString::Format+0x0
+000000014027055d  mov      eax, dword ptr [rip + 0x4b7ffd]
+0000000140270563  mov      rdi, qword ptr [r13]
+0000000140270567  test     eax, eax
+0000000140270569  jne      0x140270574
+000000014027056b  lea      rbx, [rip + 0x32e236]
+0000000140270572  jmp      0x140270589 ; CInfGame::CharacterExport+0x419
+0000000140270574  cmp      eax, 2
+0000000140270577  lea      rbx, [rip + 0x32e242]
+000000014027057e  lea      rcx, [rip + 0x32e253]
+0000000140270585  cmovne   rbx, rcx
+0000000140270589  lea      rcx, [rip + 0x32e1f0]
+0000000140270590  call     0x140404a50 ; dimmResolveFileName+0x0
+0000000140270595  mov      r8, rax
+0000000140270598  lea      rcx, [rbp - 0x41]
+000000014027059c  mov      r9, rdi
+000000014027059f  mov      rdx, rbx
+00000001402705a2  call     0x1403fe080 ; CString::Format+0x0
+00000001402705a7  mov      r8, qword ptr [r13]
+00000001402705ab  lea      rdx, [rip + 0x32e23a]
+00000001402705b2  lea      rcx, [rbp - 0x51]
+00000001402705b6  call     0x1403fe080 ; CString::Format+0x0
+00000001402705bb  mov      rbx, qword ptr [rbp - 0x51]
+00000001402705bf  lea      rcx, [rip + 0x32e1ba]
+00000001402705c6  mov      rdi, qword ptr [rbp - 0x41]
+00000001402705ca  call     0x140404a50 ; dimmResolveFileName+0x0
+00000001402705cf  mov      qword ptr [rsp + 0x30], 0
+00000001402705d8  lea      r8, [rip + 0x379e3e]
+00000001402705df  mov      rcx, rax
+00000001402705e2  mov      dword ptr [rsp + 0x28], 0xffffffff
+00000001402705ea  mov      r9, rbx
+00000001402705ed  mov      dword ptr [rsp + 0x20], 8
+00000001402705f5  mov      rdx, rdi
+00000001402705f8  call     0x140405870 ; dimmZipDirectory+0x0
+00000001402705fd  movzx    eax, word ptr [rip + 0x3eb664]
+0000000140270604  movzx    ecx, word ptr [rip + 0x3eb661]
+000000014027060b  shr      eax, 1
+000000014027060d  shr      ecx, 1
+000000014027060f  mov      dword ptr [rbp - 0x29], eax
+0000000140270612  add      eax, 0x12c
+0000000140270617  cmp      dword ptr [rbp - 0x2d], 0
+000000014027061b  mov      dword ptr [rbp - 0x21], eax
+000000014027061e  lea      eax, [rcx + 0x12c]
+0000000140270624  mov      dword ptr [rbp - 0x25], ecx
+0000000140270627  mov      dword ptr [rbp - 0x1d], eax
+000000014027062a  je       0x140270642
+000000014027062c  movaps   xmm0, xmmword ptr [rbp - 0x29]
+0000000140270630  lea      rdx, [rbp - 0x29]
+0000000140270634  mov      rcx, qword ptr [rbp - 0x41]
+0000000140270638  movdqa   xmmword ptr [rbp - 0x29], xmm0
+000000014027063d  call     0x140025940 ; buzz::XmlElement::IsTextImpl+0x0
+0000000140270642  lea      rcx, [rbp - 0x51]
+0000000140270646  call     0x1403fce00 ; CString::~CString+0x0
+000000014027064b  lea      rcx, [rbp - 0x41]
+000000014027064f  call     0x1403fce00 ; CString::~CString+0x0
+0000000140270654  lea      rcx, [rbp - 0x39]
+0000000140270658  call     0x1403fce00 ; CString::~CString+0x0
+000000014027065d  lea      rcx, [rbp - 9]
+0000000140270661  call     0x14040c8a0 ; CSound::~CSound+0x0
+0000000140270666  lea      rcx, [rbp - 0x11]
+000000014027066a  call     0x1403fce00 ; CString::~CString+0x0
+000000014027066f  mov      rdi, qword ptr [rsp + 0xd8]
+0000000140270677  mov      rbx, qword ptr [rsp + 0x100]
+000000014027067f  mov      r14, qword ptr [rsp + 0xc8]
+0000000140270687  mov      rcx, r13
+000000014027068a  call     0x1403fce00 ; CString::~CString+0x0
+000000014027068f  mov      rcx, qword ptr [rbp + 0x17]
+0000000140270693  xor      rcx, rsp
+0000000140270696  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014027069b  add      rsp, 0xe0
+00000001402706a2  pop      r13
+00000001402706a4  pop      rsi
+00000001402706a5  pop      rbp
+00000001402706a6  ret
+00000001402706a7  int3
+00000001402706a8  int3
+00000001402706a9  int3
+00000001402706aa  int3
+00000001402706ab  int3
+00000001402706ac  int3
+00000001402706ad  int3
+00000001402706ae  int3
+00000001402706af  int3

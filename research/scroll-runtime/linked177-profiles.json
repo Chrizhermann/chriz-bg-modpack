@@ -1,0 +1,36 @@
+[
+  {
+    "version": "2.6.6.0",
+    "timestamp": 1620326323,
+    "parent": {
+      "name": "opcode177 ApplyEffect",
+      "rva": 1730768,
+      "size": 1008,
+      "sha256": "292e7482d8f76d5fbccb08120250af57cba0871b80419430f5e8d43bb0e590fd"
+    },
+    "decoder": {
+      "name": "native decoder before scroll hooks",
+      "rva": 1977120,
+      "size": 176,
+      "sha256": "8aa24589241a83690a1987e1d2f8ef0eab44a3cbc6fdcd433ad4090d8345ac82"
+    },
+    "call": 1731349
+  },
+  {
+    "version": "2.7.3.0",
+    "timestamp": 1780012861,
+    "parent": {
+      "name": "opcode177 ApplyEffect",
+      "rva": 1731296,
+      "size": 1008,
+      "sha256": "9aa98dca7947a53bcf4cbc333bc097d76537b11ba88bb2c1ce25ea98f7d75e7d"
+    },
+    "decoder": {
+      "name": "native decoder before scroll hooks",
+      "rva": 1977648,
+      "size": 176,
+      "sha256": "7a6ba29b0ff856d27b15e695f4c3e0b860d5a1051348968dcaf96ad8d0ed55c4"
+    },
+    "call": 1731877
+  }
+]

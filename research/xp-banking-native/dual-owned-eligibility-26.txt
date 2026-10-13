@@ -1,0 +1,219 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCharacter::IsLevelUpButtonClickable+0x0 [0x1402a8460, 0x1402a85b0)
+00000001402a8460  mov      qword ptr [rsp + 8], rbx
+00000001402a8465  mov      qword ptr [rsp + 0x18], rbp
+00000001402a846a  push     rsi
+00000001402a846b  push     rdi
+00000001402a846c  push     r14
+00000001402a846e  sub      rsp, 0xce0
+00000001402a8475  mov      rax, qword ptr [rip + 0x3ba09c]
+00000001402a847c  xor      rax, rsp
+00000001402a847f  mov      qword ptr [rsp + 0xcd0], rax
+00000001402a8487  mov      rax, qword ptr [rip + 0x3bcc12]
+00000001402a848e  xor      esi, esi
+00000001402a8490  mov      rdi, rdx
+00000001402a8493  mov      r14, qword ptr [rax + 0x1090]
+00000001402a849a  cmp      dword ptr [rcx + 0x6d0], esi
+00000001402a84a0  je       0x1402a855d
+00000001402a84a6  mov      r8, qword ptr [rip + 0x3bcbeb]
+00000001402a84ad  cmp      byte ptr [r8 + 0x2c9], 1
+00000001402a84b5  jne      0x1402a84c7
+00000001402a84b7  mov      eax, dword ptr [rdx + 0x50]
+00000001402a84ba  cmp      dword ptr [r8 + 0x374], eax
+00000001402a84c1  jne      0x1402a855d
+00000001402a84c7  lea      rcx, [rsp + 0x20]
+00000001402a84cc  call     0x14014ea00 ; CDerivedStats::CDerivedStats+0x0
+00000001402a84d1  lea      rdx, [rdi + 0x1120]
+00000001402a84d8  lea      rcx, [rsp + 0x20]
+00000001402a84dd  call     0x14014f080 ; CDerivedStats::operator=+0x0
+00000001402a84e2  lea      r8, [rsp + 0x20]
+00000001402a84e7  mov      rcx, r14
+00000001402a84ea  lea      rdx, [rdi + 0x4b50]
+00000001402a84f1  call     0x140242690 ; CRuleTables::GetNextLevel+0x0
+00000001402a84f6  movzx    eax, word ptr [rdi + 0x1166]
+00000001402a84fd  cmp      word ptr [rsp + 0x66], ax
+00000001402a8502  jne      0x1402a8522
+00000001402a8504  movzx    eax, word ptr [rdi + 0x1168]
+00000001402a850b  cmp      word ptr [rsp + 0x68], ax
+00000001402a8510  jne      0x1402a8522
+00000001402a8512  movzx    eax, word ptr [rdi + 0x116a]
+00000001402a8519  cmp      word ptr [rsp + 0x6a], ax
+00000001402a851e  mov      eax, esi
+00000001402a8520  je       0x1402a8527
+00000001402a8522  mov      eax, 1
+00000001402a8527  test     dword ptr [rdi + 0x1120], 0x800
+00000001402a8531  lea      rcx, [rdi + 0x4a00]
+00000001402a8538  mov      ebx, esi
+00000001402a853a  mov      r8d, 0xffffffff
+00000001402a8540  mov      dx, 0xd8
+00000001402a8544  cmove    ebx, eax
+00000001402a8547  call     0x1401e4e90 ; CGameEffectList::IsTypeOnList+0x0
+00000001402a854c  test     al, al
+00000001402a854e  lea      rcx, [rsp + 0x20]
+00000001402a8553  cmovne   ebx, esi
+00000001402a8556  mov      esi, ebx
+00000001402a8558  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+00000001402a855d  xor      cl, cl
+00000001402a855f  nop
+00000001402a8560  movzx    edx, cl
+00000001402a8563  cmp      byte ptr [rdx + rdi + 0x52fc], 0
+00000001402a856b  jne      0x1402a8578
+00000001402a856d  inc      cl
+00000001402a856f  cmp      cl, 9
+00000001402a8572  jbe      0x1402a8560
+00000001402a8574  mov      eax, esi
+00000001402a8576  jmp      0x1402a857d ; CScreenCharacter::IsLevelUpButtonClickable+0x11d
+00000001402a8578  mov      eax, 1
+00000001402a857d  mov      rcx, qword ptr [rsp + 0xcd0]
+00000001402a8585  xor      rcx, rsp
+00000001402a8588  call     0x1404f67c0 ; __security_check_cookie+0x0
+00000001402a858d  lea      r11, [rsp + 0xce0]
+00000001402a8595  mov      rbx, qword ptr [r11 + 0x20]
+00000001402a8599  mov      rbp, qword ptr [r11 + 0x30]
+00000001402a859d  mov      rsp, r11
+00000001402a85a0  pop      r14
+00000001402a85a2  pop      rdi
+00000001402a85a3  pop      rsi
+00000001402a85a4  ret
+00000001402a85a5  int3
+00000001402a85a6  int3
+00000001402a85a7  int3
+00000001402a85a8  int3
+00000001402a85a9  int3
+00000001402a85aa  int3
+00000001402a85ab  int3
+00000001402a85ac  int3
+00000001402a85ad  int3
+00000001402a85ae  int3
+00000001402a85af  int3
+
+CScreenCharacter::IsLevelUpButtonClickable+0x0 [0x1402a85b0, 0x1402a8630)
+00000001402a85b0  mov      qword ptr [rsp + 0x10], rbx
+00000001402a85b5  push     rdi
+00000001402a85b6  sub      rsp, 0x20
+00000001402a85ba  mov      rax, qword ptr [rip + 0x3bcadf]
+00000001402a85c1  xor      edx, edx
+00000001402a85c3  mov      rbx, rcx
+00000001402a85c6  mov      rdi, qword ptr [rax + 0x1090]
+00000001402a85cd  mov      rax, qword ptr [rcx]
+00000001402a85d0  call     qword ptr [rax + 0x1c0]
+00000001402a85d6  cmp      ax, word ptr [rdi + 0x6630]
+00000001402a85dd  jl       0x1402a85e6
+00000001402a85df  mov      ecx, 0xffffffff
+00000001402a85e4  jmp      0x1402a85f1 ; CScreenCharacter::IsLevelUpButtonClickable+0x41
+00000001402a85e6  movsx    rax, ax
+00000001402a85ea  mov      ecx, dword ptr [rdi + rax*4 + 0x6618]
+00000001402a85f1  lea      rdx, [rsp + 0x30]
+00000001402a85f6  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402a85fb  test     al, al
+00000001402a85fd  je       0x1402a860c
+00000001402a85ff  xor      eax, eax
+00000001402a8601  mov      rbx, qword ptr [rsp + 0x38]
+00000001402a8606  add      rsp, 0x20
+00000001402a860a  pop      rdi
+00000001402a860b  ret
+00000001402a860c  mov      rdx, qword ptr [rsp + 0x30]
+00000001402a8611  mov      rcx, rbx
+00000001402a8614  call     0x1402a8460 ; CScreenCharacter::IsLevelUpButtonClickable+0x0
+00000001402a8619  mov      rbx, qword ptr [rsp + 0x38]
+00000001402a861e  add      rsp, 0x20
+00000001402a8622  pop      rdi
+00000001402a8623  ret
+00000001402a8624  int3
+00000001402a8625  int3
+00000001402a8626  int3
+00000001402a8627  int3
+00000001402a8628  int3
+00000001402a8629  int3
+00000001402a862a  int3
+00000001402a862b  int3
+00000001402a862c  int3
+00000001402a862d  int3
+00000001402a862e  int3
+00000001402a862f  int3
+
+CScreenCharacter::UpdateMainPanel+0x0 [0x1402ad240, 0x1402ad380)
+00000001402ad240  push     rbx
+00000001402ad242  sub      rsp, 0x40
+00000001402ad246  mov      rax, qword ptr [rip + 0x3ae8c3]
+00000001402ad24d  mov      rbx, rcx
+00000001402ad250  mov      qword ptr [rsp + 0x30], rax
+00000001402ad255  mov      qword ptr [rsp + 0x68], rax
+00000001402ad25a  mov      qword ptr [rsp + 0x60], rax
+00000001402ad25f  mov      rax, qword ptr [rip + 0x3b7e3a]
+00000001402ad266  mov      rdx, qword ptr [rax + 0x1090]
+00000001402ad26d  movzx    eax, word ptr [rcx + 0x48]
+00000001402ad271  cmp      ax, word ptr [rdx + 0x6630]
+00000001402ad278  jl       0x1402ad281
+00000001402ad27a  mov      eax, 0xffffffff
+00000001402ad27f  jmp      0x1402ad28c ; CScreenCharacter::UpdateMainPanel+0x4c
+00000001402ad281  movsx    rax, ax
+00000001402ad285  mov      eax, dword ptr [rdx + rax*4 + 0x6618]
+00000001402ad28c  mov      rcx, qword ptr [rip + 0x3b81bd]
+00000001402ad293  movd     xmm1, eax
+00000001402ad297  cvtdq2pd xmm1, xmm1
+00000001402ad29b  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402ad2a0  mov      rcx, qword ptr [rip + 0x3b81a9]
+00000001402ad2a7  lea      rdx, [rip + 0x2f4b7a]
+00000001402ad2ae  call     0x1400d60e0 ; lua_setglobal+0x0
+00000001402ad2b3  mov      rax, qword ptr [rip + 0x3b7de6]
+00000001402ad2ba  mov      rcx, qword ptr [rax + 0x1090]
+00000001402ad2c1  movzx    eax, word ptr [rbx + 0x48]
+00000001402ad2c5  cmp      ax, word ptr [rcx + 0x6630]
+00000001402ad2cc  jl       0x1402ad2d5
+00000001402ad2ce  mov      ecx, 0xffffffff
+00000001402ad2d3  jmp      0x1402ad2e0 ; CScreenCharacter::UpdateMainPanel+0xa0
+00000001402ad2d5  movsx    rax, ax
+00000001402ad2d9  mov      ecx, dword ptr [rcx + rax*4 + 0x6618]
+00000001402ad2e0  lea      rdx, [rsp + 0x50]
+00000001402ad2e5  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402ad2ea  test     al, al
+00000001402ad2ec  jne      0x1402ad34d
+00000001402ad2ee  mov      rcx, qword ptr [rsp + 0x50]
+00000001402ad2f3  call     0x14037eca0 ; CGameSprite::UpdateLuaStats+0x0
+00000001402ad2f8  mov      rcx, qword ptr [rsp + 0x50]
+00000001402ad2fd  mov      rdx, rcx
+00000001402ad300  call     0x140172720 ; CGameAIBase::SetGabber+0x0
+00000001402ad305  mov      rcx, qword ptr [rip + 0x3b8144]
+00000001402ad30c  lea      rdx, [rip + 0x2f38a5]
+00000001402ad313  call     0x1400d8b40 ; luaL_loadstring+0x0
+00000001402ad318  test     eax, eax
+00000001402ad31a  jne      0x1402ad33c
+00000001402ad31c  mov      rcx, qword ptr [rip + 0x3b812d]
+00000001402ad323  xor      eax, eax
+00000001402ad325  mov      qword ptr [rsp + 0x28], rax
+00000001402ad32a  xor      r9d, r9d
+00000001402ad32d  xor      edx, edx
+00000001402ad32f  mov      dword ptr [rsp + 0x20], eax
+00000001402ad333  lea      r8d, [rax - 1]
+00000001402ad337  call     0x1400d66b0 ; lua_pcallk+0x0
+00000001402ad33c  mov      rcx, qword ptr [rsp + 0x50]
+00000001402ad341  add      rcx, 0x4b50
+00000001402ad348  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402ad34d  lea      rcx, [rsp + 0x60]
+00000001402ad352  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ad357  lea      rcx, [rsp + 0x68]
+00000001402ad35c  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ad361  lea      rcx, [rsp + 0x30]
+00000001402ad366  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ad36b  add      rsp, 0x40
+00000001402ad36f  pop      rbx
+00000001402ad370  ret
+00000001402ad371  int3
+00000001402ad372  int3
+00000001402ad373  int3
+00000001402ad374  int3
+00000001402ad375  int3
+00000001402ad376  int3
+00000001402ad377  int3
+00000001402ad378  int3
+00000001402ad379  int3
+00000001402ad37a  int3
+00000001402ad37b  int3
+00000001402ad37c  int3
+00000001402ad37d  int3
+00000001402ad37e  int3
+00000001402ad37f  int3

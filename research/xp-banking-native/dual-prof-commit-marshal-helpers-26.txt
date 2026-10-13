@@ -1,0 +1,302 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CResRef::operator=+0x0 [0x1403fef40, 0x1403fef50)
+00000001403fef40  mov      rax, qword ptr [r8]
+00000001403fef43  mov      qword ptr [rcx], rax
+00000001403fef46  mov      qword ptr [rdx], rax
+00000001403fef49  mov      rax, rdx
+00000001403fef4c  ret
+00000001403fef4d  int3
+00000001403fef4e  int3
+00000001403fef4f  int3
+
+CResRef::operator=+0x0 [0x1403fef50, 0x1403ff020)
+00000001403fef50  mov      qword ptr [rsp + 0x18], rbx
+00000001403fef55  mov      qword ptr [rsp + 0x20], rsi
+00000001403fef5a  push     rdi
+00000001403fef5b  sub      rsp, 0x20
+00000001403fef5f  mov      rbx, qword ptr [r8]
+00000001403fef62  mov      rdi, rcx
+00000001403fef65  xor      ecx, ecx
+00000001403fef67  mov      rsi, rdx
+00000001403fef6a  mov      eax, dword ptr [rbx - 8]
+00000001403fef6d  mov      dword ptr [rsp + 0x30], eax
+00000001403fef71  mov      qword ptr [rdi], rcx
+00000001403fef74  test     eax, eax
+00000001403fef76  jle      0x1403feff8
+00000001403fef7c  lea      rdx, [rsp + 0x30]
+00000001403fef81  mov      dword ptr [rsp + 0x38], 8
+00000001403fef89  lea      rcx, [rsp + 0x38]
+00000001403fef8e  call     0x140406d20 ; min+0x0
+00000001403fef93  movsxd   r8, eax
+00000001403fef96  mov      rdx, rbx
+00000001403fef99  mov      rcx, rdi
+00000001403fef9c  call     0x1404f9730 ; memcpy+0x0
+00000001403fefa1  lea      rdx, [rsp + 0x30]
+00000001403fefa6  mov      dword ptr [rsp + 0x38], 8
+00000001403fefae  lea      rcx, [rsp + 0x38]
+00000001403fefb3  xor      ebx, ebx
+00000001403fefb5  call     0x140406d20 ; min+0x0
+00000001403fefba  test     eax, eax
+00000001403fefbc  jle      0x1403feff8
+00000001403fefbe  nop
+00000001403fefc0  movzx    eax, bx
+00000001403fefc3  lea      rdx, [rax + rdi]
+00000001403fefc7  movzx    eax, byte ptr [rax + rdi]
+00000001403fefcb  lea      ecx, [rax - 0x61]
+00000001403fefce  cmp      cl, 0x19
+00000001403fefd1  ja       0x1403fefd7
+00000001403fefd3  sub      al, 0x20
+00000001403fefd5  mov      byte ptr [rdx], al
+00000001403fefd7  lea      rdx, [rsp + 0x30]
+00000001403fefdc  mov      dword ptr [rsp + 0x38], 8
+00000001403fefe4  lea      rcx, [rsp + 0x38]
+00000001403fefe9  inc      bx
+00000001403fefec  call     0x140406d20 ; min+0x0
+00000001403feff1  movzx    ecx, bx
+00000001403feff4  cmp      ecx, eax
+00000001403feff6  jl       0x1403fefc0
+00000001403feff8  mov      rax, qword ptr [rdi]
+00000001403feffb  mov      rbx, qword ptr [rsp + 0x40]
+00000001403ff000  mov      qword ptr [rsi], rax
+00000001403ff003  mov      rax, rsi
+00000001403ff006  mov      rsi, qword ptr [rsp + 0x48]
+00000001403ff00b  add      rsp, 0x20
+00000001403ff00f  pop      rdi
+00000001403ff010  ret
+00000001403ff011  int3
+00000001403ff012  int3
+00000001403ff013  int3
+00000001403ff014  int3
+00000001403ff015  int3
+00000001403ff016  int3
+00000001403ff017  int3
+00000001403ff018  int3
+00000001403ff019  int3
+00000001403ff01a  int3
+00000001403ff01b  int3
+00000001403ff01c  int3
+00000001403ff01d  int3
+00000001403ff01e  int3
+00000001403ff01f  int3
+
+CResRef::operator=+0x0 [0x1403ff020, 0x1403ff060)
+00000001403ff020  xor      eax, eax
+00000001403ff022  xor      r10d, r10d
+00000001403ff025  mov      qword ptr [rcx], rax
+00000001403ff028  sub      r8, rcx
+00000001403ff02b  mov      r9, rcx
+00000001403ff02e  nop
+00000001403ff030  movzx    eax, byte ptr [r8 + r9]
+00000001403ff035  test     al, al
+00000001403ff037  je       0x1403ff055
+00000001403ff039  mov      byte ptr [r9], al
+00000001403ff03c  cmp      al, 0x60
+00000001403ff03e  jbe      0x1403ff049
+00000001403ff040  cmp      al, 0x7b
+00000001403ff042  jae      0x1403ff049
+00000001403ff044  sub      al, 0x20
+00000001403ff046  mov      byte ptr [r9], al
+00000001403ff049  inc      r10d
+00000001403ff04c  inc      r9
+00000001403ff04f  cmp      r10d, 8
+00000001403ff053  jb       0x1403ff030
+00000001403ff055  mov      rax, qword ptr [rcx]
+00000001403ff058  mov      qword ptr [rdx], rax
+00000001403ff05b  mov      rax, rdx
+00000001403ff05e  ret
+00000001403ff05f  int3
+
+CResRef::operator=+0x0 [0x1403ff060, 0x1403ff0e0)
+00000001403ff060  mov      qword ptr [rsp + 8], rbx
+00000001403ff065  push     rdi
+00000001403ff066  sub      rsp, 0x20
+00000001403ff06a  mov      rax, qword ptr [r8]
+00000001403ff06d  mov      rdi, rdx
+00000001403ff070  mov      qword ptr [rcx], rax
+00000001403ff073  mov      rbx, rcx
+00000001403ff076  xor      r10d, r10d
+00000001403ff079  mov      r9, rcx
+00000001403ff07c  nop      dword ptr [rax]
+00000001403ff080  movzx    eax, byte ptr [r9]
+00000001403ff084  test     al, al
+00000001403ff086  je       0x1403ff0a5
+00000001403ff088  lea      r8d, [rax - 0x61]
+00000001403ff08c  cmp      r8b, 0x19
+00000001403ff090  ja       0x1403ff097
+00000001403ff092  sub      al, 0x20
+00000001403ff094  mov      byte ptr [r9], al
+00000001403ff097  inc      r10d
+00000001403ff09a  inc      r9
+00000001403ff09d  cmp      r10d, 8
+00000001403ff0a1  jb       0x1403ff080
+00000001403ff0a3  jmp      0x1403ff0be ; CResRef::operator=+0x5e
+00000001403ff0a5  movsxd   rax, r10d
+00000001403ff0a8  inc      rcx
+00000001403ff0ab  mov      r8d, 7
+00000001403ff0b1  add      rcx, rax
+00000001403ff0b4  sub      r8, rax
+00000001403ff0b7  xor      edx, edx
+00000001403ff0b9  call     0x1404f9b90 ; memset+0x0
+00000001403ff0be  mov      rax, qword ptr [rbx]
+00000001403ff0c1  mov      rbx, qword ptr [rsp + 0x30]
+00000001403ff0c6  mov      qword ptr [rdi], rax
+00000001403ff0c9  mov      rax, rdi
+00000001403ff0cc  add      rsp, 0x20
+00000001403ff0d0  pop      rdi
+00000001403ff0d1  ret
+00000001403ff0d2  int3
+00000001403ff0d3  int3
+00000001403ff0d4  int3
+00000001403ff0d5  int3
+00000001403ff0d6  int3
+00000001403ff0d7  int3
+00000001403ff0d8  int3
+00000001403ff0d9  int3
+00000001403ff0da  int3
+00000001403ff0db  int3
+00000001403ff0dc  int3
+00000001403ff0dd  int3
+00000001403ff0de  int3
+00000001403ff0df  int3
+
+CResRef::MakeUpper+0x0 [0x1403ff6f0, 0x1403ff740)
+00000001403ff6f0  xor      r9d, r9d
+00000001403ff6f3  mov      r8, rcx
+00000001403ff6f6  movzx    eax, byte ptr [r8]
+00000001403ff6fa  test     al, al
+00000001403ff6fc  je       0x1403ff718
+00000001403ff6fe  lea      edx, [rax - 0x61]
+00000001403ff701  cmp      dl, 0x19
+00000001403ff704  ja       0x1403ff70b
+00000001403ff706  sub      al, 0x20
+00000001403ff708  mov      byte ptr [r8], al
+00000001403ff70b  inc      r9d
+00000001403ff70e  inc      r8
+00000001403ff711  cmp      r9d, 8
+00000001403ff715  jb       0x1403ff6f6
+00000001403ff717  ret
+00000001403ff718  movsxd   rax, r9d
+00000001403ff71b  inc      rcx
+00000001403ff71e  mov      r8d, 7
+00000001403ff724  add      rcx, rax
+00000001403ff727  sub      r8, rax
+00000001403ff72a  xor      edx, edx
+00000001403ff72c  jmp      0x1404f9b90 ; memset+0x0
+00000001403ff731  int3
+00000001403ff732  int3
+00000001403ff733  int3
+00000001403ff734  int3
+00000001403ff735  int3
+00000001403ff736  int3
+00000001403ff737  int3
+00000001403ff738  int3
+00000001403ff739  int3
+00000001403ff73a  int3
+00000001403ff73b  int3
+00000001403ff73c  int3
+00000001403ff73d  int3
+00000001403ff73e  int3
+00000001403ff73f  int3
+
+CGameEffectBase::CGameEffectBase+0x0 [0x14019e080, 0x14019e250)
+000000014019e080  mov      qword ptr [rsp + 0x10], rbx
+000000014019e085  mov      qword ptr [rsp + 0x18], rbp
+000000014019e08a  mov      qword ptr [rsp + 0x20], rsi
+000000014019e08f  push     rdi
+000000014019e090  push     r14
+000000014019e092  push     r15
+000000014019e094  sub      rsp, 0x30
+000000014019e098  mov      rax, qword ptr [rip + 0x4c4479]
+000000014019e09f  xor      rax, rsp
+000000014019e0a2  mov      qword ptr [rsp + 0x28], rax
+000000014019e0a7  mov      r14, rcx
+000000014019e0aa  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014019e0af  lea      rcx, [r14 + 0x28]
+000000014019e0b3  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014019e0b8  lea      rcx, [r14 + 0x68]
+000000014019e0bc  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014019e0c1  lea      rcx, [r14 + 0x70]
+000000014019e0c5  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014019e0ca  lea      rcx, [r14 + 0x8c]
+000000014019e0d1  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014019e0d6  lea      r8, [rip + 0x3efefb]
+000000014019e0dd  mov      rcx, r14
+000000014019e0e0  lea      rdx, [rsp + 0x20]
+000000014019e0e5  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014019e0ea  xor      eax, eax
+000000014019e0ec  lea      rcx, [r14 + 0x28]
+000000014019e0f0  xor      edx, edx
+000000014019e0f2  mov      qword ptr [r14], rax
+000000014019e0f5  mov      r8d, 0xe0
+000000014019e0fb  call     0x1404f9b90 ; memset+0x0
+000000014019e100  xor      r15d, r15d
+000000014019e103  mov      dword ptr [r14 + 0x24], 0x64
+000000014019e10b  lea      r8, [rip + 0x44c30b]
+000000014019e112  mov      qword ptr [r14 + 8], r15
+000000014019e116  lea      rdx, [rsp + 0x20]
+000000014019e11b  mov      qword ptr [r14 + 0x10], r15
+000000014019e11f  lea      rcx, [r14 + 0x28]
+000000014019e123  mov      qword ptr [r14 + 0x18], r15
+000000014019e127  mov      dword ptr [r14 + 0x20], r15d
+000000014019e12b  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014019e130  lea      r8, [rip + 0x44c2e6]
+000000014019e137  mov      qword ptr [r14 + 0x30], r15
+000000014019e13b  lea      rdx, [rsp + 0x20]
+000000014019e140  mov      qword ptr [r14 + 0x38], r15
+000000014019e144  lea      rcx, [r14 + 0x68]
+000000014019e148  mov      qword ptr [r14 + 0x40], r15
+000000014019e14c  mov      dword ptr [r14 + 0xc8], r15d
+000000014019e153  mov      qword ptr [r14 + 0x4c], r15
+000000014019e157  mov      qword ptr [r14 + 0x54], r15
+000000014019e15b  mov      qword ptr [r14 + 0x5c], r15
+000000014019e15f  mov      dword ptr [r14 + 0x64], r15d
+000000014019e163  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014019e168  lea      r8, [rip + 0x44c2ae]
+000000014019e16f  lea      rdx, [rsp + 0x20]
+000000014019e174  lea      rcx, [r14 + 0x70]
+000000014019e178  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014019e17d  mov      qword ptr [rsp + 0x20], 0xffffffffffffffff
+000000014019e186  lea      r8, [rip + 0x44c290]
+000000014019e18d  mov      rax, qword ptr [rsp + 0x20]
+000000014019e192  lea      rdx, [rsp + 0x20]
+000000014019e197  mov      qword ptr [r14 + 0x78], rax
+000000014019e19b  lea      rcx, [r14 + 0x8c]
+000000014019e1a2  mov      qword ptr [rsp + 0x20], 0xffffffffffffffff
+000000014019e1ab  mov      rax, qword ptr [rsp + 0x20]
+000000014019e1b0  mov      qword ptr [r14 + 0x80], rax
+000000014019e1b7  mov      dword ptr [r14 + 0x88], r15d
+000000014019e1be  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014019e1c3  xor      eax, eax
+000000014019e1c5  mov      qword ptr [r14 + 0x94], r15
+000000014019e1cc  mov      dword ptr [r14 + 0x9c], 0xffffffff
+000000014019e1d7  mov      dword ptr [r14 + 0xc0], r15d
+000000014019e1de  mov      dword ptr [r14 + 0xc4], 1
+000000014019e1e9  mov      qword ptr [r14 + 0xcc], rax
+000000014019e1f0  mov      qword ptr [r14 + 0xd4], rax
+000000014019e1f7  mov      qword ptr [r14 + 0xdc], rax
+000000014019e1fe  mov      qword ptr [r14 + 0xe4], rax
+000000014019e205  mov      qword ptr [r14 + 0xec], rax
+000000014019e20c  mov      qword ptr [r14 + 0xf4], rax
+000000014019e213  mov      qword ptr [r14 + 0xfc], rax
+000000014019e21a  mov      dword ptr [r14 + 0x104], eax
+000000014019e221  mov      rax, r14
+000000014019e224  mov      rcx, qword ptr [rsp + 0x28]
+000000014019e229  xor      rcx, rsp
+000000014019e22c  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014019e231  mov      rbx, qword ptr [rsp + 0x58]
+000000014019e236  mov      rbp, qword ptr [rsp + 0x60]
+000000014019e23b  mov      rsi, qword ptr [rsp + 0x68]
+000000014019e240  add      rsp, 0x30
+000000014019e244  pop      r15
+000000014019e246  pop      r14
+000000014019e248  pop      rdi
+000000014019e249  ret
+000000014019e24a  int3
+000000014019e24b  int3
+000000014019e24c  int3
+000000014019e24d  int3
+000000014019e24e  int3
+000000014019e24f  int3

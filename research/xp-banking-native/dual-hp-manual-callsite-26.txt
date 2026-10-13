@@ -1,0 +1,39 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::ResetLevelUpPanel+0xab2 [0x1402bfd12, 0x1402bfdb5)
+00000001402bfd12  movzx    eax, word ptr [rsi + 0x46]
+00000001402bfd16  cmp      dword ptr [r14 + 0x4e78], eax
+00000001402bfd1d  jne      0x1402bfd4f
+00000001402bfd1f  movzx    eax, word ptr [rsi + 0x48]
+00000001402bfd23  lea      rbx, [rsi + 0x48]
+00000001402bfd27  mov      qword ptr [rsp + 0x58], rbx
+00000001402bfd2c  cmp      dword ptr [r14 + 0x4e7c], eax
+00000001402bfd33  jne      0x1402bfd4f
+00000001402bfd35  movzx    eax, word ptr [r14 + 0x116a]
+00000001402bfd3d  cmp      dword ptr [r14 + 0x4e80], eax
+00000001402bfd44  jne      0x1402bfd4f
+00000001402bfd46  mov      eax, dword ptr [r14 + 0x4e84]
+00000001402bfd4d  jmp      0x1402bfda4 ; CScreenCreateChar::ResetLevelUpPanel+0xb44
+00000001402bfd4f  movzx    eax, byte ptr [r14 + 0x795]
+00000001402bfd57  lea      r8, [rbp - 0x30]
+00000001402bfd5b  mov      r9, rsi
+00000001402bfd5e  mov      byte ptr [rsp + 0x20], al
+00000001402bfd62  mov      rdx, r13
+00000001402bfd65  mov      rcx, r12
+00000001402bfd68  call     0x140240a70 ; CRuleTables::GetHitPoints+0x0
+00000001402bfd6d  movzx    ecx, word ptr [rsi + 0x46]
+00000001402bfd71  mov      dword ptr [r14 + 0x4e78], ecx
+00000001402bfd78  lea      rcx, [r14 + 0x1168]
+00000001402bfd7f  mov      qword ptr [rsp + 0x58], rcx
+00000001402bfd84  movzx    ecx, word ptr [rcx]
+00000001402bfd87  mov      dword ptr [r14 + 0x4e7c], ecx
+00000001402bfd8e  movzx    ecx, word ptr [r14 + 0x116a]
+00000001402bfd96  mov      dword ptr [r14 + 0x4e80], ecx
+00000001402bfd9d  mov      dword ptr [r14 + 0x4e84], eax
+00000001402bfda4  mov      dword ptr [rbp - 0x80], eax
+00000001402bfda7  mov      rcx, r14
+00000001402bfdaa  mov      rax, qword ptr [r14]
+00000001402bfdad  call     qword ptr [rax + 0x20]
+00000001402bfdb0  mov      rcx, rax

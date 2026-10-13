@@ -1,0 +1,705 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetClassProficiency+0x0 [0x14023d790, 0x14023da50)
+000000014023d790  mov      qword ptr [rsp + 0x10], rbx
+000000014023d795  mov      qword ptr [rsp + 0x18], rbp
+000000014023d79a  mov      qword ptr [rsp + 0x20], rsi
+000000014023d79f  push     rdi
+000000014023d7a0  push     r12
+000000014023d7a2  push     r13
+000000014023d7a4  push     r14
+000000014023d7a6  push     r15
+000000014023d7a8  sub      rsp, 0x30
+000000014023d7ac  movzx    esi, word ptr [rcx + 0x19ca]
+000000014023d7b3  xor      r13d, r13d
+000000014023d7b6  mov      ebp, dword ptr [rsp + 0x88]
+000000014023d7bd  movzx    r15d, r9b
+000000014023d7c1  movzx    r14d, r8b
+000000014023d7c5  movzx    r12d, dl
+000000014023d7c9  mov      rbx, rcx
+000000014023d7cc  movzx    edi, r13w
+000000014023d7d0  cmp      r13w, si
+000000014023d7d4  jge      0x14023d83d
+000000014023d7d6  nop      word ptr [rax + rax]
+000000014023d7e0  movsx    edx, word ptr [rbx + 0x19c8]
+000000014023d7e7  movsx    ecx, di
+000000014023d7ea  test     edx, edx
+000000014023d7ec  jle      0x14023d810
+000000014023d7ee  movsx    eax, word ptr [rbx + 0x19ca]
+000000014023d7f5  cmp      ecx, eax
+000000014023d7f7  jge      0x14023d810
+000000014023d7f9  test     ecx, ecx
+000000014023d7fb  js       0x14023d810
+000000014023d7fd  mov      rax, qword ptr [rbx + 0x19b8]
+000000014023d804  imul     edx, ecx
+000000014023d807  movsxd   rcx, edx
+000000014023d80a  lea      rcx, [rax + rcx*8]
+000000014023d80e  jmp      0x14023d817 ; CRuleTables::GetClassProficiency+0x87
+000000014023d810  lea      rcx, [rbx + 0x19c0]
+000000014023d817  mov      rcx, qword ptr [rcx]
+000000014023d81a  lea      r8, [rsp + 0x24]
+000000014023d81f  lea      rdx, [rip + 0x3c952a]
+000000014023d826  call     0x1400580f0 ; sscanf+0x0
+000000014023d82b  mov      eax, dword ptr [rsp + 0x24]
+000000014023d82f  cmp      eax, ebp
+000000014023d831  je       0x14023d841
+000000014023d833  inc      di
+000000014023d836  cmp      di, si
+000000014023d839  jl       0x14023d7e0
+000000014023d83b  jmp      0x14023d841 ; CRuleTables::GetClassProficiency+0xb1
+000000014023d83d  mov      eax, dword ptr [rsp + 0x24]
+000000014023d841  cmp      di, si
+000000014023d844  jne      0x14023d853
+000000014023d846  cmp      eax, ebp
+000000014023d848  je       0x14023d853
+000000014023d84a  movzx    eax, r13w
+000000014023d84e  jmp      0x14023da2e ; CRuleTables::GetClassProficiency+0x29e
+000000014023d853  mov      dword ptr [rsp + 0x60], r13d
+000000014023d858  mov      rcx, rbx
+000000014023d85b  mov      dword ptr [rsp + 0x20], r13d
+000000014023d860  movsx    edi, di
+000000014023d863  cmp      r14b, r15b
+000000014023d866  je       0x14023d9c8
+000000014023d86c  mov      r8d, 0x4000
+000000014023d872  movzx    edx, r14b
+000000014023d876  call     0x140245460 ; CRuleTables::GetProficiencyClassIndex+0x0
+000000014023d87b  movsx    edx, word ptr [rbx + 0x19c8]
+000000014023d882  cmp      eax, edx
+000000014023d884  jge      0x14023d8ae
+000000014023d886  movsx    ecx, word ptr [rbx + 0x19ca]
+000000014023d88d  cmp      edi, ecx
+000000014023d88f  jge      0x14023d8ae
+000000014023d891  test     eax, eax
+000000014023d893  js       0x14023d8ae
+000000014023d895  test     edi, edi
+000000014023d897  js       0x14023d8ae
+000000014023d899  imul     edx, edi
+000000014023d89c  add      edx, eax
+000000014023d89e  mov      rax, qword ptr [rbx + 0x19b8]
+000000014023d8a5  movsxd   rcx, edx
+000000014023d8a8  lea      rcx, [rax + rcx*8]
+000000014023d8ac  jmp      0x14023d8b5 ; CRuleTables::GetClassProficiency+0x125
+000000014023d8ae  lea      rcx, [rbx + 0x19c0]
+000000014023d8b5  mov      rcx, qword ptr [rcx]
+000000014023d8b8  lea      r8, [rsp + 0x60]
+000000014023d8bd  lea      rdx, [rip + 0x3c948c]
+000000014023d8c4  lea      rsi, [rbx + 0x19c0]
+000000014023d8cb  call     0x1400580f0 ; sscanf+0x0
+000000014023d8d0  cmp      dword ptr [rsp + 0x80], r13d
+000000014023d8d8  je       0x14023d9c2
+000000014023d8de  mov      ebp, dword ptr [rsp + 0x90]
+000000014023d8e5  movzx    edx, r15b
+000000014023d8e9  mov      r8d, ebp
+000000014023d8ec  mov      rcx, rbx
+000000014023d8ef  call     0x140245460 ; CRuleTables::GetProficiencyClassIndex+0x0
+000000014023d8f4  movsx    edx, word ptr [rbx + 0x19c8]
+000000014023d8fb  mov      r9, rsi
+000000014023d8fe  cmp      eax, edx
+000000014023d900  jge      0x14023d928
+000000014023d902  movsx    ecx, word ptr [rbx + 0x19ca]
+000000014023d909  cmp      edi, ecx
+000000014023d90b  jge      0x14023d928
+000000014023d90d  test     eax, eax
+000000014023d90f  js       0x14023d928
+000000014023d911  test     edi, edi
+000000014023d913  js       0x14023d928
+000000014023d915  imul     edx, edi
+000000014023d918  add      edx, eax
+000000014023d91a  mov      rax, qword ptr [rbx + 0x19b8]
+000000014023d921  movsxd   rcx, edx
+000000014023d924  lea      r9, [rax + rcx*8]
+000000014023d928  mov      rcx, qword ptr [r9]
+000000014023d92b  lea      r8, [rsp + 0x28]
+000000014023d930  lea      rdx, [rip + 0x3c9419]
+000000014023d937  call     0x1400580f0 ; sscanf+0x0
+000000014023d93c  mov      r8d, ebp
+000000014023d93f  movzx    edx, r12b
+000000014023d943  mov      rcx, rbx
+000000014023d946  call     0x140245460 ; CRuleTables::GetProficiencyClassIndex+0x0
+000000014023d94b  movsx    edx, word ptr [rbx + 0x19c8]
+000000014023d952  cmp      eax, edx
+000000014023d954  jge      0x14023d97c
+000000014023d956  movsx    ecx, word ptr [rbx + 0x19ca]
+000000014023d95d  cmp      edi, ecx
+000000014023d95f  jge      0x14023d97c
+000000014023d961  test     eax, eax
+000000014023d963  js       0x14023d97c
+000000014023d965  test     edi, edi
+000000014023d967  js       0x14023d97c
+000000014023d969  imul     edx, edi
+000000014023d96c  add      edx, eax
+000000014023d96e  mov      rax, qword ptr [rbx + 0x19b8]
+000000014023d975  movsxd   rcx, edx
+000000014023d978  lea      rsi, [rax + rcx*8]
+000000014023d97c  mov      rcx, qword ptr [rsi]
+000000014023d97f  lea      r8, [rsp + 0x2c]
+000000014023d984  lea      rdx, [rip + 0x3c93c5]
+000000014023d98b  call     0x1400580f0 ; sscanf+0x0
+000000014023d990  cmp      dword ptr [rsp + 0x2c], r13d
+000000014023d995  je       0x14023d9b4
+000000014023d997  cmp      ebp, 0x4000
+000000014023d99d  je       0x14023d9a5
+000000014023d99f  cmp      r15b, 2
+000000014023d9a3  je       0x14023d9b4
+000000014023d9a5  mov      ecx, dword ptr [rsp + 0x60]
+000000014023d9a9  mov      eax, dword ptr [rsp + 0x28]
+000000014023d9ad  cmp      ecx, eax
+000000014023d9af  cmovl    ecx, eax
+000000014023d9b2  jmp      0x14023da2b ; CRuleTables::GetClassProficiency+0x29b
+000000014023d9b4  cmp      ebp, 0x4000
+000000014023d9ba  je       0x14023da27
+000000014023d9bc  mov      ecx, dword ptr [rsp + 0x28]
+000000014023d9c0  jmp      0x14023da2b ; CRuleTables::GetClassProficiency+0x29b
+000000014023d9c2  mov      ecx, dword ptr [rsp + 0x60]
+000000014023d9c6  jmp      0x14023da2b ; CRuleTables::GetClassProficiency+0x29b
+000000014023d9c8  mov      r8d, dword ptr [rsp + 0x90]
+000000014023d9d0  movzx    edx, r12b
+000000014023d9d4  call     0x140245460 ; CRuleTables::GetProficiencyClassIndex+0x0
+000000014023d9d9  movsx    edx, word ptr [rbx + 0x19c8]
+000000014023d9e0  cmp      eax, edx
+000000014023d9e2  jge      0x14023da0c
+000000014023d9e4  movsx    ecx, word ptr [rbx + 0x19ca]
+000000014023d9eb  cmp      edi, ecx
+000000014023d9ed  jge      0x14023da0c
+000000014023d9ef  test     eax, eax
+000000014023d9f1  js       0x14023da0c
+000000014023d9f3  test     edi, edi
+000000014023d9f5  js       0x14023da0c
+000000014023d9f7  imul     edx, edi
+000000014023d9fa  add      edx, eax
+000000014023d9fc  mov      rax, qword ptr [rbx + 0x19b8]
+000000014023da03  movsxd   rcx, edx
+000000014023da06  lea      rcx, [rax + rcx*8]
+000000014023da0a  jmp      0x14023da13 ; CRuleTables::GetClassProficiency+0x283
+000000014023da0c  lea      rcx, [rbx + 0x19c0]
+000000014023da13  mov      rcx, qword ptr [rcx]
+000000014023da16  lea      r8, [rsp + 0x20]
+000000014023da1b  lea      rdx, [rip + 0x3c932e]
+000000014023da22  call     0x1400580f0 ; sscanf+0x0
+000000014023da27  mov      ecx, dword ptr [rsp + 0x20]
+000000014023da2b  movzx    eax, cx
+000000014023da2e  mov      rbx, qword ptr [rsp + 0x68]
+000000014023da33  mov      rbp, qword ptr [rsp + 0x70]
+000000014023da38  mov      rsi, qword ptr [rsp + 0x78]
+000000014023da3d  add      rsp, 0x30
+000000014023da41  pop      r15
+000000014023da43  pop      r14
+000000014023da45  pop      r13
+000000014023da47  pop      r12
+000000014023da49  pop      rdi
+000000014023da4a  ret
+000000014023da4b  int3
+000000014023da4c  int3
+000000014023da4d  int3
+000000014023da4e  int3
+000000014023da4f  int3
+
+CRuleTables::GetProficiencyClassIndex+0x0 [0x140245460, 0x140245a40)
+0000000140245460  mov      qword ptr [rsp + 8], rbx
+0000000140245465  push     rbp
+0000000140245466  push     rsi
+0000000140245467  push     rdi
+0000000140245468  sub      rsp, 0x20
+000000014024546c  movzx    ebp, dl
+000000014024546f  mov      rdi, rcx
+0000000140245472  bt       r8d, 0xe
+0000000140245477  jae      0x140245553
+000000014024547d  mov      ebx, r8d
+0000000140245480  and      ebx, 0xffffbfff
+0000000140245486  je       0x140245553
+000000014024548c  movsx    ecx, word ptr [rcx + 0x2640]
+0000000140245493  cmp      ecx, 7
+0000000140245496  jle      0x1402454be
+0000000140245498  movsx    eax, word ptr [rdi + 0x2642]
+000000014024549f  cmp      ebx, eax
+00000001402454a1  jge      0x1402454be
+00000001402454a3  test     ebx, ebx
+00000001402454a5  js       0x1402454be
+00000001402454a7  mov      rax, qword ptr [rdi + 0x2630]
+00000001402454ae  imul     ecx, ebx
+00000001402454b1  add      rax, 0x38
+00000001402454b5  movsxd   rcx, ecx
+00000001402454b8  lea      rcx, [rax + rcx*8]
+00000001402454bc  jmp      0x1402454c5 ; CRuleTables::GetProficiencyClassIndex+0x65
+00000001402454be  lea      rcx, [rdi + 0x2638]
+00000001402454c5  mov      rcx, qword ptr [rcx]
+00000001402454c8  lea      r8, [rsp + 0x50]
+00000001402454cd  lea      rdx, [rip + 0x3c187c]
+00000001402454d4  call     0x1400580f0 ; sscanf+0x0
+00000001402454d9  movzx    eax, bpl
+00000001402454dd  cmp      dword ptr [rsp + 0x50], eax
+00000001402454e1  jne      0x14024554d
+00000001402454e3  movsx    edx, word ptr [rdi + 0x2640]
+00000001402454ea  lea      rcx, [rdi + 0x2638]
+00000001402454f1  cmp      edx, 5
+00000001402454f4  jle      0x140245528
+00000001402454f6  movsx    eax, word ptr [rdi + 0x2642]
+00000001402454fd  lea      rcx, [rdi + 0x2638]
+0000000140245504  cmp      ebx, eax
+0000000140245506  jge      0x140245528
+0000000140245508  lea      rcx, [rdi + 0x2638]
+000000014024550f  test     ebx, ebx
+0000000140245511  js       0x140245528
+0000000140245513  mov      rax, qword ptr [rdi + 0x2630]
+000000014024551a  imul     edx, ebx
+000000014024551d  add      rax, 0x28
+0000000140245521  movsxd   rcx, edx
+0000000140245524  lea      rcx, [rax + rcx*8]
+0000000140245528  mov      rcx, qword ptr [rcx]
+000000014024552b  lea      r8, [rsp + 0x58]
+0000000140245530  lea      rdx, [rip + 0x3c1819]
+0000000140245537  call     0x1400580f0 ; sscanf+0x0
+000000014024553c  mov      eax, dword ptr [rsp + 0x58]
+0000000140245540  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245545  add      rsp, 0x20
+0000000140245549  pop      rdi
+000000014024554a  pop      rsi
+000000014024554b  pop      rbp
+000000014024554c  ret
+000000014024554d  mov      r8d, 0x4000
+0000000140245553  movzx    eax, bpl
+0000000140245557  dec      eax
+0000000140245559  cmp      eax, 0x14
+000000014024555c  ja       0x1402459d6
+0000000140245562  lea      rdx, [rip - 0x245569]
+0000000140245569  cdqe
+000000014024556b  mov      ecx, dword ptr [rdx + rax*4 + 0x2459e8]
+0000000140245572  add      rcx, rdx
+0000000140245575  jmp      rcx
+0000000140245577  cmp      r8d, 0x800
+000000014024557e  ja       0x140245621
+0000000140245584  je       0x14024560f
+000000014024558a  sub      r8d, 0x40
+000000014024558e  je       0x1402455fd
+0000000140245590  sub      r8d, 0x40
+0000000140245594  je       0x1402455eb
+0000000140245596  sub      r8d, 0x80
+000000014024559d  je       0x1402455d9
+000000014024559f  sub      r8d, 0x100
+00000001402455a6  je       0x1402455c7
+00000001402455a8  cmp      r8d, 0x200
+00000001402455af  jne      0x1402459a0
+00000001402455b5  mov      eax, 0x19
+00000001402455ba  mov      rbx, qword ptr [rsp + 0x40]
+00000001402455bf  add      rsp, 0x20
+00000001402455c3  pop      rdi
+00000001402455c4  pop      rsi
+00000001402455c5  pop      rbp
+00000001402455c6  ret
+00000001402455c7  mov      eax, 0x18
+00000001402455cc  mov      rbx, qword ptr [rsp + 0x40]
+00000001402455d1  add      rsp, 0x20
+00000001402455d5  pop      rdi
+00000001402455d6  pop      rsi
+00000001402455d7  pop      rbp
+00000001402455d8  ret
+00000001402455d9  mov      eax, 0x17
+00000001402455de  mov      rbx, qword ptr [rsp + 0x40]
+00000001402455e3  add      rsp, 0x20
+00000001402455e7  pop      rdi
+00000001402455e8  pop      rsi
+00000001402455e9  pop      rbp
+00000001402455ea  ret
+00000001402455eb  mov      eax, 0x16
+00000001402455f0  mov      rbx, qword ptr [rsp + 0x40]
+00000001402455f5  add      rsp, 0x20
+00000001402455f9  pop      rdi
+00000001402455fa  pop      rsi
+00000001402455fb  pop      rbp
+00000001402455fc  ret
+00000001402455fd  mov      eax, 0x15
+0000000140245602  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245607  add      rsp, 0x20
+000000014024560b  pop      rdi
+000000014024560c  pop      rsi
+000000014024560d  pop      rbp
+000000014024560e  ret
+000000014024560f  mov      eax, 0x1a
+0000000140245614  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245619  add      rsp, 0x20
+000000014024561d  pop      rdi
+000000014024561e  pop      rsi
+000000014024561f  pop      rbp
+0000000140245620  ret
+0000000140245621  cmp      r8d, 0x1000
+0000000140245628  je       0x140245664
+000000014024562a  cmp      r8d, 0x2000
+0000000140245631  je       0x140245652
+0000000140245633  cmp      r8d, 0x80000000
+000000014024563a  jne      0x1402459a0
+0000000140245640  mov      eax, 0x34
+0000000140245645  mov      rbx, qword ptr [rsp + 0x40]
+000000014024564a  add      rsp, 0x20
+000000014024564e  pop      rdi
+000000014024564f  pop      rsi
+0000000140245650  pop      rbp
+0000000140245651  ret
+0000000140245652  mov      eax, 0x1c
+0000000140245657  mov      rbx, qword ptr [rsp + 0x40]
+000000014024565c  add      rsp, 0x20
+0000000140245660  pop      rdi
+0000000140245661  pop      rsi
+0000000140245662  pop      rbp
+0000000140245663  ret
+0000000140245664  mov      eax, 0x1b
+0000000140245669  mov      rbx, qword ptr [rsp + 0x40]
+000000014024566e  add      rsp, 0x20
+0000000140245672  pop      rdi
+0000000140245673  pop      rsi
+0000000140245674  pop      rbp
+0000000140245675  ret
+0000000140245676  sub      r8d, 1
+000000014024567a  je       0x1402456d9
+000000014024567c  sub      r8d, 1
+0000000140245680  je       0x1402456c7
+0000000140245682  sub      r8d, 2
+0000000140245686  je       0x1402456b5
+0000000140245688  cmp      r8d, 0x3ffffffc
+000000014024568f  je       0x1402456a3
+0000000140245691  mov      eax, 4
+0000000140245696  mov      rbx, qword ptr [rsp + 0x40]
+000000014024569b  add      rsp, 0x20
+000000014024569f  pop      rdi
+00000001402456a0  pop      rsi
+00000001402456a1  pop      rbp
+00000001402456a2  ret
+00000001402456a3  mov      eax, 0x33
+00000001402456a8  mov      rbx, qword ptr [rsp + 0x40]
+00000001402456ad  add      rsp, 0x20
+00000001402456b1  pop      rdi
+00000001402456b2  pop      rsi
+00000001402456b3  pop      rbp
+00000001402456b4  ret
+00000001402456b5  mov      eax, 0x1f
+00000001402456ba  mov      rbx, qword ptr [rsp + 0x40]
+00000001402456bf  add      rsp, 0x20
+00000001402456c3  pop      rdi
+00000001402456c4  pop      rsi
+00000001402456c5  pop      rbp
+00000001402456c6  ret
+00000001402456c7  mov      eax, 0x1e
+00000001402456cc  mov      rbx, qword ptr [rsp + 0x40]
+00000001402456d1  add      rsp, 0x20
+00000001402456d5  pop      rdi
+00000001402456d6  pop      rsi
+00000001402456d7  pop      rbp
+00000001402456d8  ret
+00000001402456d9  mov      eax, 0x1d
+00000001402456de  mov      rbx, qword ptr [rsp + 0x40]
+00000001402456e3  add      rsp, 0x20
+00000001402456e7  pop      rdi
+00000001402456e8  pop      rsi
+00000001402456e9  pop      rbp
+00000001402456ea  ret
+00000001402456eb  cmp      r8d, 0x1000000
+00000001402456f2  je       0x140245730
+00000001402456f4  cmp      r8d, 0x2000000
+00000001402456fb  je       0x14024571e
+00000001402456fd  cmp      r8d, 0x4000000
+0000000140245704  mov      eax, 0x31
+0000000140245709  mov      ecx, 5
+000000014024570e  cmovne   eax, ecx
+0000000140245711  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245716  add      rsp, 0x20
+000000014024571a  pop      rdi
+000000014024571b  pop      rsi
+000000014024571c  pop      rbp
+000000014024571d  ret
+000000014024571e  mov      eax, 0x30
+0000000140245723  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245728  add      rsp, 0x20
+000000014024572c  pop      rdi
+000000014024572d  pop      rsi
+000000014024572e  pop      rbp
+000000014024572f  ret
+0000000140245730  mov      eax, 0x2f
+0000000140245735  mov      rbx, qword ptr [rsp + 0x40]
+000000014024573a  add      rsp, 0x20
+000000014024573e  pop      rdi
+000000014024573f  pop      rsi
+0000000140245740  pop      rbp
+0000000140245741  ret
+0000000140245742  cmp      r8d, 0x40000
+0000000140245749  je       0x140245787
+000000014024574b  cmp      r8d, 0x80000
+0000000140245752  je       0x140245775
+0000000140245754  cmp      r8d, 0x100000
+000000014024575b  mov      eax, 0x28
+0000000140245760  mov      ecx, 6
+0000000140245765  cmovne   eax, ecx
+0000000140245768  mov      rbx, qword ptr [rsp + 0x40]
+000000014024576d  add      rsp, 0x20
+0000000140245771  pop      rdi
+0000000140245772  pop      rsi
+0000000140245773  pop      rbp
+0000000140245774  ret
+0000000140245775  mov      eax, 0x27
+000000014024577a  mov      rbx, qword ptr [rsp + 0x40]
+000000014024577f  add      rsp, 0x20
+0000000140245783  pop      rdi
+0000000140245784  pop      rsi
+0000000140245785  pop      rbp
+0000000140245786  ret
+0000000140245787  mov      eax, 0x26
+000000014024578c  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245791  add      rsp, 0x20
+0000000140245795  pop      rdi
+0000000140245796  pop      rsi
+0000000140245797  pop      rbp
+0000000140245798  ret
+0000000140245799  cmp      r8d, 0x200000
+00000001402457a0  je       0x1402457de
+00000001402457a2  cmp      r8d, 0x400000
+00000001402457a9  je       0x1402457cc
+00000001402457ab  cmp      r8d, 0x800000
+00000001402457b2  mov      eax, 0x2b
+00000001402457b7  mov      ecx, 7
+00000001402457bc  cmovne   eax, ecx
+00000001402457bf  mov      rbx, qword ptr [rsp + 0x40]
+00000001402457c4  add      rsp, 0x20
+00000001402457c8  pop      rdi
+00000001402457c9  pop      rsi
+00000001402457ca  pop      rbp
+00000001402457cb  ret
+00000001402457cc  mov      eax, 0x2a
+00000001402457d1  mov      rbx, qword ptr [rsp + 0x40]
+00000001402457d6  add      rsp, 0x20
+00000001402457da  pop      rdi
+00000001402457db  pop      rsi
+00000001402457dc  pop      rbp
+00000001402457dd  ret
+00000001402457de  mov      eax, 0x29
+00000001402457e3  mov      rbx, qword ptr [rsp + 0x40]
+00000001402457e8  add      rsp, 0x20
+00000001402457ec  pop      rdi
+00000001402457ed  pop      rsi
+00000001402457ee  pop      rbp
+00000001402457ef  ret
+00000001402457f0  cmp      r8d, 8
+00000001402457f4  je       0x14024582c
+00000001402457f6  cmp      r8d, 0x10
+00000001402457fa  je       0x14024581a
+00000001402457fc  cmp      r8d, 0x20
+0000000140245800  mov      eax, 0x22
+0000000140245805  mov      ecx, 8
+000000014024580a  cmovne   eax, ecx
+000000014024580d  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245812  add      rsp, 0x20
+0000000140245816  pop      rdi
+0000000140245817  pop      rsi
+0000000140245818  pop      rbp
+0000000140245819  ret
+000000014024581a  mov      eax, 0x21
+000000014024581f  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245824  add      rsp, 0x20
+0000000140245828  pop      rdi
+0000000140245829  pop      rsi
+000000014024582a  pop      rbp
+000000014024582b  ret
+000000014024582c  mov      eax, 0x20
+0000000140245831  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245836  add      rsp, 0x20
+000000014024583a  pop      rdi
+000000014024583b  pop      rsi
+000000014024583c  pop      rbp
+000000014024583d  ret
+000000014024583e  mov      eax, 0xb
+0000000140245843  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245848  add      rsp, 0x20
+000000014024584c  pop      rdi
+000000014024584d  pop      rsi
+000000014024584e  pop      rbp
+000000014024584f  ret
+0000000140245850  mov      eax, 0xc
+0000000140245855  mov      rbx, qword ptr [rsp + 0x40]
+000000014024585a  add      rsp, 0x20
+000000014024585e  pop      rdi
+000000014024585f  pop      rsi
+0000000140245860  pop      rbp
+0000000140245861  ret
+0000000140245862  mov      eax, 0xd
+0000000140245867  mov      rbx, qword ptr [rsp + 0x40]
+000000014024586c  add      rsp, 0x20
+0000000140245870  pop      rdi
+0000000140245871  pop      rsi
+0000000140245872  pop      rbp
+0000000140245873  ret
+0000000140245874  mov      eax, 0xe
+0000000140245879  mov      rbx, qword ptr [rsp + 0x40]
+000000014024587e  add      rsp, 0x20
+0000000140245882  pop      rdi
+0000000140245883  pop      rsi
+0000000140245884  pop      rbp
+0000000140245885  ret
+0000000140245886  cmp      r8d, 0x8000000
+000000014024588d  je       0x1402458cb
+000000014024588f  cmp      r8d, 0x10000000
+0000000140245896  je       0x1402458b9
+0000000140245898  cmp      r8d, 0x20000000
+000000014024589f  mov      eax, 0x2e
+00000001402458a4  mov      ecx, 9
+00000001402458a9  cmovne   eax, ecx
+00000001402458ac  mov      rbx, qword ptr [rsp + 0x40]
+00000001402458b1  add      rsp, 0x20
+00000001402458b5  pop      rdi
+00000001402458b6  pop      rsi
+00000001402458b7  pop      rbp
+00000001402458b8  ret
+00000001402458b9  mov      eax, 0x2d
+00000001402458be  mov      rbx, qword ptr [rsp + 0x40]
+00000001402458c3  add      rsp, 0x20
+00000001402458c7  pop      rdi
+00000001402458c8  pop      rsi
+00000001402458c9  pop      rbp
+00000001402458ca  ret
+00000001402458cb  mov      eax, 0x2c
+00000001402458d0  mov      rbx, qword ptr [rsp + 0x40]
+00000001402458d5  add      rsp, 0x20
+00000001402458d9  pop      rdi
+00000001402458da  pop      rsi
+00000001402458db  pop      rbp
+00000001402458dc  ret
+00000001402458dd  cmp      r8d, 0x8000
+00000001402458e4  je       0x140245922
+00000001402458e6  cmp      r8d, 0x10000
+00000001402458ed  je       0x140245910
+00000001402458ef  cmp      r8d, 0x20000
+00000001402458f6  mov      eax, 0x25
+00000001402458fb  mov      ecx, 0xa
+0000000140245900  cmovne   eax, ecx
+0000000140245903  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245908  add      rsp, 0x20
+000000014024590c  pop      rdi
+000000014024590d  pop      rsi
+000000014024590e  pop      rbp
+000000014024590f  ret
+0000000140245910  mov      eax, 0x24
+0000000140245915  mov      rbx, qword ptr [rsp + 0x40]
+000000014024591a  add      rsp, 0x20
+000000014024591e  pop      rdi
+000000014024591f  pop      rsi
+0000000140245920  pop      rbp
+0000000140245921  ret
+0000000140245922  mov      eax, 0x23
+0000000140245927  mov      rbx, qword ptr [rsp + 0x40]
+000000014024592c  add      rsp, 0x20
+0000000140245930  pop      rdi
+0000000140245931  pop      rsi
+0000000140245932  pop      rbp
+0000000140245933  ret
+0000000140245934  mov      eax, 0xf
+0000000140245939  mov      rbx, qword ptr [rsp + 0x40]
+000000014024593e  add      rsp, 0x20
+0000000140245942  pop      rdi
+0000000140245943  pop      rsi
+0000000140245944  pop      rbp
+0000000140245945  ret
+0000000140245946  mov      eax, 0x10
+000000014024594b  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245950  add      rsp, 0x20
+0000000140245954  pop      rdi
+0000000140245955  pop      rsi
+0000000140245956  pop      rbp
+0000000140245957  ret
+0000000140245958  mov      eax, 0x11
+000000014024595d  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245962  add      rsp, 0x20
+0000000140245966  pop      rdi
+0000000140245967  pop      rsi
+0000000140245968  pop      rbp
+0000000140245969  ret
+000000014024596a  mov      eax, 0x12
+000000014024596f  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245974  add      rsp, 0x20
+0000000140245978  pop      rdi
+0000000140245979  pop      rsi
+000000014024597a  pop      rbp
+000000014024597b  ret
+000000014024597c  mov      eax, 0x13
+0000000140245981  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245986  add      rsp, 0x20
+000000014024598a  pop      rdi
+000000014024598b  pop      rsi
+000000014024598c  pop      rbp
+000000014024598d  ret
+000000014024598e  mov      eax, 0x14
+0000000140245993  mov      rbx, qword ptr [rsp + 0x40]
+0000000140245998  add      rsp, 0x20
+000000014024599c  pop      rdi
+000000014024599d  pop      rsi
+000000014024599e  pop      rbp
+000000014024599f  ret
+00000001402459a0  mov      eax, 3
+00000001402459a5  mov      rbx, qword ptr [rsp + 0x40]
+00000001402459aa  add      rsp, 0x20
+00000001402459ae  pop      rdi
+00000001402459af  pop      rsi
+00000001402459b0  pop      rbp
+00000001402459b1  ret
+00000001402459b2  mov      eax, 0x32
+00000001402459b7  mov      rbx, qword ptr [rsp + 0x40]
+00000001402459bc  add      rsp, 0x20
+00000001402459c0  pop      rdi
+00000001402459c1  pop      rsi
+00000001402459c2  pop      rbp
+00000001402459c3  ret
+00000001402459c4  mov      eax, 0x3b
+00000001402459c9  mov      rbx, qword ptr [rsp + 0x40]
+00000001402459ce  add      rsp, 0x20
+00000001402459d2  pop      rdi
+00000001402459d3  pop      rsi
+00000001402459d4  pop      rbp
+00000001402459d5  ret
+00000001402459d6  mov      rbx, qword ptr [rsp + 0x40]
+00000001402459db  xor      eax, eax
+00000001402459dd  add      rsp, 0x20
+00000001402459e1  pop      rdi
+00000001402459e2  pop      rsi
+00000001402459e3  pop      rbp
+00000001402459e4  ret
+00000001402459e5  nop      dword ptr [rax]
+00000001402459e8  ja       0x140245a3f
+00000001402459ea  and      al, 0
+00000001402459ec  jbe      0x140245a44
+00000001402459ee  and      al, 0
+00000001402459f0  jmp      0x140245a48 ; CRuleTables::GetProficiencyDescription+0x8
+00000001402459f2  and      al, 0
+00000001402459f4  push     rdi
+00000001402459f6  and      al, 0
+00000001402459f8  cdq
+00000001402459f9  push     rdi
+00000001402459fa  and      al, 0
+
+CRuleTables::GetProficiencyId+0x0 [0x140245d00, 0x140245d60)
+0000000140245d00  sub      rsp, 0x28
+0000000140245d04  mov      r8, rcx
+0000000140245d07  movsx    ecx, word ptr [rcx + 0x19c8]
+0000000140245d0e  test     ecx, ecx
+0000000140245d10  jle      0x140245d35
+0000000140245d12  movsx    eax, word ptr [r8 + 0x19ca]
+0000000140245d1a  cmp      edx, eax
+0000000140245d1c  jge      0x140245d35
+0000000140245d1e  test     edx, edx
+0000000140245d20  js       0x140245d35
+0000000140245d22  mov      rax, qword ptr [r8 + 0x19b8]
+0000000140245d29  imul     ecx, edx
+0000000140245d2c  movsxd   rcx, ecx
+0000000140245d2f  lea      rcx, [rax + rcx*8]
+0000000140245d33  jmp      0x140245d3c ; CRuleTables::GetProficiencyId+0x3c
+0000000140245d35  lea      rcx, [r8 + 0x19c0]
+0000000140245d3c  mov      rcx, qword ptr [rcx]
+0000000140245d3f  lea      r8, [rsp + 0x38]
+0000000140245d44  lea      rdx, [rip + 0x3c1005]
+0000000140245d4b  call     0x1400580f0 ; sscanf+0x0
+0000000140245d50  mov      eax, dword ptr [rsp + 0x38]
+0000000140245d54  add      rsp, 0x28
+0000000140245d58  ret
+0000000140245d59  int3
+0000000140245d5a  int3
+0000000140245d5b  int3
+0000000140245d5c  int3
+0000000140245d5d  int3
+0000000140245d5e  int3
+0000000140245d5f  int3

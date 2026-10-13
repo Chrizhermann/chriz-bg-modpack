@@ -1,0 +1,485 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::StartEditing+0x0 [0x1402c37b0, 0x1402c3900)
+00000001402c37b0  mov      qword ptr [rsp + 0x10], rbx
+00000001402c37b5  mov      qword ptr [rsp + 0x18], rsi
+00000001402c37ba  push     rdi
+00000001402c37bb  sub      rsp, 0x20
+00000001402c37bf  mov      dword ptr [rcx + 0x768], r8d
+00000001402c37c6  mov      rsi, rcx
+00000001402c37c9  mov      dword ptr [rcx + 0x770], edx
+00000001402c37cf  mov      edi, r8d
+00000001402c37d2  mov      rax, qword ptr [rip + 0x3a18c7]
+00000001402c37d9  mov      ebx, edx
+00000001402c37db  mov      rcx, qword ptr [rax + 0x1090]
+00000001402c37e2  call     0x140276300 ; CInfGame::GetCharacterPortraitNum+0x0
+00000001402c37e7  movsx    r9d, ax
+00000001402c37eb  mov      rdx, rsi
+00000001402c37ee  mov      dword ptr [rsi + 0x48], r9d
+00000001402c37f2  mov      dword ptr [rsi + 0x800], 6
+00000001402c37fc  mov      byte ptr [rsi + 0xa08], 0
+00000001402c3803  mov      rcx, qword ptr [rip + 0x3a1896]
+00000001402c380a  mov      rax, qword ptr [rcx]
+00000001402c380d  call     qword ptr [rax + 0xf0]
+00000001402c3813  lea      rdx, [rsp + 0x30]
+00000001402c3818  mov      ecx, ebx
+00000001402c381a  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402c381f  test     al, al
+00000001402c3821  jne      0x1402c38e8
+00000001402c3827  sub      edi, 1
+00000001402c382a  je       0x1402c38e0
+00000001402c3830  sub      edi, 0xa
+00000001402c3833  je       0x1402c38aa
+00000001402c3835  sub      edi, 0xd
+00000001402c3838  je       0x1402c388e
+00000001402c383a  cmp      edi, 4
+00000001402c383d  jne      0x1402c38e8
+00000001402c3843  mov      rdx, qword ptr [rsp + 0x30]
+00000001402c3848  mov      rcx, rsi
+00000001402c384b  call     0x1402bf260 ; CScreenCreateChar::ResetLevelUpPanel+0x0
+00000001402c3850  mov      rdx, qword ptr [rsp + 0x30]
+00000001402c3855  xor      r8d, r8d
+00000001402c3858  mov      rcx, rsi
+00000001402c385b  call     0x1402c7180 ; CScreenCreateChar::UpdateProficienciesPanel+0x0
+00000001402c3860  cmp      dword ptr [rip + 0x464cf9], 2
+00000001402c3867  lea      rax, [rip + 0x2ca1b2]
+00000001402c386e  lea      rcx, [rip + 0x2ca1c3]
+00000001402c3875  cmovne   rcx, rax
+00000001402c3879  call     0x1403da620 ; uiPush+0x0
+00000001402c387e  mov      rbx, qword ptr [rsp + 0x38]
+00000001402c3883  mov      rsi, qword ptr [rsp + 0x40]
+00000001402c3888  add      rsp, 0x20
+00000001402c388c  pop      rdi
+00000001402c388d  ret
+00000001402c388e  lea      rcx, [rip + 0x2ca243]
+00000001402c3895  call     0x1403da620 ; uiPush+0x0
+00000001402c389a  mov      rbx, qword ptr [rsp + 0x38]
+00000001402c389f  mov      rsi, qword ptr [rsp + 0x40]
+00000001402c38a4  add      rsp, 0x20
+00000001402c38a8  pop      rdi
+00000001402c38a9  ret
+00000001402c38aa  mov      rdx, qword ptr [rsp + 0x30]
+00000001402c38af  mov      rcx, rsi
+00000001402c38b2  call     0x1402bf260 ; CScreenCreateChar::ResetLevelUpPanel+0x0
+00000001402c38b7  mov      rdx, qword ptr [rsp + 0x30]
+00000001402c38bc  mov      rcx, rsi
+00000001402c38bf  call     0x1402c42b0 ; CScreenCreateChar::UpdateChooseMagePanel+0x0
+00000001402c38c4  lea      rcx, [rip + 0x2ca185]
+00000001402c38cb  call     0x1403da620 ; uiPush+0x0
+00000001402c38d0  mov      rbx, qword ptr [rsp + 0x38]
+00000001402c38d5  mov      rsi, qword ptr [rsp + 0x40]
+00000001402c38da  add      rsp, 0x20
+00000001402c38de  pop      rdi
+00000001402c38df  ret
+00000001402c38e0  mov      rcx, rsi
+00000001402c38e3  call     0x1402c3470 ; CScreenCreateChar::ShowPortraitPanel+0x0
+00000001402c38e8  mov      rbx, qword ptr [rsp + 0x38]
+00000001402c38ed  mov      rsi, qword ptr [rsp + 0x40]
+00000001402c38f2  add      rsp, 0x20
+00000001402c38f6  pop      rdi
+00000001402c38f7  ret
+00000001402c38f8  int3
+00000001402c38f9  int3
+00000001402c38fa  int3
+00000001402c38fb  int3
+00000001402c38fc  int3
+00000001402c38fd  int3
+00000001402c38fe  int3
+00000001402c38ff  int3
+
+CScreenCreateChar::OnCancelButtonClick+0x0 [0x1402b80f0, 0x1402b8780)
+00000001402b80f0  mov      qword ptr [rsp + 0x10], rbx
+00000001402b80f5  push     rbp
+00000001402b80f6  mov      rbp, rsp
+00000001402b80f9  sub      rsp, 0x60
+00000001402b80fd  mov      rax, qword ptr [rip + 0x3aa414]
+00000001402b8104  xor      rax, rsp
+00000001402b8107  mov      qword ptr [rbp - 0x10], rax
+00000001402b810b  mov      rax, qword ptr [rip + 0x3a39fe]
+00000001402b8112  lea      rdx, [rbp - 0x40]
+00000001402b8116  mov      rbx, rcx
+00000001402b8119  mov      qword ptr [rbp - 0x38], rax
+00000001402b811d  mov      ecx, dword ptr [rcx + 0x770]
+00000001402b8123  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402b8128  test     al, al
+00000001402b812a  jne      0x1402b86e4
+00000001402b8130  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b8134  lea      rcx, [rbp - 0x28]
+00000001402b8138  mov      rax, qword ptr [rip + 0x3a39d1]
+00000001402b813f  add      rdx, 0x4b68
+00000001402b8146  mov      qword ptr [rbp - 0x28], rax
+00000001402b814a  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b814f  movsxd   rdx, dword ptr [rbx + 0x768]
+00000001402b8156  cmp      edx, 0x1c
+00000001402b8159  ja       0x1402b86c3
+00000001402b815f  lea      r8, [rip - 0x2b8166]
+00000001402b8166  mov      ecx, dword ptr [r8 + rdx*4 + 0x2b8704]
+00000001402b816e  add      rcx, r8
+00000001402b8171  jmp      rcx
+00000001402b8173  lea      rcx, [rip + 0x2eb2f6]
+00000001402b817a  call     0x1403da410 ; uiPop+0x0
+00000001402b817f  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8184  lea      rcx, [rip + 0x2eb17d]
+00000001402b818b  call     0x1403da410 ; uiPop+0x0
+00000001402b8190  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8195  lea      rcx, [rip + 0x2eb18c]
+00000001402b819c  call     0x1403da410 ; uiPop+0x0
+00000001402b81a1  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b81a5  mov      rcx, rbx
+00000001402b81a8  mov      dword ptr [rbx + 0x768], 4
+00000001402b81b2  call     0x1402beff0 ; CScreenCreateChar::ResetClassPanel+0x0
+00000001402b81b7  lea      rcx, [rip + 0x2eb15a]
+00000001402b81be  call     0x1403da620 ; uiPush+0x0
+00000001402b81c3  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b81c8  cmp      dword ptr [rbx + 0x800], 6
+00000001402b81cf  jne      0x1402b81ea
+00000001402b81d1  mov      rcx, rbx
+00000001402b81d4  call     0x1402b1790 ; CScreenCreateChar::CancelLevelUp+0x0
+00000001402b81d9  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b81de  lea      rcx, [rip + 0x2d58e3]
+00000001402b81e5  call     0x1403da410 ; uiPop+0x0
+00000001402b81ea  lea      rcx, [rip + 0x2d582f]
+00000001402b81f1  call     0x1403da410 ; uiPop+0x0
+00000001402b81f6  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b81fa  mov      eax, 9
+00000001402b81ff  mov      rcx, rbx
+00000001402b8202  mov      dword ptr [rbx + 0x768], eax
+00000001402b8208  call     0x1402c18b0 ; CScreenCreateChar::ResetProficienciesPanel+0x0
+00000001402b820d  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8212  lea      rcx, [rip + 0x2eb267]
+00000001402b8219  call     0x1403da410 ; uiPop+0x0
+00000001402b821e  mov      rcx, qword ptr [rbx + 0x820]
+00000001402b8225  mov      dword ptr [rbx + 0x768], 0xf
+00000001402b822f  test     rcx, rcx
+00000001402b8232  je       0x1402b823e
+00000001402b8234  mov      rax, qword ptr [rcx]
+00000001402b8237  mov      edx, 1
+00000001402b823c  call     qword ptr [rax]
+00000001402b823e  xor      eax, eax
+00000001402b8240  mov      qword ptr [rbx + 0x820], rax
+00000001402b8247  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b824c  lea      rcx, [rip + 0x2eae3d]
+00000001402b8253  call     0x1403da410 ; uiPop+0x0
+00000001402b8258  mov      rcx, qword ptr [rbx + 0x838]
+00000001402b825f  test     rcx, rcx
+00000001402b8262  je       0x1402b826e
+00000001402b8264  mov      rax, qword ptr [rcx]
+00000001402b8267  mov      edx, 1
+00000001402b826c  call     qword ptr [rax]
+00000001402b826e  xor      eax, eax
+00000001402b8270  mov      qword ptr [rbx + 0x838], rax
+00000001402b8277  cmp      dword ptr [rip + 0x4702e2], 2
+00000001402b827e  jne      0x1402b8286
+00000001402b8280  mov      eax, dword ptr [rbx + 0x76c]
+00000001402b8286  mov      dword ptr [rbx + 0x768], eax
+00000001402b828c  mov      rcx, rbx
+00000001402b828f  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b8293  call     0x1402c5c30 ; CScreenCreateChar::UpdateMainPanel+0x0
+00000001402b8298  mov      rax, qword ptr [rbx]
+00000001402b829b  mov      rcx, rbx
+00000001402b829e  call     qword ptr [rax + 0x60]
+00000001402b82a1  cmp      eax, 7
+00000001402b82a4  jne      0x1402b86cf
+00000001402b82aa  mov      rcx, qword ptr [rip + 0x3acdef]
+00000001402b82b1  mov      rax, qword ptr [rcx]
+00000001402b82b4  mov      rdx, qword ptr [rcx + 0x1100]
+00000001402b82bb  call     qword ptr [rax + 0xf0]
+00000001402b82c1  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b82c6  lea      rcx, [rip + 0x2e9d3b]
+00000001402b82cd  call     0x1403da410 ; uiPop+0x0
+00000001402b82d2  mov      rcx, qword ptr [rbx + 0x838]
+00000001402b82d9  test     rcx, rcx
+00000001402b82dc  je       0x1402b82e8
+00000001402b82de  mov      rax, qword ptr [rcx]
+00000001402b82e1  mov      edx, 1
+00000001402b82e6  call     qword ptr [rax]
+00000001402b82e8  xor      eax, eax
+00000001402b82ea  mov      qword ptr [rbx + 0x838], rax
+00000001402b82f1  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b82f6  mov      rcx, qword ptr [rbx + 0x848]
+00000001402b82fd  test     rcx, rcx
+00000001402b8300  je       0x1402b830c
+00000001402b8302  mov      rax, qword ptr [rcx]
+00000001402b8305  mov      edx, 1
+00000001402b830a  call     qword ptr [rax]
+00000001402b830c  xor      eax, eax
+00000001402b830e  mov      qword ptr [rbx + 0x848], rax
+00000001402b8315  mov      rcx, qword ptr [rip + 0x3acd84]
+00000001402b831c  mov      rcx, qword ptr [rcx + 0x128]
+00000001402b8323  call     0x14040f4d0 ; CSoundMixer::StopAll+0x0
+00000001402b8328  mov      rcx, qword ptr [rip + 0x3acd71]
+00000001402b832f  xor      edx, edx
+00000001402b8331  mov      rcx, qword ptr [rcx + 0x128]
+00000001402b8338  call     0x14040ebf0 ; CSoundMixer::QuietMusic+0x0
+00000001402b833d  lea      rcx, [rip + 0x2eafac]
+00000001402b8344  call     0x1403da410 ; uiPop+0x0
+00000001402b8349  lea      rcx, [rip + 0x2e9cf0]
+00000001402b8350  call     0x1403da620 ; uiPush+0x0
+00000001402b8355  mov      dword ptr [rbx + 0x768], 0xf
+00000001402b835f  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8364  cmp      word ptr [rbx + 0x8e6], 0
+00000001402b836c  je       0x1402b86cf
+00000001402b8372  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b8376  movzx    ecx, word ptr [rdx + 0x79c]
+00000001402b837d  movzx    eax, word ptr [rdx + 0x79e]
+00000001402b8384  shl      ecx, 0x10
+00000001402b8387  or       ecx, eax
+00000001402b8389  cmp      ecx, 0x4000
+00000001402b838f  jne      0x1402b86cf
+00000001402b8395  add      rdx, 0x4b68
+00000001402b839c  lea      rcx, [rbp - 0x28]
+00000001402b83a0  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b83a5  lea      rcx, [rbp - 0x28]
+00000001402b83a9  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b83ae  test     al, al
+00000001402b83b0  je       0x1402b86cf
+00000001402b83b6  cmp      al, 6
+00000001402b83b8  jbe      0x1402b83c4
+00000001402b83ba  sub      al, 0xb
+00000001402b83bc  cmp      al, 1
+00000001402b83be  ja       0x1402b86cf
+00000001402b83c4  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b83c8  mov      rcx, rbx
+00000001402b83cb  mov      dword ptr [rbx + 0x768], 6
+00000001402b83d5  call     0x1402c55d0 ; CScreenCreateChar::UpdateKitPanel+0x0
+00000001402b83da  lea      rcx, [rip + 0x2eaf47]
+00000001402b83e1  call     0x1403da620 ; uiPush+0x0
+00000001402b83e6  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b83eb  lea      rcx, [rip + 0x2eb0a6]
+00000001402b83f2  call     0x1403da410 ; uiPop+0x0
+00000001402b83f7  mov      rcx, qword ptr [rip + 0x3acca2]
+00000001402b83fe  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b8402  mov      rcx, qword ptr [rcx + 0x10b8]
+00000001402b8409  call     0x1402bde80 ; CScreenCreateChar::OnResetSkills+0x0
+00000001402b840e  cmp      dword ptr [rbx + 0x800], 6
+00000001402b8415  mov      ecx, 0x19
+00000001402b841a  mov      eax, 9
+00000001402b841f  cmovne   ecx, eax
+00000001402b8422  mov      dword ptr [rbx + 0x768], ecx
+00000001402b8428  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b842d  lea      rcx, [rip + 0x2eae34]
+00000001402b8434  call     0x1403da410 ; uiPop+0x0
+00000001402b8439  mov      rcx, rbx
+00000001402b843c  call     0x1402bd6d0 ; CScreenCreateChar::OnPrerollCancelButtonClick+0x0
+00000001402b8441  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8446  lea      rcx, [rip + 0x2eafa3]
+00000001402b844d  call     0x1403da410 ; uiPop+0x0
+00000001402b8452  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8457  cmp      dword ptr [rbx + 0x800], 6
+00000001402b845e  jne      0x1402b849d
+00000001402b8460  mov      rcx, qword ptr [rip + 0x3acc39]
+00000001402b8467  xor      edx, edx
+00000001402b8469  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b8470  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402b8475  mov      rcx, qword ptr [rip + 0x3acc24]
+00000001402b847c  mov      rax, qword ptr [rcx]
+00000001402b847f  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402b8486  call     qword ptr [rax + 0xf0]
+00000001402b848c  lea      rcx, [rip + 0x2e9b85]
+00000001402b8493  call     0x1403da620 ; uiPush+0x0
+00000001402b8498  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b849d  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b84a1  xor      eax, eax
+00000001402b84a3  mov      rcx, rbx
+00000001402b84a6  mov      dword ptr [rbx + 0x768], eax
+00000001402b84ac  call     0x1402bf070 ; CScreenCreateChar::ResetGenderPanel+0x0
+00000001402b84b1  lea      rcx, [rip + 0x2eafb8]
+00000001402b84b8  call     0x1403da620 ; uiPush+0x0
+00000001402b84bd  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b84c2  cmp      dword ptr [rbx + 0x800], 6
+00000001402b84c9  jne      0x1402b84d8
+00000001402b84cb  mov      rcx, rbx
+00000001402b84ce  call     0x1402b1ac0 ; CScreenCreateChar::CancelMemorizeSpells+0x0
+00000001402b84d3  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b84d8  mov      r8d, 1
+00000001402b84de  lea      rcx, [rbp - 0x28]
+00000001402b84e2  mov      eax, 9
+00000001402b84e7  movzx    edx, r8b
+00000001402b84eb  mov      dword ptr [rbx + 0x768], eax
+00000001402b84f1  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b84f6  test     eax, eax
+00000001402b84f8  jne      0x1402b8520
+00000001402b84fa  lea      r8d, [rax + 1]
+00000001402b84fe  mov      dl, 0x13
+00000001402b8500  lea      rcx, [rbp - 0x28]
+00000001402b8504  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b8509  test     eax, eax
+00000001402b850b  jne      0x1402b8520
+00000001402b850d  lea      r8d, [rax + 1]
+00000001402b8511  mov      dl, 5
+00000001402b8513  lea      rcx, [rbp - 0x28]
+00000001402b8517  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b851c  test     eax, eax
+00000001402b851e  je       0x1402b8529
+00000001402b8520  mov      rcx, qword ptr [rbp - 0x40]
+00000001402b8524  call     0x1403afc60 ; CGameSprite::RemoveAllSpellsMage+0x0
+00000001402b8529  mov      r8d, 1
+00000001402b852f  lea      rcx, [rbp - 0x28]
+00000001402b8533  mov      dl, 3
+00000001402b8535  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b853a  test     eax, eax
+00000001402b853c  jne      0x1402b858e
+00000001402b853e  lea      r8d, [rax + 1]
+00000001402b8542  mov      dl, 0xb
+00000001402b8544  lea      rcx, [rbp - 0x28]
+00000001402b8548  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b854d  test     eax, eax
+00000001402b854f  jne      0x1402b858e
+00000001402b8551  lea      r8d, [rax + 1]
+00000001402b8555  mov      dl, 0xc
+00000001402b8557  lea      rcx, [rbp - 0x28]
+00000001402b855b  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b8560  test     eax, eax
+00000001402b8562  jne      0x1402b858e
+00000001402b8564  lea      r8d, [rax + 1]
+00000001402b8568  mov      dl, 6
+00000001402b856a  lea      rcx, [rbp - 0x28]
+00000001402b856e  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b8573  test     eax, eax
+00000001402b8575  jne      0x1402b858e
+00000001402b8577  lea      r8d, [rax + 1]
+00000001402b857b  mov      dl, 0x15
+00000001402b857d  lea      rcx, [rbp - 0x28]
+00000001402b8581  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b8586  test     eax, eax
+00000001402b8588  je       0x1402b86cf
+00000001402b858e  mov      rcx, qword ptr [rbp - 0x40]
+00000001402b8592  call     0x1403afd50 ; CGameSprite::RemoveAllSpellsPriest+0x0
+00000001402b8597  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b859c  mov      eax, 9
+00000001402b85a1  mov      dword ptr [rbx + 0x768], eax
+00000001402b85a7  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b85ac  mov      eax, dword ptr [rbx + 0x76c]
+00000001402b85b2  lea      rcx, [rip + 0x2ea74f]
+00000001402b85b9  mov      dword ptr [rbx + 0x768], eax
+00000001402b85bf  call     0x1403da410 ; uiPop+0x0
+00000001402b85c4  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b85c9  lea      rdx, [rip + 0x2ead48]
+00000001402b85d0  lea      rcx, [rbp - 0x30]
+00000001402b85d4  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b85d9  mov      rcx, rax
+00000001402b85dc  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b85e1  test     al, al
+00000001402b85e3  jne      0x1402b86cf
+00000001402b85e9  lea      rcx, [rip + 0x2d54e8]
+00000001402b85f0  call     0x1403da410 ; uiPop+0x0
+00000001402b85f5  mov      rcx, qword ptr [rip + 0x3acaa4]
+00000001402b85fc  xor      edx, edx
+00000001402b85fe  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b8605  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402b860a  mov      rcx, qword ptr [rip + 0x3aca8f]
+00000001402b8611  mov      rax, qword ptr [rcx]
+00000001402b8614  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402b861b  call     qword ptr [rax + 0xf0]
+00000001402b8621  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8626  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b862a  mov      rcx, rbx
+00000001402b862d  call     0x1402c18b0 ; CScreenCreateChar::ResetProficienciesPanel+0x0
+00000001402b8632  lea      rdx, [rip + 0x2d53e7]
+00000001402b8639  lea      rcx, [rbp - 0x30]
+00000001402b863d  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b8642  mov      rcx, rax
+00000001402b8645  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b864a  test     al, al
+00000001402b864c  jne      0x1402b865a
+00000001402b864e  mov      dword ptr [rbx + 0x768], 0x18
+00000001402b8658  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b865a  lea      rcx, [rip + 0x2d53bf]
+00000001402b8661  call     0x1403da410 ; uiPop+0x0
+00000001402b8666  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8668  mov      ecx, 0x19
+00000001402b866d  mov      dword ptr [rbx + 0x768], ecx
+00000001402b8673  lea      rcx, [rip + 0x2d53d6]
+00000001402b867a  call     0x1403da410 ; uiPop+0x0
+00000001402b867f  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b8681  mov      ecx, 0x19
+00000001402b8686  mov      dword ptr [rbx + 0x768], ecx
+00000001402b868c  jmp      0x1402b86cf ; CScreenCreateChar::OnCancelButtonClick+0x5df
+00000001402b868e  mov      edx, dword ptr [rbx + 0x928]
+00000001402b8694  mov      ecx, edx
+00000001402b8696  sub      ecx, 2
+00000001402b8699  je       0x1402b81d1
+00000001402b869f  sub      ecx, 2
+00000001402b86a2  je       0x1402b85e9
+00000001402b86a8  sub      ecx, 4
+00000001402b86ab  je       0x1402b81d1
+00000001402b86b1  cmp      ecx, 1
+00000001402b86b4  je       0x1402b85e9
+00000001402b86ba  lea      rcx, [rip + 0x2ead67]
+00000001402b86c1  jmp      0x1402b86ca ; CScreenCreateChar::OnCancelButtonClick+0x5da
+00000001402b86c3  lea      rcx, [rip + 0x2eade6]
+00000001402b86ca  call     0x140447180 ; SDL_Log+0x0
+00000001402b86cf  mov      rdx, qword ptr [rbp - 0x40]
+00000001402b86d3  mov      rcx, rbx
+00000001402b86d6  call     0x1402c5c30 ; CScreenCreateChar::UpdateMainPanel+0x0
+00000001402b86db  lea      rcx, [rbp - 0x28]
+00000001402b86df  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b86e4  lea      rcx, [rbp - 0x38]
+00000001402b86e8  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b86ed  mov      rcx, qword ptr [rbp - 0x10]
+00000001402b86f1  xor      rcx, rsp
+00000001402b86f4  call     0x1404f67c0 ; __security_check_cookie+0x0
+00000001402b86f9  mov      rbx, qword ptr [rsp + 0x78]
+00000001402b86fe  add      rsp, 0x60
+00000001402b8702  pop      rbp
+00000001402b8703  ret
+00000001402b8704  jae      0x1402b8687
+00000001402b8706  sub      eax, dword ptr [rax]
+00000001402b8708  push     rdi
+00000001402b8709  test     byte ptr [rbx], ch
+00000001402b870b  add      byte ptr [rdx], dl
+
+CScreenCreateChar::OnDoneButtonClick+0x839 [0x1402b91d9, 0x1402b92d9)
+00000001402b91d9  lea      rdx, [rip + 0x2e8cdf]
+00000001402b91e1  lea      rcx, [rsp + 0x70]
+00000001402b91e6  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b91eb  mov      rcx, rax
+00000001402b91ee  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b91f3  test     al, al
+00000001402b91f5  je       0x1402b9229
+00000001402b91f7  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b91fc  mov      rcx, r14
+00000001402b91ff  call     0x1402c2620 ; CScreenCreateChar::ResetSpellTables+0x0
+00000001402b9204  mov      rcx, r14
+00000001402b9207  mov      dword ptr [r14 + 0x768], 0xe
+00000001402b9212  call     0x1402b89a0 ; CScreenCreateChar::OnDoneButtonClick+0x0
+00000001402b9217  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b921c  mov      rcx, r14
+00000001402b921f  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b9224  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9229  lea      rcx, [rip + 0x2d47f0]
+00000001402b9230  call     0x1403da410 ; uiPop+0x0
+00000001402b9235  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b923a  mov      rcx, r14
+00000001402b923d  call     0x1402b68f0 ; CScreenCreateChar::LevelUp+0x0
+00000001402b9242  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9247  mov      rcx, r14
+00000001402b924a  mov      dword ptr [r14 + 0x8e0], r15d
+00000001402b9251  mov      byte ptr [r14 + 0x8e4], r12b
+00000001402b9258  call     0x1402c30a0 ; CScreenCreateChar::ShowNextSpellScreen+0x0
+00000001402b925d  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9262  mov      rcx, r14
+00000001402b9265  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b926a  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b926f  cmp      dword ptr [rip + 0x46f2ea], 2
+00000001402b9276  jne      0x1402b92b2
+00000001402b9278  lea      rdx, [rip + 0x2d4849]
+00000001402b927f  lea      rcx, [rsp + 0x70]
+00000001402b9284  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b9289  mov      rcx, rax
+00000001402b928c  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b9291  test     al, al
+00000001402b9293  je       0x1402b92b2
+00000001402b9295  lea      rcx, [rip + 0x2d482c]
+00000001402b929c  call     0x1403da410 ; uiPop+0x0
+00000001402b92a1  lea      rcx, [rip + 0x2d4778]
+00000001402b92a8  call     0x1403da620 ; uiPush+0x0
+00000001402b92ad  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b92b2  lea      rcx, [rip + 0x2d4767]
+00000001402b92b9  call     0x1403da410 ; uiPop+0x0
+00000001402b92be  cmp      byte ptr [r14 + 0x8ea], 0
+00000001402b92c6  je       0x1402b9358
+00000001402b92cc  cmp      dword ptr [r14 + 0x8f0], 0
+00000001402b92d4  jne      0x1402b9317

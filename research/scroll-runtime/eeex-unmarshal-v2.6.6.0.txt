@@ -1,0 +1,51 @@
+v2.6.6.0 EEex.dll 85a49bbe19c310ec597160952c30793de1cd89451975208969b785c9d5f69626
+Function RVA0xF2F0: exported CGameEffectList::Override_Unmarshal
+000000018000f2f0 push       rbp
+000000018000f2f2 push       rbx
+000000018000f2f3 push       rsi
+000000018000f2f4 push       rdi
+000000018000f2f5 push       r12
+000000018000f2f7 push       r15
+000000018000f2f9 lea        rbp, [rsp - 0x27]
+000000018000f2fe sub        rsp, 0xb8
+000000018000f305 mov        rax, qword ptr [rip + 0x121d34]
+000000018000f30c xor        rax, rsp
+000000018000f30f mov        qword ptr [rbp + 0xf], rax
+000000018000f313 xor        ebx, ebx
+000000018000f315 mov        qword ptr [rbp - 1], r9
+000000018000f319 mov        r12, rdx
+000000018000f31c mov        r15, rcx
+000000018000f31f mov        r10d, r8d
+000000018000f322 cmp        byte ptr [rbp + 0x7f], bl
+000000018000f325 jne        0x18000f3a8
+000000018000f32b movabs     rax, 0xaaaaaaaaaaaaaaab
+000000018000f335 mov        qword ptr [rbp + 7], 0xffffffffffffffff
+000000018000f33d mul        r10
+000000018000f340 mov        rsi, rdx
+000000018000f343 shr        rsi, 5
+000000018000f347 test       esi, esi
+000000018000f349 je         0x18000f532
+000000018000f34f nop
+000000018000f350 mov        r10, qword ptr [rip + 0x127fc1]
+000000018000f357 lea        rcx, [rbx + rbx*2]
+000000018000f35b shl        rcx, 4
+000000018000f35f lea        r9, [rbp + 7]
+000000018000f363 add        rcx, r12
+000000018000f366 mov        dword ptr [rsp + 0x20], 0xffffffff
+000000018000f36e mov        r8d, 0xffffffff
+000000018000f374 lea        rdx, [rbp + 7]
+000000018000f378 call       r10
+000000018000f37b mov        rdx, rax
+000000018000f37e mov        rcx, r15
+000000018000f381 mov        rdi, rax
+000000018000f384 call       qword ptr [rip + 0x127d1e]
+000000018000f38a mov        rdx, qword ptr [rbp - 1]
+000000018000f38e test       rdx, rdx
+000000018000f391 je         0x18000f39d
+000000018000f393 mov        r8, qword ptr [rdi]
+000000018000f396 mov        rcx, rdi
+000000018000f399 call       qword ptr [r8 + 0x30]
+000000018000f39d inc        ebx
+000000018000f39f cmp        ebx, esi
+000000018000f3a1 jb         0x18000f350
+000000018000f3a3 jmp        0x18000f532

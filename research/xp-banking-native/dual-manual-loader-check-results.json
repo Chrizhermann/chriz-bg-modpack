@@ -1,0 +1,12 @@
+{
+  "scenarios": 20,
+  "runtimes": [
+    "Lua5.1",
+    "LuaJIT2.1"
+  ],
+  "builds": [
+    "2.6",
+    "2.7"
+  ],
+  "scope": "Actual Lua loader against synthetic host/memory and real DLL export names; no native installation"
+}

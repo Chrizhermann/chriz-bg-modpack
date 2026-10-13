@@ -1,0 +1,69 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::ResetLevelUpPanel+0x1356 [0x1402c05b6, 0x1402c06e6)
+00000001402c05b6  mov      rax, qword ptr [rip + 0x3a4ae3]
+00000001402c05bd  movzx    ebx, byte ptr [rbp + 0x16]
+00000001402c05c1  mov      rcx, qword ptr [rax + 0x1090]
+00000001402c05c8  mov      rdx, r14
+00000001402c05cb  call     0x140249520 ; CRuleTables::GetThiefSkillsLevelUp+0x0
+00000001402c05d0  imul     eax, ebx
+00000001402c05d3  neg      eax
+00000001402c05d5  mov      dword ptr [r15 + 0x780], eax
+00000001402c05dc  mov      rdx, r14
+00000001402c05df  mov      rax, qword ptr [rip + 0x3a4aba]
+00000001402c05e6  mov      rcx, qword ptr [rax + 0x1090]
+00000001402c05ed  call     0x140249630 ; CRuleTables::GetThiefSkillsStart+0x0
+00000001402c05f2  add      dword ptr [r15 + 0x780], eax
+00000001402c05f9  xor      r13d, r13d
+00000001402c05fc  jmp      0x1402c0a07 ; CScreenCreateChar::ResetLevelUpPanel+0x17a7
+00000001402c0601  movzx    edx, byte ptr [rsi + 0x46]
+00000001402c0605  lea      r8, [r14 + 0x5c2]
+00000001402c060c  mov      rcx, r12
+00000001402c060f  call     0x14023b480 ; CRuleTables::GetBardSkillPoints+0x0
+00000001402c0614  mov      rcx, r13
+00000001402c0617  mov      byte ptr [r14 + 0x5bd], 0x64
+00000001402c061f  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402c0624  movzx    r8d, byte ptr [rip + 0x2cb8d2]
+00000001402c062c  lea      rcx, [rbp - 0x30]
+00000001402c0630  movzx    edx, al
+00000001402c0633  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+00000001402c0638  mov      rcx, qword ptr [rip + 0x3a4a61]
+00000001402c063f  movzx    ebx, al
+00000001402c0642  mov      rcx, qword ptr [rcx + 0x1090]
+00000001402c0649  jmp      0x1402c05c8 ; CScreenCreateChar::ResetLevelUpPanel+0x1368
+00000001402c064e  mov      rcx, r13
+00000001402c0651  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402c0656  movzx    r8d, byte ptr [rip + 0x2cb8a7]
+00000001402c065e  movzx    edx, al
+00000001402c0661  mov      rcx, rsi
+00000001402c0664  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+00000001402c0669  movzx    edi, al
+00000001402c066c  lea      r8, [r14 + 0x5c0]
+00000001402c0673  movzx    edx, dil
+00000001402c0677  mov      rcx, r12
+00000001402c067a  call     0x140246d70 ; CRuleTables::GetRangerSkillPoints+0x0
+00000001402c067f  lea      r8, [r14 + 0x59d]
+00000001402c0686  movzx    edx, dil
+00000001402c068a  mov      rcx, r12
+00000001402c068d  call     0x140246d70 ; CRuleTables::GetRangerSkillPoints+0x0
+00000001402c0692  mov      rcx, r13
+00000001402c0695  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402c069a  movzx    r8d, byte ptr [rip + 0x2cb863]
+00000001402c06a2  movzx    edx, al
+00000001402c06a5  lea      rcx, [rbp - 0x30]
+00000001402c06a9  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+00000001402c06ae  mov      rcx, qword ptr [rip + 0x3a49eb]
+00000001402c06b5  mov      rdx, r14
+00000001402c06b8  movzx    ebx, al
+00000001402c06bb  mov      rcx, qword ptr [rcx + 0x1090]
+00000001402c06c2  call     0x140249520 ; CRuleTables::GetThiefSkillsLevelUp+0x0
+00000001402c06c7  mov      edx, edi
+00000001402c06c9  sub      edx, ebx
+00000001402c06cb  imul     eax, edx
+00000001402c06ce  jmp      0x1402c05d5 ; CScreenCreateChar::ResetLevelUpPanel+0x1375
+00000001402c06d3  mov      rcx, r13
+00000001402c06d6  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402c06db  movzx    r8d, byte ptr [rip + 0x2cb82b]
+00000001402c06e3  movzx    edx, al

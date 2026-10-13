@@ -1,0 +1,82 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameEffect::operator=+0x0 [0x1401a4370, 0x1401a4490)
+00000001401a4370  mov      qword ptr [rsp + 0x18], rbx
+00000001401a4375  push     rdi
+00000001401a4376  sub      rsp, 0x30
+00000001401a437a  mov      rax, qword ptr [rip + 0x4c0657]
+00000001401a4381  xor      rax, rsp
+00000001401a4384  mov      qword ptr [rsp + 0x28], rax
+00000001401a4389  mov      eax, dword ptr [rdx + 0x10]
+00000001401a438c  lea      r8, [rdx + 0x30]
+00000001401a4390  mov      dword ptr [rcx + 0x10], eax
+00000001401a4393  mov      rbx, rdx
+00000001401a4396  mov      eax, dword ptr [rdx + 0x1c]
+00000001401a4399  mov      rdi, rcx
+00000001401a439c  mov      dword ptr [rcx + 0x1c], eax
+00000001401a439f  mov      eax, dword ptr [rdx + 0x20]
+00000001401a43a2  mov      dword ptr [rcx + 0x20], eax
+00000001401a43a5  mov      eax, dword ptr [rdx + 0x24]
+00000001401a43a8  mov      dword ptr [rcx + 0x24], eax
+00000001401a43ab  mov      eax, dword ptr [rdx + 0x28]
+00000001401a43ae  mov      dword ptr [rcx + 0x28], eax
+00000001401a43b1  mov      rax, qword ptr [rdx + 0x80]
+00000001401a43b8  mov      qword ptr [rcx + 0x80], rax
+00000001401a43bf  mov      eax, dword ptr [rdx + 0x110]
+00000001401a43c5  mov      dword ptr [rcx + 0x110], eax
+00000001401a43cb  mov      eax, dword ptr [rdx + 0x150]
+00000001401a43d1  mov      dword ptr [rcx + 0x150], eax
+00000001401a43d7  mov      eax, dword ptr [rdx + 0x114]
+00000001401a43dd  mov      dword ptr [rcx + 0x114], eax
+00000001401a43e3  mov      eax, dword ptr [rdx + 0x14]
+00000001401a43e6  mov      dword ptr [rcx + 0x14], eax
+00000001401a43e9  movzx    eax, word ptr [rdx + 0x2c]
+00000001401a43ed  mov      word ptr [rcx + 0x2c], ax
+00000001401a43f1  movzx    eax, word ptr [rdx + 0x2e]
+00000001401a43f5  mov      word ptr [rcx + 0x2e], ax
+00000001401a43f9  mov      eax, dword ptr [rdx + 0x18]
+00000001401a43fc  lea      rdx, [rsp + 0x20]
+00000001401a4401  mov      dword ptr [rcx + 0x18], eax
+00000001401a4404  add      rcx, 0x30
+00000001401a4408  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401a440d  mov      eax, dword ptr [rbx + 0x38]
+00000001401a4410  lea      rdx, [rbx + 8]
+00000001401a4414  mov      dword ptr [rdi + 0x38], eax
+00000001401a4417  mov      rcx, rdi
+00000001401a441a  mov      eax, dword ptr [rbx + 0x3c]
+00000001401a441d  mov      dword ptr [rdi + 0x3c], eax
+00000001401a4420  mov      eax, dword ptr [rbx + 0x40]
+00000001401a4423  mov      dword ptr [rdi + 0x40], eax
+00000001401a4426  mov      eax, dword ptr [rbx + 0x44]
+00000001401a4429  mov      dword ptr [rdi + 0x44], eax
+00000001401a442c  mov      eax, dword ptr [rbx + 0x48]
+00000001401a442f  mov      dword ptr [rdi + 0x48], eax
+00000001401a4432  mov      eax, dword ptr [rbx + 0x120]
+00000001401a4438  mov      dword ptr [rdi + 0x120], eax
+00000001401a443e  mov      eax, dword ptr [rbx + 0x124]
+00000001401a4444  mov      dword ptr [rdi + 0x124], eax
+00000001401a444a  mov      eax, dword ptr [rbx + 0x128]
+00000001401a4450  mov      dword ptr [rdi + 0x128], eax
+00000001401a4456  mov      eax, dword ptr [rbx + 0x118]
+00000001401a445c  mov      dword ptr [rdi + 0x118], eax
+00000001401a4462  xor      eax, eax
+00000001401a4464  test     rbx, rbx
+00000001401a4467  cmove    rdx, rax
+00000001401a446b  call     0x1401dcaf0 ; CGameEffect::CopyFromBase+0x0
+00000001401a4470  mov      rcx, qword ptr [rsp + 0x28]
+00000001401a4475  xor      rcx, rsp
+00000001401a4478  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401a447d  mov      rbx, qword ptr [rsp + 0x50]
+00000001401a4482  add      rsp, 0x30
+00000001401a4486  pop      rdi
+00000001401a4487  ret
+00000001401a4488  int3
+00000001401a4489  int3
+00000001401a448a  int3
+00000001401a448b  int3
+00000001401a448c  int3
+00000001401a448d  int3
+00000001401a448e  int3
+00000001401a448f  int3

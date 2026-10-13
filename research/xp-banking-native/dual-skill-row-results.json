@@ -1,0 +1,734 @@
+[
+  {
+    "version": "2.6.6.0",
+    "cases": 60,
+    "results": [
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 300
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "cases": 60,
+    "results": [
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 100,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": -1,
+        "default": 0,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 0,
+        "default": 75,
+        "bonus": 300,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": -30,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 0,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 25,
+        "displayCap": 300
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 180
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 250
+      },
+      {
+        "percentage": 37,
+        "default": -1,
+        "bonus": 300,
+        "displayCap": 300
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "2.6": {
+    "native_membership_boundaries": 12,
+    "xp_unchanged": true
+  },
+  "2.7": {
+    "native_membership_boundaries": 12,
+    "xp_unchanged": true
+  }
+}

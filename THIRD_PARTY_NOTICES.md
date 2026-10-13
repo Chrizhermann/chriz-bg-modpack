@@ -21,6 +21,16 @@ from the official archive is included in the release as `WEIDU-COPYING.txt`.
 
 WeiDU is not covered by this repository's MIT License.
 
+## Scroll policy helper
+
+The Windows `CBMSPolicy.exe` helper bundles Python 3.11.9 and was built with
+PyInstaller 6.22.3. Their license notices accompany it in
+`chriz-bg-modpack/scroll-casting/tools/Python-LICENSE.txt` and
+`chriz-bg-modpack/scroll-casting/tools/PyInstaller-COPYING.txt`.
+Those third-party portions are governed by their included licenses.
+The helper's first-party source is in `research/scroll-runtime`; its build
+record is `chriz-bg-modpack/scroll-casting/tools/CBMSPolicy-build.json`.
+
 ## Compatibility research and factual attribution
 
 This project interoperates with user-installed mods; it does not redistribute their

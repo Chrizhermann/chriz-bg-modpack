@@ -1,0 +1,287 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CDerivedStats::GetWizardLevelCast+0x0 [0x140153430, 0x1401534d0)
+0000000140153430  push     rbx
+0000000140153432  sub      rsp, 0x20
+0000000140153436  movzx    eax, dl
+0000000140153439  mov      rbx, rcx
+000000014015343c  dec      eax
+000000014015343e  cmp      eax, 0x14
+0000000140153441  ja       0x140153474
+0000000140153443  lea      rcx, [rip - 0x15344a]
+000000014015344a  cdqe
+000000014015344c  movzx    eax, byte ptr [rcx + rax + 0x1534b0]
+0000000140153454  mov      r8d, dword ptr [rcx + rax*4 + 0x1534a4]
+000000014015345c  add      r8, rcx
+000000014015345f  jmp      r8
+0000000140153462  movzx    r8d, byte ptr [rip + 0x439ab4]
+000000014015346a  jmp      0x14015347e ; CDerivedStats::GetWizardLevelCast+0x4e
+000000014015346c  mov      al, 1
+000000014015346e  add      rsp, 0x20
+0000000140153472  pop      rbx
+0000000140153473  ret
+0000000140153474  mov      dl, 1
+0000000140153476  movzx    r8d, byte ptr [rip + 0x439a9c]
+000000014015347e  lea      r9, [rsp + 0x40]
+0000000140153483  mov      rcx, rbx
+0000000140153486  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+000000014015348b  mov      rax, qword ptr [rsp + 0x40]
+0000000140153490  movzx    ecx, byte ptr [rbx + 0xd4]
+0000000140153497  add      cl, byte ptr [rax]
+0000000140153499  movzx    eax, cl
+000000014015349c  add      rsp, 0x20
+00000001401534a0  pop      rbx
+00000001401534a1  ret
+00000001401534a2  nop
+00000001401534a4  jbe      0x1401534da
+00000001401534a6  adc      eax, 0x15346c00
+00000001401534ab  add      byte ptr [rdx + 0x34], ah
+00000001401534ae  adc      eax, 0x1010000
+00000001401534b3  add      dword ptr [rdx], eax
+00000001401534b5  add      dword ptr [rax], eax
+00000001401534b7  add      dword ptr [rcx], eax
+00000001401534b9  add      byte ptr [rcx], al
+00000001401534bb  add      dword ptr [rax], eax
+00000001401534bd  add      byte ptr [rcx], al
+00000001401534bf  add      dword ptr [rax], eax
+00000001401534c1  add      dword ptr [rax], eax
+00000001401534c3  add      dword ptr [rcx], eax
+00000001401534c5  int3
+00000001401534c6  int3
+00000001401534c7  int3
+00000001401534c8  int3
+00000001401534c9  int3
+00000001401534ca  int3
+00000001401534cb  int3
+00000001401534cc  int3
+00000001401534cd  int3
+00000001401534ce  int3
+00000001401534cf  int3
+
+CDerivedStats::GetPriestLevelCast+0x0 [0x140152f40, 0x140153130)
+0000000140152f40  mov      qword ptr [rsp + 8], rbx
+0000000140152f45  push     rbp
+0000000140152f46  mov      rbp, rsp
+0000000140152f49  sub      rsp, 0x20
+0000000140152f4d  movzx    eax, dl
+0000000140152f50  mov      rbx, rcx
+0000000140152f53  dec      eax
+0000000140152f55  cmp      eax, 0x14
+0000000140152f58  ja       0x1401530a5
+0000000140152f5e  lea      rcx, [rip - 0x152f65]
+0000000140152f65  cdqe
+0000000140152f67  mov      r8d, dword ptr [rcx + rax*4 + 0x1530d8]
+0000000140152f6f  add      r8, rcx
+0000000140152f72  jmp      r8
+0000000140152f75  movzx    r8d, dl
+0000000140152f79  jmp      0x1401530af ; CDerivedStats::GetPriestLevelCast+0x16f
+0000000140152f7e  movzx    r8d, byte ptr [rip + 0x439f9e]
+0000000140152f86  jmp      0x1401530af ; CDerivedStats::GetPriestLevelCast+0x16f
+0000000140152f8b  cmp      dword ptr [rip + 0x5d7a96], 2
+0000000140152f92  lea      r9, [rbp + 0x20]
+0000000140152f96  mov      dword ptr [rbp + 0x18], 1
+0000000140152f9d  movzx    r8d, dl
+0000000140152fa1  mov      rcx, rbx
+0000000140152fa4  jne      0x140152fdb
+0000000140152fa6  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152fab  mov      rax, qword ptr [rbp + 0x20]
+0000000140152faf  lea      rdx, [rbp + 0x18]
+0000000140152fb3  movzx    ecx, byte ptr [rax]
+0000000140152fb6  movsx    eax, word ptr [rbx + 0xd6]
+0000000140152fbd  add      ecx, eax
+0000000140152fbf  mov      dword ptr [rbp + 0x20], ecx
+0000000140152fc2  lea      rcx, [rbp + 0x20]
+0000000140152fc6  call     0x140407bb0 ; max+0x0
+0000000140152fcb  mov      ecx, eax
+0000000140152fcd  movzx    eax, cl
+0000000140152fd0  mov      rbx, qword ptr [rsp + 0x30]
+0000000140152fd5  add      rsp, 0x20
+0000000140152fd9  pop      rbp
+0000000140152fda  ret
+0000000140152fdb  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152fe0  mov      rax, qword ptr [rbp + 0x20]
+0000000140152fe4  lea      rcx, [rbp + 0x20]
+0000000140152fe8  movsx    edx, word ptr [rbx + 0xd6]
+0000000140152fef  movzx    eax, byte ptr [rax]
+0000000140152ff2  add      eax, -7
+0000000140152ff5  add      eax, edx
+0000000140152ff7  lea      rdx, [rbp + 0x18]
+0000000140152ffb  mov      dword ptr [rbp + 0x20], eax
+0000000140152ffe  call     0x140407bb0 ; max+0x0
+0000000140153003  movzx    ecx, al
+0000000140153006  mov      rbx, qword ptr [rsp + 0x30]
+000000014015300b  add      rsp, 0x20
+000000014015300f  pop      rbp
+0000000140153010  ret
+0000000140153011  cmp      dword ptr [rip + 0x5d7a10], 2
+0000000140153018  lea      r9, [rbp + 0x20]
+000000014015301c  mov      dword ptr [rbp + 0x18], 1
+0000000140153023  movzx    r8d, dl
+0000000140153027  mov      rcx, rbx
+000000014015302a  jne      0x14015305f
+000000014015302c  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140153031  mov      rax, qword ptr [rbp + 0x20]
+0000000140153035  movsx    edx, word ptr [rbx + 0xd6]
+000000014015303c  movzx    ecx, byte ptr [rax]
+000000014015303f  add      edx, ecx
+0000000140153041  lea      rcx, [rbp + 0x20]
+0000000140153045  mov      dword ptr [rbp + 0x20], edx
+0000000140153048  lea      rdx, [rbp + 0x18]
+000000014015304c  call     0x140407bb0 ; max+0x0
+0000000140153051  movzx    ecx, al
+0000000140153054  mov      rbx, qword ptr [rsp + 0x30]
+0000000140153059  add      rsp, 0x20
+000000014015305d  pop      rbp
+000000014015305e  ret
+000000014015305f  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140153064  mov      rax, qword ptr [rbp + 0x20]
+0000000140153068  lea      rcx, [rbp + 0x20]
+000000014015306c  movsx    edx, word ptr [rbx + 0xd6]
+0000000140153073  movzx    eax, byte ptr [rax]
+0000000140153076  add      eax, -8
+0000000140153079  add      eax, edx
+000000014015307b  lea      rdx, [rbp + 0x18]
+000000014015307f  mov      dword ptr [rbp + 0x20], eax
+0000000140153082  call     0x140407bb0 ; max+0x0
+0000000140153087  movzx    ecx, al
+000000014015308a  mov      rbx, qword ptr [rsp + 0x30]
+000000014015308f  add      rsp, 0x20
+0000000140153093  pop      rbp
+0000000140153094  ret
+0000000140153095  mov      cl, 1
+0000000140153097  movzx    eax, cl
+000000014015309a  mov      rbx, qword ptr [rsp + 0x30]
+000000014015309f  add      rsp, 0x20
+00000001401530a3  pop      rbp
+00000001401530a4  ret
+00000001401530a5  mov      dl, 3
+00000001401530a7  movzx    r8d, byte ptr [rip + 0x439e6d]
+00000001401530af  lea      r9, [rbp + 0x20]
+00000001401530b3  mov      rcx, rbx
+00000001401530b6  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+00000001401530bb  mov      rax, qword ptr [rbp + 0x20]
+00000001401530bf  movzx    ecx, byte ptr [rbx + 0xd6]
+00000001401530c6  mov      rbx, qword ptr [rsp + 0x30]
+00000001401530cb  add      cl, byte ptr [rax]
+00000001401530cd  movzx    eax, cl
+00000001401530d0  add      rsp, 0x20
+00000001401530d4  pop      rbp
+00000001401530d5  ret
+00000001401530d6  nop
+00000001401530d8  xchg     ebp, eax
+00000001401530d9  xor      byte ptr [rip + 0x15309500], dl
+00000001401530df  add      byte ptr [rbp + 0x2f], dh
+00000001401530e2  adc      eax, 0x15309500
+00000001401530e7  add      byte ptr [rbp + 0x11001530], dl
+00000001401530ed  xor      byte ptr [rip + 0x15309500], dl
+00000001401530f3  add      byte ptr [rdi - 0x6affead0], ah
+00000001401530f9  xor      byte ptr [rip + 0x15309500], dl
+00000001401530ff  add      byte ptr [rbp + 0x2f], dh
+0000000140153102  adc      eax, 0x152f8b00
+0000000140153107  add      byte ptr [rbp - 0x58ffead0], dl
+000000014015310d  xor      byte ptr [rip + 0x1530a700], dl
+0000000140153113  add      byte ptr [rsi + 0x2f], bh
+0000000140153116  adc      eax, 0x1530a700
+000000014015311b  add      byte ptr [rdi - 0x6affead0], ah
+0000000140153121  xor      byte ptr [rip + 0x15309500], dl
+0000000140153127  add      byte ptr [rbp + 0x2f], dh
+000000014015312a  adc      eax, 0xcccccc00
+000000014015312f  int3
+
+CItem::GetAbilityEffect+0x0 [0x1401fb410, 0x1401fb580)
+00000001401fb410  push     rbx
+00000001401fb412  push     rbp
+00000001401fb413  push     rsi
+00000001401fb414  push     rdi
+00000001401fb415  push     r14
+00000001401fb417  push     r15
+00000001401fb419  sub      rsp, 0x58
+00000001401fb41d  mov      rax, qword ptr [rip + 0x4695b4]
+00000001401fb424  xor      rax, rsp
+00000001401fb427  mov      qword ptr [rsp + 0x48], rax
+00000001401fb42c  lea      r15, [rcx + 0x10]
+00000001401fb430  mov      ebp, edx
+00000001401fb432  mov      rdi, rcx
+00000001401fb435  lea      rdx, [rip + 0x3f0371]
+00000001401fb43c  mov      rcx, r15
+00000001401fb43f  mov      rsi, r9
+00000001401fb442  mov      r14d, r8d
+00000001401fb445  xor      ebx, ebx
+00000001401fb447  call     0x1403ffa80 ; CResRef::operator==+0x0
+00000001401fb44c  test     eax, eax
+00000001401fb44e  jne      0x1401fb563
+00000001401fb454  mov      rcx, qword ptr [rdi + 8]
+00000001401fb458  test     rcx, rcx
+00000001401fb45b  je       0x1401fb563
+00000001401fb461  call     0x1403f6d50 ; CRes::Demand+0x0
+00000001401fb466  mov      rcx, qword ptr [rdi + 8]
+00000001401fb46a  mov      edx, ebp
+00000001401fb46c  call     0x140114990 ; CResItem::GetAbilityEffectNo+0x0
+00000001401fb471  cmp      r14d, eax
+00000001401fb474  jl       0x1401fb47d
+00000001401fb476  xor      eax, eax
+00000001401fb478  jmp      0x1401fb566 ; CItem::GetAbilityEffect+0x156
+00000001401fb47d  mov      rcx, qword ptr [rdi + 8]
+00000001401fb481  mov      r8d, r14d
+00000001401fb484  mov      edx, ebp
+00000001401fb486  mov      qword ptr [rsp + 0x30], 0xffffffffffffffff
+00000001401fb48f  mov      qword ptr [rsp + 0x38], 0xffffffffffffffff
+00000001401fb498  call     0x1401148e0 ; CResItem::GetAbilityEffect+0x0
+00000001401fb49d  mov      rcx, rax
+00000001401fb4a0  mov      dword ptr [rsp + 0x20], 0xffffffff
+00000001401fb4a8  lea      r9, [rsp + 0x30]
+00000001401fb4ad  mov      r8d, 0xffffffff
+00000001401fb4b3  lea      rdx, [rsp + 0x38]
+00000001401fb4b8  call     0x1401de3d0 ; CGameEffect::DecodeEffect+0x0
+00000001401fb4bd  mov      rbx, rax
+00000001401fb4c0  test     rax, rax
+00000001401fb4c3  je       0x1401fb563
+00000001401fb4c9  mov      edx, ebp
+00000001401fb4cb  mov      rcx, rdi
+00000001401fb4ce  call     0x1401fb330 ; CItem::GetAbility+0x0
+00000001401fb4d3  mov      rdi, rax
+00000001401fb4d6  test     rax, rax
+00000001401fb4d9  je       0x1401fb563
+00000001401fb4df  movzx    ecx, byte ptr [rax + 0x17]
+00000001401fb4e3  lea      rdx, [rsp + 0x40]
+00000001401fb4e8  mov      dword ptr [rbx + 0x4c], ecx
+00000001401fb4eb  mov      r8, r15
+00000001401fb4ee  movzx    ecx, byte ptr [rax + 0x19]
+00000001401fb4f2  mov      dword ptr [rbx + 0xd0], ecx
+00000001401fb4f8  lea      rcx, [rbx + 0x94]
+00000001401fb4ff  mov      dword ptr [rbx + 0x90], 2
+00000001401fb509  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401fb50e  mov      eax, dword ptr [rdi + 0x26]
+00000001401fb511  mov      dword ptr [rbx + 0x9c], eax
+00000001401fb517  mov      dword ptr [rbx + 0xc8], 0xa
+00000001401fb521  test     rsi, rsi
+00000001401fb524  je       0x1401fb563
+00000001401fb526  mov      rax, qword ptr [rsi]
+00000001401fb529  mov      rcx, rsi
+00000001401fb52c  call     qword ptr [rax + 8]
+00000001401fb52f  cmp      al, byte ptr [rip + 0x39e1ea]
+00000001401fb535  jne      0x1401fb563
+00000001401fb537  cmp      dword ptr [rbx + 0x4c], 0
+00000001401fb53b  je       0x1401fb563
+00000001401fb53d  mov      rax, qword ptr [rip + 0x46c004]
+00000001401fb544  movzx    edx, word ptr [rsi + 0x79e]
+00000001401fb54b  mov      rcx, qword ptr [rax + 0x1090]
+00000001401fb552  call     0x14024adc0 ; CRuleTables::MapCharacterSpecializationToSchool+0x0
+00000001401fb557  movzx    eax, al
+00000001401fb55a  cmp      eax, dword ptr [rbx + 0x4c]
+00000001401fb55d  jne      0x1401fb563
+00000001401fb55f  add      dword ptr [rbx + 0x44], -2
+00000001401fb563  mov      rax, rbx
+00000001401fb566  mov      rcx, qword ptr [rsp + 0x48]
+00000001401fb56b  xor      rcx, rsp
+00000001401fb56e  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401fb573  add      rsp, 0x58
+00000001401fb577  pop      r15
+00000001401fb579  pop      r14
+00000001401fb57b  pop      rdi
+00000001401fb57c  pop      rsi
+00000001401fb57d  pop      rbp
+00000001401fb57e  pop      rbx
+00000001401fb57f  ret

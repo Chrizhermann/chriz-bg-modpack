@@ -1,0 +1,82 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetHPCONBonus+0x0 [0x140240530, 0x140240650)
+0000000140240530  mov      qword ptr [rsp + 0x10], rbx
+0000000140240535  mov      qword ptr [rsp + 0x18], rsi
+000000014024053a  push     rdi
+000000014024053b  sub      rsp, 0x30
+000000014024053f  mov      rax, qword ptr [rip + 0x41b5ca]
+0000000140240546  mov      rdi, r9
+0000000140240549  mov      qword ptr [rsp + 0x20], rax
+000000014024054e  movzx    ebx, r8b
+0000000140240552  mov      qword ptr [rsp + 0x40], rax
+0000000140240557  mov      rsi, rcx
+000000014024055a  movzx    eax, dl
+000000014024055d  dec      eax
+000000014024055f  cmp      eax, 0x14
+0000000140240562  ja       0x14024058a
+0000000140240564  lea      rcx, [rip - 0x24056b]
+000000014024056b  cdqe
+000000014024056d  movzx    eax, byte ptr [rcx + rax + 0x240630]
+0000000140240575  mov      edx, dword ptr [rcx + rax*4 + 0x240628]
+000000014024057c  add      rdx, rcx
+000000014024057f  jmp      rdx
+0000000140240581  lea      rdx, [rip + 0x44c858]
+0000000140240588  jmp      0x140240591 ; CRuleTables::GetHPCONBonus+0x61
+000000014024058a  lea      rdx, [rip + 0x44ca1f]
+0000000140240591  lea      rcx, [rsp + 0x20]
+0000000140240596  call     0x1403fce30 ; CString::operator=+0x0
+000000014024059b  movzx    r8d, bl
+000000014024059f  lea      rdx, [rip + 0x3c67aa]
+00000001402405a6  lea      rcx, [rsp + 0x40]
+00000001402405ab  call     0x1403fe080 ; CString::Format+0x0
+00000001402405b0  lea      r8, [rsp + 0x40]
+00000001402405b5  lea      rdx, [rsp + 0x20]
+00000001402405ba  lea      rcx, [rsi + 0x5b0]
+00000001402405c1  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402405c6  mov      r8, rdi
+00000001402405c9  lea      rdx, [rip + 0x3c6780]
+00000001402405d0  mov      rcx, qword ptr [rax]
+00000001402405d3  call     0x1400580f0 ; sscanf+0x0
+00000001402405d8  lea      r8, [rsp + 0x40]
+00000001402405dd  lea      rdx, [rip + 0x44c9d4]
+00000001402405e4  lea      rcx, [rsi + 0x5b0]
+00000001402405eb  call     0x1401151c0 ; C2DArray::GetAt+0x0
+00000001402405f0  mov      r8, qword ptr [rsp + 0x60]
+00000001402405f5  lea      rdx, [rip + 0x3c6754]
+00000001402405fc  mov      rcx, qword ptr [rax]
+00000001402405ff  call     0x1400580f0 ; sscanf+0x0
+0000000140240604  lea      rcx, [rsp + 0x40]
+0000000140240609  call     0x1403fce00 ; CString::~CString+0x0
+000000014024060e  lea      rcx, [rsp + 0x20]
+0000000140240613  call     0x1403fce00 ; CString::~CString+0x0
+0000000140240618  mov      rbx, qword ptr [rsp + 0x48]
+000000014024061d  mov      rsi, qword ptr [rsp + 0x50]
+0000000140240622  add      rsp, 0x30
+0000000140240626  pop      rdi
+0000000140240627  ret
+0000000140240628  mov      al, byte ptr [rip + 0x5810024]
+000000014024062e  and      al, 0
+0000000140240630  add      byte ptr [rcx], al
+0000000140240632  add      byte ptr [rax], al
+0000000140240634  add      byte ptr [rcx], al
+0000000140240636  add      dword ptr [rcx], eax
+0000000140240638  add      dword ptr [rcx], eax
+000000014024063a  add      byte ptr [rcx], al
+000000014024063c  add      byte ptr [rax], al
+000000014024063e  add      byte ptr [rcx], al
+0000000140240640  add      dword ptr [rcx], eax
+0000000140240642  add      byte ptr [rax], al
+0000000140240644  add      ah, cl
+0000000140240646  int3
+0000000140240647  int3
+0000000140240648  int3
+0000000140240649  int3
+000000014024064a  int3
+000000014024064b  int3
+000000014024064c  int3
+000000014024064d  int3
+000000014024064e  int3
+000000014024064f  int3

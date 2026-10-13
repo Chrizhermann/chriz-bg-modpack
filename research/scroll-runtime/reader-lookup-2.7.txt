@@ -1,0 +1,139 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameObjectArray::GetDeny+0x0 [0x140276700, 0x140276760)
+0000000140276700  mov      qword ptr [rdx], 0
+0000000140276707  cmp      ecx, -1
+000000014027670a  je       0x140276755
+000000014027670c  mov      eax, ecx
+000000014027670e  mov      r8d, 0x7fff
+0000000140276714  sar      eax, 0x10
+0000000140276717  and      ax, r8w
+000000014027671b  cmp      word ptr [rip + 0x4191d2], ax
+0000000140276722  jl       0x140276755
+0000000140276724  test     cx, cx
+0000000140276727  js       0x140276755
+0000000140276729  cmp      word ptr [rip + 0x4191c8], cx
+0000000140276730  jle      0x140276755
+0000000140276732  movzx    eax, ax
+0000000140276735  lea      r8, [rip + 0x4191d4]
+000000014027673c  shl      rax, 4
+0000000140276740  cmp      word ptr [rax + r8], cx
+0000000140276745  je       0x14027674a
+0000000140276747  mov      al, 2
+0000000140276749  ret
+000000014027674a  mov      rax, qword ptr [rax + r8 + 8]
+000000014027674f  mov      qword ptr [rdx], rax
+0000000140276752  xor      al, al
+0000000140276754  ret
+0000000140276755  mov      al, 3
+0000000140276757  ret
+0000000140276758  int3
+0000000140276759  int3
+000000014027675a  int3
+000000014027675b  int3
+000000014027675c  int3
+000000014027675d  int3
+000000014027675e  int3
+000000014027675f  int3
+
+CDerivedStats::GetMaximumLevel+0x0 [0x140152de0, 0x140152e70)
+0000000140152de0  movzx    eax, dl
+0000000140152de3  mov      r8, rcx
+0000000140152de6  dec      eax
+0000000140152de8  cmp      eax, 0x14
+0000000140152deb  ja       0x140152e45
+0000000140152ded  lea      rcx, [rip - 0x152df4]
+0000000140152df4  cdqe
+0000000140152df6  movzx    eax, byte ptr [rcx + rax + 0x152e58]
+0000000140152dfe  mov      edx, dword ptr [rcx + rax*4 + 0x152e4c]
+0000000140152e05  add      rdx, rcx
+0000000140152e08  jmp      rdx
+0000000140152e0a  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e0f  ret
+0000000140152e10  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e15  movzx    ecx, word ptr [r8 + 0x48]
+0000000140152e1a  cmp      ax, cx
+0000000140152e1d  cmovae   cx, ax
+0000000140152e21  movzx    eax, cl
+0000000140152e24  ret
+0000000140152e25  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e2a  movzx    ecx, word ptr [r8 + 0x4a]
+0000000140152e2f  cmp      word ptr [r8 + 0x48], cx
+0000000140152e34  cmovae   cx, word ptr [r8 + 0x48]
+0000000140152e3a  cmp      ax, cx
+0000000140152e3d  cmovae   cx, ax
+0000000140152e41  movzx    eax, cl
+0000000140152e44  ret
+0000000140152e45  movzx    eax, byte ptr [r8 + 0x46]
+0000000140152e4a  ret
+0000000140152e4b  nop
+0000000140152e4c  or       ch, byte ptr [rsi]
+0000000140152e4e  adc      eax, 0x152e1000
+0000000140152e53  add      byte ptr [rip + 0x152e], ah
+0000000140152e59  add      byte ptr [rax], al
+0000000140152e5b  add      byte ptr [rax], al
+0000000140152e5d  add      byte ptr [rcx], al
+0000000140152e5f  add      dword ptr [rcx], eax
+0000000140152e61  add      al, byte ptr [rax]
+0000000140152e63  add      byte ptr [rcx], al
+0000000140152e65  add      dword ptr [rcx], eax
+0000000140152e67  add      dword ptr [rdx], eax
+0000000140152e69  add      dword ptr [rax], eax
+0000000140152e6b  add      byte ptr [rax], al
+0000000140152e6d  int3
+0000000140152e6e  int3
+0000000140152e6f  int3
+
+CGameSprite::GetKitMask+0x0 [0x14039cf10, 0x14039cfc0)
+000000014039cf10  sub      rsp, 0x28
+000000014039cf14  movzx    eax, word ptr [rcx + 0x79e]
+000000014039cf1b  movzx    edx, word ptr [rcx + 0x79c]
+000000014039cf22  shl      edx, 0x10
+000000014039cf25  or       edx, eax
+000000014039cf27  test     edx, 0xffffbfff
+000000014039cf2d  setne    cl
+000000014039cf30  bt       edx, 0xe
+000000014039cf34  setb     al
+000000014039cf37  test     al, cl
+000000014039cf39  je       0x14039cfb1
+000000014039cf3b  mov      rax, qword ptr [rip + 0x2ca606]
+000000014039cf42  btr      edx, 0xe
+000000014039cf46  movsx    r9d, word ptr [rip + 0x20128e]
+000000014039cf4e  mov      r8, qword ptr [rax + 0x1090]
+000000014039cf55  movsx    ecx, word ptr [r8 + 0x2640]
+000000014039cf5d  cmp      r9d, ecx
+000000014039cf60  jge      0x14039cf8d
+000000014039cf62  movsx    eax, word ptr [r8 + 0x2642]
+000000014039cf6a  cmp      edx, eax
+000000014039cf6c  jge      0x14039cf8d
+000000014039cf6e  test     r9d, r9d
+000000014039cf71  js       0x14039cf8d
+000000014039cf73  test     edx, edx
+000000014039cf75  js       0x14039cf8d
+000000014039cf77  mov      rax, qword ptr [r8 + 0x2630]
+000000014039cf7e  imul     ecx, edx
+000000014039cf81  add      ecx, r9d
+000000014039cf84  movsxd   rcx, ecx
+000000014039cf87  lea      rcx, [rax + rcx*8]
+000000014039cf8b  jmp      0x14039cf94 ; CGameSprite::GetKitMask+0x84
+000000014039cf8d  lea      rcx, [r8 + 0x2638]
+000000014039cf94  mov      rcx, qword ptr [rcx]
+000000014039cf97  lea      r8, [rsp + 0x30]
+000000014039cf9c  lea      rdx, [rip + 0x26453d]
+000000014039cfa3  call     0x140058110 ; sscanf+0x0
+000000014039cfa8  mov      eax, dword ptr [rsp + 0x30]
+000000014039cfac  add      rsp, 0x28
+000000014039cfb0  ret
+000000014039cfb1  mov      eax, edx
+000000014039cfb3  add      rsp, 0x28
+000000014039cfb7  ret
+000000014039cfb8  int3
+000000014039cfb9  int3
+000000014039cfba  int3
+000000014039cfbb  int3
+000000014039cfbc  int3
+000000014039cfbd  int3
+000000014039cfbe  int3
+000000014039cfbf  int3

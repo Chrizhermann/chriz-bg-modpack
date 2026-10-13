@@ -3,13 +3,19 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.10`
+**Release:** `v0.2.0-alpha.11`
 
-This release adds independently selectable **235**, Baeloth's spells-known
+Alpha.11 adds independent Fade/Evandra first-recruitment XP catch-up
+(**237/238**) and replaces **430** with reader-level scroll casting. It also
+ships optional, experimental campaign XP banking (**650/651**), off by default.
+See the [release notes](docs/releases/v0.2.0-alpha.11.md),
+[recruitment XP](docs/recruitment-xp.md), [scroll casting](docs/scroll-casting.md)
+and the [banking guide](docs/campaign-xp-banking.md).
+
+Alpha.10 added independently selectable **235**, Baeloth's spells-known
 rebalance for the planned Challenge Mode, and **236**, Edwin's Red Wizard slot
 and amulet correction. Baeloth is not an unconditional collection default.
 All alpha.8 components remain available. See the
-[release notes](docs/releases/v0.2.0-alpha.10.md),
 [Baeloth guide](docs/baeloth-spellbook.md) and
 [Edwin guide](docs/edwin-redwizard.md).
 
@@ -58,9 +64,11 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
 | 235 | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
 | 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
+| 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
+| 238 | `cbm_evandra_recruitment_xp` | Evandra: one-time SoA recruitment XP catch-up, capped at 1.25m |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
-| 430 | `cbm_uai_caster_level` | Give non-caster Use Any Item scroll use a fair fixed caster level |
+| 430 | `cbm_uai_caster_level` | Reader-level scroll casting; half the highest active class level when no applicable caster level exists; Windows EEex |
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
@@ -68,11 +76,17 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
 | 630 | `cbm_unidentified_appearance` | Generic artwork until identification; requires Windows EEex |
 | 640 | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI/Dragonspear UI on EE 2.7 |
+| 650 (experimental) | `cbm_campaign_xp` | Retain excess XP beyond BG1/SoD caps; unbanked duals use vanilla XP accounting; EET and Windows EEex |
+| 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650 |
+| 660 (unreleased) | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
 
 ## Collection choices
+
+**650/651** are optional, experimental and off by default. This release makes
+no collection selection changes.
 
 **611** is the approved next CEBG default; **610** retains its smooth
 protagonist-XP curve as a mutually exclusive alternative. **224/225** are
@@ -152,7 +166,7 @@ installation, progression and compatibility details.
   `v1.3.1` release before this component so the Dwarven Defender Shield Bash grant is
   present.
 - Install `400`, `410`, and `430` after the spell/item systems they refine. In
-  particular, `430` belongs after the relevant Use Any Item scroll-caster-level
+  particular, `430` belongs after all spell/item providers and any scroll-caster-level
   changes.
 - Install `220`-`223` after kit overhauls and companion/progression-table changes,
   using them instead of another class conversion or respec component for the
@@ -168,6 +182,9 @@ installation, progression and compatibility details.
   Rewards round up to 10 XP by default. Edit `override/CBMUXPC.lua` and restart
   to adjust the anchors, multipliers or rounding. See the included
   [utility-XP guide](docs/utility-xp.md) for values, class coverage and limits.
+- Install `660` after mods that change Degrodel's dialog. It finds the helm hand-in
+  by what it does and skips with a reason, changing nothing, when that is
+  ambiguous. See the [Degrodel guide](docs/degrodel-fight.md).
 
 ## Testing status
 

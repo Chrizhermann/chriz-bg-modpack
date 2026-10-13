@@ -1,0 +1,671 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+C2DArray::Load+0x0 [0x140115350, 0x140115980)
+0000000140115350  push     rbp
+0000000140115352  push     rbx
+0000000140115353  push     rsi
+0000000140115354  push     rdi
+0000000140115355  push     r12
+0000000140115357  push     r14
+0000000140115359  push     r15
+000000014011535b  mov      rbp, rsp
+000000014011535e  sub      rsp, 0x50
+0000000140115362  mov      rax, qword ptr [rcx + 0x10]
+0000000140115366  mov      r15, rdx
+0000000140115369  mov      r14, rcx
+000000014011536c  test     rax, rax
+000000014011536f  je       0x1401153a7
+0000000140115371  mov      rbx, qword ptr [rax - 8]
+0000000140115375  lea      rsi, [rax - 8]
+0000000140115379  lea      rdi, [rax + rbx*8]
+000000014011537d  test     rbx, rbx
+0000000140115380  je       0x140115397
+0000000140115382  sub      rdi, 8
+0000000140115386  mov      rcx, rdi
+0000000140115389  call     0x1403fce00 ; CString::~CString+0x0
+000000014011538e  sub      rbx, 1
+0000000140115392  jne      0x140115382
+0000000140115394  mov      rbx, qword ptr [rsi]
+0000000140115397  lea      rdx, [rbx*8 + 8]
+000000014011539f  mov      rcx, rsi
+00000001401153a2  call     0x1404f67ec ; operator_delete[]+0x0
+00000001401153a7  mov      rax, qword ptr [r14 + 0x18]
+00000001401153ab  test     rax, rax
+00000001401153ae  je       0x1401153e6
+00000001401153b0  mov      rbx, qword ptr [rax - 8]
+00000001401153b4  lea      rsi, [rax - 8]
+00000001401153b8  lea      rdi, [rax + rbx*8]
+00000001401153bc  test     rbx, rbx
+00000001401153bf  je       0x1401153d6
+00000001401153c1  sub      rdi, 8
+00000001401153c5  mov      rcx, rdi
+00000001401153c8  call     0x1403fce00 ; CString::~CString+0x0
+00000001401153cd  sub      rbx, 1
+00000001401153d1  jne      0x1401153c1
+00000001401153d3  mov      rbx, qword ptr [rsi]
+00000001401153d6  lea      rdx, [rbx*8 + 8]
+00000001401153de  mov      rcx, rsi
+00000001401153e1  call     0x1404f67ec ; operator_delete[]+0x0
+00000001401153e6  mov      rax, qword ptr [r14 + 0x20]
+00000001401153ea  test     rax, rax
+00000001401153ed  je       0x140115425
+00000001401153ef  mov      rbx, qword ptr [rax - 8]
+00000001401153f3  lea      rsi, [rax - 8]
+00000001401153f7  lea      rdi, [rax + rbx*8]
+00000001401153fb  test     rbx, rbx
+00000001401153fe  je       0x140115415
+0000000140115400  sub      rdi, 8
+0000000140115404  mov      rcx, rdi
+0000000140115407  call     0x1403fce00 ; CString::~CString+0x0
+000000014011540c  sub      rbx, 1
+0000000140115410  jne      0x140115400
+0000000140115412  mov      rbx, qword ptr [rsi]
+0000000140115415  lea      rdx, [rbx*8 + 8]
+000000014011541d  mov      rcx, rsi
+0000000140115420  call     0x1404f67ec ; operator_delete[]+0x0
+0000000140115425  xor      r12d, r12d
+0000000140115428  mov      r9d, 1
+000000014011542e  mov      r8d, r9d
+0000000140115431  mov      qword ptr [r14 + 0x10], r12
+0000000140115435  mov      rdx, r15
+0000000140115438  mov      qword ptr [r14 + 0x18], r12
+000000014011543c  mov      rcx, r14
+000000014011543f  mov      qword ptr [r14 + 0x20], r12
+0000000140115443  mov      dword ptr [r14 + 0x30], r12d
+0000000140115447  call     0x140116070 ; CResHelper<CResText,1012>::SetResRef+0x0
+000000014011544c  mov      rcx, qword ptr [r14]
+000000014011544f  test     rcx, rcx
+0000000140115452  je       0x140115968
+0000000140115458  call     0x1403f6390 ; CRes::Demand+0x0
+000000014011545d  mov      rdx, qword ptr [r14]
+0000000140115460  lea      rcx, [rbp - 0x20]
+0000000140115464  add      rdx, 0x58
+0000000140115468  call     0x1403fcd00 ; CString::CString+0x0
+000000014011546d  mov      r8b, 0x20
+0000000140115470  lea      rcx, [rbp - 0x20]
+0000000140115474  mov      dl, 9
+0000000140115476  call     0x1403fe7c0 ; CString::Replace+0x0
+000000014011547b  mov      rax, qword ptr [rip + 0x54668e]
+0000000140115482  lea      rdx, [rbp - 0x20]
+0000000140115486  mov      r8b, 0xa
+0000000140115489  mov      qword ptr [rbp + 0x40], rax
+000000014011548d  lea      rcx, [rbp - 0x18]
+0000000140115491  mov      qword ptr [rbp + 0x58], rax
+0000000140115495  mov      qword ptr [rbp - 0x30], rax
+0000000140115499  movzx    ebx, r12w
+000000014011549d  mov      qword ptr [rbp + 0x50], rax
+00000001401154a1  movzx    esi, r12w
+00000001401154a5  mov      qword ptr [rbp - 0x28], rax
+00000001401154a9  movzx    edi, r12w
+00000001401154ad  call     0x140130920 ; CAIUtil::ReadAfterChar+0x0
+00000001401154b2  mov      rdx, rax
+00000001401154b5  lea      rcx, [rbp + 0x40]
+00000001401154b9  call     0x1403fce30 ; CString::operator=+0x0
+00000001401154be  lea      rcx, [rbp - 0x18]
+00000001401154c2  call     0x1403fce00 ; CString::~CString+0x0
+00000001401154c7  mov      r8b, 0xa
+00000001401154ca  lea      rdx, [rbp + 0x40]
+00000001401154ce  lea      rcx, [rbp - 0x18]
+00000001401154d2  call     0x140130cc0 ; CAIUtil::ReadToChar+0x0
+00000001401154d7  mov      rdx, rax
+00000001401154da  lea      rcx, [rbp - 0x28]
+00000001401154de  call     0x1403fce30 ; CString::operator=+0x0
+00000001401154e3  lea      rcx, [rbp - 0x18]
+00000001401154e7  call     0x1403fce00 ; CString::~CString+0x0
+00000001401154ec  mov      r8b, 0xa
+00000001401154ef  lea      rdx, [rbp + 0x40]
+00000001401154f3  lea      rcx, [rbp - 0x18]
+00000001401154f7  call     0x140130920 ; CAIUtil::ReadAfterChar+0x0
+00000001401154fc  mov      rdx, rax
+00000001401154ff  lea      rcx, [rbp + 0x40]
+0000000140115503  call     0x1403fce30 ; CString::operator=+0x0
+0000000140115508  lea      rcx, [rbp - 0x18]
+000000014011550c  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115511  lea      rcx, [rbp - 0x28]
+0000000140115515  call     0x1403febf0 ; CString::TrimLeft+0x0
+000000014011551a  lea      rcx, [rbp - 0x28]
+000000014011551e  call     0x1403fed60 ; CString::TrimRight+0x0
+0000000140115523  lea      rcx, [r14 + 0x28]
+0000000140115527  lea      rdx, [rbp - 0x28]
+000000014011552b  call     0x1403fce30 ; CString::operator=+0x0
+0000000140115530  mov      r8b, 0xa
+0000000140115533  lea      rdx, [rbp + 0x40]
+0000000140115537  lea      rcx, [rbp - 0x18]
+000000014011553b  call     0x140130cc0 ; CAIUtil::ReadToChar+0x0
+0000000140115540  mov      rdx, rax
+0000000140115543  lea      rcx, [rbp - 0x30]
+0000000140115547  call     0x1403fce30 ; CString::operator=+0x0
+000000014011554c  lea      rcx, [rbp - 0x18]
+0000000140115550  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115555  mov      r8b, 0xa
+0000000140115558  lea      rdx, [rbp + 0x40]
+000000014011555c  lea      rcx, [rbp - 0x18]
+0000000140115560  call     0x140130920 ; CAIUtil::ReadAfterChar+0x0
+0000000140115565  mov      rdx, rax
+0000000140115568  lea      rcx, [rbp + 0x40]
+000000014011556c  call     0x1403fce30 ; CString::operator=+0x0
+0000000140115571  lea      rcx, [rbp - 0x18]
+0000000140115575  call     0x1403fce00 ; CString::~CString+0x0
+000000014011557a  lea      rcx, [rbp - 0x30]
+000000014011557e  call     0x1403febf0 ; CString::TrimLeft+0x0
+0000000140115583  lea      rcx, [rbp - 0x30]
+0000000140115587  call     0x1403fed60 ; CString::TrimRight+0x0
+000000014011558c  lea      rdx, [rbp - 0x30]
+0000000140115590  lea      rcx, [rbp + 0x50]
+0000000140115594  call     0x1403fce30 ; CString::operator=+0x0
+0000000140115599  mov      rax, qword ptr [rbp + 0x50]
+000000014011559d  lea      rcx, [rbp + 0x50]
+00000001401155a1  mov      edx, dword ptr [rax - 8]
+00000001401155a4  call     0x1403fda40 ; CString::GetBuffer+0x0
+00000001401155a9  lea      rdx, [rip + 0x4e88ac]
+00000001401155b0  mov      rcx, rax
+00000001401155b3  call     0x140501f94 ; strtok+0x0
+00000001401155b8  nop      dword ptr [rax + rax]
+00000001401155c0  movzx    r15d, bx
+00000001401155c4  lea      rdx, [rip + 0x4e8891]
+00000001401155cb  xor      ecx, ecx
+00000001401155cd  inc      bx
+00000001401155d0  call     0x140501f94 ; strtok+0x0
+00000001401155d5  test     rax, rax
+00000001401155d8  jne      0x1401155c0
+00000001401155da  inc      bx
+00000001401155dd  mov      eax, 8
+00000001401155e2  mov      word ptr [r14 + 0x30], bx
+00000001401155e7  movsx    rbx, r15w
+00000001401155eb  mov      r15, 0xffffffffffffffff
+00000001401155f2  add      rbx, 2
+00000001401155f6  mul      rbx
+00000001401155f9  cmovo    rax, r15
+00000001401155fd  add      rax, 8
+0000000140115601  cmovb    rax, r15
+0000000140115605  mov      rcx, rax
+0000000140115608  call     0x1404f67e4 ; operator_new[]+0x0
+000000014011560d  test     rax, rax
+0000000140115610  je       0x140115637
+0000000140115612  mov      qword ptr [rax], rbx
+0000000140115615  lea      rdx, [rax + 8]
+0000000140115619  mov      rcx, rdx
+000000014011561c  test     rbx, rbx
+000000014011561f  je       0x14011563a
+0000000140115621  mov      rax, qword ptr [rip + 0x5464e8]
+0000000140115628  mov      qword ptr [rcx], rax
+000000014011562b  lea      rcx, [rcx + 8]
+000000014011562f  sub      rbx, 1
+0000000140115633  jne      0x140115621
+0000000140115635  jmp      0x14011563a ; C2DArray::Load+0x2ea
+0000000140115637  mov      rdx, r12
+000000014011563a  mov      qword ptr [r14 + 0x10], rdx
+000000014011563e  lea      rcx, [rbp + 0x50]
+0000000140115642  lea      rdx, [rbp - 0x30]
+0000000140115646  call     0x1403fce30 ; CString::operator=+0x0
+000000014011564b  mov      rax, qword ptr [rbp + 0x50]
+000000014011564f  lea      rcx, [rbp + 0x50]
+0000000140115653  mov      edx, dword ptr [rax - 8]
+0000000140115656  call     0x1403fda40 ; CString::GetBuffer+0x0
+000000014011565b  lea      rdx, [rip + 0x4e87fa]
+0000000140115662  mov      rcx, rax
+0000000140115665  call     0x140501f94 ; strtok+0x0
+000000014011566a  nop      word ptr [rax + rax]
+0000000140115670  movsx    rcx, di
+0000000140115674  mov      rdx, rax
+0000000140115677  lea      rbx, [rcx*8]
+000000014011567f  mov      rcx, qword ptr [r14 + 0x10]
+0000000140115683  add      rcx, rbx
+0000000140115686  call     0x1403fced0 ; CString::operator=+0x0
+000000014011568b  mov      rcx, qword ptr [r14 + 0x10]
+000000014011568f  add      rcx, rbx
+0000000140115692  call     0x1403fdd50 ; CString::MakeUpper+0x0
+0000000140115697  lea      rdx, [rip + 0x4e87be]
+000000014011569e  xor      ecx, ecx
+00000001401156a0  inc      di
+00000001401156a3  call     0x140501f94 ; strtok+0x0
+00000001401156a8  test     rax, rax
+00000001401156ab  jne      0x140115670
+00000001401156ad  lea      rdx, [rbp + 0x40]
+00000001401156b1  lea      rcx, [rbp + 0x58]
+00000001401156b5  call     0x1403fce30 ; CString::operator=+0x0
+00000001401156ba  mov      rax, qword ptr [rbp + 0x58]
+00000001401156be  lea      rcx, [rbp + 0x58]
+00000001401156c2  mov      edx, dword ptr [rax - 8]
+00000001401156c5  call     0x1403fda40 ; CString::GetBuffer+0x0
+00000001401156ca  lea      rdx, [rip + 0x4761c7]
+00000001401156d1  mov      rcx, rax
+00000001401156d4  call     0x140501f94 ; strtok+0x0
+00000001401156d9  test     rax, rax
+00000001401156dc  je       0x14011571b
+00000001401156de  nop
+00000001401156e0  mov      rcx, r15
+00000001401156e3  inc      rcx
+00000001401156e6  cmp      byte ptr [rax + rcx], r12b
+00000001401156ea  jne      0x1401156e3
+00000001401156ec  test     rcx, rcx
+00000001401156ef  je       0x140115708
+00000001401156f1  lea      rdx, [rip + 0x4e8764]
+00000001401156f8  mov      rcx, rax
+00000001401156fb  call     0x140501740 ; strcspn+0x0
+0000000140115700  test     rax, rax
+0000000140115703  je       0x140115708
+0000000140115705  inc      si
+0000000140115708  lea      rdx, [rip + 0x476189]
+000000014011570f  xor      ecx, ecx
+0000000140115711  call     0x140501f94 ; strtok+0x0
+0000000140115716  test     rax, rax
+0000000140115719  jne      0x1401156e0
+000000014011571b  movsx    rbx, si
+000000014011571f  mov      eax, 8
+0000000140115724  mul      rbx
+0000000140115727  mov      word ptr [r14 + 0x32], si
+000000014011572c  cmovo    rax, r15
+0000000140115730  add      rax, 8
+0000000140115734  cmovb    rax, r15
+0000000140115738  mov      rcx, rax
+000000014011573b  call     0x1404f67e4 ; operator_new[]+0x0
+0000000140115740  test     rax, rax
+0000000140115743  je       0x140115776
+0000000140115745  mov      qword ptr [rax], rbx
+0000000140115748  lea      rdx, [rax + 8]
+000000014011574c  mov      rcx, rdx
+000000014011574f  test     rbx, rbx
+0000000140115752  je       0x140115779
+0000000140115754  nop      dword ptr [rax]
+0000000140115758  nop      dword ptr [rax + rax]
+0000000140115760  mov      rax, qword ptr [rip + 0x5463a9]
+0000000140115767  mov      qword ptr [rcx], rax
+000000014011576a  lea      rcx, [rcx + 8]
+000000014011576e  sub      rbx, 1
+0000000140115772  jne      0x140115760
+0000000140115774  jmp      0x140115779 ; C2DArray::Load+0x429
+0000000140115776  mov      rdx, r12
+0000000140115779  movsx    ecx, word ptr [r14 + 0x32]
+000000014011577e  mov      eax, 8
+0000000140115783  mov      qword ptr [r14 + 0x18], rdx
+0000000140115787  movsx    edx, word ptr [r14 + 0x30]
+000000014011578c  imul     edx, ecx
+000000014011578f  movsxd   rbx, edx
+0000000140115792  mul      rbx
+0000000140115795  cmovo    rax, r15
+0000000140115799  add      rax, 8
+000000014011579d  cmovb    rax, r15
+00000001401157a1  mov      rcx, rax
+00000001401157a4  call     0x1404f67e4 ; operator_new[]+0x0
+00000001401157a9  test     rax, rax
+00000001401157ac  je       0x1401157d6
+00000001401157ae  mov      qword ptr [rax], rbx
+00000001401157b1  lea      rdx, [rax + 8]
+00000001401157b5  mov      rcx, rdx
+00000001401157b8  test     rbx, rbx
+00000001401157bb  je       0x1401157d9
+00000001401157bd  nop      dword ptr [rax]
+00000001401157c0  mov      rax, qword ptr [rip + 0x546349]
+00000001401157c7  mov      qword ptr [rcx], rax
+00000001401157ca  lea      rcx, [rcx + 8]
+00000001401157ce  sub      rbx, 1
+00000001401157d2  jne      0x1401157c0
+00000001401157d4  jmp      0x1401157d9 ; C2DArray::Load+0x489
+00000001401157d6  mov      rdx, r12
+00000001401157d9  mov      qword ptr [r14 + 0x20], rdx
+00000001401157dd  cmp      word ptr [r14 + 0x32], r12w
+00000001401157e2  jle      0x140115932
+00000001401157e8  mov      qword ptr [rsp + 0x98], r13
+00000001401157f0  lea      rdx, [rbp + 0x40]
+00000001401157f4  lea      rcx, [rbp + 0x58]
+00000001401157f8  movzx    r13d, r12w
+00000001401157fc  call     0x1403fce30 ; CString::operator=+0x0
+0000000140115801  mov      rax, qword ptr [rbp + 0x58]
+0000000140115805  lea      rcx, [rbp + 0x58]
+0000000140115809  mov      edx, dword ptr [rax - 8]
+000000014011580c  call     0x1403fda40 ; CString::GetBuffer+0x0
+0000000140115811  lea      rdx, [rip + 0x476080]
+0000000140115818  mov      rcx, rax
+000000014011581b  call     0x140501f94 ; strtok+0x0
+0000000140115820  mov      rdi, rax
+0000000140115823  nop      dword ptr [rax]
+0000000140115827  nop      word ptr [rax + rax]
+0000000140115830  movzx    r15d, r12w
+0000000140115834  nop      dword ptr [rax]
+0000000140115838  nop      dword ptr [rax + rax]
+0000000140115840  lea      rdx, [rip + 0x4e8615]
+0000000140115847  mov      rcx, rdi
+000000014011584a  call     0x140501bd0 ; strspn+0x0
+000000014011584f  lea      rdx, [rip + 0x4e8606]
+0000000140115856  lea      rbx, [rdi + rax]
+000000014011585a  mov      rcx, rbx
+000000014011585d  call     0x140501740 ; strcspn+0x0
+0000000140115862  cmp      byte ptr [rbx], 0
+0000000140115865  mov      r12, rax
+0000000140115868  je       0x1401158ee
+000000014011586e  mov      r8d, r12d
+0000000140115871  mov      rdx, rbx
+0000000140115874  test     r15w, r15w
+0000000140115878  jne      0x1401158b6
+000000014011587a  mov      rdi, qword ptr [r14 + 0x18]
+000000014011587e  movsx    rcx, r13w
+0000000140115882  lea      rsi, [rcx*8]
+000000014011588a  lea      rcx, [rbp - 0x18]
+000000014011588e  call     0x1403fde80 ; CString::CString+0x0
+0000000140115893  mov      rdx, rax
+0000000140115896  lea      rcx, [rsi + rdi]
+000000014011589a  call     0x1403fce30 ; CString::operator=+0x0
+000000014011589f  lea      rcx, [rbp - 0x18]
+00000001401158a3  call     0x1403fce00 ; CString::~CString+0x0
+00000001401158a8  mov      rcx, qword ptr [r14 + 0x18]
+00000001401158ac  add      rcx, rsi
+00000001401158af  call     0x1403fdd50 ; CString::MakeUpper+0x0
+00000001401158b4  jmp      0x1401158ee ; C2DArray::Load+0x59e
+00000001401158b6  mov      rdi, qword ptr [r14 + 0x20]
+00000001401158ba  lea      rcx, [rbp - 0x10]
+00000001401158be  call     0x1403fde80 ; CString::CString+0x0
+00000001401158c3  movsx    ecx, word ptr [r14 + 0x30]
+00000001401158c8  mov      rdx, rax
+00000001401158cb  movsx    eax, r13w
+00000001401158cf  imul     ecx, eax
+00000001401158d2  movsx    eax, r15w
+00000001401158d6  dec      ecx
+00000001401158d8  add      eax, ecx
+00000001401158da  cdqe
+00000001401158dc  lea      rcx, [rdi + rax*8]
+00000001401158e0  call     0x1403fce30 ; CString::operator=+0x0
+00000001401158e5  lea      rcx, [rbp - 0x10]
+00000001401158e9  call     0x1403fce00 ; CString::~CString+0x0
+00000001401158ee  lea      rdi, [r12 + rbx]
+00000001401158f2  inc      r15w
+00000001401158f6  cmp      byte ptr [rdi], 0
+00000001401158f9  je       0x140115906
+00000001401158fb  cmp      r15w, word ptr [r14 + 0x30]
+0000000140115900  jle      0x140115840
+0000000140115906  lea      rdx, [rip + 0x475f8b]
+000000014011590d  xor      ecx, ecx
+000000014011590f  inc      r13w
+0000000140115913  call     0x140501f94 ; strtok+0x0
+0000000140115918  mov      rdi, rax
+000000014011591b  mov      r12d, 0
+0000000140115921  test     rax, rax
+0000000140115924  jne      0x140115830
+000000014011592a  mov      r13, qword ptr [rsp + 0x98]
+0000000140115932  lea      rcx, [rbp - 0x28]
+0000000140115936  call     0x1403fce00 ; CString::~CString+0x0
+000000014011593b  lea      rcx, [rbp + 0x50]
+000000014011593f  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115944  lea      rcx, [rbp - 0x30]
+0000000140115948  call     0x1403fce00 ; CString::~CString+0x0
+000000014011594d  lea      rcx, [rbp + 0x58]
+0000000140115951  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115956  lea      rcx, [rbp + 0x40]
+000000014011595a  call     0x1403fce00 ; CString::~CString+0x0
+000000014011595f  lea      rcx, [rbp - 0x20]
+0000000140115963  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115968  add      rsp, 0x50
+000000014011596c  pop      r15
+000000014011596e  pop      r14
+0000000140115970  pop      r12
+0000000140115972  pop      rdi
+0000000140115973  pop      rsi
+0000000140115974  pop      rbx
+0000000140115975  pop      rbp
+0000000140115976  ret
+0000000140115977  int3
+0000000140115978  int3
+0000000140115979  int3
+000000014011597a  int3
+000000014011597b  int3
+000000014011597c  int3
+000000014011597d  int3
+000000014011597e  int3
+000000014011597f  int3
+
+C2DArray::~C2DArray+0x0 [0x140131310, 0x140131430)
+0000000140131310  push     rdi
+0000000140131312  sub      rsp, 0x20
+0000000140131316  mov      rax, qword ptr [rcx + 0x10]
+000000014013131a  mov      rdi, rcx
+000000014013131d  mov      qword ptr [rsp + 0x30], rbx
+0000000140131322  mov      qword ptr [rsp + 0x38], rsi
+0000000140131327  mov      qword ptr [rsp + 0x40], r14
+000000014013132c  test     rax, rax
+000000014013132f  je       0x140131367
+0000000140131331  mov      rbx, qword ptr [rax - 8]
+0000000140131335  lea      r14, [rax - 8]
+0000000140131339  lea      rsi, [rax + rbx*8]
+000000014013133d  test     rbx, rbx
+0000000140131340  je       0x140131357
+0000000140131342  sub      rsi, 8
+0000000140131346  mov      rcx, rsi
+0000000140131349  call     0x1403fce00 ; CString::~CString+0x0
+000000014013134e  sub      rbx, 1
+0000000140131352  jne      0x140131342
+0000000140131354  mov      rbx, qword ptr [r14]
+0000000140131357  lea      rdx, [rbx*8 + 8]
+000000014013135f  mov      rcx, r14
+0000000140131362  call     0x1404f67ec ; operator_delete[]+0x0
+0000000140131367  mov      rax, qword ptr [rdi + 0x18]
+000000014013136b  test     rax, rax
+000000014013136e  je       0x1401313a6
+0000000140131370  mov      rbx, qword ptr [rax - 8]
+0000000140131374  lea      r14, [rax - 8]
+0000000140131378  lea      rsi, [rax + rbx*8]
+000000014013137c  test     rbx, rbx
+000000014013137f  je       0x140131396
+0000000140131381  sub      rsi, 8
+0000000140131385  mov      rcx, rsi
+0000000140131388  call     0x1403fce00 ; CString::~CString+0x0
+000000014013138d  sub      rbx, 1
+0000000140131391  jne      0x140131381
+0000000140131393  mov      rbx, qword ptr [r14]
+0000000140131396  lea      rdx, [rbx*8 + 8]
+000000014013139e  mov      rcx, r14
+00000001401313a1  call     0x1404f67ec ; operator_delete[]+0x0
+00000001401313a6  mov      rax, qword ptr [rdi + 0x20]
+00000001401313aa  test     rax, rax
+00000001401313ad  je       0x1401313e5
+00000001401313af  mov      rbx, qword ptr [rax - 8]
+00000001401313b3  lea      r14, [rax - 8]
+00000001401313b7  lea      rsi, [rax + rbx*8]
+00000001401313bb  test     rbx, rbx
+00000001401313be  je       0x1401313d5
+00000001401313c0  sub      rsi, 8
+00000001401313c4  mov      rcx, rsi
+00000001401313c7  call     0x1403fce00 ; CString::~CString+0x0
+00000001401313cc  sub      rbx, 1
+00000001401313d0  jne      0x1401313c0
+00000001401313d2  mov      rbx, qword ptr [r14]
+00000001401313d5  lea      rdx, [rbx*8 + 8]
+00000001401313dd  mov      rcx, r14
+00000001401313e0  call     0x1404f67ec ; operator_delete[]+0x0
+00000001401313e5  lea      rcx, [rdi + 0x28]
+00000001401313e9  call     0x1403fce00 ; CString::~CString+0x0
+00000001401313ee  cmp      qword ptr [rdi], 0
+00000001401313f2  mov      r14, qword ptr [rsp + 0x40]
+00000001401313f7  mov      rsi, qword ptr [rsp + 0x38]
+00000001401313fc  mov      rbx, qword ptr [rsp + 0x30]
+0000000140131401  je       0x14013141f
+0000000140131403  lea      rcx, [rdi + 8]
+0000000140131407  lea      rdx, [rip + 0x4b900f]
+000000014013140e  call     0x1403ff220 ; CResRef::operator!=+0x0
+0000000140131413  test     eax, eax
+0000000140131415  je       0x14013141f
+0000000140131417  mov      rcx, qword ptr [rdi]
+000000014013141a  call     0x14001e1c0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+000000014013141f  mov      qword ptr [rdi], 0
+0000000140131426  add      rsp, 0x20
+000000014013142a  pop      rdi
+000000014013142b  ret
+000000014013142c  int3
+000000014013142d  int3
+000000014013142e  int3
+000000014013142f  int3
+
+C2DArray::C2DArray+0x0 [0x140235c20, 0x140235ca0)
+0000000140235c20  mov      qword ptr [rsp + 0x10], rbx
+0000000140235c25  mov      qword ptr [rsp + 0x18], rsi
+0000000140235c2a  push     rdi
+0000000140235c2b  sub      rsp, 0x30
+0000000140235c2f  mov      rax, qword ptr [rip + 0x42c8e2]
+0000000140235c36  xor      rax, rsp
+0000000140235c39  mov      qword ptr [rsp + 0x28], rax
+0000000140235c3e  mov      rdi, rcx
+0000000140235c41  add      rcx, 8
+0000000140235c45  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+0000000140235c4a  xor      esi, esi
+0000000140235c4c  lea      r8, [rip + 0x3b47ca]
+0000000140235c53  lea      rdx, [rsp + 0x20]
+0000000140235c58  mov      qword ptr [rdi], rsi
+0000000140235c5b  lea      rcx, [rdi + 8]
+0000000140235c5f  call     0x1403ff020 ; CResRef::operator=+0x0
+0000000140235c64  mov      rcx, qword ptr [rip + 0x425ea5]
+0000000140235c6b  mov      rax, rdi
+0000000140235c6e  mov      qword ptr [rdi + 0x28], rcx
+0000000140235c72  mov      qword ptr [rdi + 0x10], rsi
+0000000140235c76  mov      qword ptr [rdi + 0x18], rsi
+0000000140235c7a  mov      qword ptr [rdi + 0x20], rsi
+0000000140235c7e  mov      dword ptr [rdi + 0x30], esi
+0000000140235c81  mov      rcx, qword ptr [rsp + 0x28]
+0000000140235c86  xor      rcx, rsp
+0000000140235c89  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140235c8e  mov      rbx, qword ptr [rsp + 0x48]
+0000000140235c93  mov      rsi, qword ptr [rsp + 0x50]
+0000000140235c98  add      rsp, 0x30
+0000000140235c9c  pop      rdi
+0000000140235c9d  ret
+0000000140235c9e  int3
+0000000140235c9f  int3
+
+CResRef::CResRef+0x0 [0x1403fedd0, 0x1403fee80)
+00000001403fedd0  mov      qword ptr [rsp + 0x18], rbx
+00000001403fedd5  push     rdi
+00000001403fedd6  sub      rsp, 0x20
+00000001403fedda  mov      rbx, qword ptr [rdx]
+00000001403feddd  mov      rdi, rcx
+00000001403fede0  xor      ecx, ecx
+00000001403fede2  mov      eax, dword ptr [rbx - 8]
+00000001403fede5  mov      dword ptr [rsp + 0x30], eax
+00000001403fede9  mov      qword ptr [rdi], rcx
+00000001403fedec  test     eax, eax
+00000001403fedee  jle      0x1403fee6a
+00000001403fedf0  lea      rdx, [rsp + 0x30]
+00000001403fedf5  mov      dword ptr [rsp + 0x38], 8
+00000001403fedfd  lea      rcx, [rsp + 0x38]
+00000001403fee02  call     0x140406d20 ; min+0x0
+00000001403fee07  movsxd   r8, eax
+00000001403fee0a  mov      rdx, rbx
+00000001403fee0d  mov      rcx, rdi
+00000001403fee10  call     0x1404f9730 ; memcpy+0x0
+00000001403fee15  lea      rdx, [rsp + 0x30]
+00000001403fee1a  mov      dword ptr [rsp + 0x38], 8
+00000001403fee22  lea      rcx, [rsp + 0x38]
+00000001403fee27  xor      ebx, ebx
+00000001403fee29  call     0x140406d20 ; min+0x0
+00000001403fee2e  test     eax, eax
+00000001403fee30  jle      0x1403fee6a
+00000001403fee32  movzx    eax, bx
+00000001403fee35  lea      rdx, [rax + rdi]
+00000001403fee39  movzx    eax, byte ptr [rax + rdi]
+00000001403fee3d  lea      ecx, [rax - 0x61]
+00000001403fee40  cmp      cl, 0x19
+00000001403fee43  ja       0x1403fee49
+00000001403fee45  sub      al, 0x20
+00000001403fee47  mov      byte ptr [rdx], al
+00000001403fee49  lea      rdx, [rsp + 0x30]
+00000001403fee4e  mov      dword ptr [rsp + 0x38], 8
+00000001403fee56  lea      rcx, [rsp + 0x38]
+00000001403fee5b  inc      bx
+00000001403fee5e  call     0x140406d20 ; min+0x0
+00000001403fee63  movzx    ecx, bx
+00000001403fee66  cmp      ecx, eax
+00000001403fee68  jl       0x1403fee32
+00000001403fee6a  mov      rbx, qword ptr [rsp + 0x40]
+00000001403fee6f  mov      rax, rdi
+00000001403fee72  add      rsp, 0x20
+00000001403fee76  pop      rdi
+00000001403fee77  ret
+00000001403fee78  int3
+00000001403fee79  int3
+00000001403fee7a  int3
+00000001403fee7b  int3
+00000001403fee7c  int3
+00000001403fee7d  int3
+00000001403fee7e  int3
+00000001403fee7f  int3
+
+CResRef::CResRef+0x0 [0x1403fee80, 0x1403feec0)
+00000001403fee80  xor      eax, eax
+00000001403fee82  xor      r9d, r9d
+00000001403fee85  mov      qword ptr [rcx], rax
+00000001403fee88  sub      rdx, rcx
+00000001403fee8b  mov      r8, rcx
+00000001403fee8e  nop
+00000001403fee90  movzx    eax, byte ptr [rdx + r8]
+00000001403fee95  test     al, al
+00000001403fee97  je       0x1403feeb5
+00000001403fee99  mov      byte ptr [r8], al
+00000001403fee9c  cmp      al, 0x60
+00000001403fee9e  jbe      0x1403feea9
+00000001403feea0  cmp      al, 0x7b
+00000001403feea2  jae      0x1403feea9
+00000001403feea4  sub      al, 0x20
+00000001403feea6  mov      byte ptr [r8], al
+00000001403feea9  inc      r9d
+00000001403feeac  inc      r8
+00000001403feeaf  cmp      r9d, 8
+00000001403feeb3  jb       0x1403fee90
+00000001403feeb5  mov      rax, rcx
+00000001403feeb8  ret
+00000001403feeb9  int3
+00000001403feeba  int3
+00000001403feebb  int3
+00000001403feebc  int3
+00000001403feebd  int3
+00000001403feebe  int3
+00000001403feebf  int3
+
+CResRef::CResRef+0x0 [0x1403feec0, 0x1403fef30)
+00000001403feec0  push     rbx
+00000001403feec2  sub      rsp, 0x20
+00000001403feec6  mov      rax, qword ptr [rdx]
+00000001403feec9  mov      rbx, rcx
+00000001403feecc  mov      qword ptr [rcx], rax
+00000001403feecf  xor      r9d, r9d
+00000001403feed2  mov      r8, rcx
+00000001403feed5  movzx    eax, byte ptr [r8]
+00000001403feed9  test     al, al
+00000001403feedb  je       0x1403feeff
+00000001403feedd  lea      edx, [rax - 0x61]
+00000001403feee0  cmp      dl, 0x19
+00000001403feee3  ja       0x1403feeea
+00000001403feee5  sub      al, 0x20
+00000001403feee7  mov      byte ptr [r8], al
+00000001403feeea  inc      r9d
+00000001403feeed  inc      r8
+00000001403feef0  cmp      r9d, 8
+00000001403feef4  jb       0x1403feed5
+00000001403feef6  mov      rax, rbx
+00000001403feef9  add      rsp, 0x20
+00000001403feefd  pop      rbx
+00000001403feefe  ret
+00000001403feeff  movsxd   rax, r9d
+00000001403fef02  inc      rcx
+00000001403fef05  mov      r8d, 7
+00000001403fef0b  add      rcx, rax
+00000001403fef0e  sub      r8, rax
+00000001403fef11  xor      edx, edx
+00000001403fef13  call     0x1404f9b90 ; memset+0x0
+00000001403fef18  mov      rax, rbx
+00000001403fef1b  add      rsp, 0x20
+00000001403fef1f  pop      rbx
+00000001403fef20  ret
+00000001403fef21  int3
+00000001403fef22  int3
+00000001403fef23  int3
+00000001403fef24  int3
+00000001403fef25  int3
+00000001403fef26  int3
+00000001403fef27  int3
+00000001403fef28  int3
+00000001403fef29  int3
+00000001403fef2a  int3
+00000001403fef2b  int3
+00000001403fef2c  int3
+00000001403fef2d  int3
+00000001403fef2e  int3
+00000001403fef2f  int3

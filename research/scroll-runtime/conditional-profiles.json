@@ -1,0 +1,204 @@
+[
+  {
+    "version": "2.6.6.0",
+    "timestamp": 1620326323,
+    "spans": [
+      {
+        "name": "CGameEffectApplySpell::ApplyEffect before EEex fix",
+        "rva": 1732592,
+        "size": 98,
+        "sha256": "0977b51daf09daf887c4af9ef360cc381e74c218c65fa82215a4cc9122656e50"
+      },
+      {
+        "name": "CGameEffectApplySpell::ApplyEffect after EEex fix",
+        "rva": 1732697,
+        "size": 87,
+        "sha256": "56f1511a77df38a568ce15a55caa2dd06d6768e3b38fa8856660389ac46d7876"
+      },
+      {
+        "name": "CGameEffectRepeatingApplyEffect::ApplyEffect",
+        "rva": 1833824,
+        "size": 432,
+        "sha256": "13a9dbd4f388d21364cc620b0605b76066319f0124e5679cfc7bd7b0061d1ab8"
+      },
+      {
+        "name": "CPersistantEffectApplyEffect::AIUpdate",
+        "rva": 1721760,
+        "size": 768,
+        "sha256": "1aaf005339c2a73ed5efffc20467b0f4d0ed8b82d8c7e97130c5a56428f6a91c"
+      },
+      {
+        "name": "CGameEffectContingencyInstance::ApplyEffect",
+        "rva": 1744320,
+        "size": 1248,
+        "sha256": "5522e0fc54ce82ab5668145a123d2da7c06285d0a97c29f3fb55130cee301beb"
+      },
+      {
+        "name": "CContingencyList::Process",
+        "rva": 1367408,
+        "size": 928,
+        "sha256": "8f95950332d3314eb7f080c72c7cb9414cc9e917284c040070fb8433b9265610"
+      },
+      {
+        "name": "CContingencyList::ProcessTrigger",
+        "rva": 1368336,
+        "size": 992,
+        "sha256": "b1d8363afa3e9cd86b5f5f3a016f6433fb2cd98c560a657e17f7bc2dbd1c72dc"
+      },
+      {
+        "name": "CContingencyList::operator=",
+        "rva": 1366368,
+        "size": 688,
+        "sha256": "e404a0535dd6daa8309f550ec5610f43b0257d35662fd5724d94f771702bb988"
+      },
+      {
+        "name": "CContingency::`scalar_deleting_destructor'",
+        "rva": 1367056,
+        "size": 112,
+        "sha256": "b9fcb9c7f88e87aeb8d62f3c23a9e488f85ff7d571f9610fcd72259f050698f8"
+      },
+      {
+        "name": "CContingencyList::ClearAll",
+        "rva": 1367216,
+        "size": 160,
+        "sha256": "569d6fd0d134b28ef6e8db2bba42a70d089080ac13821a7ab7bb251454da3b78"
+      },
+      {
+        "name": "CGameEffect::operator=",
+        "rva": 1720672,
+        "size": 288,
+        "sha256": "c032aaf583aebb60e417c271972beb1fe3eb3ec49f37a8ed9205d356c8e698be"
+      }
+    ],
+    "fix": 1732690,
+    "update": 1721760,
+    "decode_call": 1722270,
+    "decoder": 1977120,
+    "fire326_return": 1732751,
+    "calls": [
+      1367840,
+      1367907,
+      1367974,
+      1368778,
+      1368845,
+      1368912,
+      1369149,
+      1366455,
+      1367089,
+      1367287
+    ],
+    "targets": [
+      1485232,
+      1485232,
+      1485232,
+      1485232,
+      1485232,
+      1485232,
+      4245664,
+      4245664,
+      4245664,
+      4245664
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "timestamp": 1780012861,
+    "spans": [
+      {
+        "name": "CGameEffectApplySpell::ApplyEffect before EEex fix",
+        "rva": 1733120,
+        "size": 98,
+        "sha256": "f587a7ef2bb16cde10ed303826f0a3b8fd131fa73a6aa191ee1998d3f7955545"
+      },
+      {
+        "name": "CGameEffectApplySpell::ApplyEffect after EEex fix",
+        "rva": 1733225,
+        "size": 87,
+        "sha256": "388fbe3f8cbbf4d81214b20ee609c6da35bbbd0820f992cf1d5f2addc0793387"
+      },
+      {
+        "name": "CGameEffectRepeatingApplyEffect::ApplyEffect",
+        "rva": 1834352,
+        "size": 432,
+        "sha256": "6f42d308556b37060f5a76653081ec8285a6bb91173b3ac9fc8af79910ea3a1f"
+      },
+      {
+        "name": "CPersistantEffectApplyEffect::AIUpdate",
+        "rva": 1722288,
+        "size": 768,
+        "sha256": "33b6e03ab136a8a691ff867d2d3ac5af48c284141eba7b406fe014513378ecb8"
+      },
+      {
+        "name": "CGameEffectContingencyInstance::ApplyEffect",
+        "rva": 1744848,
+        "size": 1248,
+        "sha256": "cbfb78ef8a964406489eaf2506b3c69d1af32e01ed0ec07454c0e2b32534f4de"
+      },
+      {
+        "name": "CContingencyList::Process",
+        "rva": 1367936,
+        "size": 928,
+        "sha256": "4fe97833e0eabf07631cf51d98e57c971632989300ee9484cf8c3e4848ba8780"
+      },
+      {
+        "name": "CContingencyList::ProcessTrigger",
+        "rva": 1368864,
+        "size": 992,
+        "sha256": "fcb7dd45c7ee8b6a073cdba139d8dfb81a82452bd229ab4f320900a678529802"
+      },
+      {
+        "name": "CContingencyList::operator=",
+        "rva": 1366896,
+        "size": 688,
+        "sha256": "3a2afaecfa3f7e432fbc80f75e8bf027b691142a5a8d16e5004ec89d74c827f9"
+      },
+      {
+        "name": "CContingency::`scalar_deleting_destructor'",
+        "rva": 1367584,
+        "size": 112,
+        "sha256": "9e71b60360053e0d96eaf323aea77eef06f103b7c2c55efb26d8c6eefc92a5a1"
+      },
+      {
+        "name": "CContingencyList::ClearAll",
+        "rva": 1367744,
+        "size": 160,
+        "sha256": "9605c6d9ce12c54013603981d187fb03b8be368b12dd1b13fa68480824156673"
+      },
+      {
+        "name": "CGameEffect::operator=",
+        "rva": 1721200,
+        "size": 288,
+        "sha256": "69a2aee32eb3962bc36aba45608d83e0db4b2353a76c908a9ee16524bd2a30a5"
+      }
+    ],
+    "fix": 1733218,
+    "update": 1722288,
+    "decode_call": 1722798,
+    "decoder": 1977648,
+    "fire326_return": 1733279,
+    "calls": [
+      1368368,
+      1368435,
+      1368502,
+      1369306,
+      1369373,
+      1369440,
+      1369677,
+      1366983,
+      1367617,
+      1367815
+    ],
+    "targets": [
+      1485760,
+      1485760,
+      1485760,
+      1485760,
+      1485760,
+      1485760,
+      4249408,
+      4249408,
+      4249408,
+      4249408
+    ]
+  }
+]

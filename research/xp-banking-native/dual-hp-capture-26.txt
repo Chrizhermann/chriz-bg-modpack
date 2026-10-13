@@ -1,0 +1,621 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CRuleTables::GetHitPoints+0x0 [0x140240a70, 0x140241000)
+0000000140240a70  push     rbp
+0000000140240a72  push     rbx
+0000000140240a73  push     rsi
+0000000140240a74  push     rdi
+0000000140240a75  push     r12
+0000000140240a77  push     r13
+0000000140240a79  push     r14
+0000000140240a7b  push     r15
+0000000140240a7d  lea      rbp, [rsp - 0xc48]
+0000000140240a85  sub      rsp, 0xd48
+0000000140240a8c  mov      rax, qword ptr [rip + 0x421a85]
+0000000140240a93  xor      rax, rsp
+0000000140240a96  mov      qword ptr [rbp + 0xc30], rax
+0000000140240a9d  mov      rbx, r9
+0000000140240aa0  mov      qword ptr [rsp + 0x70], rdx
+0000000140240aa5  mov      r13, rcx
+0000000140240aa8  mov      qword ptr [rsp + 0x68], rbx
+0000000140240aad  xor      edi, edi
+0000000140240aaf  lea      rcx, [rbp - 0x80]
+0000000140240ab3  mov      dword ptr [rsp + 0x5c], edi
+0000000140240ab7  mov      r15, r8
+0000000140240aba  mov      rsi, rdx
+0000000140240abd  call     0x14014ea00 ; CDerivedStats::CDerivedStats+0x0
+0000000140240ac2  mov      rcx, rsi
+0000000140240ac5  mov      dword ptr [rsp + 0x48], edi
+0000000140240ac9  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+0000000140240ace  lea      r8, [rsp + 0x45]
+0000000140240ad3  mov      rcx, rsi
+0000000140240ad6  lea      rdx, [rsp + 0x44]
+0000000140240adb  movzx    r12d, al
+0000000140240adf  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+0000000140240ae4  lea      r14d, [rdi + 1]
+0000000140240ae8  cmp      word ptr [r15 + 0x46], di
+0000000140240aed  jne      0x140240b00
+0000000140240aef  cmp      word ptr [r15 + 0x48], di
+0000000140240af4  jne      0x140240b00
+0000000140240af6  mov      esi, r14d
+0000000140240af9  cmp      word ptr [r15 + 0x4a], di
+0000000140240afe  je       0x140240b02
+0000000140240b00  mov      esi, edi
+0000000140240b02  movzx    r8d, byte ptr [rsp + 0x44]
+0000000140240b08  mov      dword ptr [rsp + 0x50], esi
+0000000140240b0c  cmp      r12b, r8b
+0000000140240b0f  je       0x140240cbc
+0000000140240b15  movzx    edx, r12b
+0000000140240b19  mov      rcx, r15
+0000000140240b1c  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+0000000140240b21  movzx    r8d, byte ptr [rsp + 0x44]
+0000000140240b27  movzx    edx, r12b
+0000000140240b2b  mov      rcx, rbx
+0000000140240b2e  mov      byte ptr [rsp + 0x4d], al
+0000000140240b32  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+0000000140240b37  movzx    r8d, byte ptr [rsp + 0x45]
+0000000140240b3d  movzx    edx, r12b
+0000000140240b41  mov      rcx, r15
+0000000140240b44  mov      byte ptr [rsp + 0x55], al
+0000000140240b48  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+0000000140240b4d  movzx    r8d, byte ptr [rsp + 0x45]
+0000000140240b53  movzx    edx, r12b
+0000000140240b57  mov      rcx, rbx
+0000000140240b5a  mov      byte ptr [rsp + 0x4c], al
+0000000140240b5e  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+0000000140240b63  movzx    ecx, byte ptr [rbp + 0xcb0]
+0000000140240b6a  mov      byte ptr [rsp + 0x54], al
+0000000140240b6e  test     esi, esi
+0000000140240b70  je       0x140240bec
+0000000140240b72  test     al, al
+0000000140240b74  je       0x140240bec
+0000000140240b76  movzx    edx, byte ptr [rsp + 0x45]
+0000000140240b7b  lea      rax, [rsp + 0x58]
+0000000140240b80  movzx    r8d, cl
+0000000140240b84  mov      qword ptr [rsp + 0x20], rax
+0000000140240b89  mov      rcx, r13
+0000000140240b8c  lea      r9, [rsp + 0x60]
+0000000140240b91  call     0x140240530 ; CRuleTables::GetHPCONBonus+0x0
+0000000140240b96  mov      eax, dword ptr [rsp + 0x58]
+0000000140240b9a  mov      r9, r15
+0000000140240b9d  movzx    r8d, byte ptr [rsp + 0x45]
+0000000140240ba3  movzx    edx, r12b
+0000000140240ba7  mov      dword ptr [rsp + 0x38], edi
+0000000140240bab  mov      rcx, r13
+0000000140240bae  mov      dword ptr [rsp + 0x30], r14d
+0000000140240bb3  mov      dword ptr [rsp + 0x28], eax
+0000000140240bb7  mov      qword ptr [rsp + 0x20], rbx
+0000000140240bbc  call     0x14024adf0 ; CRuleTables::RollHitPoints+0x0
+0000000140240bc1  movzx    esi, byte ptr [rsp + 0x54]
+0000000140240bc6  movzx    edx, r12b
+0000000140240bca  movzx    r8d, byte ptr [rsp + 0x45]
+0000000140240bd0  movzx    r9d, sil
+0000000140240bd4  mov      rcx, r15
+0000000140240bd7  mov      dword ptr [rsp + 0x48], eax
+0000000140240bdb  call     0x140153de0 ; CDerivedStats::SetLevel+0x0
+0000000140240be0  movzx    ecx, byte ptr [rbp + 0xcb0]
+0000000140240be7  mov      byte ptr [rsp + 0x4c], sil
+0000000140240bec  movzx    edx, byte ptr [rsp + 0x44]
+0000000140240bf1  lea      rax, [rsp + 0x58]
+0000000140240bf6  movzx    r8d, cl
+0000000140240bfa  mov      qword ptr [rsp + 0x20], rax
+0000000140240bff  mov      rcx, r13
+0000000140240c02  lea      r9, [rsp + 0x60]
+0000000140240c07  call     0x140240530 ; CRuleTables::GetHPCONBonus+0x0
+0000000140240c0c  movzx    eax, byte ptr [rsp + 0x4c]
+0000000140240c11  cmp      byte ptr [rsp + 0x55], al
+0000000140240c15  jb       0x140240cb1
+0000000140240c1b  movzx    edx, r12b
+0000000140240c1f  movzx    r8d, byte ptr [rsp + 0x44]
+0000000140240c25  cmp      byte ptr [rsp + 0x4d], al
+0000000140240c29  jb       0x140240c57
+0000000140240c2b  mov      eax, dword ptr [rsp + 0x58]
+0000000140240c2f  mov      r9, r15
+0000000140240c32  mov      dword ptr [rsp + 0x38], edi
+0000000140240c36  mov      rcx, r13
+0000000140240c39  mov      dword ptr [rsp + 0x30], r14d
+0000000140240c3e  mov      dword ptr [rsp + 0x28], eax
+0000000140240c42  mov      qword ptr [rsp + 0x20], rbx
+0000000140240c47  call     0x14024adf0 ; CRuleTables::RollHitPoints+0x0
+0000000140240c4c  mov      esi, eax
+0000000140240c4e  add      esi, dword ptr [rsp + 0x48]
+0000000140240c52  jmp      0x140240f70 ; CRuleTables::GetHitPoints+0x500
+0000000140240c57  movzx    r9d, al
+0000000140240c5b  mov      rcx, r15
+0000000140240c5e  call     0x140153de0 ; CDerivedStats::SetLevel+0x0
+0000000140240c63  mov      eax, dword ptr [rsp + 0x58]
+0000000140240c67  mov      r9, r15
+0000000140240c6a  movzx    r8d, byte ptr [rsp + 0x44]
+0000000140240c70  movzx    edx, r12b
+0000000140240c74  mov      dword ptr [rsp + 0x38], edi
+0000000140240c78  mov      rcx, r13
+0000000140240c7b  mov      dword ptr [rsp + 0x30], r14d
+0000000140240c80  mov      dword ptr [rsp + 0x28], eax
+0000000140240c84  mov      qword ptr [rsp + 0x20], rbx
+0000000140240c89  call     0x14024adf0 ; CRuleTables::RollHitPoints+0x0
+0000000140240c8e  movzx    r9d, byte ptr [rsp + 0x4d]
+0000000140240c94  movzx    edx, r12b
+0000000140240c98  movzx    r8d, byte ptr [rsp + 0x44]
+0000000140240c9e  mov      rcx, r15
+0000000140240ca1  mov      esi, eax
+0000000140240ca3  call     0x140153de0 ; CDerivedStats::SetLevel+0x0
+0000000140240ca8  add      esi, dword ptr [rsp + 0x48]
+0000000140240cac  jmp      0x140240f70 ; CRuleTables::GetHitPoints+0x500
+0000000140240cb1  mov      esi, edi
+0000000140240cb3  add      esi, dword ptr [rsp + 0x48]
+0000000140240cb7  jmp      0x140240f70 ; CRuleTables::GetHitPoints+0x500
+0000000140240cbc  mov      rcx, qword ptr [rsp + 0x70]
+0000000140240cc1  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+0000000140240cc6  movzx    eax, al
+0000000140240cc9  dec      eax
+0000000140240ccb  cmp      eax, 0x14
+0000000140240cce  ja       0x140240e1a
+0000000140240cd4  lea      rdx, [rip - 0x240cdb]
+0000000140240cdb  cdqe
+0000000140240cdd  mov      ecx, dword ptr [rdx + rax*4 + 0x240fa0]
+0000000140240ce4  add      rcx, rdx
+0000000140240ce7  jmp      rcx
+0000000140240ce9  mov      dword ptr [rsp + 0x5c], r14d
+0000000140240cee  mov      byte ptr [rsp + 0x40], r12b
+0000000140240cf3  jmp      0x140240e1f ; CRuleTables::GetHitPoints+0x3af
+0000000140240cf8  movzx    eax, byte ptr [rip + 0x34b1fc]
+0000000140240cff  mov      byte ptr [rsp + 0x40], al
+0000000140240d03  mov      ebx, 2
+0000000140240d08  movzx    eax, byte ptr [rip + 0x34b1eb]
+0000000140240d0f  mov      byte ptr [rsp + 0x41], al
+0000000140240d13  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240d18  movzx    eax, byte ptr [rip + 0x34b1dc]
+0000000140240d1f  mov      ebx, 2
+0000000140240d24  mov      byte ptr [rsp + 0x40], al
+0000000140240d28  movzx    eax, byte ptr [rip + 0x34b1cd]
+0000000140240d2f  mov      byte ptr [rsp + 0x41], al
+0000000140240d33  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240d38  movzx    eax, byte ptr [rip + 0x34b1bc]
+0000000140240d3f  mov      ebx, 2
+0000000140240d44  mov      byte ptr [rsp + 0x40], al
+0000000140240d48  movzx    eax, byte ptr [rip + 0x34b1b5]
+0000000140240d4f  mov      byte ptr [rsp + 0x41], al
+0000000140240d53  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240d58  movzx    eax, byte ptr [rip + 0x34b19d]
+0000000140240d5f  mov      ebx, 2
+0000000140240d64  mov      byte ptr [rsp + 0x40], al
+0000000140240d68  movzx    eax, byte ptr [rip + 0x34b196]
+0000000140240d6f  mov      byte ptr [rsp + 0x41], al
+0000000140240d73  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240d78  movzx    eax, byte ptr [rip + 0x34b17c]
+0000000140240d7f  mov      byte ptr [rsp + 0x40], al
+0000000140240d83  mov      ebx, 2
+0000000140240d88  movzx    eax, byte ptr [rip + 0x34b16e]
+0000000140240d8f  mov      byte ptr [rsp + 0x41], al
+0000000140240d93  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240d98  movzx    eax, byte ptr [rip + 0x34b15c]
+0000000140240d9f  mov      ebx, 3
+0000000140240da4  mov      byte ptr [rsp + 0x40], al
+0000000140240da8  movzx    eax, byte ptr [rip + 0x34b14b]
+0000000140240daf  mov      byte ptr [rsp + 0x41], al
+0000000140240db3  movzx    eax, byte ptr [rip + 0x34b143]
+0000000140240dba  mov      byte ptr [rsp + 0x42], al
+0000000140240dbe  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240dc0  movzx    eax, byte ptr [rip + 0x34b133]
+0000000140240dc7  jmp      0x140240d7f ; CRuleTables::GetHitPoints+0x30f
+0000000140240dc9  movzx    eax, byte ptr [rip + 0x34b12c]
+0000000140240dd0  jmp      0x140240cff ; CRuleTables::GetHitPoints+0x28f
+0000000140240dd5  movzx    eax, byte ptr [rip + 0x34b120]
+0000000140240ddc  mov      ebx, 2
+0000000140240de1  mov      byte ptr [rsp + 0x40], al
+0000000140240de5  movzx    eax, byte ptr [rip + 0x34b111]
+0000000140240dec  mov      byte ptr [rsp + 0x41], al
+0000000140240df0  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240df2  movzx    eax, byte ptr [rip + 0x34b102]
+0000000140240df9  mov      ebx, 3
+0000000140240dfe  mov      byte ptr [rsp + 0x40], al
+0000000140240e02  movzx    eax, byte ptr [rip + 0x34b0f1]
+0000000140240e09  mov      byte ptr [rsp + 0x41], al
+0000000140240e0d  movzx    eax, byte ptr [rip + 0x34b0e8]
+0000000140240e14  mov      byte ptr [rsp + 0x42], al
+0000000140240e18  jmp      0x140240e22 ; CRuleTables::GetHitPoints+0x3b2
+0000000140240e1a  mov      byte ptr [rsp + 0x40], 2
+0000000140240e1f  mov      ebx, r14d
+0000000140240e22  movzx    r8d, byte ptr [rbp + 0xcb0]
+0000000140240e2a  lea      rax, [rsp + 0x58]
+0000000140240e2f  lea      r9, [rsp + 0x60]
+0000000140240e34  mov      qword ptr [rsp + 0x20], rax
+0000000140240e39  movzx    edx, r12b
+0000000140240e3d  mov      dword ptr [rsp + 0x48], ebx
+0000000140240e41  mov      rcx, r13
+0000000140240e44  call     0x140240530 ; CRuleTables::GetHPCONBonus+0x0
+0000000140240e49  mov      esi, edi
+0000000140240e4b  mov      rdx, qword ptr [rsp + 0x68]
+0000000140240e50  mov      ecx, ebx
+0000000140240e52  mov      qword ptr [rsp + 0x70], rcx
+0000000140240e57  cmp      dword ptr [rsp + 0x50], edi
+0000000140240e5b  je       0x140240f0d
+0000000140240e61  cmp      ebx, r14d
+0000000140240e64  je       0x140240f10
+0000000140240e6a  cmp      word ptr [rdx + 0x46], r14w
+0000000140240e6f  je       0x140240f10
+0000000140240e75  mov      dword ptr [rbp - 0x3a], 0x10001
+0000000140240e7c  mov      word ptr [rbp - 0x36], r14w
+0000000140240e81  cmp      word ptr [rdx + 0x4a], di
+0000000140240e85  jne      0x140240e8b
+0000000140240e87  mov      word ptr [rbp - 0x36], di
+0000000140240e8b  mov      eax, edi
+0000000140240e8d  test     ebx, ebx
+0000000140240e8f  je       0x140240eeb
+0000000140240e91  mov      rbx, rcx
+0000000140240e94  nop      dword ptr [rax]
+0000000140240e98  nop      dword ptr [rax + rax]
+0000000140240ea0  mov      eax, dword ptr [rsp + 0x5c]
+0000000140240ea4  mov      r9, r15
+0000000140240ea7  movzx    r8d, byte ptr [rsp + rsi + 0x40]
+0000000140240ead  movzx    edx, r12b
+0000000140240eb1  mov      dword ptr [rsp + 0x38], eax
+0000000140240eb5  mov      rcx, r13
+0000000140240eb8  mov      eax, dword ptr [rsp + 0x58]
+0000000140240ebc  mov      dword ptr [rsp + 0x30], r14d
+0000000140240ec1  mov      dword ptr [rsp + 0x28], eax
+0000000140240ec5  lea      rax, [rbp - 0x80]
+0000000140240ec9  mov      qword ptr [rsp + 0x20], rax
+0000000140240ece  call     0x14024adf0 ; CRuleTables::RollHitPoints+0x0
+0000000140240ed3  add      edi, eax
+0000000140240ed5  inc      rsi
+0000000140240ed8  cmp      rsi, rbx
+0000000140240edb  jl       0x140240ea0
+0000000140240edd  mov      ebx, dword ptr [rsp + 0x48]
+0000000140240ee1  mov      dword ptr [rsp + 0x50], edi
+0000000140240ee5  xor      edi, edi
+0000000140240ee7  mov      eax, dword ptr [rsp + 0x50]
+0000000140240eeb  cdq
+0000000140240eec  mov      dword ptr [r15 + 0x46], 0x10001
+0000000140240ef4  idiv     ebx
+0000000140240ef6  mov      rdx, qword ptr [rsp + 0x68]
+0000000140240efb  mov      esi, eax
+0000000140240efd  cmp      word ptr [rdx + 0x4a], 0
+0000000140240f02  je       0x140240f09
+0000000140240f04  mov      word ptr [r15 + 0x4a], r14w
+0000000140240f09  mov      dword ptr [rsp + 0x50], edi
+0000000140240f0d  mov      r14d, ebx
+0000000140240f10  mov      rbx, qword ptr [rsp + 0x70]
+0000000140240f15  nop      word ptr [rax + rax]
+0000000140240f20  mov      eax, dword ptr [rsp + 0x5c]
+0000000140240f24  mov      r9, r15
+0000000140240f27  movzx    r8d, byte ptr [rsp + rdi + 0x40]
+0000000140240f2d  mov      rcx, r13
+0000000140240f30  mov      dword ptr [rsp + 0x38], eax
+0000000140240f34  mov      eax, dword ptr [rsp + 0x58]
+0000000140240f38  mov      dword ptr [rsp + 0x30], r14d
+0000000140240f3d  mov      dword ptr [rsp + 0x28], eax
+0000000140240f41  mov      qword ptr [rsp + 0x20], rdx
+0000000140240f46  movzx    edx, r12b
+0000000140240f4a  call     0x14024adf0 ; CRuleTables::RollHitPoints+0x0
+0000000140240f4f  mov      rdx, qword ptr [rsp + 0x68]
+0000000140240f54  add      esi, eax
+0000000140240f56  inc      rdi
+0000000140240f59  cmp      rdi, rbx
+0000000140240f5c  jl       0x140240f20
+0000000140240f5e  cmp      dword ptr [rsp + 0x50], 0
+0000000140240f63  mov      ebx, dword ptr [rsp + 0x48]
+0000000140240f67  je       0x140240f70
+0000000140240f69  mov      eax, esi
+0000000140240f6b  cdq
+0000000140240f6c  idiv     ebx
+0000000140240f6e  mov      esi, eax
+0000000140240f70  lea      rcx, [rbp - 0x80]
+0000000140240f74  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+0000000140240f79  mov      eax, esi
+0000000140240f7b  mov      rcx, qword ptr [rbp + 0xc30]
+0000000140240f82  xor      rcx, rsp
+0000000140240f85  call     0x1404f67c0 ; __security_check_cookie+0x0
+0000000140240f8a  add      rsp, 0xd48
+0000000140240f91  pop      r15
+0000000140240f93  pop      r14
+0000000140240f95  pop      r13
+0000000140240f97  pop      r12
+0000000140240f99  pop      rdi
+0000000140240f9a  pop      rsi
+0000000140240f9b  pop      rbx
+0000000140240f9c  pop      rbp
+0000000140240f9d  ret
+0000000140240f9e  nop
+0000000140240fa0  jmp      0x1292433b1 ; ?
+0000000140240fa5  or       al, 0x24
+0000000140240fa7  add      cl, ch
+0000000140240fa9  or       al, 0x24
+0000000140240fab  add      cl, ch
+0000000140240fad  or       al, 0x24
+0000000140240faf  add      cl, ch
+0000000140240fb1  or       al, 0x24
+0000000140240fb3  add      cl, ch
+0000000140240fb5  or       al, 0x24
+0000000140240fb7  add      al, bh
+0000000140240fb9  or       al, 0x24
+0000000140240fbb  add      byte ptr [rax], bl
+0000000140240fbd  or       eax, 0xd780024
+0000000140240fc2  and      al, 0
+0000000140240fc4  cwde
+0000000140240fc5  or       eax, 0xce90024
+0000000140240fca  and      al, 0
+0000000140240fcc  jmp      0x1002433dd ; ?
+0000000140240fd1  or       eax, 0xdc90024
+0000000140240fd6  and      al, 0
+
+CRuleTables::RollHitPoints+0x0 [0x14024abd0, 0x14024adf0)
+000000014024abd0  mov      r11, rsp
+000000014024abd3  mov      qword ptr [r11 + 0x10], rdx
+000000014024abd7  push     rbp
+000000014024abd8  push     rbx
+000000014024abd9  push     rsi
+000000014024abda  push     r13
+000000014024abdc  push     r15
+000000014024abde  mov      rbp, rsp
+000000014024abe1  sub      rsp, 0x60
+000000014024abe5  mov      rax, qword ptr [rip + 0x410f24]
+000000014024abec  xor      r13d, r13d
+000000014024abef  movzx    esi, r9b
+000000014024abf3  mov      rbx, rdx
+000000014024abf6  movzx    r15d, r8b
+000000014024abfa  inc      r15d
+000000014024abfd  mov      qword ptr [rbp - 0x20], rax
+000000014024ac01  mov      dword ptr [rbp - 0x28], esi
+000000014024ac04  cmp      r15d, esi
+000000014024ac07  ja       0x14024add2
+000000014024ac0d  mov      qword ptr [r11 + 8], rdi
+000000014024ac11  mov      qword ptr [r11 - 0x30], r12
+000000014024ac15  mov      qword ptr [r11 - 0x38], r14
+000000014024ac19  nop      dword ptr [rax]
+000000014024ac20  mov      r8d, r15d
+000000014024ac23  lea      rdx, [rip + 0x3bc126]
+000000014024ac2a  lea      rcx, [rbp - 0x20]
+000000014024ac2e  call     0x1403fe080 ; CString::Format+0x0
+000000014024ac33  lea      r8, [rbp - 0x20]
+000000014024ac37  mov      rcx, rbx
+000000014024ac3a  lea      rdx, [rip + 0x442357]
+000000014024ac41  call     0x1401151c0 ; C2DArray::GetAt+0x0
+000000014024ac46  lea      r8, [rbp + 0x40]
+000000014024ac4a  lea      rdx, [rip + 0x3bc0ff]
+000000014024ac51  mov      rcx, qword ptr [rax]
+000000014024ac54  call     0x1400580f0 ; sscanf+0x0
+000000014024ac59  lea      r8, [rbp - 0x20]
+000000014024ac5d  mov      rcx, rbx
+000000014024ac60  lea      rdx, [rip + 0x442339]
+000000014024ac67  call     0x1401151c0 ; C2DArray::GetAt+0x0
+000000014024ac6c  lea      r8, [rbp - 0x40]
+000000014024ac70  lea      rdx, [rip + 0x3bc0d9]
+000000014024ac77  mov      rcx, qword ptr [rax]
+000000014024ac7a  call     0x1400580f0 ; sscanf+0x0
+000000014024ac7f  lea      r8, [rbp - 0x20]
+000000014024ac83  mov      rcx, rbx
+000000014024ac86  lea      rdx, [rip + 0x44231b]
+000000014024ac8d  call     0x1401151c0 ; C2DArray::GetAt+0x0
+000000014024ac92  lea      r8, [rbp + 0x48]
+000000014024ac96  lea      rdx, [rip + 0x3bc0b3]
+000000014024ac9d  mov      rcx, qword ptr [rax]
+000000014024aca0  call     0x1400580f0 ; sscanf+0x0
+000000014024aca5  cmp      dword ptr [rbp + 0x60], 0
+000000014024aca9  mov      edi, dword ptr [rbp + 0x40]
+000000014024acac  cmovne   edi, dword ptr [rbp + 0x68]
+000000014024acb0  cmp      dword ptr [rbp + 0x70], 0
+000000014024acb4  mov      r12d, dword ptr [rbp + 0x48]
+000000014024acb8  cmovne   r12d, dword ptr [rbp + 0x78]
+000000014024acbd  mov      rax, qword ptr [rip + 0x41a3dc]
+000000014024acc4  mov      dword ptr [rbp + 0x48], r12d
+000000014024acc8  mov      dword ptr [rbp + 0x40], edi
+000000014024accb  mov      rcx, qword ptr [rax + 0x1090]
+000000014024acd2  cmp      dword ptr [rcx + 0x7ec0], 0
+000000014024acd9  je       0x14024acf2
+000000014024acdb  mov      eax, dword ptr [rbp - 0x40]
+000000014024acde  test     eax, eax
+000000014024ace0  je       0x14024acea
+000000014024ace2  imul     eax, edi
+000000014024ace5  jmp      0x14024ad96 ; CRuleTables::RollHitPoints+0x1c6
+000000014024acea  mov      eax, r12d
+000000014024aced  jmp      0x14024ad96 ; CRuleTables::RollHitPoints+0x1c6
+000000014024acf2  mov      eax, dword ptr [rbp + 0x50]
+000000014024acf5  test     edi, edi
+000000014024acf7  mov      r14d, dword ptr [rbp - 0x40]
+000000014024acfb  mov      dword ptr [rbp - 0x30], eax
+000000014024acfe  mov      eax, 8
+000000014024ad03  cmove    edi, eax
+000000014024ad06  mov      rax, qword ptr [rip + 0x41a38b]
+000000014024ad0d  xor      ebx, ebx
+000000014024ad0f  cmp      byte ptr [rax + 0x2c9], 1
+000000014024ad16  jne      0x14024ad20
+000000014024ad18  mov      eax, dword ptr [rcx + 0x7d4c]
+000000014024ad1e  jmp      0x14024ad26 ; CRuleTables::RollHitPoints+0x156
+000000014024ad20  mov      eax, dword ptr [rcx + 0x7d48]
+000000014024ad26  shr      eax, 0x1f
+000000014024ad29  cmp      r15d, 1
+000000014024ad2d  jle      0x14024ad82
+000000014024ad2f  test     eax, eax
+000000014024ad31  jne      0x14024ad82
+000000014024ad33  test     r14d, r14d
+000000014024ad36  jle      0x14024ad88
+000000014024ad38  mov      rsi, r14
+000000014024ad3b  nop      dword ptr [rax + rax]
+000000014024ad40  call     0x14050835c ; rand+0x0
+000000014024ad45  cdq
+000000014024ad46  idiv     edi
+000000014024ad48  mov      dword ptr [rbp - 0x3c], edx
+000000014024ad4b  call     0x14050835c ; rand+0x0
+000000014024ad50  cdq
+000000014024ad51  lea      rcx, [rbp - 0x38]
+000000014024ad55  idiv     edi
+000000014024ad57  mov      dword ptr [rbp - 0x38], edx
+000000014024ad5a  lea      rdx, [rbp - 0x3c]
+000000014024ad5e  call     0x140406d10 ; max+0x0
+000000014024ad63  inc      eax
+000000014024ad65  lea      rdx, [rbp - 0x34]
+000000014024ad69  lea      rcx, [rbp - 0x30]
+000000014024ad6d  mov      dword ptr [rbp - 0x34], eax
+000000014024ad70  call     0x140406d10 ; max+0x0
+000000014024ad75  add      ebx, eax
+000000014024ad77  sub      rsi, 1
+000000014024ad7b  jne      0x14024ad40
+000000014024ad7d  mov      esi, dword ptr [rbp - 0x28]
+000000014024ad80  jmp      0x14024ad88 ; CRuleTables::RollHitPoints+0x1b8
+000000014024ad82  mov      ebx, edi
+000000014024ad84  imul     ebx, r14d
+000000014024ad88  lea      eax, [r12 + rbx]
+000000014024ad8c  test     r14d, r14d
+000000014024ad8f  cmovne   eax, ebx
+000000014024ad92  mov      rbx, qword ptr [rbp + 0x38]
+000000014024ad96  cdq
+000000014024ad97  mov      dword ptr [rbp - 0x30], 1
+000000014024ad9e  idiv     dword ptr [rbp + 0x58]
+000000014024ada1  lea      rdx, [rbp - 0x24]
+000000014024ada5  lea      rcx, [rbp - 0x30]
+000000014024ada9  mov      dword ptr [rbp - 0x24], eax
+000000014024adac  call     0x140406d10 ; max+0x0
+000000014024adb1  add      r13d, eax
+000000014024adb4  inc      r15d
+000000014024adb7  cmp      r15d, esi
+000000014024adba  jle      0x14024ac20
+000000014024adc0  mov      r14, qword ptr [rsp + 0x50]
+000000014024adc5  mov      r12, qword ptr [rsp + 0x58]
+000000014024adca  mov      rdi, qword ptr [rsp + 0x90]
+000000014024add2  lea      rcx, [rbp - 0x20]
+000000014024add6  call     0x1403fce00 ; CString::~CString+0x0
+000000014024addb  mov      eax, r13d
+000000014024adde  add      rsp, 0x60
+000000014024ade2  pop      r15
+000000014024ade4  pop      r13
+000000014024ade6  pop      rsi
+000000014024ade7  pop      rbx
+000000014024ade8  pop      rbp
+000000014024ade9  ret
+000000014024adea  int3
+000000014024adeb  int3
+000000014024adec  int3
+000000014024aded  int3
+000000014024adee  int3
+000000014024adef  int3
+
+CRuleTables::RollHitPoints+0x0 [0x14024adf0, 0x14024af80)
+000000014024adf0  push     rbp
+000000014024adf2  push     rbx
+000000014024adf3  push     rsi
+000000014024adf4  push     rdi
+000000014024adf5  push     r12
+000000014024adf7  push     r14
+000000014024adf9  push     r15
+000000014024adfb  lea      rbp, [rsp - 7]
+000000014024ae00  sub      rsp, 0xb0
+000000014024ae07  mov      rax, qword ptr [rip + 0x41770a]
+000000014024ae0e  xor      rax, rsp
+000000014024ae11  mov      qword ptr [rbp - 9], rax
+000000014024ae15  mov      r14, qword ptr [rbp + 0x67]
+000000014024ae19  mov      rbx, rcx
+000000014024ae1c  mov      rcx, r9
+000000014024ae1f  movzx    edi, r8b
+000000014024ae23  movzx    esi, dl
+000000014024ae26  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+000000014024ae2b  movzx    r8d, dil
+000000014024ae2f  movzx    edx, sil
+000000014024ae33  mov      rcx, r14
+000000014024ae36  movzx    r15d, al
+000000014024ae3a  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+000000014024ae3f  cmp      dword ptr [rbp + 0x7f], 0
+000000014024ae43  lea      rdx, [rbp - 0x51]
+000000014024ae47  mov      rcx, qword ptr [rip + 0x410cc2]
+000000014024ae4e  movzx    r12d, al
+000000014024ae52  mov      qword ptr [rbp - 0x59], rcx
+000000014024ae56  mov      rcx, rbx
+000000014024ae59  je       0x14024ae68
+000000014024ae5b  mov      r9d, dword ptr [r14 + 0x224]
+000000014024ae62  movzx    r8d, sil
+000000014024ae66  jmp      0x14024ae72 ; CRuleTables::RollHitPoints+0x82
+000000014024ae68  mov      r9d, 0x4000
+000000014024ae6e  movzx    r8d, dil
+000000014024ae72  call     0x14023da50 ; CRuleTables::GetClassString+0x0
+000000014024ae77  mov      rdx, rax
+000000014024ae7a  lea      rcx, [rbp - 0x59]
+000000014024ae7e  call     0x1403fce30 ; CString::operator=+0x0
+000000014024ae83  lea      rcx, [rbp - 0x51]
+000000014024ae87  call     0x1403fce00 ; CString::~CString+0x0
+000000014024ae8c  lea      rdx, [rip + 0x3450a9]
+000000014024ae93  lea      rcx, [rbp - 0x51]
+000000014024ae97  call     0x1403fcd70 ; CString::CString+0x0
+000000014024ae9c  lea      rcx, [rbx + 0x578]
+000000014024aea3  lea      r8, [rbp - 0x59]
+000000014024aea7  lea      rdx, [rbp - 0x51]
+000000014024aeab  call     0x1401151c0 ; C2DArray::GetAt+0x0
+000000014024aeb0  mov      rdx, rax
+000000014024aeb3  lea      rcx, [rbp - 0x49]
+000000014024aeb7  call     0x1403fedd0 ; CResRef::CResRef+0x0
+000000014024aebc  lea      rcx, [rbp - 0x51]
+000000014024aec0  call     0x1403fce00 ; CString::~CString+0x0
+000000014024aec5  lea      rcx, [rbp - 0x39]
+000000014024aec9  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+000000014024aece  xor      edi, edi
+000000014024aed0  lea      r8, [rip + 0x39f546]
+000000014024aed7  lea      rdx, [rbp - 0x51]
+000000014024aedb  mov      qword ptr [rbp - 0x41], rdi
+000000014024aedf  lea      rcx, [rbp - 0x39]
+000000014024aee3  call     0x1403ff020 ; CResRef::operator=+0x0
+000000014024aee8  mov      rax, qword ptr [rip + 0x410c21]
+000000014024aeef  lea      rdx, [rbp - 0x49]
+000000014024aef3  xorps    xmm0, xmm0
+000000014024aef6  mov      qword ptr [rbp - 0x19], rax
+000000014024aefa  lea      rcx, [rbp - 0x41]
+000000014024aefe  mov      qword ptr [rbp - 0x21], rdi
+000000014024af02  movdqu   xmmword ptr [rbp - 0x31], xmm0
+000000014024af07  mov      dword ptr [rbp - 0x11], edi
+000000014024af0a  call     0x140115350 ; C2DArray::Load+0x0
+000000014024af0f  mov      eax, dword ptr [rbp + 0x77]
+000000014024af12  lea      rdx, [rbp - 0x41]
+000000014024af16  mov      dword ptr [rsp + 0x48], edi
+000000014024af1a  movzx    r9d, r12b
+000000014024af1e  mov      dword ptr [rsp + 0x40], edi
+000000014024af22  movzx    r8d, r15b
+000000014024af26  mov      dword ptr [rsp + 0x38], edi
+000000014024af2a  mov      rcx, rbx
+000000014024af2d  mov      dword ptr [rsp + 0x30], edi
+000000014024af31  mov      dword ptr [rsp + 0x28], eax
+000000014024af35  mov      eax, dword ptr [rbp + 0x6f]
+000000014024af38  mov      dword ptr [rsp + 0x20], eax
+000000014024af3c  call     0x14024abd0 ; CRuleTables::RollHitPoints+0x0
+000000014024af41  lea      rcx, [rbp - 0x41]
+000000014024af45  mov      ebx, eax
+000000014024af47  call     0x140131310 ; C2DArray::~C2DArray+0x0
+000000014024af4c  lea      rcx, [rbp - 0x59]
+000000014024af50  call     0x1403fce00 ; CString::~CString+0x0
+000000014024af55  mov      eax, ebx
+000000014024af57  mov      rcx, qword ptr [rbp - 9]
+000000014024af5b  xor      rcx, rsp
+000000014024af5e  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014024af63  add      rsp, 0xb0
+000000014024af6a  pop      r15
+000000014024af6c  pop      r14
+000000014024af6e  pop      r12
+000000014024af70  pop      rdi
+000000014024af71  pop      rsi
+000000014024af72  pop      rbx
+000000014024af73  pop      rbp
+000000014024af74  ret
+000000014024af75  int3
+000000014024af76  int3
+000000014024af77  int3
+000000014024af78  int3
+000000014024af79  int3
+000000014024af7a  int3
+000000014024af7b  int3
+000000014024af7c  int3
+000000014024af7d  int3
+000000014024af7e  int3
+000000014024af7f  int3
+
+DIRECT CALL/JMP XREFS (executable sections; function-name attribution is nearest preceding symbol)
+0x1401b86b1 call 0x140240a70 CRuleTables::GetHitPoints FROM CGameEffectLevel::ApplyEffect+0xb21
+0x1401e64a0 call 0x140240a70 CRuleTables::GetHitPoints FROM CGameEffectLevelDrain::OnAddSpecific+0xac0
+0x140240bbc call 0x14024adf0 CRuleTables::RollHitPoints FROM CRuleTables::GetHitPoints+0x14c
+0x140240c47 call 0x14024adf0 CRuleTables::RollHitPoints FROM CRuleTables::GetHitPoints+0x1d7
+0x140240c89 call 0x14024adf0 CRuleTables::RollHitPoints FROM CRuleTables::GetHitPoints+0x219
+0x140240ece call 0x14024adf0 CRuleTables::RollHitPoints FROM CRuleTables::GetHitPoints+0x45e
+0x140240f4a call 0x14024adf0 CRuleTables::RollHitPoints FROM CRuleTables::GetHitPoints+0x4da
+0x14024af3c call 0x14024abd0 CRuleTables::RollHitPoints FROM CRuleTables::RollHitPoints+0x14c
+0x1402b25d8 call 0x140240a70 CRuleTables::GetHitPoints FROM CScreenCreateChar::CompleteCharacterAbilities+0x98
+0x1402b2621 call 0x140240a70 CRuleTables::GetHitPoints FROM CScreenCreateChar::CompleteCharacterAbilities+0xe1
+0x1402b39d0 call 0x140240a70 CRuleTables::GetHitPoints FROM CScreenCreateChar::CompleteCharacterWrapup+0xc0
+0x1402bfd68 call 0x140240a70 CRuleTables::GetHitPoints FROM CScreenCreateChar::ResetLevelUpPanel+0xb08

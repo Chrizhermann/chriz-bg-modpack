@@ -16,7 +16,6 @@ LIB_DIR = ROOT / "chriz-bg-modpack/lib"
 LIBRARIES = {
     400: LIB_DIR / "cbm_branwen_hammer_fix.tpa",
     410: LIB_DIR / "cbm_yeslick_keldorn_dispel_fix.tpa",
-    430: LIB_DIR / "cbm_uai_caster_level.tpa",
     440: LIB_DIR / "cbm_ascension_slayer_eefp_fix.tpa",
     450: LIB_DIR / "cbm_scs_shapechange_eefp_fix.tpa",
 }
@@ -479,36 +478,6 @@ def dispel_resources() -> dict[str, bytes]:
     return {"SPIN112.SPL": yeslick, "SPCL231.SPL": keldorn}
 
 
-def uai_resources() -> dict[str, bytes]:
-    return {
-        "SCRLZERO.ITM": make_itm(
-            11,
-            [[
-                effect(146, p1=0, p2=0, resource="SPELLA", marker=0x11),
-                effect(148, p1=9, p2=1, resource="SPELLB", marker=0x12),
-                effect(12, p1=99, p2=7, resource="DAMAGE", marker=0x13),
-            ]],
-            footer=b"SCROLL-ZERO",
-        ),
-        "SCRLFIX.ITM": make_itm(
-            11,
-            [[
-                effect(146, p1=10, p2=0, resource="FIXED", marker=0x21),
-                effect(148, p1=12, p2=2, resource="INSTANT", marker=0x22),
-            ]],
-        ),
-        "SCRLALT.ITM": make_itm(
-            11,
-            [[effect(146, p1=0, p2=0, resource="NOTCAST", marker=0x31)]],
-            ability_types=[1],
-        ),
-        "WANDZERO.ITM": make_itm(
-            34,
-            [[effect(146, p1=0, p2=0, resource="WAND", marker=0x41)]],
-        ),
-    }
-
-
 def slayer_resources() -> dict[str, bytes]:
     resources: dict[str, bytes] = {}
     for number in (2, 3, 4):
@@ -954,23 +923,6 @@ BUT_ONLY
                 self.assertIn("NOT INSTALLED DUE TO ERRORS", game.transcript(result))
                 self.assertEqual(game.initial_override, file_tree(game.override))
                 game.assert_stable_inputs(self)
-
-    def test_430_rewrites_only_flooring_scroll_cast_effects_and_uninstalls(self):
-        with tempfile.TemporaryDirectory(prefix="cbm-spell-430-") as raw:
-            source = uai_resources()
-            game = SyntheticSpellGame(Path(raw) / "game", source)
-            self.install(game, 430)
-            transformed = file_tree(game.override)
-
-            rows = itm_effects(transformed["SCRLZERO.ITM"], equipped=False)
-            self.assertEqual((15, 0), (p1(rows[0]), p2(rows[0])))
-            self.assertEqual((15, 0), (p1(rows[1]), p2(rows[1])))
-            self.assertEqual(itm_effects(source["SCRLZERO.ITM"], equipped=False)[2], rows[2])
-            for untouched in ("SCRLFIX.ITM", "SCRLALT.ITM", "WANDZERO.ITM"):
-                self.assertEqual(source[untouched], transformed[untouched])
-            patched = {name: transformed[name] for name in source}
-            self.uninstall(game, 430)
-        self.assert_already_patched_is_stable(430, patched)
 
     def test_440_repoints_only_broken_slayer_subspell_links_and_uninstalls(self):
         with tempfile.TemporaryDirectory(prefix="cbm-spell-440-") as raw:

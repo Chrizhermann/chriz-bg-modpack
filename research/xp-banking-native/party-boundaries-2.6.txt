@@ -1,0 +1,192 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CInfGame::AddCharacterToParty+0x0 [0x14026d070, 0x14026d360)
+000000014026d070  push     rbx
+000000014026d072  push     rbp
+000000014026d073  push     rsi
+000000014026d074  push     rdi
+000000014026d075  push     r15
+000000014026d077  sub      rsp, 0x40
+000000014026d07b  mov      rax, qword ptr [rip + 0x3f5496]
+000000014026d082  xor      rax, rsp
+000000014026d085  mov      qword ptr [rsp + 0x38], rax
+000000014026d08a  movsxd   rsi, edx
+000000014026d08d  xor      ebp, ebp
+000000014026d08f  movzx    r15d, r8w
+000000014026d093  mov      rbx, rcx
+000000014026d096  cmp      esi, -1
+000000014026d099  je       0x14026d0c2
+000000014026d09b  movzx    ecx, bp
+000000014026d09e  nop
+000000014026d0a0  movsx    rax, cx
+000000014026d0a4  cmp      dword ptr [rbx + rax*4 + 0x6618], esi
+000000014026d0ab  je       0x14026d0b8
+000000014026d0ad  inc      cx
+000000014026d0b0  cmp      cx, 6
+000000014026d0b4  jl       0x14026d0a0
+000000014026d0b6  jmp      0x14026d0c2 ; CInfGame::AddCharacterToParty+0x52
+000000014026d0b8  cmp      cx, -1
+000000014026d0bc  jne      0x14026d339
+000000014026d0c2  cmp      word ptr [rbx + 0x6630], 6
+000000014026d0ca  jge      0x14026d339
+000000014026d0d0  xor      r8d, r8d
+000000014026d0d3  mov      qword ptr [rsp + 0x88], r14
+000000014026d0db  mov      rdx, rsi
+000000014026d0de  lea      rcx, [rbx + 0x66f0]
+000000014026d0e5  call     0x140406850 ; CObList::Find+0x0
+000000014026d0ea  test     rax, rax
+000000014026d0ed  je       0x14026d129
+000000014026d0ef  xor      r8d, r8d
+000000014026d0f2  lea      rcx, [rbx + 0x66f0]
+000000014026d0f9  mov      rdx, rsi
+000000014026d0fc  call     0x140406850 ; CObList::Find+0x0
+000000014026d101  test     rax, rax
+000000014026d104  je       0x14026d129
+000000014026d106  mov      rdx, rax
+000000014026d109  lea      rcx, [rbx + 0x66f0]
+000000014026d110  call     0x140406ad0 ; CObList::RemoveAt+0x0
+000000014026d115  cmp      dword ptr [rbx + 0x6708], ebp
+000000014026d11b  jne      0x14026d129
+000000014026d11d  lea      rcx, [rbx + 0x66f0]
+000000014026d124  call     0x140406a90 ; CObList::RemoveAll+0x0
+000000014026d129  xor      r8d, r8d
+000000014026d12c  lea      rcx, [rbx + 0x6728]
+000000014026d133  mov      rdx, rsi
+000000014026d136  call     0x140406850 ; CObList::Find+0x0
+000000014026d13b  test     rax, rax
+000000014026d13e  je       0x14026d17a
+000000014026d140  xor      r8d, r8d
+000000014026d143  lea      rcx, [rbx + 0x6728]
+000000014026d14a  mov      rdx, rsi
+000000014026d14d  call     0x140406850 ; CObList::Find+0x0
+000000014026d152  test     rax, rax
+000000014026d155  je       0x14026d17a
+000000014026d157  mov      rdx, rax
+000000014026d15a  lea      rcx, [rbx + 0x6728]
+000000014026d161  call     0x140406ad0 ; CObList::RemoveAt+0x0
+000000014026d166  cmp      dword ptr [rbx + 0x6740], ebp
+000000014026d16c  jne      0x14026d17a
+000000014026d16e  lea      rcx, [rbx + 0x6728]
+000000014026d175  call     0x140406a90 ; CObList::RemoveAll+0x0
+000000014026d17a  mov      rdx, qword ptr [rbx + 0x6640]
+000000014026d181  mov      r14, qword ptr [rsp + 0x88]
+000000014026d189  mov      rcx, rdx
+000000014026d18c  test     rdx, rdx
+000000014026d18f  je       0x14026d1b0
+000000014026d191  cmp      qword ptr [rcx + 0x10], rsi
+000000014026d195  mov      rcx, qword ptr [rcx]
+000000014026d198  je       0x14026d1a4
+000000014026d19a  mov      rdx, rcx
+000000014026d19d  test     rcx, rcx
+000000014026d1a0  jne      0x14026d191
+000000014026d1a2  jmp      0x14026d1b0 ; CInfGame::AddCharacterToParty+0x140
+000000014026d1a4  lea      rcx, [rbx + 0x6638]
+000000014026d1ab  call     0x140406ad0 ; CObList::RemoveAt+0x0
+000000014026d1b0  cmp      esi, -1
+000000014026d1b3  je       0x14026d339
+000000014026d1b9  mov      eax, esi
+000000014026d1bb  mov      ecx, 0x7fff
+000000014026d1c0  sar      eax, 0x10
+000000014026d1c3  and      ax, cx
+000000014026d1c6  cmp      word ptr [rip + 0x420267], ax
+000000014026d1cd  jl       0x14026d339
+000000014026d1d3  test     si, si
+000000014026d1d6  js       0x14026d339
+000000014026d1dc  cmp      word ptr [rip + 0x420255], si
+000000014026d1e3  jle      0x14026d339
+000000014026d1e9  movzx    edi, ax
+000000014026d1ec  lea      rax, [rip + 0x42025d]
+000000014026d1f3  add      rdi, rdi
+000000014026d1f6  cmp      word ptr [rax + rdi*8], si
+000000014026d1fa  jne      0x14026d339
+000000014026d200  mov      rdi, qword ptr [rax + rdi*8 + 8]
+000000014026d205  cmp      r15w, -1
+000000014026d20a  je       0x14026d213
+000000014026d20c  cmp      r15w, 6
+000000014026d211  jl       0x14026d21b
+000000014026d213  movzx    r15d, word ptr [rbx + 0x6630]
+000000014026d21b  movsx    rax, r15w
+000000014026d21f  mov      rcx, rbp
+000000014026d222  mov      dword ptr [rbx + rax*4 + 0x6618], esi
+000000014026d229  lea      rax, [rbx + 0x6600]
+000000014026d230  cmp      dword ptr [rax], -1
+000000014026d233  je       0x14026d246
+000000014026d235  inc      ebp
+000000014026d237  inc      rcx
+000000014026d23a  add      rax, 4
+000000014026d23e  cmp      rcx, 6
+000000014026d242  jl       0x14026d230
+000000014026d244  jmp      0x14026d250 ; CInfGame::AddCharacterToParty+0x1e0
+000000014026d246  movsxd   rax, ebp
+000000014026d249  mov      dword ptr [rbx + rax*4 + 0x6600], esi
+000000014026d250  mov      rcx, rdi
+000000014026d253  call     0x140357370 ; CGameSprite::GetNameRef+0x0
+000000014026d258  mov      rcx, rdi
+000000014026d25b  call     0x1403736d0 ; CGameSprite::SetFootstepChannel+0x0
+000000014026d260  mov      rax, qword ptr [rip + 0x3ee8a9]
+000000014026d267  lea      rdx, [rdi + 0x488]
+000000014026d26e  lea      rcx, [rsp + 0x28]
+000000014026d273  mov      qword ptr [rsp + 0x20], rax
+000000014026d278  call     0x1403fcd70 ; CString::CString+0x0
+000000014026d27d  lea      r8, [rsp + 0x28]
+000000014026d282  mov      rcx, rbx
+000000014026d285  lea      rdx, [rsp + 0x30]
+000000014026d28a  call     0x14023b270 ; CRuleTables::GetBanterDialogFile+0x0
+000000014026d28f  mov      rdx, rax
+000000014026d292  lea      rcx, [rsp + 0x20]
+000000014026d297  call     0x1403fce30 ; CString::operator=+0x0
+000000014026d29c  lea      rcx, [rsp + 0x30]
+000000014026d2a1  call     0x1403fce00 ; CString::~CString+0x0
+000000014026d2a6  lea      rcx, [rsp + 0x28]
+000000014026d2ab  call     0x1403fce00 ; CString::~CString+0x0
+000000014026d2b0  lea      rcx, [rdi + 0x4c6c]
+000000014026d2b7  lea      r8, [rsp + 0x20]
+000000014026d2bc  lea      rdx, [rsp + 0x30]
+000000014026d2c1  call     0x1403fef50 ; CResRef::operator=+0x0
+000000014026d2c6  cmp      byte ptr [rdi + 0x5d5], 0
+000000014026d2cd  je       0x14026d30f
+000000014026d2cf  movzx    eax, word ptr [rdi + 0x4e40]
+000000014026d2d6  mov      rcx, rdi
+000000014026d2d9  sub      word ptr [rdi + 0x57c], ax
+000000014026d2e0  sub      word ptr [rdi + 0x57e], ax
+000000014026d2e7  sub      word ptr [rdi + 0x1124], ax
+000000014026d2ee  call     0x140362b30 ; CGameSprite::NightmareDowngrade+0x0
+000000014026d2f3  movzx    eax, word ptr [rdi + 0x4e40]
+000000014026d2fa  add      word ptr [rdi + 0x57c], ax
+000000014026d301  add      word ptr [rdi + 0x57e], ax
+000000014026d308  add      word ptr [rdi + 0x1124], ax
+000000014026d30f  mov      r8d, 1
+000000014026d315  movzx    edx, r15b
+000000014026d319  mov      rcx, rbx
+000000014026d31c  call     0x140273d50 ; CInfGame::EnablePortrait+0x0
+000000014026d321  inc      word ptr [rbx + 0x6630]
+000000014026d328  lea      rcx, [rsp + 0x20]
+000000014026d32d  call     0x1403fce00 ; CString::~CString+0x0
+000000014026d332  mov      eax, 1
+000000014026d337  jmp      0x14026d33b ; CInfGame::AddCharacterToParty+0x2cb
+000000014026d339  xor      eax, eax
+000000014026d33b  mov      rcx, qword ptr [rsp + 0x38]
+000000014026d340  xor      rcx, rsp
+000000014026d343  call     0x1404f67c0 ; __security_check_cookie+0x0
+000000014026d348  add      rsp, 0x40
+000000014026d34c  pop      r15
+000000014026d34e  pop      rdi
+000000014026d34f  pop      rsi
+000000014026d350  pop      rbp
+000000014026d351  pop      rbx
+000000014026d352  ret
+000000014026d353  int3
+000000014026d354  int3
+000000014026d355  int3
+000000014026d356  int3
+000000014026d357  int3
+000000014026d358  int3
+000000014026d359  int3
+000000014026d35a  int3
+000000014026d35b  int3
+000000014026d35c  int3
+000000014026d35d  int3
+000000014026d35e  int3
+000000014026d35f  int3

@@ -1,0 +1,77 @@
+menu
+{
+ name 'CBMD_OLD_PICKER'
+ align center center
+ onopen "CBMDOldPickerRefresh()"
+ onclose "CBMDOldPickerClosed()"
+ label { area 0 0 780 550 rectangle 1 rectangle opacity 255 }
+ label { area 24 16 732 36 text lua "CBMDOldPickerTitle" text style 'title' text align center center }
+ label { area 24 56 732 40 text lua "CBMDOldPickerHelp" text style 'normal' text align left center }
+ button { area 24 96 350 28 enabled "CBMDOldPickerHasHlas" bam 'GUIBUTNT' scaleToClip text 'Proficiencies and skills' text style 'button' text align center center action "CBMDOldPickerHlaPage = false" }
+ button { area 406 96 350 28 enabled "CBMDOldPickerHasHlas" bam 'GUIBUTNT' scaleToClip text 'High-level abilities' text style 'button' text align center center action "CBMDOldPickerHlaPage = true" }
+ label { area 24 128 350 24 enabled "not CBMDOldPickerHlaPage" text 'Proficiencies' text style 'normal' }
+ label { area 406 128 350 24 enabled "not CBMDOldPickerHlaPage" text 'Skills' text style 'normal' }
+ list
+ {
+  column
+  {
+   width 70
+   label { area 4 0 236 28 text lua "CBMDOldPickerProfRows[rowNumber].label" text style 'normal' text align left center }
+  }
+  column
+  {
+   width 30
+   label { area 0 0 92 28 text lua "tostring(CBMDOldPickerProfRows[rowNumber].value + CBMDOldPickerProfRows[rowNumber].delta) .. ' / ' .. tostring(CBMDOldPickerProfRows[rowNumber].limit)" text style 'normal' text align center center }
+  }
+  area 24 158 350 224
+  enabled "not CBMDOldPickerHlaPage"
+  table 'CBMDOldPickerProfRows'
+  var 'CBMDOldPickerProfRow'
+  rowheight 28
+  scrollbar 'GUISCRC'
+ }
+ list
+ {
+  column
+  {
+   width 70
+   label { area 4 0 236 28 text lua "CBMDOldPickerSkillRows[rowNumber].label" text style 'normal' text align left center }
+  }
+  column
+  {
+   width 30
+   label { area 0 0 92 28 text lua "tostring(CBMDOldPickerSkillRows[rowNumber].value + CBMDOldPickerSkillRows[rowNumber].delta) .. ' / ' .. tostring(CBMDOldPickerSkillRows[rowNumber].limit)" text style 'normal' text align center center }
+  }
+  area 406 158 350 224
+  enabled "not CBMDOldPickerHlaPage"
+  table 'CBMDOldPickerSkillRows'
+  var 'CBMDOldPickerSkillRow'
+  rowheight 28
+  scrollbar 'GUISCRC'
+ }
+ button { area 24 388 170 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '-1' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('proficiencies', -1)" action "CBMDOldPickerAdjust('proficiencies', -1)" }
+ button { area 204 388 170 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '+1' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('proficiencies', 1)" action "CBMDOldPickerAdjust('proficiencies', 1)" }
+ button { area 406 388 80 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '-10' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('skills', -10)" action "CBMDOldPickerAdjust('skills', -10)" }
+ button { area 496 388 80 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '-1' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('skills', -1)" action "CBMDOldPickerAdjust('skills', -1)" }
+ button { area 586 388 80 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '+1' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('skills', 1)" action "CBMDOldPickerAdjust('skills', 1)" }
+ button { area 676 388 80 34 enabled "not CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text '+10' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('skills', 10)" action "CBMDOldPickerAdjust('skills', 10)" }
+ label { area 24 426 350 50 enabled "not CBMDOldPickerHlaPage" text lua "CBMDOldPickerProfBudget" text style 'normal' text align left center }
+ label { area 406 426 350 50 enabled "not CBMDOldPickerHlaPage" text lua "CBMDOldPickerSkillBudget" text style 'normal' text align left center }
+ list
+ {
+  column { width 80 label { area 4 0 572 28 text lua "CBMDOldPickerHlaRows[rowNumber].label" text style 'normal' text align left center } }
+  column { width 20 label { area 0 0 136 28 text lua "tostring(CBMDOldPickerHlaRows[rowNumber].delta) .. ' selected'" text style 'normal' text align center center } }
+  area 24 138 732 196
+  enabled "CBMDOldPickerHlaPage"
+  table 'CBMDOldPickerHlaRows'
+  var 'CBMDOldPickerHlaRow'
+  rowheight 28
+  scrollbar 'GUISCRC'
+ }
+ label { area 24 340 732 42 enabled "CBMDOldPickerHlaPage" text lua "CBMDOldPickerHlaDetail()" text style 'normal' text align left center }
+ button { area 176 388 200 34 enabled "CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text 'Remove choice' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('hlas', -1)" action "CBMDOldPickerAdjust('hlas', -1)" }
+ button { area 404 388 200 34 enabled "CBMDOldPickerHlaPage" bam 'GUIBUTNT' scaleToClip text 'Choose ability' text style 'button' text align center center clickable lua "CBMDOldPickerCanAdjust('hlas', 1)" action "CBMDOldPickerAdjust('hlas', 1)" }
+ label { area 24 426 732 50 enabled "CBMDOldPickerHlaPage" text lua "CBMDOldPickerHlaBudget" text style 'normal' text align left center }
+ button { area 176 490 200 36 bam 'GUIBUTNT' scaleToClip text 'Cancel' text style 'button' text align center center action "CBMDOldPickerCancel()" }
+ button { area 404 490 200 36 bam 'GUIBUTNT' scaleToClip text 'Continue' text style 'button' text align center center clickable lua "CBMDOldPickerCanContinue()" action "CBMDOldPickerContinue()" }
+}

@@ -1,0 +1,203 @@
+{
+  "schema": 1,
+  "status": "experimental-unreleased",
+  "nativePlaytestRequired": true,
+  "files": {
+    "bank_recruitment_patch.tpa": {
+      "source": "research/xp-banking-native/bank_recruitment_patch.tpa",
+      "sha256": "86977d7fec6206659df70a2226d2a3d924e656d193b181c22b2989b575adaa14"
+    },
+    "cbmdold.menu": {
+      "source": "research/xp-banking-native/dual_retired_menu.menu",
+      "sha256": "f7afdf9aaa66b92e10dcaae552023f8ac0315da7d83a97c3897bbbae92270c25"
+    },
+    "native/cbmbank_identity.dll": {
+      "kind": "native",
+      "sha256": "da782299243d446b43f31d8bf9cc3c18ed259b2777e0be14e54aca7ba593152b"
+    },
+    "native/dual_hp_observer.dll": {
+      "kind": "native",
+      "sha256": "f4dd9b00da401bee9e704a6171fad51d9c9e30dd8d15cc5d759d1df657ce6a50"
+    },
+    "native/dual_native_proficiency.dll": {
+      "kind": "native",
+      "sha256": "5b685c7a11305dc8cf09fe1f419f465fbf3c288ec49ac1b984782422296ea62d"
+    },
+    "native/dual_old_hla.dll": {
+      "kind": "native",
+      "sha256": "8825af81c7af9607a29569fa6b28e945786049cc0bc3fb7e04d1b327fea27271"
+    },
+    "native/dual_prof_commit.dll": {
+      "kind": "native",
+      "sha256": "a1c36432cc9e1bc1b40b839dab0c01678ff9d75a81386f798a8f1edddb9da3ce"
+    },
+    "native/dual_skill_rows.dll": {
+      "kind": "native",
+      "sha256": "ab61692fbee5d3bd5560b76299944dccee99b2208eca8deea0feb1e5c969f2a6"
+    },
+    "runtime/xp-banking-native/award_hooks.lua": {
+      "source": "research/xp-banking-native/award_hooks.lua",
+      "sha256": "c5900488f43041498f4d55ad854e1b1c173f96e37c987e64f4494478ca66f6ce"
+    },
+    "runtime/xp-banking-native/award_profiles.lua": {
+      "source": "research/xp-banking-native/award_profiles.lua",
+      "sha256": "7cc80a81e6b8ebac319adb88a183e889785a87c147c195f6cf8bf004b5104c23"
+    },
+    "runtime/xp-banking-native/bank_bootstrap.lua": {
+      "source": "research/xp-banking-native/bank_bootstrap.lua",
+      "sha256": "37d57457cfd8ad8a965f2c56ba002a3976ddfe12f80a9ec87090f3c2ee0cc529"
+    },
+    "runtime/xp-banking-native/bank_compat.lua": {
+      "source": "research/xp-banking-native/bank_compat.lua",
+      "sha256": "67cf47e1944dd8c96c50d1449a26ab90bf976d93b17b5c7c2749bddddb141813"
+    },
+    "runtime/xp-banking-native/bank_notice.lua": {
+      "source": "research/xp-banking-native/bank_notice.lua",
+      "sha256": "aa17ad9485dfe3d3e8018c9bfb8f767645d651f9d2ac8923a5649dce33868a36"
+    },
+    "runtime/xp-banking-native/bank_record.lua": {
+      "source": "research/xp-banking-native/bank_record.lua",
+      "sha256": "0e1b9d4c9f719b3ad41cf963ecce3ab60d9c78f38654996b15f69be13cd1e71c"
+    },
+    "runtime/xp-banking-native/bank_runtime.lua": {
+      "source": "research/xp-banking-native/bank_runtime.lua",
+      "sha256": "b7b42b9ee713ea40ef03ccfd12185f27c65c0bd8035905d39c7888b27fa0e8b2"
+    },
+    "runtime/xp-banking-native/callback_abi.lua": {
+      "source": "research/xp-banking-native/callback_abi.lua",
+      "sha256": "b6d8360dfdb5db90f85de5aa435c87a70402b7ba65ad3f69b66d9b4998fa7225"
+    },
+    "runtime/xp-banking-native/cap_hook.lua": {
+      "source": "research/xp-banking-native/cap_hook.lua",
+      "sha256": "1b2aca5886c19c09eae9963d46c03e485896733d40a3aa4bfebfc7782e109229"
+    },
+    "runtime/xp-banking-native/dual_bootstrap.lua": {
+      "source": "research/xp-banking-native/dual_bootstrap.lua",
+      "sha256": "68e6b38d7d841ba4a5310b9c4c9ced0d019eff15005dcfc761488aba20ab30f7"
+    },
+    "runtime/xp-banking-native/dual_combined_hooks.lua": {
+      "source": "research/xp-banking-native/dual_combined_hooks.lua",
+      "sha256": "8a4703a4509c058e166f955a58944a1974383e3b754e913df059a093c196d5c6"
+    },
+    "runtime/xp-banking-native/dual_combined_profiles.lua": {
+      "source": "research/xp-banking-native/dual_combined_profiles.lua",
+      "sha256": "e4191d5e9e7e582c2a8055c5ea1e7fe04d3fbb409f0961365fd988d670fbdae5"
+    },
+    "runtime/xp-banking-native/dual_entry_hooks.lua": {
+      "source": "research/xp-banking-native/dual_entry_hooks.lua",
+      "sha256": "d7891578e9c16fdc90089945c55a11a99f478f7736f444d2bad7b213160c7aba"
+    },
+    "runtime/xp-banking-native/dual_entry_profiles.lua": {
+      "source": "research/xp-banking-native/dual_entry_profiles.lua",
+      "sha256": "765780868ae093456d72d1fd06f4d424250682e75d029d11a2728e1e1fa7e15e"
+    },
+    "runtime/xp-banking-native/dual_manual_hooks.lua": {
+      "source": "research/xp-banking-native/dual_manual_hooks.lua",
+      "sha256": "f802ad6eb85b9eca113790a2c678c0ad585876141756df304bf093d98a32ce87"
+    },
+    "runtime/xp-banking-native/dual_manual_ledger.lua": {
+      "source": "research/xp-banking-native/dual_manual_ledger.lua",
+      "sha256": "d466e7bb36c509c32c0ccd31823d879bd24e5ac7ab9442c62bf099c6a9dffac2"
+    },
+    "runtime/xp-banking-native/dual_manual_profiles.lua": {
+      "source": "research/xp-banking-native/dual_manual_profiles.lua",
+      "sha256": "1fc76edce897a1a3290bad03a24fdb13bc65628ca5834aaffa81573cbd0ace03"
+    },
+    "runtime/xp-banking-native/dual_manual_receipts.lua": {
+      "source": "research/xp-banking-native/dual_manual_receipts.lua",
+      "sha256": "265b6903cc2b229d562a5984edb522e089718d4a80d26668dbc5e2e4af49f794"
+    },
+    "runtime/xp-banking-native/dual_old_hla.lua": {
+      "source": "research/xp-banking-native/dual_old_hla.lua",
+      "sha256": "53c3c0016ea0c31aa635b5e1db9f098a19e2b0f57746440b1ec9856c6c2e6b82"
+    },
+    "runtime/xp-banking-native/dual_old_hla_hooks.lua": {
+      "source": "research/xp-banking-native/dual_old_hla_hooks.lua",
+      "sha256": "3e0e9ca9869db1b33541ca0faa748e76eb2d06bf47132a23261266676f399130"
+    },
+    "runtime/xp-banking-native/dual_old_hla_profiles.lua": {
+      "source": "research/xp-banking-native/dual_old_hla_profiles.lua",
+      "sha256": "5d8568d227da88c5be19f7f2631f38ba67bb703fd34fd7d44d73f80dd00b39ed"
+    },
+    "runtime/xp-banking-native/dual_old_hla_receipts.lua": {
+      "source": "research/xp-banking-native/dual_old_hla_receipts.lua",
+      "sha256": "8bfe0e182f79a6f7ed69d07b7e62845820e55c8b5e79792fb43f00f81ad46991"
+    },
+    "runtime/xp-banking-native/dual_prof_commit_profiles.lua": {
+      "source": "research/xp-banking-native/dual_prof_commit_profiles.lua",
+      "sha256": "abed0b9492469039c407ba83bf6d1a8866de7189641106dac6b629c0089f23b1"
+    },
+    "runtime/xp-banking-native/dual_retired_controller.lua": {
+      "source": "research/xp-banking-native/dual_retired_controller.lua",
+      "sha256": "aa5cfe696c619e67cb5a25de33d91451f48724f88af8c4f6ae41d68d4928d5d0"
+    },
+    "runtime/xp-banking-native/dual_retired_flow.lua": {
+      "source": "research/xp-banking-native/dual_retired_flow.lua",
+      "sha256": "f6c850f29f166d6becab7552d0c261bf17cf3c6fa525c09c9dcb9f4f125accb3"
+    },
+    "runtime/xp-banking-native/dual_retired_picker.lua": {
+      "source": "research/xp-banking-native/dual_retired_picker.lua",
+      "sha256": "693b25c7b40f7a9b5bc29b838ae53637985785373fc74a053601dd350d2e47bd"
+    },
+    "runtime/xp-banking-native/dual_retired_rows.lua": {
+      "source": "research/xp-banking-native/dual_retired_rows.lua",
+      "sha256": "f859f8977d52fc91729499e4eea09a6c1bdc6b9654714fc80aa732e2db723888"
+    },
+    "runtime/xp-banking-native/dual_reward_receipts.lua": {
+      "source": "research/xp-banking-native/dual_reward_receipts.lua",
+      "sha256": "5f9a202d2a6b74145b534bcd011d030c51ee463b62562ddfa46543458ec5d184"
+    },
+    "runtime/xp-banking-native/dual_rules_bridge.lua": {
+      "source": "research/xp-banking-native/dual_rules_bridge.lua",
+      "sha256": "9c10f6bdd30d86237cc929b7ec4e1344348bfa71f8f73af6d42a938b9d1c102f"
+    },
+    "runtime/xp-banking-native/dual_skill_rows_bridge.lua": {
+      "source": "research/xp-banking-native/dual_skill_rows_bridge.lua",
+      "sha256": "1a9cc890c93d256cca9ed091b1e008906000103f420c7dc50ad7ff377327fdf4"
+    },
+    "runtime/xp-banking-native/identity_hooks.lua": {
+      "source": "research/xp-banking-native/identity_hooks.lua",
+      "sha256": "5ee497f06ef457c4b11133dab3af99767376c6387bb11100c92397f59805a5c8"
+    },
+    "runtime/xp-banking-native/identity_profiles.lua": {
+      "source": "research/xp-banking-native/identity_profiles.lua",
+      "sha256": "4f97967aff72650fd98258c878c7b2d693073d14587a9aa29c7b7035eeb47115"
+    },
+    "runtime/xp-banking-native/party_hooks.lua": {
+      "source": "research/xp-banking-native/party_hooks.lua",
+      "sha256": "379b27ea5fa79cc2ac54e11cf5281752e7606175f9ab6b1df645770ceb653dee"
+    },
+    "runtime/xp-banking-native/party_profiles.lua": {
+      "source": "research/xp-banking-native/party_profiles.lua",
+      "sha256": "4f3008eb3d75217ba8b080e12e2c492968206990ca8507257494aa9dbdda35e0"
+    },
+    "runtime/xp-banking-native/reset_hooks.lua": {
+      "source": "research/xp-banking-native/reset_hooks.lua",
+      "sha256": "2bc79b6028569706d982e20a154b73f6428bc7711ff14fd1cf2620197539898f"
+    },
+    "runtime/xp-banking-native/reset_profiles.lua": {
+      "source": "research/xp-banking-native/reset_profiles.lua",
+      "sha256": "774f6867d4a260f35d0291d199d22d4c08f25a9274ec589eb52f4d7cab3d5efc"
+    },
+    "runtime/xp-banking-native/writer_hooks.lua": {
+      "source": "research/xp-banking-native/writer_hooks.lua",
+      "sha256": "6bd8045b9b6cca0bd640a8686d1a63f83b607aa7294309763953f59cca12f441"
+    },
+    "runtime/xp-banking-native/writer_profiles.lua": {
+      "source": "research/xp-banking-native/writer_profiles.lua",
+      "sha256": "0a646e28785e12b5afeafed4b6f5cd3c2007e3df791cfa3a820d0fd6061b9548"
+    },
+    "runtime/xp-banking/cbmbank_policy.lua": {
+      "source": "research/xp-banking/cbmbank_policy.lua",
+      "sha256": "3f42d36099f766e96a41081e04754c3551c63305f23aaf5686e4a274b9ed9776"
+    },
+    "runtime/xp-banking/cbmbank_store.lua": {
+      "source": "research/xp-banking/cbmbank_store.lua",
+      "sha256": "9c6020f5a147dcdf95793273a578bc8b69bded959ac44efc1e48ddb426753a90"
+    },
+    "runtime/xp-banking/native_account.lua": {
+      "source": "research/xp-banking/native_account.lua",
+      "sha256": "6060eaf060bf31e6ea9ab9fc886a869a72310497f302fa29376a6591e4dd0a57"
+    }
+  }
+}

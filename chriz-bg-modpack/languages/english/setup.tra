@@ -34,11 +34,20 @@
 
 @235 = ~Baeloth: standard sorcerer spells known (major rebalance)~
 @236 = ~Edwin Red Wizard: correct spell slots and removable amulet~
+@237 = ~Fade: first-recruitment SoA XP catch-up (new recruitment actors)~
+@238 = ~Evandra: first-recruitment SoA XP catch-up (new recruitment actors)~
 @1235 = ~Baeloth's spellbook rebalance supports BG:EE (including SoD), BG2:EE and EET.~
+@1237 = ~SoA recruitment XP catch-up supports BG2:EE and EET. Install after companion script and NPC customization mods, before the NPC first appears.~
 
 @400 = ~Branwen Spiritual Hammer: repair magical-weapon charges~
 @410 = ~Yeslick and Keldorn Dispel Magic: hostile-only, correctly scaled dispels~
-@430 = ~Use Any Item: fair fixed caster level for non-caster scroll use~
+@430 = ~Scrolls: use the reader's active caster level, or half their active class level~
+@1430 = ~Reader-level scroll casting requires a supported Windows BG2EE/EET engine with EEex. Other engine ABIs are not supported by this native runtime.~
+@1431 = ~Reader-level scroll casting requires EEex. Install EEex before this component.~
+@1432 = ~The scroll runtime package is incomplete: CBMScroll.dll or CBMSPolicy.exe is missing. Use a complete modpack package.~
+@1433 = ~The installed scroll inventory could not be built safely. Read the policy builder's diagnostic above; no runtime was installed.~
+@1434 = ~Some scroll abilities retain native behavior because their installed spell graph needs review. The builder lists each resource and reason; the complete report is CBMScroll/CBMSPOL1.json.~
+@1435 = ~Reader-level scroll casting installed. Genuine fixed protection scrolls and manual learning retain their normal behavior. Install this component after spell/item changes; reinstall it if those resources change. Native game acceptance remains pending.~
 @440 = ~Ascension Improved Slayer Transformation: repair EE Fixpack subspell links~
 @450 = ~SCS shapechange spells: repair the EE Fixpack interaction~
 
@@ -79,3 +88,28 @@
 @1640 = ~Legacy UI text compatibility supports BG2:EE and EET.~
 @1641 = ~Legacy UI text compatibility requires UTIL.LUA from the game. Install the UI provider before this component.~
 @1642 = ~Legacy UI text compatibility installed. Install after the UI provider and before Bubb's Spell Menu. An existing working t() helper is preserved.~
+
+@660 = ~Degrodel: hand over the Helm of Balduran or keep it and fight him~
+@1660 = ~Degrodel's Helm of Balduran choice supports BG:EE and EET.~
+@1661 = ~Degrodel's dialog DEGROD.DLG is missing, so the Helm of Balduran quest is not available in this game.~
+@1662 = ~Here is the helm, as we agreed.~
+@1663 = ~No. The Helm of Balduran stays with us.~
+@1664 = ~You would cheat me? Fools! Then I shall take the helm from your corpses!~
+@1665 = ~The Helm of Balduran
+I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leave with it, the wizard and his servants attacked us.~
+@1666 = ~Degrodel's Helm of Balduran choice skipped: DEGROD.DLG is not a valid dialog (%cbm_dgf_reason%). Nothing was changed.~
+@1667 = ~Degrodel's Helm of Balduran choice skipped: no transition in DEGROD.DLG takes the Helm of Balduran (HELM07) from the party and leaves the area. Nothing was changed.~
+@1668 = ~Degrodel's Helm of Balduran choice skipped: DEGROD.DLG has %cbm_dgf_matches% Helm of Balduran hand-ins (states%cbm_dgf_match_states%), so the one to extend is ambiguous. Nothing was changed.~
+@1669 = ~Degrodel's Helm of Balduran choice skipped: the hand-in state %cbm_dgf_state% in DEGROD.DLG also continues without a player reply (for example into a companion interjection). Adding replies there would change that transition. Nothing was changed.~
+@1670 = ~Degrodel's Helm of Balduran choice is already present in DEGROD.DLG. Nothing was changed.~
+@1671 = ~Degrodel's Helm of Balduran choice skipped: the hand-in actions in DEGROD.DLG state %cbm_dgf_state% could not be separated into individual actions. Nothing was changed.~
+@1672 = ~Degrodel's Helm of Balduran choice installed at DEGROD.DLG state %cbm_dgf_state%. Refusing creates the hand-in's %cbm_dgf_n_servants% servant(s), closes its %cbm_dgf_n_journal% open journal entr(ies), and leaves out:%cbm_dgf_dropped%.~
+
+@650 = ~Campaign XP caps - keep excess XP for later (BG1/SoD; experimental)~
+@651 = ~Campaign XP caps - also cap SoA until ToB (requires 650; experimental)~
+@1650 = ~Campaign XP banking requires Enhanced Edition Trilogy (EET).~
+@1651 = ~Campaign XP banking requires the Windows x64 game and EEex/InfinityLoader native modules. Install EEex first; startup also verifies the reviewed native interfaces.~
+@1652 = ~Campaign XP banking requires the installed XPLEVEL.2DA progression table.~
+@1653 = ~Experimental campaign XP component installed; game testing is still pending. Install after 237/238/620 if selected, keep the mod folder, and restart through InfinityLoader. See docs/campaign-xp-banking.md. This does not repair existing saves.~
+@1654 = ~Install Campaign XP caps component 650 before its SoA option.~
+@1655 = ~Experimental SoA cap option installed. The setting applies when a character first gets a banking account; it does not change saved banking settings. Uninstalling 651 restores the BG1/SoD installer setting.~

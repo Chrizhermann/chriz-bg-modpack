@@ -1,0 +1,14 @@
+{
+  "InfinityLoaderCommon.dll": {
+    "required": 5,
+    "missing": []
+  },
+  "LuaBindingsCore.dll": {
+    "required": 2,
+    "missing": []
+  },
+  "LuaProvider.dll": {
+    "required": 14,
+    "missing": []
+  }
+}

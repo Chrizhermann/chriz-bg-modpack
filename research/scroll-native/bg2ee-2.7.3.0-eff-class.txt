@@ -1,0 +1,545 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameEffectApplyEffect::ApplyEffect+0x0 [0x1401a6ae0, 0x1401a6ed0)
+00000001401a6ae0  mov      qword ptr [rsp + 0x18], rbx
+00000001401a6ae5  mov      qword ptr [rsp + 0x20], rsi
+00000001401a6aea  push     rdi
+00000001401a6aeb  sub      rsp, 0xa0
+00000001401a6af2  mov      rax, qword ptr [rip + 0x4bdedf]
+00000001401a6af9  xor      rax, rsp
+00000001401a6afc  mov      qword ptr [rsp + 0x90], rax
+00000001401a6b04  mov      rax, qword ptr [rdx]
+00000001401a6b07  mov      rbx, rcx
+00000001401a6b0a  mov      rcx, rdx
+00000001401a6b0d  mov      rsi, rdx
+00000001401a6b10  xor      edi, edi
+00000001401a6b12  call     qword ptr [rax + 0x20]
+00000001401a6b15  mov      rdx, qword ptr [rip + 0x4b5ff4]
+00000001401a6b1c  lea      rcx, [rsp + 0x60]
+00000001401a6b21  mov      qword ptr [rsp + 0x60], rdx
+00000001401a6b26  mov      rdx, rax
+00000001401a6b29  call     0x14011ea00 ; CAIObjectType::Set+0x0
+00000001401a6b2e  mov      dword ptr [rsp + 0x40], 0xffffffff
+00000001401a6b36  lea      rcx, [rsp + 0x78]
+00000001401a6b3b  mov      byte ptr [rsp + 0x38], dil
+00000001401a6b40  xor      r9d, r9d
+00000001401a6b43  mov      byte ptr [rsp + 0x30], dil
+00000001401a6b48  xor      r8d, r8d
+00000001401a6b4b  mov      byte ptr [rsp + 0x28], dil
+00000001401a6b50  xor      edx, edx
+00000001401a6b52  mov      byte ptr [rsp + 0x20], dil
+00000001401a6b57  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+00000001401a6b5c  mov      eax, dword ptr [rbx + 0x20]
+00000001401a6b5f  add      eax, -2
+00000001401a6b62  cmp      eax, 7
+00000001401a6b65  ja       0x1401a6ba6
+00000001401a6b67  lea      rdx, [rip - 0x1a6b6e]
+00000001401a6b6e  mov      ecx, dword ptr [rdx + rax*4 + 0x1a6eb0]
+00000001401a6b75  add      rcx, rdx
+00000001401a6b78  jmp      rcx
+00000001401a6b7a  movzx    eax, byte ptr [rbx + 0x1c]
+00000001401a6b7e  lea      rdx, [rsp + 0x78]
+00000001401a6b83  xor      r9d, r9d
+00000001401a6b86  mov      byte ptr [rsp + 0x80], al
+00000001401a6b8d  xor      r8d, r8d
+00000001401a6b90  mov      dword ptr [rsp + 0x20], edi
+00000001401a6b94  lea      rcx, [rsp + 0x60]
+00000001401a6b99  call     0x14011e300 ; CAIObjectType::OfType+0x0
+00000001401a6b9e  test     al, al
+00000001401a6ba0  jne      0x1401a6cf7
+00000001401a6ba6  mov      dword ptr [rbx + 0x114], 1
+00000001401a6bb0  lea      rcx, [rsp + 0x78]
+00000001401a6bb5  call     0x1403fd740 ; CString::~CString+0x0
+00000001401a6bba  lea      rcx, [rsp + 0x60]
+00000001401a6bbf  call     0x1403fd740 ; CString::~CString+0x0
+00000001401a6bc4  mov      eax, 1
+00000001401a6bc9  mov      rcx, qword ptr [rsp + 0x90]
+00000001401a6bd1  xor      rcx, rsp
+00000001401a6bd4  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401a6bd9  lea      r11, [rsp + 0xa0]
+00000001401a6be1  mov      rbx, qword ptr [r11 + 0x20]
+00000001401a6be5  mov      rsi, qword ptr [r11 + 0x28]
+00000001401a6be9  mov      rsp, r11
+00000001401a6bec  pop      rdi
+00000001401a6bed  ret
+00000001401a6bee  movzx    eax, byte ptr [rsp + 0x69]
+00000001401a6bf3  mov      ecx, dword ptr [rbx + 0x1c]
+00000001401a6bf6  cmp      eax, ecx
+00000001401a6bf8  je       0x1401a6cf7
+00000001401a6bfe  test     ecx, ecx
+00000001401a6c00  jmp      0x1401a6cf1 ; CGameEffectApplyEffect::ApplyEffect+0x211
+00000001401a6c05  movzx    eax, byte ptr [rsp + 0x6a]
+00000001401a6c0a  mov      ecx, dword ptr [rbx + 0x1c]
+00000001401a6c0d  cmp      eax, ecx
+00000001401a6c0f  je       0x1401a6cf7
+00000001401a6c15  test     ecx, ecx
+00000001401a6c17  jmp      0x1401a6cf1 ; CGameEffectApplyEffect::ApplyEffect+0x211
+00000001401a6c1c  lea      rdx, [rsp + 0x60]
+00000001401a6c21  mov      rcx, rbx
+00000001401a6c24  call     0x1401e4390 ; CGameEffect::EqualClass+0x0
+00000001401a6c29  test     eax, eax
+00000001401a6c2b  je       0x1401a6ba6
+00000001401a6c31  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6c36  movzx    eax, byte ptr [rsp + 0x75]
+00000001401a6c3b  mov      ecx, dword ptr [rbx + 0x1c]
+00000001401a6c3e  cmp      eax, ecx
+00000001401a6c40  je       0x1401a6cf7
+00000001401a6c46  test     ecx, ecx
+00000001401a6c48  jmp      0x1401a6cf1 ; CGameEffectApplyEffect::ApplyEffect+0x211
+00000001401a6c4d  movzx    eax, byte ptr [rsp + 0x76]
+00000001401a6c52  mov      ecx, dword ptr [rbx + 0x1c]
+00000001401a6c55  cmp      eax, ecx
+00000001401a6c57  je       0x1401a6cf7
+00000001401a6c5d  test     ecx, ecx
+00000001401a6c5f  jmp      0x1401a6cf1 ; CGameEffectApplyEffect::ApplyEffect+0x211
+00000001401a6c64  movzx    ecx, byte ptr [rsp + 0x77]
+00000001401a6c69  mov      edx, dword ptr [rbx + 0x1c]
+00000001401a6c6c  cmp      ecx, edx
+00000001401a6c6e  je       0x1401a6c74
+00000001401a6c70  test     edx, edx
+00000001401a6c72  jne      0x1401a6c79
+00000001401a6c74  mov      edi, 1
+00000001401a6c79  cmp      edx, 1
+00000001401a6c7c  jne      0x1401a6c87
+00000001401a6c7e  and      cl, 0xf
+00000001401a6c81  cmp      cl, dl
+00000001401a6c83  jne      0x1401a6ccb
+00000001401a6c85  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6c87  cmp      edx, 2
+00000001401a6c8a  jne      0x1401a6c95
+00000001401a6c8c  and      cl, 0xf
+00000001401a6c8f  cmp      cl, dl
+00000001401a6c91  jne      0x1401a6ccb
+00000001401a6c93  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6c95  cmp      edx, 3
+00000001401a6c98  jne      0x1401a6ca3
+00000001401a6c9a  and      cl, 0xf
+00000001401a6c9d  cmp      cl, dl
+00000001401a6c9f  jne      0x1401a6ccb
+00000001401a6ca1  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6ca3  cmp      edx, 0x10
+00000001401a6ca6  jne      0x1401a6cb1
+00000001401a6ca8  and      cl, 0xf0
+00000001401a6cab  cmp      cl, dl
+00000001401a6cad  jne      0x1401a6ccb
+00000001401a6caf  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6cb1  cmp      edx, 0x20
+00000001401a6cb4  jne      0x1401a6cbf
+00000001401a6cb6  and      cl, 0xf0
+00000001401a6cb9  cmp      cl, dl
+00000001401a6cbb  jne      0x1401a6ccb
+00000001401a6cbd  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6cbf  cmp      edx, 0x30
+00000001401a6cc2  jne      0x1401a6ccb
+00000001401a6cc4  and      cl, 0xf0
+00000001401a6cc7  cmp      cl, dl
+00000001401a6cc9  je       0x1401a6cf7
+00000001401a6ccb  test     edi, edi
+00000001401a6ccd  je       0x1401a6ba6
+00000001401a6cd3  jmp      0x1401a6cf7 ; CGameEffectApplyEffect::ApplyEffect+0x217
+00000001401a6cd5  movzx    ecx, word ptr [rsi + 0x79c]
+00000001401a6cdc  movzx    eax, word ptr [rsi + 0x79e]
+00000001401a6ce3  mov      edx, dword ptr [rbx + 0x1c]
+00000001401a6ce6  shl      ecx, 0x10
+00000001401a6ce9  or       ecx, eax
+00000001401a6ceb  cmp      ecx, edx
+00000001401a6ced  je       0x1401a6cf7
+00000001401a6cef  test     edx, edx
+00000001401a6cf1  jne      0x1401a6ba6
+00000001401a6cf7  mov      rdx, qword ptr [rbx + 0x30]
+00000001401a6cfb  lea      rcx, [rsp + 0x50]
+00000001401a6d00  call     0x14019fba0 ; CGameEffectFile::CGameEffectFile+0x0
+00000001401a6d05  mov      rcx, qword ptr [rsp + 0x50]
+00000001401a6d0a  test     rcx, rcx
+00000001401a6d0d  je       0x1401a6bb0
+00000001401a6d13  call     0x1403f6d50 ; CRes::Demand+0x0
+00000001401a6d18  test     rax, rax
+00000001401a6d1b  je       0x1401a6e7c
+00000001401a6d21  lea      rcx, [rax + 8]
+00000001401a6d25  call     0x1401e2d30 ; CGameEffect::DecodeEffectFromBase+0x0
+00000001401a6d2a  mov      rdi, rax
+00000001401a6d2d  lea      rcx, [rax + 0x30]
+00000001401a6d31  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a6d36  lea      rcx, [rdi + 0x70]
+00000001401a6d3a  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a6d3f  lea      rcx, [rdi + 0x78]
+00000001401a6d43  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a6d48  mov      dword ptr [rdi + 0xcc], 1
+00000001401a6d52  mov      rcx, qword ptr [rbx + 0x80]
+00000001401a6d59  mov      qword ptr [rdi + 0x80], rcx
+00000001401a6d60  mov      edx, dword ptr [rbx + 0x150]
+00000001401a6d66  mov      ecx, dword ptr [rbx + 0x110]
+00000001401a6d6c  mov      dword ptr [rdi + 0x110], ecx
+00000001401a6d72  mov      dword ptr [rdi + 0x150], edx
+00000001401a6d78  mov      rax, qword ptr [rbx + 0x88]
+00000001401a6d7f  mov      qword ptr [rdi + 0x88], rax
+00000001401a6d86  mov      eax, dword ptr [rbx + 0x28]
+00000001401a6d89  mov      dword ptr [rdi + 0x28], eax
+00000001401a6d8c  movzx    eax, word ptr [rbx + 0x24]
+00000001401a6d90  mov      dword ptr [rdi + 0x24], eax
+00000001401a6d93  mov      eax, dword ptr [rbx + 0xcc]
+00000001401a6d99  mov      dword ptr [rdi + 0xcc], eax
+00000001401a6d9f  cmp      dword ptr [rbx + 0xcc], 0
+00000001401a6da6  jne      0x1401a6dba
+00000001401a6da8  mov      eax, dword ptr [rbx + 0x48]
+00000001401a6dab  mov      dword ptr [rdi + 0x48], eax
+00000001401a6dae  mov      eax, dword ptr [rbx + 0x60]
+00000001401a6db1  mov      dword ptr [rdi + 0x60], eax
+00000001401a6db4  mov      eax, dword ptr [rbx + 0x64]
+00000001401a6db7  mov      dword ptr [rdi + 0x64], eax
+00000001401a6dba  mov      eax, dword ptr [rbx + 0x6c]
+00000001401a6dbd  mov      dword ptr [rdi + 0x6c], eax
+00000001401a6dc0  cmp      dword ptr [rbx + 0x68], 0
+00000001401a6dc4  jne      0x1401a6e2b
+00000001401a6dc6  lea      rax, [rsi + 0x4c86]
+00000001401a6dcd  mov      qword ptr [rsp + 0x40], rax
+00000001401a6dd2  lea      rcx, [rsi + 0x4c85]
+00000001401a6dd9  mov      qword ptr [rsp + 0x38], rcx
+00000001401a6dde  lea      rdx, [rsi + 0x4c84]
+00000001401a6de5  mov      qword ptr [rsp + 0x30], rdx
+00000001401a6dea  lea      r10, [rsi + 0x4c83]
+00000001401a6df1  lea      r11, [rsi + 0x4c82]
+00000001401a6df8  mov      qword ptr [rsp + 0x28], r10
+00000001401a6dfd  mov      rdx, rsi
+00000001401a6e00  mov      qword ptr [rsp + 0x20], r11
+00000001401a6e05  lea      r9, [rsi + 0x4c81]
+00000001401a6e0c  mov      rcx, rdi
+00000001401a6e0f  lea      r8, [rsi + 0x4c80]
+00000001401a6e16  call     0x1401cc6c0 ; CGameEffect::CheckAdd+0x0
+00000001401a6e1b  test     eax, eax
+00000001401a6e1d  jne      0x1401a6e2b
+00000001401a6e1f  mov      dword ptr [rbx + 0x114], 1
+00000001401a6e29  jmp      0x1401a6e6f ; CGameEffectApplyEffect::ApplyEffect+0x38f
+00000001401a6e2b  mov      dword ptr [rbx + 0x68], 1
+00000001401a6e32  mov      rdx, rsi
+00000001401a6e35  mov      rax, qword ptr [rdi]
+00000001401a6e38  mov      rcx, rdi
+00000001401a6e3b  call     qword ptr [rax + 0x10]
+00000001401a6e3e  cmp      dword ptr [rdi + 0x114], 0
+00000001401a6e45  je       0x1401a6e51
+00000001401a6e47  mov      dword ptr [rbx + 0x114], 1
+00000001401a6e51  mov      eax, dword ptr [rdi + 0x48]
+00000001401a6e54  mov      dword ptr [rbx + 0x48], eax
+00000001401a6e57  mov      eax, dword ptr [rdi + 0x60]
+00000001401a6e5a  mov      dword ptr [rbx + 0x60], eax
+00000001401a6e5d  mov      eax, dword ptr [rdi + 0x64]
+00000001401a6e60  mov      dword ptr [rbx + 0x64], eax
+00000001401a6e63  mov      eax, dword ptr [rdi + 0xcc]
+00000001401a6e69  mov      dword ptr [rbx + 0xcc], eax
+00000001401a6e6f  mov      rax, qword ptr [rdi]
+00000001401a6e72  mov      edx, 1
+00000001401a6e77  mov      rcx, rdi
+00000001401a6e7a  call     qword ptr [rax]
+00000001401a6e7c  cmp      qword ptr [rsp + 0x50], 0
+00000001401a6e82  je       0x1401a6bb0
+00000001401a6e88  lea      rdx, [rip + 0x44491e]
+00000001401a6e8f  lea      rcx, [rsp + 0x58]
+00000001401a6e94  call     0x1403ffb60 ; CResRef::operator!=+0x0
+00000001401a6e99  test     eax, eax
+00000001401a6e9b  je       0x1401a6bb0
+00000001401a6ea1  mov      rcx, qword ptr [rsp + 0x50]
+00000001401a6ea6  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+00000001401a6eab  jmp      0x1401a6bb0 ; CGameEffectApplyEffect::ApplyEffect+0xd0
+00000001401a6eb0  jp       0x1401a6f1d
+00000001401a6eb2  sbb      al, byte ptr [rax]
+00000001401a6eb4  out      dx, al
+00000001401a6eb5  imul     ebx, dword ptr [rdx], 0
+00000001401a6eb8  add      eax, 0x1c001a6c
+00000001401a6ebd  insb     byte ptr [rdi], dx
+00000001401a6ebe  sbb      al, byte ptr [rax]
+00000001401a6ec0  insb     byte ptr [rdi], dx
+00000001401a6ec2  sbb      al, byte ptr [rax]
+00000001401a6ec4  insb     byte ptr [rdi], dx
+00000001401a6ec6  sbb      al, byte ptr [rax]
+00000001401a6ec8  insb     byte ptr [rdi], dx
+00000001401a6eca  sbb      al, byte ptr [rax]
+
+CDerivedStats::GetLevelField+0x0 [0x140152c60, 0x140152de0)
+0000000140152c60  movzx    eax, dl
+0000000140152c63  dec      eax
+0000000140152c65  cmp      eax, 0x14
+0000000140152c68  ja       0x140152d36
+0000000140152c6e  lea      r10, [rip - 0x152c75]
+0000000140152c75  cdqe
+0000000140152c77  mov      edx, dword ptr [r10 + rax*4 + 0x152d88]
+0000000140152c7f  add      rdx, r10
+0000000140152c82  jmp      rdx
+0000000140152c84  movzx    edx, r8b
+0000000140152c88  sub      edx, 1
+0000000140152c8b  je       0x140152c97
+0000000140152c8d  cmp      edx, 3
+0000000140152c90  mov      eax, 0x48
+0000000140152c95  je       0x140152c9c
+0000000140152c97  mov      eax, 0x46
+0000000140152c9c  add      rax, rcx
+0000000140152c9f  mov      qword ptr [r9], rax
+0000000140152ca2  ret
+0000000140152ca3  movzx    edx, r8b
+0000000140152ca7  sub      edx, 1
+0000000140152caa  jne      0x140152d36
+0000000140152cb0  lea      rax, [rcx + 0x48]
+0000000140152cb4  mov      qword ptr [r9], rax
+0000000140152cb7  ret
+0000000140152cb8  movzx    edx, r8b
+0000000140152cbc  sub      edx, 3
+0000000140152cbf  je       0x140152c97
+0000000140152cc1  cmp      edx, 1
+0000000140152cc4  jmp      0x140152c90 ; CDerivedStats::GetLevelField+0x30
+0000000140152cc6  cmp      r8b, 2
+0000000140152cca  je       0x140152ce5
+0000000140152ccc  mov      eax, 0x46
+0000000140152cd1  cmp      r8b, 4
+0000000140152cd5  mov      edx, 0x48
+0000000140152cda  cmovne   edx, eax
+0000000140152cdd  lea      rax, [rdx + rcx]
+0000000140152ce1  mov      qword ptr [r9], rax
+0000000140152ce4  ret
+0000000140152ce5  mov      edx, 0x46
+0000000140152cea  lea      rax, [rdx + rcx]
+0000000140152cee  mov      qword ptr [r9], rax
+0000000140152cf1  ret
+0000000140152cf2  movzx    edx, r8b
+0000000140152cf6  sub      edx, 2
+0000000140152cf9  je       0x140152c97
+0000000140152cfb  cmp      edx, 1
+0000000140152cfe  jmp      0x140152c90 ; CDerivedStats::GetLevelField+0x30
+0000000140152d00  movzx    edx, r8b
+0000000140152d04  sub      edx, 2
+0000000140152d07  je       0x140152c97
+0000000140152d09  sub      edx, 1
+0000000140152d0c  je       0x140152d13
+0000000140152d0e  cmp      edx, 8
+0000000140152d11  jne      0x140152c97
+0000000140152d13  mov      eax, 0x48
+0000000140152d18  add      rax, rcx
+0000000140152d1b  mov      qword ptr [r9], rax
+0000000140152d1e  ret
+0000000140152d1f  movzx    edx, r8b
+0000000140152d23  sub      edx, 2
+0000000140152d26  je       0x140152cb0
+0000000140152d28  sub      edx, 1
+0000000140152d2b  je       0x140152d36
+0000000140152d2d  cmp      edx, 9
+0000000140152d30  je       0x140152cb0
+0000000140152d36  lea      rax, [rcx + 0x46]
+0000000140152d3a  mov      qword ptr [r9], rax
+0000000140152d3d  ret
+0000000140152d3e  movzx    edx, r8b
+0000000140152d42  sub      edx, 1
+0000000140152d45  je       0x140152d13
+0000000140152d47  sub      edx, 1
+0000000140152d4a  je       0x140152c97
+0000000140152d50  cmp      edx, 2
+0000000140152d53  jne      0x140152c97
+0000000140152d59  mov      eax, 0x4a
+0000000140152d5e  add      rax, rcx
+0000000140152d61  mov      qword ptr [r9], rax
+0000000140152d64  ret
+0000000140152d65  movzx    edx, r8b
+0000000140152d69  sub      edx, 1
+0000000140152d6c  je       0x140152d13
+0000000140152d6e  sub      edx, 1
+0000000140152d71  je       0x140152c97
+0000000140152d77  cmp      edx, 1
+0000000140152d7a  je       0x140152d59
+0000000140152d7c  mov      eax, 0x46
+0000000140152d81  add      rax, rcx
+0000000140152d84  mov      qword ptr [r9], rax
+0000000140152d87  ret
+0000000140152d88  sub      eax, 0x2d360015
+0000000140152d8e  adc      eax, 0x152d3600
+0000000140152d93  add      byte ptr [rsi], dh
+0000000140152d95  sub      eax, 0x2d360015
+0000000140152d9a  adc      eax, 0x152d3600
+0000000140152d9f  add      byte ptr [rbx - 0xdffead4], ah
+0000000140152da5  sub      al, 0x15
+0000000140152da7  add      dh, al
+0000000140152da9  sub      al, 0x15
+0000000140152dab  add      byte ptr [rsi], bh
+0000000140152dad  sub      eax, 0x2d360015
+0000000140152db2  adc      eax, 0x152d3600
+0000000140152db7  add      byte ptr [rsp + rbp + 0x2ca30015], al
+0000000140152dbe  adc      eax, 0x152cb800
+0000000140152dc3  add      byte ptr [rax], al
+0000000140152dc5  sub      eax, 0x2d650015
+0000000140152dca  adc      eax, 0x152d1f00
+0000000140152dcf  add      byte ptr [rsi], dh
+0000000140152dd1  sub      eax, 0x2d360015
+0000000140152dd6  adc      eax, 0x152d3600
+0000000140152ddb  add      ah, cl
+0000000140152ddd  int3
+0000000140152dde  int3
+0000000140152ddf  int3
+
+CDerivedStats::GetMaximumLevel+0x0 [0x140152de0, 0x140152e70)
+0000000140152de0  movzx    eax, dl
+0000000140152de3  mov      r8, rcx
+0000000140152de6  dec      eax
+0000000140152de8  cmp      eax, 0x14
+0000000140152deb  ja       0x140152e45
+0000000140152ded  lea      rcx, [rip - 0x152df4]
+0000000140152df4  cdqe
+0000000140152df6  movzx    eax, byte ptr [rcx + rax + 0x152e58]
+0000000140152dfe  mov      edx, dword ptr [rcx + rax*4 + 0x152e4c]
+0000000140152e05  add      rdx, rcx
+0000000140152e08  jmp      rdx
+0000000140152e0a  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e0f  ret
+0000000140152e10  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e15  movzx    ecx, word ptr [r8 + 0x48]
+0000000140152e1a  cmp      ax, cx
+0000000140152e1d  cmovae   cx, ax
+0000000140152e21  movzx    eax, cl
+0000000140152e24  ret
+0000000140152e25  movzx    eax, word ptr [r8 + 0x46]
+0000000140152e2a  movzx    ecx, word ptr [r8 + 0x4a]
+0000000140152e2f  cmp      word ptr [r8 + 0x48], cx
+0000000140152e34  cmovae   cx, word ptr [r8 + 0x48]
+0000000140152e3a  cmp      ax, cx
+0000000140152e3d  cmovae   cx, ax
+0000000140152e41  movzx    eax, cl
+0000000140152e44  ret
+0000000140152e45  movzx    eax, byte ptr [r8 + 0x46]
+0000000140152e4a  ret
+0000000140152e4b  nop
+0000000140152e4c  or       ch, byte ptr [rsi]
+0000000140152e4e  adc      eax, 0x152e1000
+0000000140152e53  add      byte ptr [rip + 0x152e], ah
+0000000140152e59  add      byte ptr [rax], al
+0000000140152e5b  add      byte ptr [rax], al
+0000000140152e5d  add      byte ptr [rcx], al
+0000000140152e5f  add      dword ptr [rcx], eax
+0000000140152e61  add      al, byte ptr [rax]
+0000000140152e63  add      byte ptr [rcx], al
+0000000140152e65  add      dword ptr [rcx], eax
+0000000140152e67  add      dword ptr [rdx], eax
+0000000140152e69  add      dword ptr [rax], eax
+0000000140152e6b  add      byte ptr [rax], al
+0000000140152e6d  int3
+0000000140152e6e  int3
+0000000140152e6f  int3
+
+CDerivedStats::GetWizardLevel+0x0 [0x140153390, 0x140153430)
+0000000140153390  sub      rsp, 0x28
+0000000140153394  movzx    eax, dl
+0000000140153397  dec      eax
+0000000140153399  cmp      eax, 0x14
+000000014015339c  ja       0x1401533fe
+000000014015339e  lea      r9, [rip - 0x1533a5]
+00000001401533a5  cdqe
+00000001401533a7  movzx    eax, byte ptr [r9 + rax + 0x153414]
+00000001401533b0  mov      r8d, dword ptr [r9 + rax*4 + 0x153408]
+00000001401533b8  add      r8, r9
+00000001401533bb  jmp      r8
+00000001401533be  movzx    r8d, byte ptr [rip + 0x439b54]
+00000001401533c6  lea      r9, [rsp + 0x40]
+00000001401533cb  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+00000001401533d0  mov      rax, qword ptr [rsp + 0x40]
+00000001401533d5  movzx    eax, byte ptr [rax]
+00000001401533d8  add      rsp, 0x28
+00000001401533dc  ret
+00000001401533dd  lea      r9, [rsp + 0x40]
+00000001401533e2  mov      r8b, 0x13
+00000001401533e5  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+00000001401533ea  mov      rax, qword ptr [rsp + 0x40]
+00000001401533ef  movzx    eax, byte ptr [rax]
+00000001401533f2  add      rsp, 0x28
+00000001401533f6  ret
+00000001401533f7  xor      al, al
+00000001401533f9  add      rsp, 0x28
+00000001401533fd  ret
+00000001401533fe  movzx    eax, byte ptr [rcx + 0x46]
+0000000140153402  add      rsp, 0x28
+0000000140153406  ret
+0000000140153407  nop
+0000000140153408  mov      esi, 0xf7001533
+000000014015340d  xor      edx, dword ptr [rip + 0x1533dd00]
+0000000140153413  add      byte ptr [rax], al
+0000000140153415  add      dword ptr [rcx], eax
+0000000140153417  add      dword ptr [rcx], eax
+0000000140153419  add      dword ptr [rax], eax
+000000014015341b  add      dword ptr [rcx], eax
+000000014015341d  add      byte ptr [rcx], al
+000000014015341f  add      dword ptr [rax], eax
+0000000140153421  add      byte ptr [rcx], al
+0000000140153423  add      dword ptr [rax], eax
+0000000140153425  add      dword ptr [rdx], eax
+0000000140153427  add      dword ptr [rcx], eax
+0000000140153429  int3
+000000014015342a  int3
+000000014015342b  int3
+000000014015342c  int3
+000000014015342d  int3
+000000014015342e  int3
+000000014015342f  int3
+
+CDerivedStats::GetPriestLevel+0x0 [0x140152e70, 0x140152f40)
+0000000140152e70  sub      rsp, 0x28
+0000000140152e74  movzx    eax, dl
+0000000140152e77  dec      eax
+0000000140152e79  cmp      eax, 0x14
+0000000140152e7c  ja       0x140152f02
+0000000140152e82  lea      r9, [rip - 0x152e89]
+0000000140152e89  cdqe
+0000000140152e8b  movzx    eax, byte ptr [r9 + rax + 0x152f1c]
+0000000140152e94  mov      r8d, dword ptr [r9 + rax*4 + 0x152f0c]
+0000000140152e9c  add      r8, r9
+0000000140152e9f  jmp      r8
+0000000140152ea2  lea      r9, [rsp + 0x40]
+0000000140152ea7  movzx    r8d, dl
+0000000140152eab  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152eb0  mov      rax, qword ptr [rsp + 0x40]
+0000000140152eb5  movzx    eax, byte ptr [rax]
+0000000140152eb8  add      rsp, 0x28
+0000000140152ebc  ret
+0000000140152ebd  movzx    r8d, byte ptr [rip + 0x43a057]
+0000000140152ec5  lea      r9, [rsp + 0x40]
+0000000140152eca  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152ecf  mov      rax, qword ptr [rsp + 0x40]
+0000000140152ed4  movzx    eax, byte ptr [rax]
+0000000140152ed7  add      rsp, 0x28
+0000000140152edb  ret
+0000000140152edc  movzx    r8d, byte ptr [rip + 0x43a040]
+0000000140152ee4  lea      r9, [rsp + 0x40]
+0000000140152ee9  call     0x140152c60 ; CDerivedStats::GetLevelField+0x0
+0000000140152eee  mov      rax, qword ptr [rsp + 0x40]
+0000000140152ef3  movzx    eax, byte ptr [rax]
+0000000140152ef6  add      rsp, 0x28
+0000000140152efa  ret
+0000000140152efb  xor      al, al
+0000000140152efd  add      rsp, 0x28
+0000000140152f01  ret
+0000000140152f02  movzx    eax, byte ptr [rcx + 0x46]
+0000000140152f06  add      rsp, 0x28
+0000000140152f0a  ret
+0000000140152f0b  nop
+0000000140152f0c  sti
+0000000140152f0d  adc      eax, 0x152ea200
+0000000140152f13  add      byte ptr [rbp - 0x23ffead2], bh
+0000000140152f19  adc      eax, 0x1000000
+0000000140152f1f  add      byte ptr [rax], al
+0000000140152f21  add      byte ptr [rax], al
+0000000140152f23  add      al, byte ptr [rax]
+0000000140152f25  add      byte ptr [rcx], al
+0000000140152f27  add      byte ptr [rax], al
+0000000140152f29  add      al, byte ptr [rdx]
+0000000140152f2b  add      eax, dword ptr [rdx]
+0000000140152f2d  add      al, byte ptr [rax]
+0000000140152f2f  add      byte ptr [rcx], al
+0000000140152f31  int3
+0000000140152f32  int3
+0000000140152f33  int3
+0000000140152f34  int3
+0000000140152f35  int3
+0000000140152f36  int3
+0000000140152f37  int3
+0000000140152f38  int3
+0000000140152f39  int3
+0000000140152f3a  int3
+0000000140152f3b  int3
+0000000140152f3c  int3
+0000000140152f3d  int3
+0000000140152f3e  int3
+0000000140152f3f  int3

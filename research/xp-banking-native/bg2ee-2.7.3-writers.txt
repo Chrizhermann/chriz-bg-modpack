@@ -1,0 +1,342 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameSprite::SetAtOffset+0x0 [0x1403727d0, 0x140372f60)
+00000001403727d0  sub      rsp, 0x28
+00000001403727d4  dec      edx
+00000001403727d6  cmp      edx, 0x44
+00000001403727d9  ja       0x140372e36
+00000001403727df  lea      r10, [rip - 0x3727e6]
+00000001403727e6  mov      eax, edx
+00000001403727e8  mov      edx, dword ptr [r10 + rdx*4 + 0x372e44]
+00000001403727f0  add      rdx, r10
+00000001403727f3  jmp      rdx
+00000001403727f5  cmp      r9d, 1
+00000001403727f9  jne      0x140372808
+00000001403727fb  add      word ptr [rcx + 0x57e], r8w
+0000000140372803  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372808  mov      word ptr [rcx + 0x57e], r8w
+0000000140372810  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372815  cmp      r9d, 1
+0000000140372819  jne      0x140372828
+000000014037281b  add      word ptr [rcx + 0x59e], r8w
+0000000140372823  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372828  mov      word ptr [rcx + 0x59e], r8w
+0000000140372830  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372835  cmp      r9d, 1
+0000000140372839  jne      0x140372848
+000000014037283b  add      word ptr [rcx + 0x5a2], r8w
+0000000140372843  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372848  mov      word ptr [rcx + 0x5a2], r8w
+0000000140372850  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372855  cmp      r9d, 1
+0000000140372859  jne      0x140372868
+000000014037285b  add      word ptr [rcx + 0x5a4], r8w
+0000000140372863  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372868  mov      word ptr [rcx + 0x5a4], r8w
+0000000140372870  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372875  cmp      r9d, 1
+0000000140372879  jne      0x140372888
+000000014037287b  add      word ptr [rcx + 0x5a6], r8w
+0000000140372883  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372888  mov      word ptr [rcx + 0x5a6], r8w
+0000000140372890  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372895  cmp      r9d, 1
+0000000140372899  jne      0x1403728a8
+000000014037289b  add      word ptr [rcx + 0x5a8], r8w
+00000001403728a3  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728a8  mov      word ptr [rcx + 0x5a8], r8w
+00000001403728b0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728b5  cmp      r9d, 1
+00000001403728b9  jne      0x1403728c7
+00000001403728bb  add      byte ptr [rcx + 0x5aa], r8b
+00000001403728c2  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728c7  mov      byte ptr [rcx + 0x5aa], r8b
+00000001403728ce  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728d3  cmp      r9d, 1
+00000001403728d7  jne      0x1403728e5
+00000001403728d9  add      byte ptr [rcx + 0x5ab], r8b
+00000001403728e0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728e5  mov      byte ptr [rcx + 0x5ab], r8b
+00000001403728ec  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403728f1  cmp      r9d, 1
+00000001403728f5  jne      0x140372903
+00000001403728f7  add      byte ptr [rcx + 0x5ac], r8b
+00000001403728fe  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372903  mov      byte ptr [rcx + 0x5ac], r8b
+000000014037290a  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037290f  cmp      r9d, 1
+0000000140372913  jne      0x140372921
+0000000140372915  add      byte ptr [rcx + 0x5ad], r8b
+000000014037291c  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372921  mov      byte ptr [rcx + 0x5ad], r8b
+0000000140372928  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037292d  cmp      r9d, 1
+0000000140372931  jne      0x14037293f
+0000000140372933  add      byte ptr [rcx + 0x5ae], r8b
+000000014037293a  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037293f  mov      byte ptr [rcx + 0x5ae], r8b
+0000000140372946  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037294b  cmp      r9d, 1
+000000014037294f  jne      0x14037295d
+0000000140372951  add      byte ptr [rcx + 0x5af], r8b
+0000000140372958  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037295d  mov      byte ptr [rcx + 0x5af], r8b
+0000000140372964  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372969  cmp      r9d, 1
+000000014037296d  jne      0x14037297b
+000000014037296f  add      byte ptr [rcx + 0x5b0], r8b
+0000000140372976  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+000000014037297b  mov      byte ptr [rcx + 0x5b0], r8b
+0000000140372982  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372987  cmp      r9d, 1
+000000014037298b  jne      0x140372999
+000000014037298d  add      byte ptr [rcx + 0x5b1], r8b
+0000000140372994  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372999  mov      byte ptr [rcx + 0x5b1], r8b
+00000001403729a0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729a5  cmp      r9d, 1
+00000001403729a9  jne      0x1403729b7
+00000001403729ab  add      byte ptr [rcx + 0x5b2], r8b
+00000001403729b2  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729b7  mov      byte ptr [rcx + 0x5b2], r8b
+00000001403729be  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729c3  cmp      r9d, 1
+00000001403729c7  jne      0x1403729d5
+00000001403729c9  add      byte ptr [rcx + 0x5b3], r8b
+00000001403729d0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729d5  mov      byte ptr [rcx + 0x5b3], r8b
+00000001403729dc  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729e1  cmp      r9d, 1
+00000001403729e5  jne      0x1403729f3
+00000001403729e7  add      byte ptr [rcx + 0x5b4], r8b
+00000001403729ee  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729f3  mov      byte ptr [rcx + 0x5b4], r8b
+00000001403729fa  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+00000001403729ff  cmp      r9d, 1
+0000000140372a03  jne      0x140372a11
+0000000140372a05  add      byte ptr [rcx + 0x5b5], r8b
+0000000140372a0c  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a11  mov      byte ptr [rcx + 0x5b5], r8b
+0000000140372a18  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a1d  cmp      r9d, 1
+0000000140372a21  jne      0x140372a2f
+0000000140372a23  add      byte ptr [rcx + 0x5b6], r8b
+0000000140372a2a  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a2f  mov      byte ptr [rcx + 0x5b6], r8b
+0000000140372a36  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a3b  cmp      r9d, 1
+0000000140372a3f  jne      0x140372a4d
+0000000140372a41  add      byte ptr [rcx + 0x5b7], r8b
+0000000140372a48  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a4d  mov      byte ptr [rcx + 0x5b7], r8b
+0000000140372a54  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a59  cmp      r9d, 1
+0000000140372a5d  jne      0x140372a6b
+0000000140372a5f  add      byte ptr [rcx + 0x5b8], r8b
+0000000140372a66  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a6b  mov      byte ptr [rcx + 0x5b8], r8b
+0000000140372a72  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a77  cmp      r9d, 1
+0000000140372a7b  jne      0x140372a89
+0000000140372a7d  add      byte ptr [rcx + 0x5b9], r8b
+0000000140372a84  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a89  mov      byte ptr [rcx + 0x5b9], r8b
+0000000140372a90  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372a95  cmp      r9d, 1
+0000000140372a99  jne      0x140372aa7
+0000000140372a9b  add      byte ptr [rcx + 0x5ba], r8b
+0000000140372aa2  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372aa7  mov      byte ptr [rcx + 0x5ba], r8b
+0000000140372aae  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ab3  cmp      r9d, 1
+0000000140372ab7  jne      0x140372ac5
+0000000140372ab9  add      byte ptr [rcx + 0x5bb], r8b
+0000000140372ac0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ac5  mov      byte ptr [rcx + 0x5bb], r8b
+0000000140372acc  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ad1  cmp      r9d, 1
+0000000140372ad5  jne      0x140372ae3
+0000000140372ad7  add      byte ptr [rcx + 0x5be], r8b
+0000000140372ade  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ae3  mov      byte ptr [rcx + 0x5be], r8b
+0000000140372aea  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372aef  cmp      r9d, 1
+0000000140372af3  jne      0x140372b01
+0000000140372af5  add      byte ptr [rcx + 0x5bf], r8b
+0000000140372afc  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b01  mov      byte ptr [rcx + 0x5bf], r8b
+0000000140372b08  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b0d  cmp      r9d, 1
+0000000140372b11  jne      0x140372b1f
+0000000140372b13  add      byte ptr [rcx + 0x5c0], r8b
+0000000140372b1a  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b1f  mov      byte ptr [rcx + 0x5c0], r8b
+0000000140372b26  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b2b  cmp      r9d, 1
+0000000140372b2f  jne      0x140372b3d
+0000000140372b31  add      byte ptr [rcx + 0x5c1], r8b
+0000000140372b38  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b3d  mov      byte ptr [rcx + 0x5c1], r8b
+0000000140372b44  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b49  cmp      r9d, 1
+0000000140372b4d  jne      0x140372b5b
+0000000140372b4f  add      byte ptr [rcx + 0x5c2], r8b
+0000000140372b56  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b5b  mov      byte ptr [rcx + 0x5c2], r8b
+0000000140372b62  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b67  cmp      r9d, 1
+0000000140372b6b  jne      0x140372b79
+0000000140372b6d  add      byte ptr [rcx + 0x5c3], r8b
+0000000140372b74  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b79  mov      byte ptr [rcx + 0x5c3], r8b
+0000000140372b80  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b85  cmp      r9d, 1
+0000000140372b89  jne      0x140372b97
+0000000140372b8b  add      byte ptr [rcx + 0x5c4], r8b
+0000000140372b92  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372b97  mov      byte ptr [rcx + 0x5c4], r8b
+0000000140372b9e  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ba3  cmp      r9d, 1
+0000000140372ba7  jne      0x140372bb5
+0000000140372ba9  add      byte ptr [rcx + 0x5c5], r8b
+0000000140372bb0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bb5  mov      byte ptr [rcx + 0x5c5], r8b
+0000000140372bbc  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bc1  cmp      r9d, 1
+0000000140372bc5  jne      0x140372bd3
+0000000140372bc7  add      byte ptr [rcx + 0x5db], r8b
+0000000140372bce  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bd3  mov      byte ptr [rcx + 0x5db], r8b
+0000000140372bda  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bdf  cmp      r9d, 1
+0000000140372be3  jne      0x140372bf1
+0000000140372be5  add      byte ptr [rcx + 0x78c], r8b
+0000000140372bec  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bf1  mov      byte ptr [rcx + 0x78c], r8b
+0000000140372bf8  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372bfd  cmp      r9d, 1
+0000000140372c01  jne      0x140372c0f
+0000000140372c03  add      byte ptr [rcx + 0x78d], r8b
+0000000140372c0a  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c0f  mov      byte ptr [rcx + 0x78d], r8b
+0000000140372c16  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c1b  cmp      r9d, 1
+0000000140372c1f  jne      0x140372c2d
+0000000140372c21  add      byte ptr [rcx + 0x78e], r8b
+0000000140372c28  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c2d  mov      byte ptr [rcx + 0x78e], r8b
+0000000140372c34  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c39  cmp      r9d, 1
+0000000140372c3d  jne      0x140372c4b
+0000000140372c3f  add      byte ptr [rcx + 0x78f], r8b
+0000000140372c46  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c4b  mov      byte ptr [rcx + 0x78f], r8b
+0000000140372c52  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c57  cmp      r9d, 1
+0000000140372c5b  jne      0x140372c69
+0000000140372c5d  add      byte ptr [rcx + 0x790], r8b
+0000000140372c64  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c69  mov      byte ptr [rcx + 0x790], r8b
+0000000140372c70  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c75  cmp      r9d, 1
+0000000140372c79  jne      0x140372c87
+0000000140372c7b  add      byte ptr [rcx + 0x791], r8b
+0000000140372c82  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c87  mov      byte ptr [rcx + 0x791], r8b
+0000000140372c8e  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372c93  cmp      r9d, 1
+0000000140372c97  jne      0x140372ca5
+0000000140372c99  add      byte ptr [rcx + 0x792], r8b
+0000000140372ca0  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ca5  mov      byte ptr [rcx + 0x792], r8b
+0000000140372cac  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372cb1  cmp      r9d, 1
+0000000140372cb5  jne      0x140372cc3
+0000000140372cb7  add      byte ptr [rcx + 0x793], r8b
+0000000140372cbe  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372cc3  mov      byte ptr [rcx + 0x793], r8b
+0000000140372cca  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ccf  cmp      r9d, 1
+0000000140372cd3  jne      0x140372ce1
+0000000140372cd5  add      byte ptr [rcx + 0x794], r8b
+0000000140372cdc  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ce1  mov      byte ptr [rcx + 0x794], r8b
+0000000140372ce8  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ced  cmp      r9d, 1
+0000000140372cf1  jne      0x140372cff
+0000000140372cf3  add      byte ptr [rcx + 0x795], r8b
+0000000140372cfa  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372cff  mov      byte ptr [rcx + 0x795], r8b
+0000000140372d06  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d0b  cmp      r9d, 1
+0000000140372d0f  jne      0x140372d1d
+0000000140372d11  add      byte ptr [rcx + 0x796], r8b
+0000000140372d18  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d1d  mov      byte ptr [rcx + 0x796], r8b
+0000000140372d24  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d29  cmp      r9d, 1
+0000000140372d2d  jne      0x140372d3b
+0000000140372d2f  add      dword ptr [rcx + 0x56c], r8d
+0000000140372d36  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d3b  mov      dword ptr [rcx + 0x56c], r8d
+0000000140372d42  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d47  cmp      r9d, 1
+0000000140372d4b  jne      0x140372d59
+0000000140372d4d  add      dword ptr [rcx + 0x570], r8d
+0000000140372d54  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d59  mov      dword ptr [rcx + 0x570], r8d
+0000000140372d60  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d65  cmp      r9d, 1
+0000000140372d69  jne      0x140372d77
+0000000140372d6b  add      dword ptr [rcx + 0x574], r8d
+0000000140372d72  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d77  mov      dword ptr [rcx + 0x574], r8d
+0000000140372d7e  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d83  cmp      r9d, 1
+0000000140372d87  jne      0x140372d95
+0000000140372d89  add      byte ptr [rcx + 0x798], r8b
+0000000140372d90  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d95  mov      byte ptr [rcx + 0x798], r8b
+0000000140372d9c  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372d9e  cmp      r9d, 1
+0000000140372da2  jne      0x140372dae
+0000000140372da4  add      word ptr [rcx + 0x79a], r8w
+0000000140372dac  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372dae  mov      word ptr [rcx + 0x79a], r8w
+0000000140372db6  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372db8  cmp      r9d, 1
+0000000140372dbc  jne      0x140372dc7
+0000000140372dbe  add      byte ptr [rcx + 0x59c], r8b
+0000000140372dc5  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372dc7  mov      byte ptr [rcx + 0x59c], r8b
+0000000140372dce  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372dd0  cmp      r9d, 1
+0000000140372dd4  jne      0x140372ddf
+0000000140372dd6  add      byte ptr [rcx + 0x799], r8b
+0000000140372ddd  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372ddf  mov      byte ptr [rcx + 0x799], r8b
+0000000140372de6  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372de8  cmp      r9d, 1
+0000000140372dec  jne      0x140372df7
+0000000140372dee  add      byte ptr [rcx + 0x5da], r8b
+0000000140372df5  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372df7  mov      byte ptr [rcx + 0x5da], r8b
+0000000140372dfe  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372e00  cmp      r9d, 1
+0000000140372e04  jne      0x140372e0f
+0000000140372e06  add      byte ptr [rcx + 0x5d6], r8b
+0000000140372e0d  jmp      0x140372e16 ; CGameSprite::SetAtOffset+0x646
+0000000140372e0f  mov      byte ptr [rcx + 0x5d6], r8b
+0000000140372e16  mov      edx, 1
+0000000140372e1b  mov      dword ptr [rcx + 0x4ba4], 1
+0000000140372e25  call     0x1403ab9d0 ; CGameSprite::ProcessEffectList+0x0
+0000000140372e2a  movzx    eax, word ptr [rip + 0x21c73f]
+0000000140372e31  add      rsp, 0x28
+0000000140372e35  ret
+0000000140372e36  movzx    eax, word ptr [rip + 0x21c73f]
+0000000140372e3d  add      rsp, 0x28
+0000000140372e41  ret
+0000000140372e42  nop
+0000000140372e44  cmc

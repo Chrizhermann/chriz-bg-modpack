@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.10~
+VERSION ~v0.2.0-alpha.11~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -423,6 +423,16 @@ BEGIN @236 DESIGNATED 236 GROUP @1100 LABEL ~cbm_edwin_redwizard~
 INCLUDE ~chriz-bg-modpack/lib/cbm_edwin_redwizard.tpa~
 LAF cbm_edwin_install END
 
+BEGIN @237 DESIGNATED 237 GROUP @1100 LABEL ~cbm_fade_recruitment_xp~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1237
+INCLUDE ~chriz-bg-modpack/lib/cbm_recruitment_xp.tpa~
+LAF cbm_recruitment_xp STR_VAR creature = ~E3FADE13~ private_script = ~CBMFXP~ companion = ~Fade~ END
+
+BEGIN @238 DESIGNATED 238 GROUP @1100 LABEL ~cbm_evandra_recruitment_xp~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1237
+INCLUDE ~chriz-bg-modpack/lib/cbm_recruitment_xp.tpa~
+LAF cbm_recruitment_xp STR_VAR creature = ~RH#EVA~ private_script = ~CBMEXP~ companion = ~Evandra~ END
+
 // =====================================================================
 // Spell and compatibility fixes (400-499)
 // =====================================================================
@@ -437,6 +447,7 @@ BEGIN @410 DESIGNATED 410 GROUP @1400 LABEL ~cbm_yeslick_keldorn_dispel_fix~
 INCLUDE ~chriz-bg-modpack/lib/cbm_yeslick_keldorn_dispel_fix.tpa~
 
 BEGIN @430 DESIGNATED 430 GROUP @1400 LABEL ~cbm_uai_caster_level~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @1430
 INCLUDE ~chriz-bg-modpack/lib/cbm_uai_caster_level.tpa~
 
 // Transformation-only repair for Ascension's three upgraded Slayer spells.
@@ -507,3 +518,24 @@ BEGIN @640 DESIGNATED 640 GROUP @1400 LABEL ~cbm_legacy_ui_strings~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~UTIL.LUA~ @1641
 INCLUDE ~chriz-bg-modpack/lib/cbm_legacy_ui_strings.tpa~
 PRINT @1642
+
+// Optional quest choice: hand the Helm of Balduran to Degrodel (unchanged) or
+// keep it and fight him with the servants the installed hand-in summons.
+BEGIN @660 DESIGNATED 660 GROUP @1600 LABEL ~cbm_degrodel_fight~
+  REQUIRE_PREDICATE GAME_IS ~bgee eet~ @1660
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DEGROD.DLG~ @1661
+INCLUDE ~chriz-bg-modpack/lib/cbm_degrodel_fight.tpa~
+
+// Experimental/unreleased opt-in source; neither component installs by default.
+BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1650
+  REQUIRE_PREDICATE (FILE_EXISTS ~override/M___EEex.lua~ AND FILE_EXISTS ~InfinityLoader.db~
+    AND FILE_EXISTS ~Baldur.exe~ AND FILE_EXISTS ~EEex.dll~ AND FILE_EXISTS ~LuaBindings.dll~
+    AND FILE_EXISTS ~LuaProvider.dll~ AND FILE_EXISTS ~InfinityLoaderDLL.dll~) @1651
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~ @1652
+INCLUDE ~chriz-bg-modpack/lib/cbm_campaign_xp.tpa~
+
+BEGIN @651 DESIGNATED 651 GROUP @1600 LABEL ~cbm_campaign_xp_soa~
+  REQUIRE_COMPONENT ~setup-chriz-bg-modpack.tp2~ ~650~ @1654
+COPY ~chriz-bg-modpack/campaign-xp/cbmbksoa.lua~ ~override/CBMBKCFG.lua~
+PRINT @1655

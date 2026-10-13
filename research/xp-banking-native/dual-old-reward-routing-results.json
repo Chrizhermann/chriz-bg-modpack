@@ -1,0 +1,7086 @@
+[
+  {
+    "version": "2.6.6.0",
+    "cases": 160,
+    "results": [
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "cases": 160,
+    "results": [
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 2,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 7,
+        "old": 1,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 2,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 9,
+        "old": 4,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 2,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 8,
+        "old": 3,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 1,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 13,
+        "old": 4,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 1,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 14,
+        "old": 3,
+        "active": 1,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 3,
+        "active": 4,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 15,
+        "old": 4,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 2,
+        "active": 11,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 16,
+        "old": 11,
+        "active": 2,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 3,
+        "active": 12,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "ordinary-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": false,
+        "old_requests": [
+          11,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-reactivation",
+        "projected_first_before": true,
+        "old_requests": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "combined-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "old-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": []
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": false,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "overall": 18,
+        "old": 12,
+        "active": 3,
+        "scenario": "active-only-dormant",
+        "projected_first_before": true,
+        "old_requests": [],
+        "active_requests": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      }
+    ]
+  }
+]

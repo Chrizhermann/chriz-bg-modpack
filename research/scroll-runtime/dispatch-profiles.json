@@ -1,0 +1,182 @@
+[
+  {
+    "version": "2.6.6.0",
+    "timestamp": 1620326323,
+    "spans": [
+      {
+        "name": "apply146 before EEex mode0 route",
+        "rva": 1737376,
+        "size": 858,
+        "sha256": "f62983a3d27e73e173a5e6bcc92354647a1ba38df5761d5b786af06a4617857c"
+      },
+      {
+        "name": "apply146 after EEex mode0 route",
+        "rva": 1738239,
+        "size": 145,
+        "sha256": "c8471a53ab308c73507b1478bde63f84a1936dc1f83f707d44516fd682c471b1"
+      },
+      {
+        "name": "apply148 before EEex mode0 route",
+        "rva": 1738384,
+        "size": 446,
+        "sha256": "da838a954b736e87d7f175d8ee2576d72045675b4c450b3fc78c4214dab698b2"
+      },
+      {
+        "name": "apply148 after EEex mode0 route",
+        "rva": 1738835,
+        "size": 125,
+        "sha256": "29cda27e9b0dd38c52e5a6d2c666ade69b0e4e354a6ff53734fdf094c4116d9e"
+      },
+      {
+        "name": "action_default",
+        "rva": 1142000,
+        "size": 224,
+        "sha256": "cbf384fa7473c9cdb4ef2bd3a9465578313353dd15f046a068a8c55af34edd70"
+      },
+      {
+        "name": "add_message",
+        "rva": 2116704,
+        "size": 416,
+        "sha256": "777b6cd55396a8cd292b4565a12205717210b55692ebc51138ef3e4cde0223df"
+      },
+      {
+        "name": "fire_message_run",
+        "rva": 2173808,
+        "size": 208,
+        "sha256": "e932842621b539d4096e7986023a9137c19a941f375a592609304d58c108c4da"
+      },
+      {
+        "name": "fire_message_destroy",
+        "rva": 1462256,
+        "size": 80,
+        "sha256": "ad933f71722ec6f534d1f3958dd25265fcfe9af90a105d957dcc72a559b541fa"
+      }
+    ],
+    "entries": [
+      1737376,
+      1738384,
+      1142000,
+      2116704,
+      2173808,
+      1462256
+    ],
+    "ctor_returns": [
+      1738075,
+      1738679
+    ],
+    "fire_add_return": 1737619,
+    "fire_run_return": 2173993,
+    "effect_fire_return": 1737653,
+    "point_fire_return": 1738494,
+    "fire_vtable": 5832016,
+    "vtable_slots": [
+      1462256,
+      1144720,
+      1145728,
+      1649776,
+      2145152,
+      2209360,
+      2173808
+    ],
+    "eeex_routes": [
+      {
+        "rva": 1738234,
+        "original": "e861c60500"
+      },
+      {
+        "rva": 1738830,
+        "original": "e80dc40500"
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "timestamp": 1780012861,
+    "spans": [
+      {
+        "name": "apply146 before EEex mode0 route",
+        "rva": 1737904,
+        "size": 858,
+        "sha256": "105b1471d751f18261fd0bfe607f2357d0831080376ab3b2eb5547b570afc607"
+      },
+      {
+        "name": "apply146 after EEex mode0 route",
+        "rva": 1738767,
+        "size": 145,
+        "sha256": "2dfa2d9c415276c02c862e122e45892fe7279de37ace050341a7542c986a3b52"
+      },
+      {
+        "name": "apply148 before EEex mode0 route",
+        "rva": 1738912,
+        "size": 446,
+        "sha256": "5dcbd3e0e02d2a8d3a0925add1ec089641441fb44c7d6829cb9e9a94817ea3ec"
+      },
+      {
+        "name": "apply148 after EEex mode0 route",
+        "rva": 1739363,
+        "size": 125,
+        "sha256": "8b4d7d1735029690e5f0c998fa85d6f90f1f3ea2d5d55012a60b74b81f3af0f0"
+      },
+      {
+        "name": "action_default",
+        "rva": 1142032,
+        "size": 224,
+        "sha256": "44d8c7dfb2643bdf19070e231ab6ca5e8284dc60d09af4f1f8f5026e26d12315"
+      },
+      {
+        "name": "add_message",
+        "rva": 2117312,
+        "size": 416,
+        "sha256": "79ea30178550631a484432e6faf0a931e3e791b0d1a344a2cdaf8fe003c224c6"
+      },
+      {
+        "name": "fire_message_run",
+        "rva": 2174416,
+        "size": 208,
+        "sha256": "bb5875b2c08935ff7eeb324f421db082e9de94269b998c6f0cbd1f1b6504a94b"
+      },
+      {
+        "name": "fire_message_destroy",
+        "rva": 1462784,
+        "size": 80,
+        "sha256": "752fb420af2482cd0317f7c0b138299b2fc433e027af823bf38301d28a952e76"
+      }
+    ],
+    "entries": [
+      1737904,
+      1738912,
+      1142032,
+      2117312,
+      2174416,
+      1462784
+    ],
+    "ctor_returns": [
+      1738603,
+      1739207
+    ],
+    "fire_add_return": 1738147,
+    "fire_run_return": 2174601,
+    "effect_fire_return": 1738181,
+    "point_fire_return": 1739022,
+    "fire_vtable": 5836176,
+    "vtable_slots": [
+      1462784,
+      1144752,
+      1145760,
+      1650304,
+      2145760,
+      2209968,
+      2174416
+    ],
+    "eeex_routes": [
+      {
+        "rva": 1738762,
+        "original": "e8b1c60500"
+      },
+      {
+        "rva": 1739358,
+        "original": "e85dc40500"
+      }
+    ]
+  }
+]

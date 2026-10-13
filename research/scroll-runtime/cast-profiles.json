@@ -1,0 +1,374 @@
+[
+  {
+    "version": "2.6.6.0",
+    "timestamp": 1620326323,
+    "spans": [
+      {
+        "name": "CGameEffect::FireSpell tail",
+        "rva": 1983328,
+        "size": 1792,
+        "sha256": "d7a54c4860658166a75335fddca95600fc5593b4ca02f97fb5ad662944a94d5e"
+      },
+      {
+        "name": "CGameAIBase::FireSpell tail",
+        "rva": 1485232,
+        "size": 3600,
+        "sha256": "7860638db511698af8b30560780f81990284631ebc9029d1da9f40f511a05a81"
+      },
+      {
+        "name": "CGameAIBase::FireSpellPoint tail",
+        "rva": 1488832,
+        "size": 2880,
+        "sha256": "fdf249cba4932d3da0ee33188c306c925e9fe5af841d907dbbb3016b25ed0d8a"
+      },
+      {
+        "name": "CGameAIBase::ForceSpell tail",
+        "rva": 1491712,
+        "size": 4544,
+        "sha256": "97866f5677def2ca60280dae340bc1e42ed087e45c01c445e8f0d7d47963e947"
+      },
+      {
+        "name": "CGameAIBase::ForceSpellPoint tail",
+        "rva": 1496256,
+        "size": 3840,
+        "sha256": "6391dd508cb72013f23b1db68aa1e8d2d3c50ce90444ca1a3674f33e08354ef4"
+      },
+      {
+        "name": "CGameSprite::Spell before EEex fix",
+        "rva": 3881792,
+        "size": 991,
+        "sha256": "71819a737610f4b3e29e82a05e4cc62db81b5bf28284cf8e4db5a0cae42f37bf"
+      },
+      {
+        "name": "CGameSprite::Spell before EEex fix",
+        "rva": 3882788,
+        "size": 2317,
+        "sha256": "109d15bdf66fc312b80515ad186caabaa5843e3e5028be070d5910276e6c27bd"
+      },
+      {
+        "name": "CGameSprite::Spell tail",
+        "rva": 3885110,
+        "size": 4170,
+        "sha256": "79df54175aa681026b60ad98c97a94560271ea3dd22edef3ceebdff20865989d"
+      },
+      {
+        "name": "CGameSprite::SpellPoint before EEex fix",
+        "rva": 3889280,
+        "size": 290,
+        "sha256": "55b44d15b25ec61642df10b6ed43337050f9338de85ba08e127b1b22eef98f1b"
+      },
+      {
+        "name": "CGameSprite::SpellPoint before EEex fix",
+        "rva": 3889577,
+        "size": 2878,
+        "sha256": "ee39274a6ddd7efe264073b72c42c096e48a678dc82417a8ea791273571e81d1"
+      },
+      {
+        "name": "CGameSprite::SpellPoint tail",
+        "rva": 3892460,
+        "size": 3588,
+        "sha256": "b044ee52d838981b3e962fcca0815ea9c2a8d3a83ab1ae44c679108fe71c435d"
+      },
+      {
+        "name": "CSpell::GetAbilityEffect tail",
+        "rva": 2419664,
+        "size": 400,
+        "sha256": "c328154ea94bb7f20bd3a02953ecfe9c9ede0ff1fb078d0949174c3cdd4000f1"
+      },
+      {
+        "name": "CSpell::GetAbilityCount tail",
+        "rva": 2419568,
+        "size": 96,
+        "sha256": "2b9384e38d9a093c87a84c70b30d4ea256c9b30be380aadabba81a3b6b7dda9a"
+      }
+    ],
+    "bodies": [
+      {
+        "name": "CGameEffect::FireSpell",
+        "rva": 1983328,
+        "size": 1792
+      },
+      {
+        "name": "CGameAIBase::FireSpell",
+        "rva": 1485232,
+        "size": 3600
+      },
+      {
+        "name": "CGameAIBase::FireSpellPoint",
+        "rva": 1488832,
+        "size": 2880
+      },
+      {
+        "name": "CGameAIBase::ForceSpell",
+        "rva": 1491712,
+        "size": 4544
+      },
+      {
+        "name": "CGameAIBase::ForceSpellPoint",
+        "rva": 1496256,
+        "size": 3840
+      },
+      {
+        "name": "CGameSprite::Spell",
+        "rva": 3881792,
+        "size": 7488
+      },
+      {
+        "name": "CGameSprite::SpellPoint",
+        "rva": 3889280,
+        "size": 6768
+      },
+      {
+        "name": "CSpell::GetAbilityEffect",
+        "rva": 2419664,
+        "size": 400
+      },
+      {
+        "name": "CSpell::GetAbilityCount",
+        "rva": 2419568,
+        "size": 96
+      }
+    ],
+    "entries": [
+      1983328,
+      1485232,
+      1488832,
+      1491712,
+      1496256,
+      3881792,
+      3889280,
+      2419664
+    ],
+    "getter": 2419568,
+    "selection": [
+      1983604,
+      1485628,
+      1489184,
+      1492546,
+      1496647,
+      3884982,
+      3892325
+    ],
+    "children": [
+      1983808,
+      1486272,
+      1489808,
+      1494341,
+      1498530,
+      3887189,
+      3894405
+    ],
+    "extras": [
+      3888240,
+      3895215
+    ],
+    "eeex_fixes": [
+      {
+        "rva": 3885105,
+        "size": 5,
+        "original": "e8ba2afdff"
+      },
+      {
+        "rva": 3882783,
+        "size": 5,
+        "original": "745b4c3bfb"
+      },
+      {
+        "rva": 3892455,
+        "size": 5,
+        "original": "e8040efdff"
+      },
+      {
+        "rva": 3889570,
+        "size": 7,
+        "original": "7455b918000000"
+      }
+    ]
+  },
+  {
+    "version": "2.7.3.0",
+    "timestamp": 1780012861,
+    "spans": [
+      {
+        "name": "CGameEffect::FireSpell tail",
+        "rva": 1983856,
+        "size": 1792,
+        "sha256": "4565c96164460704bf7e049f1a832bbe739f95e71dbdef6f2033019ce82a6bd7"
+      },
+      {
+        "name": "CGameAIBase::FireSpell tail",
+        "rva": 1485760,
+        "size": 3600,
+        "sha256": "65a504a84dc82547d83934e1fff093edc579125261c0c975eff4b91d5765e4f9"
+      },
+      {
+        "name": "CGameAIBase::FireSpellPoint tail",
+        "rva": 1489360,
+        "size": 2880,
+        "sha256": "4a7bc00cf6e9341a47f6f2377e83bdb1be7ced61cc60d0b77a2842723adda93a"
+      },
+      {
+        "name": "CGameAIBase::ForceSpell tail",
+        "rva": 1492240,
+        "size": 4544,
+        "sha256": "16c036ffb892fc4164dda7155799843a9c8e60b82538faf71edf997047f69893"
+      },
+      {
+        "name": "CGameAIBase::ForceSpellPoint tail",
+        "rva": 1496784,
+        "size": 3840,
+        "sha256": "ca3be0f01b2b8834ba73efaa73319c828c99e1f66c16338a0d842adbb579667f"
+      },
+      {
+        "name": "CGameSprite::Spell before EEex fix",
+        "rva": 3883392,
+        "size": 991,
+        "sha256": "4e41edbc58c88c81460be586ef1db4d92ecbb407ae1dbc046e8005514f111540"
+      },
+      {
+        "name": "CGameSprite::Spell before EEex fix",
+        "rva": 3884388,
+        "size": 2317,
+        "sha256": "48f0465c4df904d9ebdd67087ec5f0a9afbf2901c26625dd041478685b91b75a"
+      },
+      {
+        "name": "CGameSprite::Spell tail",
+        "rva": 3886710,
+        "size": 4170,
+        "sha256": "0aaf81213c262a3452216dcb8c569bca50925dbb7c508d3fa69ad503f82f3b22"
+      },
+      {
+        "name": "CGameSprite::SpellPoint before EEex fix",
+        "rva": 3890880,
+        "size": 290,
+        "sha256": "801aea5f5072c96fb4846af422c69d87bdcc3714da5d1847ed0ec865fc3ccd5b"
+      },
+      {
+        "name": "CGameSprite::SpellPoint before EEex fix",
+        "rva": 3891177,
+        "size": 2878,
+        "sha256": "6fa6ec145bae5a934bfde7b98fbc9501dac00c0b7b1989a6028a3c4d033f6877"
+      },
+      {
+        "name": "CGameSprite::SpellPoint tail",
+        "rva": 3894060,
+        "size": 3588,
+        "sha256": "39307c9748ca45c22bbb0c747c548482209f78a538e66ae96c371cc7ea7850b2"
+      },
+      {
+        "name": "CSpell::GetAbilityEffect tail",
+        "rva": 2420272,
+        "size": 400,
+        "sha256": "97b9cd25faefce03ee2a0d6091a7ba5962780c8220c65ff47d942ee78c1742d7"
+      },
+      {
+        "name": "CSpell::GetAbilityCount tail",
+        "rva": 2420176,
+        "size": 96,
+        "sha256": "4c2b3f38c40c1d83efe1950eadd18e71952af0b47b3065d7fe21631e3b866e99"
+      }
+    ],
+    "bodies": [
+      {
+        "name": "CGameEffect::FireSpell",
+        "rva": 1983856,
+        "size": 1792
+      },
+      {
+        "name": "CGameAIBase::FireSpell",
+        "rva": 1485760,
+        "size": 3600
+      },
+      {
+        "name": "CGameAIBase::FireSpellPoint",
+        "rva": 1489360,
+        "size": 2880
+      },
+      {
+        "name": "CGameAIBase::ForceSpell",
+        "rva": 1492240,
+        "size": 4544
+      },
+      {
+        "name": "CGameAIBase::ForceSpellPoint",
+        "rva": 1496784,
+        "size": 3840
+      },
+      {
+        "name": "CGameSprite::Spell",
+        "rva": 3883392,
+        "size": 7488
+      },
+      {
+        "name": "CGameSprite::SpellPoint",
+        "rva": 3890880,
+        "size": 6768
+      },
+      {
+        "name": "CSpell::GetAbilityEffect",
+        "rva": 2420272,
+        "size": 400
+      },
+      {
+        "name": "CSpell::GetAbilityCount",
+        "rva": 2420176,
+        "size": 96
+      }
+    ],
+    "entries": [
+      1983856,
+      1485760,
+      1489360,
+      1492240,
+      1496784,
+      3883392,
+      3890880,
+      2420272
+    ],
+    "getter": 2420176,
+    "selection": [
+      1984132,
+      1486156,
+      1489712,
+      1493074,
+      1497175,
+      3886582,
+      3893925
+    ],
+    "children": [
+      1984336,
+      1486800,
+      1490336,
+      1494869,
+      1499058,
+      3888789,
+      3896005
+    ],
+    "extras": [
+      3889840,
+      3896815
+    ],
+    "eeex_fixes": [
+      {
+        "rva": 3886705,
+        "size": 5,
+        "original": "e8ba2afdff"
+      },
+      {
+        "rva": 3884383,
+        "size": 5,
+        "original": "745b4c3bfb"
+      },
+      {
+        "rva": 3894055,
+        "size": 5,
+        "original": "e8040efdff"
+      },
+      {
+        "rva": 3891170,
+        "size": 7,
+        "original": "7455b918000000"
+      }
+    ]
+  }
+]

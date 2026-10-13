@@ -1,0 +1,60 @@
+// UNINSTALLED: only the eventual banking component applies these adapters.
+// Existing 237/238/620 amounts remain authored by their independent components.
+DEFINE_ACTION_FUNCTION cbmbank_patch_recruitment BEGIN
+  ACTION_FOR_EACH cbmb_script IN CBMFXP CBMEXP BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbmb_script%.BCS~ BEGIN
+      COPY_EXISTING ~%cbmb_script%.BCS~ ~override~
+        DECOMPILE_BCS_TO_BAF
+        SET cbmb_next = 0
+        SET cbmb_start = INDEX_BUFFER (~^IF~ cbmb_next)
+        WHILE cbmb_start >= 0 BEGIN
+          SET cbmb_end = INDEX_BUFFER (~^END~ cbmb_start)
+          PATCH_IF cbmb_end < cbmb_start BEGIN PATCH_FAIL ~Incomplete recruitment script block.~ END
+          SET cbmb_length = cbmb_end + 3 - cbmb_start
+          READ_ASCII cbmb_start cbmb_block (cbmb_length)
+          SET cbmb_owned = 0
+          SET cbmb_changes = 0
+          INNER_PATCH_SAVE cbmb_block ~%cbmb_block%~ BEGIN
+            PATCH_IF (INDEX_BUFFER (~^[ ]*Global("CBM_SoARecruitXP","LOCALS",0)~) >= 0)
+              AND (INDEX_BUFFER (~^[ ]*SetGlobal("CBM_SoARecruitXP","LOCALS",1)~) >= 0) BEGIN
+              REPLACE_EVALUATE ~ChangeStat(Myself,XP,\([0-9]+\),SET)~ BEGIN
+                SET cbmb_changes += 1
+              END ~EEex_LuaAction("CBMBank_Catchup(EEex_LuaAction_Object,%MATCH1%)")~
+              PATCH_IF cbmb_changes > 0 BEGIN
+                // The callback sets this marker after verified native success.
+                REPLACE_TEXTUALLY ~^[ ]*SetGlobal("CBM_SoARecruitXP","LOCALS",1)~ ~~
+                SET cbmb_owned = 1
+              END
+            END
+          END
+          PATCH_IF cbmb_owned BEGIN
+            DELETE_BYTES cbmb_start cbmb_length
+            SET cbmb_length = STRING_LENGTH ~%cbmb_block%~
+            INSERT_BYTES cbmb_start cbmb_length
+            WRITE_ASCIIE cbmb_start ~%cbmb_block%~
+          END
+          SET cbmb_next = cbmb_start + cbmb_length
+          SET cbmb_start = INDEX_BUFFER (~^IF~ cbmb_next)
+        END
+        COMPILE_BAF_TO_BCS
+      BUT_ONLY
+    END
+  END
+  ACTION_IF FILE_EXISTS_IN_GAME ~M_CBMIXP.LUA~ BEGIN
+    COPY_EXISTING ~M_CBMIXP.LUA~ ~override~
+      PATCH_IF (INDEX_BUFFER (~CBMBank_ImoenXPSet~) < 0) BEGIN
+        SET cbmb_readers = 0
+        SET cbmb_setters = 0
+        REPLACE_EVALUATE ~total[ %TAB%]*=[ %TAB%]*total[ %TAB%]*[+][ %TAB%]*member\.m_baseStats\.m_xp~ BEGIN
+          SET cbmb_readers += 1
+        END ~total = total + CBMBank_ActiveXP(member)~
+        REPLACE_EVALUATE ~EEex_Action_ExecuteResponseStringOnAIBaseInstantly([ %TAB%%LNL%%MNL%%WNL%]*string\.format("ChangeStat(Myself,XP,%d,SET)",[ %TAB%]*target),[ %TAB%]*sprite)~ BEGIN
+          SET cbmb_setters += 1
+        END ~CBMBank_ImoenXPSet(sprite, target)~
+        PATCH_IF cbmb_readers != 1 OR cbmb_setters != 1 BEGIN
+          PATCH_FAIL ~Imoen XP module has a different reader/setter implementation (%cbmb_readers% readers, %cbmb_setters% setters); banking integration needs review. No XP policy was guessed.~
+        END
+      END
+    BUT_ONLY
+  END
+END

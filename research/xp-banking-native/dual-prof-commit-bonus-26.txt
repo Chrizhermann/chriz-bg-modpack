@@ -1,0 +1,547 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CDerivedStats::operator+=+0x0 [0x14014ff90, 0x140150a00)
+000000014014ff90  mov      qword ptr [rsp + 8], rbx
+000000014014ff95  push     rdi
+000000014014ff96  sub      rsp, 0x30
+000000014014ff9a  movzx    eax, word ptr [rdx + 4]
+000000014014ff9e  mov      rbx, rcx
+000000014014ffa1  add      word ptr [rcx + 4], ax
+000000014014ffa5  mov      rdi, rdx
+000000014014ffa8  movzx    eax, word ptr [rdx + 6]
+000000014014ffac  add      word ptr [rcx + 6], ax
+000000014014ffb0  movzx    eax, word ptr [rdx + 8]
+000000014014ffb4  add      word ptr [rcx + 8], ax
+000000014014ffb8  movzx    eax, word ptr [rdx + 0xa]
+000000014014ffbc  add      word ptr [rcx + 0xa], ax
+000000014014ffc0  movzx    eax, word ptr [rdx + 0xc]
+000000014014ffc4  add      word ptr [rcx + 0xc], ax
+000000014014ffc8  movzx    eax, word ptr [rdx + 0xe]
+000000014014ffcc  add      word ptr [rcx + 0xe], ax
+000000014014ffd0  movzx    eax, word ptr [rdx + 0x10]
+000000014014ffd4  add      word ptr [rcx + 0x10], ax
+000000014014ffd8  movzx    ecx, word ptr [rdx + 0x12]
+000000014014ffdc  movaps   xmmword ptr [rsp + 0x20], xmm6
+000000014014ffe1  call     0x140153540 ; CDerivedStats::NumAttacksShortToFloat+0x0
+000000014014ffe6  movzx    ecx, word ptr [rbx + 0x12]
+000000014014ffea  movaps   xmm6, xmm0
+000000014014ffed  call     0x140153540 ; CDerivedStats::NumAttacksShortToFloat+0x0
+000000014014fff2  addss    xmm6, xmm0
+000000014014fff6  xorps    xmm2, xmm2
+000000014014fff9  comiss   xmm2, xmm6
+000000014014fffc  seta     dl
+000000014014ffff  test     dl, dl
+0000000140150001  je       0x14015000a
+0000000140150003  xorps    xmm6, xmmword ptr [rip + 0x4ba266]
+000000014015000a  movss    xmm3, dword ptr [rip + 0x43e50e]
+0000000140150012  xorps    xmm1, xmm1
+0000000140150015  movaps   xmm0, xmm3
+0000000140150018  minss    xmm0, xmm6
+000000014015001c  maxss    xmm1, xmm0
+0000000140150020  ucomiss  xmm1, xmm2
+0000000140150023  jp       0x140150027
+0000000140150025  je       0x14015005a
+0000000140150027  ucomiss  xmm1, dword ptr [rip + 0x4b9f8a]
+000000014015002e  jp       0x140150032
+0000000140150030  je       0x14015005a
+0000000140150032  ucomiss  xmm1, dword ptr [rip + 0x4b9fd7]
+0000000140150039  jp       0x14015003d
+000000014015003b  je       0x14015005a
+000000014015003d  ucomiss  xmm1, dword ptr [rip + 0x43e4d0]
+0000000140150044  jp       0x140150048
+0000000140150046  je       0x14015005a
+0000000140150048  ucomiss  xmm1, dword ptr [rip + 0x4ba039]
+000000014015004f  jp       0x140150053
+0000000140150051  je       0x14015005a
+0000000140150053  ucomiss  xmm1, xmm3
+0000000140150056  jp       0x140150060
+0000000140150058  jne      0x140150060
+000000014015005a  cvttss2si ecx, xmm1
+000000014015005e  jmp      0x1401500aa ; CDerivedStats::operator+=+0x11a
+0000000140150060  ucomiss  xmm1, dword ptr [rip + 0x4b9f21]
+0000000140150067  jp       0x14015006b
+0000000140150069  je       0x140150097
+000000014015006b  ucomiss  xmm1, dword ptr [rip + 0x43e48e]
+0000000140150072  jp       0x140150076
+0000000140150074  je       0x140150097
+0000000140150076  ucomiss  xmm1, dword ptr [rip + 0x43e493]
+000000014015007d  jp       0x140150081
+000000014015007f  je       0x140150097
+0000000140150081  ucomiss  xmm1, dword ptr [rip + 0x43e490]
+0000000140150088  jp       0x14015008c
+000000014015008a  je       0x140150097
+000000014015008c  ucomiss  xmm1, dword ptr [rip + 0x43e489]
+0000000140150093  jp       0x1401500a8
+0000000140150095  jne      0x1401500a8
+0000000140150097  cvtps2pd xmm0, xmm1
+000000014015009a  addsd    xmm0, qword ptr [rip + 0x43e466]
+00000001401500a2  cvttsd2si ecx, xmm0
+00000001401500a6  jmp      0x1401500aa ; CDerivedStats::operator+=+0x11a
+00000001401500a8  xor      ecx, ecx
+00000001401500aa  movzx    eax, cx
+00000001401500ad  neg      ax
+00000001401500b0  test     dl, dl
+00000001401500b2  cmove    ax, cx
+00000001401500b6  mov      word ptr [rbx + 0x12], ax
+00000001401500ba  movzx    eax, word ptr [rdi + 0x14]
+00000001401500be  add      word ptr [rbx + 0x14], ax
+00000001401500c2  movzx    eax, word ptr [rdi + 0x16]
+00000001401500c6  add      word ptr [rbx + 0x16], ax
+00000001401500ca  movzx    eax, word ptr [rdi + 0x18]
+00000001401500ce  add      word ptr [rbx + 0x18], ax
+00000001401500d2  movzx    eax, word ptr [rdi + 0x1a]
+00000001401500d6  add      word ptr [rbx + 0x1a], ax
+00000001401500da  movzx    eax, word ptr [rdi + 0x1c]
+00000001401500de  add      word ptr [rbx + 0x1c], ax
+00000001401500e2  movzx    eax, word ptr [rdi + 0x1e]
+00000001401500e6  add      word ptr [rbx + 0x1e], ax
+00000001401500ea  movzx    eax, word ptr [rdi + 0x20]
+00000001401500ee  add      word ptr [rbx + 0x20], ax
+00000001401500f2  movzx    eax, word ptr [rdi + 0x22]
+00000001401500f6  add      word ptr [rbx + 0x22], ax
+00000001401500fa  movzx    eax, word ptr [rdi + 0x24]
+00000001401500fe  add      word ptr [rbx + 0x24], ax
+0000000140150102  movzx    eax, word ptr [rdi + 0x26]
+0000000140150106  add      word ptr [rbx + 0x26], ax
+000000014015010a  movzx    eax, word ptr [rdi + 0x28]
+000000014015010e  add      word ptr [rbx + 0x28], ax
+0000000140150112  movzx    eax, word ptr [rdi + 0x2a]
+0000000140150116  add      word ptr [rbx + 0x2a], ax
+000000014015011a  movzx    eax, word ptr [rdi + 0x2c]
+000000014015011e  add      word ptr [rbx + 0x2c], ax
+0000000140150122  movzx    eax, word ptr [rdi + 0x2e]
+0000000140150126  add      word ptr [rbx + 0x2e], ax
+000000014015012a  movzx    eax, word ptr [rdi + 0x30]
+000000014015012e  add      word ptr [rbx + 0x30], ax
+0000000140150132  movzx    eax, word ptr [rdi + 0x32]
+0000000140150136  add      word ptr [rbx + 0x32], ax
+000000014015013a  movzx    eax, word ptr [rdi + 0x34]
+000000014015013e  add      word ptr [rbx + 0x34], ax
+0000000140150142  movzx    eax, word ptr [rdi + 0x36]
+0000000140150146  add      word ptr [rbx + 0x36], ax
+000000014015014a  movzx    eax, word ptr [rdi + 0x38]
+000000014015014e  add      word ptr [rbx + 0x38], ax
+0000000140150152  movzx    eax, word ptr [rdi + 0x3a]
+0000000140150156  add      word ptr [rbx + 0x3a], ax
+000000014015015a  movzx    eax, word ptr [rdi + 0x3c]
+000000014015015e  add      word ptr [rbx + 0x3c], ax
+0000000140150162  movzx    eax, word ptr [rdi + 0x3e]
+0000000140150166  add      word ptr [rbx + 0x3e], ax
+000000014015016a  movzx    eax, word ptr [rdi + 0x40]
+000000014015016e  add      word ptr [rbx + 0x40], ax
+0000000140150172  movzx    eax, word ptr [rdi + 0x42]
+0000000140150176  add      word ptr [rbx + 0x42], ax
+000000014015017a  movzx    eax, word ptr [rdi + 0x44]
+000000014015017e  add      word ptr [rbx + 0x44], ax
+0000000140150182  movzx    eax, word ptr [rdi + 0x46]
+0000000140150186  add      word ptr [rbx + 0x46], ax
+000000014015018a  movzx    eax, word ptr [rdi + 0x48]
+000000014015018e  add      word ptr [rbx + 0x48], ax
+0000000140150192  movzx    eax, word ptr [rdi + 0x4a]
+0000000140150196  add      word ptr [rbx + 0x4a], ax
+000000014015019a  movzx    eax, word ptr [rdi + 0x4e]
+000000014015019e  add      word ptr [rbx + 0x4e], ax
+00000001401501a2  movzx    eax, word ptr [rdi + 0x50]
+00000001401501a6  add      word ptr [rbx + 0x50], ax
+00000001401501aa  movzx    eax, word ptr [rdi + 0x52]
+00000001401501ae  add      word ptr [rbx + 0x52], ax
+00000001401501b2  movzx    eax, word ptr [rdi + 0x54]
+00000001401501b6  add      word ptr [rbx + 0x54], ax
+00000001401501ba  movzx    eax, word ptr [rdi + 0x56]
+00000001401501be  add      word ptr [rbx + 0x56], ax
+00000001401501c2  movzx    eax, word ptr [rdi + 0x58]
+00000001401501c6  add      word ptr [rbx + 0x58], ax
+00000001401501ca  movzx    eax, word ptr [rdi + 0x5a]
+00000001401501ce  add      word ptr [rbx + 0x5a], ax
+00000001401501d2  mov      eax, dword ptr [rdi + 0x5c]
+00000001401501d5  add      dword ptr [rbx + 0x5c], eax
+00000001401501d8  mov      eax, dword ptr [rdi + 0x60]
+00000001401501db  add      dword ptr [rbx + 0x60], eax
+00000001401501de  mov      eax, dword ptr [rdi + 0x64]
+00000001401501e1  add      dword ptr [rbx + 0x64], eax
+00000001401501e4  mov      eax, dword ptr [rdi + 0x68]
+00000001401501e7  add      dword ptr [rbx + 0x68], eax
+00000001401501ea  mov      eax, dword ptr [rdi + 0x6c]
+00000001401501ed  add      dword ptr [rbx + 0x6c], eax
+00000001401501f0  movzx    eax, word ptr [rdi + 0x70]
+00000001401501f4  add      word ptr [rbx + 0x70], ax
+00000001401501f8  mov      eax, dword ptr [rdi + 0x68]
+00000001401501fb  add      dword ptr [rbx + 0x68], eax
+00000001401501fe  mov      eax, dword ptr [rdi + 0x74]
+0000000140150201  add      dword ptr [rbx + 0x74], eax
+0000000140150204  mov      eax, dword ptr [rdi + 0x78]
+0000000140150207  add      dword ptr [rbx + 0x78], eax
+000000014015020a  mov      eax, dword ptr [rdi + 0x7c]
+000000014015020d  add      dword ptr [rbx + 0x7c], eax
+0000000140150210  movzx    eax, word ptr [rdi + 0x80]
+0000000140150217  add      word ptr [rbx + 0x80], ax
+000000014015021e  movzx    eax, word ptr [rdi + 0x1f6]
+0000000140150225  add      word ptr [rbx + 0x1f6], ax
+000000014015022c  movzx    eax, word ptr [rdi + 0x1f8]
+0000000140150233  add      word ptr [rbx + 0x1f8], ax
+000000014015023a  movzx    eax, word ptr [rdi + 0x1fa]
+0000000140150241  add      word ptr [rbx + 0x1fa], ax
+0000000140150248  movzx    eax, word ptr [rdi + 0x1fc]
+000000014015024f  add      word ptr [rbx + 0x1fc], ax
+0000000140150256  movzx    eax, word ptr [rdi + 0x1fe]
+000000014015025d  add      word ptr [rbx + 0x1fe], ax
+0000000140150264  movzx    eax, word ptr [rdi + 0x200]
+000000014015026b  add      word ptr [rbx + 0x200], ax
+0000000140150272  movzx    eax, word ptr [rdi + 0x202]
+0000000140150279  add      word ptr [rbx + 0x202], ax
+0000000140150280  movzx    eax, word ptr [rdi + 0x204]
+0000000140150287  add      word ptr [rbx + 0x204], ax
+000000014015028e  movzx    eax, word ptr [rdi + 0x206]
+0000000140150295  add      word ptr [rbx + 0x206], ax
+000000014015029c  movzx    eax, word ptr [rdi + 0x208]
+00000001401502a3  add      word ptr [rbx + 0x208], ax
+00000001401502aa  movzx    eax, word ptr [rdi + 0x20a]
+00000001401502b1  add      word ptr [rbx + 0x20a], ax
+00000001401502b8  movzx    eax, word ptr [rdi + 0x20c]
+00000001401502bf  add      word ptr [rbx + 0x20c], ax
+00000001401502c6  movzx    eax, word ptr [rdi + 0x20e]
+00000001401502cd  add      word ptr [rbx + 0x20e], ax
+00000001401502d4  movzx    eax, word ptr [rdi + 0x210]
+00000001401502db  add      word ptr [rbx + 0x210], ax
+00000001401502e2  movzx    eax, word ptr [rdi + 0x212]
+00000001401502e9  add      word ptr [rbx + 0x212], ax
+00000001401502f0  movzx    eax, word ptr [rdi + 0x214]
+00000001401502f7  add      word ptr [rbx + 0x214], ax
+00000001401502fe  movzx    eax, word ptr [rdi + 0x216]
+0000000140150305  add      word ptr [rbx + 0x216], ax
+000000014015030c  movzx    eax, word ptr [rdi + 0x218]
+0000000140150313  add      word ptr [rbx + 0x218], ax
+000000014015031a  movzx    eax, word ptr [rdi + 0x21a]
+0000000140150321  add      word ptr [rbx + 0x21a], ax
+0000000140150328  movzx    eax, word ptr [rdi + 0x21c]
+000000014015032f  add      word ptr [rbx + 0x21c], ax
+0000000140150336  movzx    eax, word ptr [rdi + 0x21e]
+000000014015033d  add      word ptr [rbx + 0x21e], ax
+0000000140150344  movzx    eax, word ptr [rdi + 0x220]
+000000014015034b  add      word ptr [rbx + 0x220], ax
+0000000140150352  movzx    eax, word ptr [rdi + 0x222]
+0000000140150359  add      word ptr [rbx + 0x222], ax
+0000000140150360  movzx    eax, word ptr [rdi + 0x82]
+0000000140150367  add      word ptr [rbx + 0x82], ax
+000000014015036e  movzx    eax, word ptr [rdi + 0x84]
+0000000140150375  add      word ptr [rbx + 0x84], ax
+000000014015037c  movzx    eax, word ptr [rdi + 0x86]
+0000000140150383  add      word ptr [rbx + 0x86], ax
+000000014015038a  movzx    eax, word ptr [rdi + 0x88]
+0000000140150391  add      word ptr [rbx + 0x88], ax
+0000000140150398  movzx    eax, word ptr [rdi + 0xc2]
+000000014015039f  add      word ptr [rbx + 0xc2], ax
+00000001401503a6  movzx    eax, word ptr [rdi + 0x8a]
+00000001401503ad  add      word ptr [rbx + 0x8a], ax
+00000001401503b4  movzx    eax, word ptr [rdi + 0x8c]
+00000001401503bb  add      word ptr [rbx + 0x8c], ax
+00000001401503c2  movzx    eax, word ptr [rdi + 0x8e]
+00000001401503c9  add      word ptr [rbx + 0x8e], ax
+00000001401503d0  mov      eax, dword ptr [rdi + 0x90]
+00000001401503d6  or       dword ptr [rbx + 0x90], eax
+00000001401503dc  mov      eax, dword ptr [rdi + 0x94]
+00000001401503e2  or       dword ptr [rbx + 0x94], eax
+00000001401503e8  movzx    eax, word ptr [rdi + 0xb8]
+00000001401503ef  add      word ptr [rbx + 0xb8], ax
+00000001401503f6  mov      eax, dword ptr [rdi + 0x98]
+00000001401503fc  or       dword ptr [rbx + 0x98], eax
+0000000140150402  mov      eax, dword ptr [rdi + 0x9c]
+0000000140150408  or       dword ptr [rbx + 0x9c], eax
+000000014015040e  mov      eax, dword ptr [rdi + 0xa0]
+0000000140150414  or       dword ptr [rbx + 0xa0], eax
+000000014015041a  mov      eax, dword ptr [rdi + 0xa4]
+0000000140150420  or       dword ptr [rbx + 0xa4], eax
+0000000140150426  mov      eax, dword ptr [rdi + 0xa8]
+000000014015042c  or       dword ptr [rbx + 0xa8], eax
+0000000140150432  mov      eax, dword ptr [rdi + 0xac]
+0000000140150438  or       dword ptr [rbx + 0xac], eax
+000000014015043e  mov      eax, dword ptr [rdi + 0xb0]
+0000000140150444  or       dword ptr [rbx + 0xb0], eax
+000000014015044a  mov      eax, dword ptr [rdi + 0xb4]
+0000000140150450  or       dword ptr [rbx + 0xb4], eax
+0000000140150456  movzx    eax, word ptr [rdi + 0xba]
+000000014015045d  add      word ptr [rbx + 0xba], ax
+0000000140150464  movzx    eax, word ptr [rdi + 0xbc]
+000000014015046b  add      word ptr [rbx + 0xbc], ax
+0000000140150472  movzx    eax, word ptr [rdi + 0xbe]
+0000000140150479  add      word ptr [rbx + 0xbe], ax
+0000000140150480  movzx    eax, word ptr [rdi + 0xc0]
+0000000140150487  add      word ptr [rbx + 0xc0], ax
+000000014015048e  mov      eax, dword ptr [rdi + 0xcc]
+0000000140150494  or       dword ptr [rbx + 0xcc], eax
+000000014015049a  movzx    eax, word ptr [rdi + 0xd0]
+00000001401504a1  add      word ptr [rbx + 0xd0], ax
+00000001401504a8  movzx    eax, word ptr [rdi + 0xd2]
+00000001401504af  add      word ptr [rbx + 0xd2], ax
+00000001401504b6  movzx    eax, word ptr [rdi + 0xd4]
+00000001401504bd  add      word ptr [rbx + 0xd4], ax
+00000001401504c4  movzx    eax, word ptr [rdi + 0xd6]
+00000001401504cb  add      word ptr [rbx + 0xd6], ax
+00000001401504d2  mov      eax, dword ptr [rdi + 0xe0]
+00000001401504d8  add      dword ptr [rbx + 0xe0], eax
+00000001401504de  mov      eax, dword ptr [rdi + 0xe4]
+00000001401504e4  add      dword ptr [rbx + 0xe4], eax
+00000001401504ea  mov      eax, dword ptr [rdi + 0xe8]
+00000001401504f0  add      dword ptr [rbx + 0xe8], eax
+00000001401504f6  mov      eax, dword ptr [rdi + 0xec]
+00000001401504fc  add      dword ptr [rbx + 0xec], eax
+0000000140150502  mov      eax, dword ptr [rdi + 0xf0]
+0000000140150508  add      dword ptr [rbx + 0xf0], eax
+000000014015050e  mov      eax, dword ptr [rdi + 0xf4]
+0000000140150514  add      dword ptr [rbx + 0xf4], eax
+000000014015051a  mov      eax, dword ptr [rdi + 0xf8]
+0000000140150520  add      dword ptr [rbx + 0xf8], eax
+0000000140150526  mov      eax, dword ptr [rdi + 0xfc]
+000000014015052c  add      dword ptr [rbx + 0xfc], eax
+0000000140150532  mov      eax, dword ptr [rdi + 0x100]
+0000000140150538  add      dword ptr [rbx + 0x100], eax
+000000014015053e  mov      eax, dword ptr [rdi + 0x104]
+0000000140150544  add      dword ptr [rbx + 0x104], eax
+000000014015054a  mov      eax, dword ptr [rdi + 0x108]
+0000000140150550  add      dword ptr [rbx + 0x108], eax
+0000000140150556  mov      eax, dword ptr [rdi + 0x10c]
+000000014015055c  add      dword ptr [rbx + 0x10c], eax
+0000000140150562  mov      eax, dword ptr [rdi + 0x110]
+0000000140150568  add      dword ptr [rbx + 0x110], eax
+000000014015056e  mov      eax, dword ptr [rdi + 0x114]
+0000000140150574  add      dword ptr [rbx + 0x114], eax
+000000014015057a  mov      eax, dword ptr [rdi + 0x118]
+0000000140150580  add      dword ptr [rbx + 0x118], eax
+0000000140150586  mov      eax, dword ptr [rdi + 0x11c]
+000000014015058c  add      dword ptr [rbx + 0x11c], eax
+0000000140150592  mov      eax, dword ptr [rdi + 0x120]
+0000000140150598  add      dword ptr [rbx + 0x120], eax
+000000014015059e  mov      eax, dword ptr [rdi + 0x124]
+00000001401505a4  add      dword ptr [rbx + 0x124], eax
+00000001401505aa  mov      eax, dword ptr [rdi + 0x128]
+00000001401505b0  add      dword ptr [rbx + 0x128], eax
+00000001401505b6  mov      eax, dword ptr [rdi + 0x12c]
+00000001401505bc  add      dword ptr [rbx + 0x12c], eax
+00000001401505c2  mov      eax, dword ptr [rdi + 0x130]
+00000001401505c8  add      dword ptr [rbx + 0x130], eax
+00000001401505ce  mov      eax, dword ptr [rdi + 0x134]
+00000001401505d4  add      dword ptr [rbx + 0x134], eax
+00000001401505da  mov      eax, dword ptr [rdi + 0x138]
+00000001401505e0  add      dword ptr [rbx + 0x138], eax
+00000001401505e6  mov      eax, dword ptr [rdi + 0x13c]
+00000001401505ec  add      dword ptr [rbx + 0x13c], eax
+00000001401505f2  mov      eax, dword ptr [rdi + 0x140]
+00000001401505f8  add      dword ptr [rbx + 0x140], eax
+00000001401505fe  mov      eax, dword ptr [rdi + 0x144]
+0000000140150604  add      dword ptr [rbx + 0x144], eax
+000000014015060a  mov      eax, dword ptr [rdi + 0x148]
+0000000140150610  add      dword ptr [rbx + 0x148], eax
+0000000140150616  mov      eax, dword ptr [rdi + 0x14c]
+000000014015061c  add      dword ptr [rbx + 0x14c], eax
+0000000140150622  mov      eax, dword ptr [rdi + 0x150]
+0000000140150628  add      dword ptr [rbx + 0x150], eax
+000000014015062e  mov      eax, dword ptr [rdi + 0x154]
+0000000140150634  add      dword ptr [rbx + 0x154], eax
+000000014015063a  mov      eax, dword ptr [rdi + 0x158]
+0000000140150640  add      dword ptr [rbx + 0x158], eax
+0000000140150646  mov      eax, dword ptr [rdi + 0x15c]
+000000014015064c  add      dword ptr [rbx + 0x15c], eax
+0000000140150652  mov      eax, dword ptr [rdi + 0x160]
+0000000140150658  add      dword ptr [rbx + 0x160], eax
+000000014015065e  mov      eax, dword ptr [rdi + 0x164]
+0000000140150664  add      dword ptr [rbx + 0x164], eax
+000000014015066a  mov      eax, dword ptr [rdi + 0x168]
+0000000140150670  add      dword ptr [rbx + 0x168], eax
+0000000140150676  mov      eax, dword ptr [rdi + 0x16c]
+000000014015067c  add      dword ptr [rbx + 0x16c], eax
+0000000140150682  mov      eax, dword ptr [rdi + 0x170]
+0000000140150688  add      dword ptr [rbx + 0x170], eax
+000000014015068e  mov      eax, dword ptr [rdi + 0x174]
+0000000140150694  add      dword ptr [rbx + 0x174], eax
+000000014015069a  mov      eax, dword ptr [rdi + 0x178]
+00000001401506a0  add      dword ptr [rbx + 0x178], eax
+00000001401506a6  mov      eax, dword ptr [rdi + 0x17c]
+00000001401506ac  add      dword ptr [rbx + 0x17c], eax
+00000001401506b2  mov      eax, dword ptr [rdi + 0x180]
+00000001401506b8  add      dword ptr [rbx + 0x180], eax
+00000001401506be  mov      eax, dword ptr [rdi + 0x184]
+00000001401506c4  add      dword ptr [rbx + 0x184], eax
+00000001401506ca  mov      eax, dword ptr [rdi + 0x188]
+00000001401506d0  add      dword ptr [rbx + 0x188], eax
+00000001401506d6  mov      eax, dword ptr [rdi + 0x18c]
+00000001401506dc  add      dword ptr [rbx + 0x18c], eax
+00000001401506e2  mov      eax, dword ptr [rdi + 0x190]
+00000001401506e8  add      dword ptr [rbx + 0x190], eax
+00000001401506ee  mov      eax, dword ptr [rdi + 0x194]
+00000001401506f4  add      dword ptr [rbx + 0x194], eax
+00000001401506fa  mov      eax, dword ptr [rdi + 0x198]
+0000000140150700  add      dword ptr [rbx + 0x198], eax
+0000000140150706  mov      eax, dword ptr [rdi + 0x19c]
+000000014015070c  add      dword ptr [rbx + 0x19c], eax
+0000000140150712  mov      eax, dword ptr [rdi + 0x1a0]
+0000000140150718  add      dword ptr [rbx + 0x1a0], eax
+000000014015071e  mov      eax, dword ptr [rdi + 0x1a4]
+0000000140150724  add      dword ptr [rbx + 0x1a4], eax
+000000014015072a  mov      eax, dword ptr [rdi + 0x1a8]
+0000000140150730  add      dword ptr [rbx + 0x1a8], eax
+0000000140150736  mov      eax, dword ptr [rdi + 0x1ac]
+000000014015073c  add      dword ptr [rbx + 0x1ac], eax
+0000000140150742  mov      eax, dword ptr [rdi + 0x1cc]
+0000000140150748  add      dword ptr [rbx + 0x1cc], eax
+000000014015074e  mov      eax, dword ptr [rdi + 0x1e0]
+0000000140150754  add      dword ptr [rbx + 0x1e0], eax
+000000014015075a  movzx    eax, word ptr [rdi + 0x1f4]
+0000000140150761  add      word ptr [rbx + 0x1f4], ax
+0000000140150768  mov      eax, dword ptr [rdi + 0x22c]
+000000014015076e  add      dword ptr [rbx + 0x22c], eax
+0000000140150774  mov      eax, dword ptr [rdi + 0x238]
+000000014015077a  add      dword ptr [rbx + 0x238], eax
+0000000140150780  mov      eax, dword ptr [rdi + 0x23c]
+0000000140150786  add      dword ptr [rbx + 0x23c], eax
+000000014015078c  mov      eax, dword ptr [rdi + 0x240]
+0000000140150792  add      dword ptr [rbx + 0x240], eax
+0000000140150798  mov      eax, dword ptr [rdi + 0x244]
+000000014015079e  add      dword ptr [rbx + 0x244], eax
+00000001401507a4  mov      eax, dword ptr [rdi + 0x248]
+00000001401507aa  add      dword ptr [rbx + 0x248], eax
+00000001401507b0  mov      eax, dword ptr [rdi + 0x24c]
+00000001401507b6  add      dword ptr [rbx + 0x24c], eax
+00000001401507bc  mov      eax, dword ptr [rdi + 0x250]
+00000001401507c2  add      dword ptr [rbx + 0x250], eax
+00000001401507c8  mov      eax, dword ptr [rdi + 0x254]
+00000001401507ce  add      dword ptr [rbx + 0x254], eax
+00000001401507d4  mov      eax, dword ptr [rdi + 0x258]
+00000001401507da  add      dword ptr [rbx + 0x258], eax
+00000001401507e0  mov      eax, dword ptr [rdi + 0x234]
+00000001401507e6  add      dword ptr [rbx + 0x234], eax
+00000001401507ec  mov      eax, dword ptr [rdi + 0x25c]
+00000001401507f2  add      dword ptr [rbx + 0x25c], eax
+00000001401507f8  mov      eax, dword ptr [rdi + 0x260]
+00000001401507fe  add      dword ptr [rbx + 0x260], eax
+0000000140150804  mov      eax, dword ptr [rdi + 0x264]
+000000014015080a  add      dword ptr [rbx + 0x264], eax
+0000000140150810  mov      eax, dword ptr [rdi + 0x268]
+0000000140150816  or       dword ptr [rbx + 0x268], eax
+000000014015081c  mov      eax, dword ptr [rdi + 0x26c]
+0000000140150822  add      dword ptr [rbx + 0x26c], eax
+0000000140150828  mov      eax, dword ptr [rdi + 0x270]
+000000014015082e  add      dword ptr [rbx + 0x270], eax
+0000000140150834  mov      eax, dword ptr [rdi + 0x280]
+000000014015083a  or       dword ptr [rbx + 0x280], eax
+0000000140150840  mov      eax, dword ptr [rdi + 0x284]
+0000000140150846  or       dword ptr [rbx + 0x284], eax
+000000014015084c  mov      eax, dword ptr [rdi + 0x288]
+0000000140150852  add      dword ptr [rbx + 0x288], eax
+0000000140150858  mov      eax, dword ptr [rdi + 0x28c]
+000000014015085e  add      dword ptr [rbx + 0x28c], eax
+0000000140150864  mov      eax, dword ptr [rdi + 0x290]
+000000014015086a  add      dword ptr [rbx + 0x290], eax
+0000000140150870  mov      eax, dword ptr [rdi + 0x294]
+0000000140150876  add      dword ptr [rbx + 0x294], eax
+000000014015087c  mov      eax, dword ptr [rdi + 0x298]
+0000000140150882  add      dword ptr [rbx + 0x298], eax
+0000000140150888  mov      eax, dword ptr [rdi + 0x29c]
+000000014015088e  add      dword ptr [rbx + 0x29c], eax
+0000000140150894  mov      eax, dword ptr [rdi + 0x2a0]
+000000014015089a  add      dword ptr [rbx + 0x2a0], eax
+00000001401508a0  mov      eax, dword ptr [rdi + 0x2a4]
+00000001401508a6  or       dword ptr [rbx + 0x2a4], eax
+00000001401508ac  mov      eax, dword ptr [rdi + 0x2a8]
+00000001401508b2  add      dword ptr [rbx + 0x2a8], eax
+00000001401508b8  mov      eax, dword ptr [rdi + 0x2ac]
+00000001401508be  or       dword ptr [rbx + 0x2ac], eax
+00000001401508c4  mov      eax, dword ptr [rdi + 0x2b0]
+00000001401508ca  or       dword ptr [rbx + 0x2b0], eax
+00000001401508d0  mov      eax, dword ptr [rdi + 0x2b4]
+00000001401508d6  or       dword ptr [rbx + 0x2b4], eax
+00000001401508dc  mov      eax, dword ptr [rdi + 0x2b8]
+00000001401508e2  add      dword ptr [rbx + 0x2b8], eax
+00000001401508e8  mov      eax, dword ptr [rdi + 0x2bc]
+00000001401508ee  or       dword ptr [rbx + 0x2bc], eax
+00000001401508f4  mov      eax, dword ptr [rdi + 0x2c0]
+00000001401508fa  or       dword ptr [rbx + 0x2c0], eax
+0000000140150900  mov      eax, dword ptr [rdi + 0x2c4]
+0000000140150906  or       dword ptr [rbx + 0x2c4], eax
+000000014015090c  mov      eax, dword ptr [rdi + 0x2c8]
+0000000140150912  or       dword ptr [rbx + 0x2c8], eax
+0000000140150918  mov      eax, dword ptr [rdi + 0x2cc]
+000000014015091e  add      dword ptr [rbx + 0x2cc], eax
+0000000140150924  mov      eax, dword ptr [rdi + 0x2d0]
+000000014015092a  or       dword ptr [rbx + 0x2d0], eax
+0000000140150930  mov      eax, dword ptr [rdi + 0x2d4]
+0000000140150936  or       dword ptr [rbx + 0x2d4], eax
+000000014015093c  mov      eax, dword ptr [rdi + 0x2d8]
+0000000140150942  or       dword ptr [rbx + 0x2d8], eax
+0000000140150948  mov      eax, dword ptr [rdi + 0x2dc]
+000000014015094e  or       dword ptr [rbx + 0x2dc], eax
+0000000140150954  mov      eax, dword ptr [rdi + 0x2e0]
+000000014015095a  add      dword ptr [rbx + 0x2e0], eax
+0000000140150960  mov      eax, dword ptr [rdi + 0x2e4]
+0000000140150966  add      dword ptr [rbx + 0x2e4], eax
+000000014015096c  mov      eax, dword ptr [rdi + 0x2e8]
+0000000140150972  or       dword ptr [rbx + 0x2e8], eax
+0000000140150978  mov      eax, dword ptr [rdi + 0x2ec]
+000000014015097e  or       dword ptr [rbx + 0x2ec], eax
+0000000140150984  mov      eax, dword ptr [rdi + 0xc88]
+000000014015098a  or       dword ptr [rbx + 0xc88], eax
+0000000140150990  mov      eax, dword ptr [rdi + 0xc8c]
+0000000140150996  or       dword ptr [rbx + 0xc8c], eax
+000000014015099c  mov      eax, dword ptr [rdi + 0xc90]
+00000001401509a2  or       dword ptr [rbx + 0xc90], eax
+00000001401509a8  mov      eax, dword ptr [rdi + 0xc94]
+00000001401509ae  mov      rcx, rbx
+00000001401509b1  or       dword ptr [rbx + 0xc94], eax
+00000001401509b7  mov      eax, dword ptr [rdi + 0xc98]
+00000001401509bd  or       dword ptr [rbx + 0xc98], eax
+00000001401509c3  mov      eax, dword ptr [rdi + 0xc9c]
+00000001401509c9  or       dword ptr [rbx + 0xc9c], eax
+00000001401509cf  mov      eax, dword ptr [rdi + 0xca0]
+00000001401509d5  or       dword ptr [rbx + 0xca0], eax
+00000001401509db  mov      eax, dword ptr [rdi + 0xca4]
+00000001401509e1  or       dword ptr [rbx + 0xca4], eax
+00000001401509e7  call     0x1401512a0 ; CDerivedStats::CheckLimits+0x0
+00000001401509ec  movaps   xmm6, xmmword ptr [rsp + 0x20]
+00000001401509f1  mov      rax, rbx
+00000001401509f4  mov      rbx, qword ptr [rsp + 0x40]
+00000001401509f9  add      rsp, 0x30
+00000001401509fd  pop      rdi
+00000001401509fe  ret
+00000001401509ff  int3
+
+CGameSprite::GetActiveProficiency+0x0 [0x14039c430, 0x14039c4a0)
+000000014039c430  sub      rsp, 0x28
+000000014039c434  lea      eax, [rdx - 0x59]
+000000014039c437  mov      r8, rcx
+000000014039c43a  cmp      eax, 0x2d
+000000014039c43d  ja       0x14039c464
+000000014039c43f  cmp      dword ptr [r8 + 0x4ea4], 0
+000000014039c447  mov      eax, 0x1dc8
+000000014039c44c  mov      ecx, 0x1120
+000000014039c451  cmove    ecx, eax
+000000014039c454  add      rcx, r8
+000000014039c457  call     0x1401519b0 ; CDerivedStats::GetAtOffset+0x0
+000000014039c45c  and      eax, 7
+000000014039c45f  add      rsp, 0x28
+000000014039c463  ret
+000000014039c464  movzx    eax, byte ptr [rip + 0x20fa36]
+000000014039c46b  cmp      edx, eax
+000000014039c46d  jl       0x14039c48a
+000000014039c46f  movzx    eax, byte ptr [rip + 0x20fa32]
+000000014039c476  cmp      edx, eax
+000000014039c478  jg       0x14039c48a
+000000014039c47a  movsxd   rax, edx
+000000014039c47d  movsx    eax, byte ptr [rax + rcx + 0x5c6]
+000000014039c485  add      rsp, 0x28
+000000014039c489  ret
+000000014039c48a  mov      eax, 0xffffffff
+000000014039c48f  add      rsp, 0x28
+000000014039c493  ret
+000000014039c494  int3
+000000014039c495  int3
+000000014039c496  int3
+000000014039c497  int3
+000000014039c498  int3
+000000014039c499  int3
+000000014039c49a  int3
+000000014039c49b  int3
+000000014039c49c  int3
+000000014039c49d  int3
+000000014039c49e  int3
+000000014039c49f  int3

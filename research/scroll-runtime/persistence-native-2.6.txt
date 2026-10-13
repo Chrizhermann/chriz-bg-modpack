@@ -1,0 +1,254 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CGameEffectList::Marshal+0x0 [0x1401e4ed0, 0x1401e5270)
+00000001401e4ed0  push     rbx
+00000001401e4ed2  push     rsi
+00000001401e4ed3  push     rdi
+00000001401e4ed4  push     r12
+00000001401e4ed6  push     r13
+00000001401e4ed8  push     r14
+00000001401e4eda  sub      rsp, 0x188
+00000001401e4ee1  mov      rax, qword ptr [rip + 0x47d630]
+00000001401e4ee8  xor      rax, rsp
+00000001401e4eeb  mov      qword ptr [rsp + 0x170], rax
+00000001401e4ef3  mov      rdi, rcx
+00000001401e4ef6  mov      r12d, r9d
+00000001401e4ef9  lea      rcx, [rsp + 0x60]
+00000001401e4efe  movzx    ebx, r8b
+00000001401e4f02  mov      r13, rdx
+00000001401e4f05  call     0x14019e080 ; CGameEffectBase::CGameEffectBase+0x0
+00000001401e4f0a  mov      eax, dword ptr [rdi + 0x18]
+00000001401e4f0d  xor      r14d, r14d
+00000001401e4f10  test     bl, bl
+00000001401e4f12  jne      0x1401e50e5
+00000001401e4f18  mov      qword ptr [rsp + 0x1d0], rbp
+00000001401e4f20  lea      ebp, [rax + rax*2]
+00000001401e4f23  shl      ebp, 4
+00000001401e4f26  mov      qword ptr [rsp + 0x180], r15
+00000001401e4f2e  mov      r15d, dword ptr [rsp + 0x1e0]
+00000001401e4f36  test     r15d, r15d
+00000001401e4f39  je       0x1401e4f72
+00000001401e4f3b  mov      rdx, qword ptr [rdi + 8]
+00000001401e4f3f  mov      r8d, r14d
+00000001401e4f42  test     rdx, rdx
+00000001401e4f45  je       0x1401e4f6b
+00000001401e4f47  nop      word ptr [rax + rax]
+00000001401e4f50  mov      rax, qword ptr [rdx + 0x10]
+00000001401e4f54  lea      ecx, [r8 + 1]
+00000001401e4f58  mov      rdx, qword ptr [rdx]
+00000001401e4f5b  cmp      dword ptr [rax + 0x24], 2
+00000001401e4f5f  cmove    ecx, r8d
+00000001401e4f63  mov      r8d, ecx
+00000001401e4f66  test     rdx, rdx
+00000001401e4f69  jne      0x1401e4f50
+00000001401e4f6b  lea      ebp, [r8 + r8*2]
+00000001401e4f6f  shl      ebp, 4
+00000001401e4f72  test     r12d, r12d
+00000001401e4f75  je       0x1401e4fb2
+00000001401e4f77  mov      rdx, qword ptr [rdi + 8]
+00000001401e4f7b  mov      r8d, r14d
+00000001401e4f7e  test     rdx, rdx
+00000001401e4f81  je       0x1401e4fab
+00000001401e4f83  nop      dword ptr [rax]
+00000001401e4f87  nop      word ptr [rax + rax]
+00000001401e4f90  mov      rax, qword ptr [rdx + 0x10]
+00000001401e4f94  lea      ecx, [r8 + 1]
+00000001401e4f98  mov      rdx, qword ptr [rdx]
+00000001401e4f9b  cmp      dword ptr [rax + 0x24], 9
+00000001401e4f9f  cmovne   ecx, r8d
+00000001401e4fa3  mov      r8d, ecx
+00000001401e4fa6  test     rdx, rdx
+00000001401e4fa9  jne      0x1401e4f90
+00000001401e4fab  lea      ebp, [r8 + r8*2]
+00000001401e4faf  shl      ebp, 4
+00000001401e4fb2  test     ebp, ebp
+00000001401e4fb4  jle      0x1401e50ca
+00000001401e4fba  movsxd   rcx, ebp
+00000001401e4fbd  call     0x1404f67e4 ; operator_new[]+0x0
+00000001401e4fc2  mov      rdi, qword ptr [rdi + 8]
+00000001401e4fc6  mov      r14, rax
+00000001401e4fc9  test     rdi, rdi
+00000001401e4fcc  je       0x1401e50ca
+00000001401e4fd2  mov      rsi, rax
+00000001401e4fd5  nop      word ptr [rax + rax]
+00000001401e4fe0  mov      rbx, qword ptr [rdi + 0x10]
+00000001401e4fe4  mov      rdi, qword ptr [rdi]
+00000001401e4fe7  test     r12d, r12d
+00000001401e4fea  je       0x1401e4ff6
+00000001401e4fec  cmp      dword ptr [rbx + 0x24], 9
+00000001401e4ff0  jne      0x1401e50c1
+00000001401e4ff6  test     r15d, r15d
+00000001401e4ff9  je       0x1401e5005
+00000001401e4ffb  cmp      dword ptr [rbx + 0x24], 2
+00000001401e4fff  je       0x1401e50c1
+00000001401e5005  movzx    eax, word ptr [rbx + 0x10]
+00000001401e5009  lea      rdx, [rsp + 0x34]
+00000001401e500e  mov      word ptr [rsp + 0x20], ax
+00000001401e5013  lea      rcx, [rsp + 0x50]
+00000001401e5018  movzx    eax, byte ptr [rbx + 0x18]
+00000001401e501c  mov      byte ptr [rsp + 0x23], al
+00000001401e5020  movzx    eax, byte ptr [rbx + 0x14]
+00000001401e5024  mov      byte ptr [rsp + 0x22], al
+00000001401e5028  mov      eax, dword ptr [rbx + 0x1c]
+00000001401e502b  mov      dword ptr [rsp + 0x24], eax
+00000001401e502f  mov      eax, dword ptr [rbx + 0x20]
+00000001401e5032  mov      dword ptr [rsp + 0x28], eax
+00000001401e5036  movzx    eax, word ptr [rbx + 0x24]
+00000001401e503a  mov      word ptr [rsp + 0x2c], ax
+00000001401e503f  mov      eax, dword ptr [rbx + 0x28]
+00000001401e5042  mov      dword ptr [rsp + 0x2e], eax
+00000001401e5046  movzx    eax, byte ptr [rbx + 0x2c]
+00000001401e504a  mov      byte ptr [rsp + 0x32], al
+00000001401e504e  movzx    eax, byte ptr [rbx + 0x2e]
+00000001401e5052  mov      byte ptr [rsp + 0x33], al
+00000001401e5056  mov      rax, qword ptr [rbx + 0x30]
+00000001401e505a  mov      qword ptr [rsp + 0x50], rax
+00000001401e505f  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001401e5064  mov      rax, qword ptr [rbx]
+00000001401e5067  mov      rcx, rbx
+00000001401e506a  call     qword ptr [rax + 0x40]
+00000001401e506d  test     eax, eax
+00000001401e506f  je       0x1401e507d
+00000001401e5071  mov      eax, dword ptr [rbx + 0x38]
+00000001401e5074  mov      dword ptr [rsp + 0x3c], eax
+00000001401e5078  mov      eax, dword ptr [rbx + 0x3c]
+00000001401e507b  jmp      0x1401e5087 ; CGameEffectList::Marshal+0x1b7
+00000001401e507d  mov      eax, dword ptr [rbx + 0x58]
+00000001401e5080  mov      dword ptr [rsp + 0x3c], eax
+00000001401e5084  mov      eax, dword ptr [rbx + 0x54]
+00000001401e5087  movups   xmm0, xmmword ptr [rsp + 0x20]
+00000001401e508c  mov      dword ptr [rsp + 0x40], eax
+00000001401e5090  mov      eax, dword ptr [rbx + 0x40]
+00000001401e5093  mov      dword ptr [rsp + 0x44], eax
+00000001401e5097  mov      eax, dword ptr [rbx + 0x44]
+00000001401e509a  mov      dword ptr [rsp + 0x48], eax
+00000001401e509e  mov      eax, dword ptr [rbx + 0x48]
+00000001401e50a1  mov      dword ptr [rsp + 0x4c], eax
+00000001401e50a5  movups   xmmword ptr [rsi], xmm0
+00000001401e50a8  movups   xmm1, xmmword ptr [rsp + 0x30]
+00000001401e50ad  movups   xmmword ptr [rsi + 0x10], xmm1
+00000001401e50b1  movups   xmm0, xmmword ptr [rsp + 0x40]
+00000001401e50b6  movups   xmmword ptr [rsi + 0x20], xmm0
+00000001401e50ba  add      rsi, 0x108
+00000001401e50c1  test     rdi, rdi
+00000001401e50c4  jne      0x1401e4fe0
+00000001401e50ca  mov      qword ptr [r13], r14
+00000001401e50ce  mov      eax, ebp
+00000001401e50d0  mov      r15, qword ptr [rsp + 0x180]
+00000001401e50d8  mov      rbp, qword ptr [rsp + 0x1d0]
+00000001401e50e0  jmp      0x1401e5244 ; CGameEffectList::Marshal+0x374
+00000001401e50e5  mov      esi, dword ptr [rsp + 0x1e0]
+00000001401e50ec  imul     ebx, eax, 0x108
+00000001401e50f2  test     esi, esi
+00000001401e50f4  je       0x1401e5132
+00000001401e50f6  mov      rdx, qword ptr [rdi + 8]
+00000001401e50fa  mov      r8d, r14d
+00000001401e50fd  test     rdx, rdx
+00000001401e5100  je       0x1401e512b
+00000001401e5102  nop      dword ptr [rax]
+00000001401e5106  nop      word ptr [rax + rax]
+00000001401e5110  mov      rax, qword ptr [rdx + 0x10]
+00000001401e5114  lea      ecx, [r8 + 1]
+00000001401e5118  mov      rdx, qword ptr [rdx]
+00000001401e511b  cmp      dword ptr [rax + 0x24], 2
+00000001401e511f  cmove    ecx, r8d
+00000001401e5123  mov      r8d, ecx
+00000001401e5126  test     rdx, rdx
+00000001401e5129  jne      0x1401e5110
+00000001401e512b  imul     ebx, r8d, 0x108
+00000001401e5132  test     r12d, r12d
+00000001401e5135  je       0x1401e5172
+00000001401e5137  mov      rdx, qword ptr [rdi + 8]
+00000001401e513b  mov      r8d, r14d
+00000001401e513e  test     rdx, rdx
+00000001401e5141  je       0x1401e516b
+00000001401e5143  nop      dword ptr [rax]
+00000001401e5147  nop      word ptr [rax + rax]
+00000001401e5150  mov      rax, qword ptr [rdx + 0x10]
+00000001401e5154  lea      ecx, [r8 + 1]
+00000001401e5158  mov      rdx, qword ptr [rdx]
+00000001401e515b  cmp      dword ptr [rax + 0x24], 9
+00000001401e515f  cmovne   ecx, r8d
+00000001401e5163  mov      r8d, ecx
+00000001401e5166  test     rdx, rdx
+00000001401e5169  jne      0x1401e5150
+00000001401e516b  imul     ebx, r8d, 0x108
+00000001401e5172  test     ebx, ebx
+00000001401e5174  jle      0x1401e523b
+00000001401e517a  movsxd   rcx, ebx
+00000001401e517d  call     0x1404f67e4 ; operator_new[]+0x0
+00000001401e5182  mov      r8, qword ptr [rdi + 8]
+00000001401e5186  mov      r10, rax
+00000001401e5189  test     r8, r8
+00000001401e518c  je       0x1401e523e
+00000001401e5192  mov      r9, rax
+00000001401e5195  nop      word ptr [rax + rax]
+00000001401e51a0  mov      rdx, qword ptr [r8 + 0x10]
+00000001401e51a4  mov      r8, qword ptr [r8]
+00000001401e51a7  test     rdx, rdx
+00000001401e51aa  lea      rax, [rdx + 8]
+00000001401e51ae  cmove    rax, r14
+00000001401e51b2  test     r12d, r12d
+00000001401e51b5  je       0x1401e51bd
+00000001401e51b7  cmp      dword ptr [rdx + 0x24], 9
+00000001401e51bb  jne      0x1401e5230
+00000001401e51bd  test     esi, esi
+00000001401e51bf  je       0x1401e51c7
+00000001401e51c1  cmp      dword ptr [rdx + 0x24], 2
+00000001401e51c5  je       0x1401e5230
+00000001401e51c7  mov      rdx, r9
+00000001401e51ca  mov      ecx, 2
+00000001401e51cf  nop
+00000001401e51d0  lea      rdx, [rdx + 0x80]
+00000001401e51d7  movups   xmm0, xmmword ptr [rax]
+00000001401e51da  lea      rax, [rax + 0x80]
+00000001401e51e1  movups   xmmword ptr [rdx - 0x80], xmm0
+00000001401e51e5  movups   xmm1, xmmword ptr [rax - 0x70]
+00000001401e51e9  movups   xmmword ptr [rdx - 0x70], xmm1
+00000001401e51ed  movups   xmm0, xmmword ptr [rax - 0x60]
+00000001401e51f1  movups   xmmword ptr [rdx - 0x60], xmm0
+00000001401e51f5  movups   xmm1, xmmword ptr [rax - 0x50]
+00000001401e51f9  movups   xmmword ptr [rdx - 0x50], xmm1
+00000001401e51fd  movups   xmm0, xmmword ptr [rax - 0x40]
+00000001401e5201  movups   xmmword ptr [rdx - 0x40], xmm0
+00000001401e5205  movups   xmm1, xmmword ptr [rax - 0x30]
+00000001401e5209  movups   xmmword ptr [rdx - 0x30], xmm1
+00000001401e520d  movups   xmm0, xmmword ptr [rax - 0x20]
+00000001401e5211  movups   xmmword ptr [rdx - 0x20], xmm0
+00000001401e5215  movups   xmm1, xmmword ptr [rax - 0x10]
+00000001401e5219  movups   xmmword ptr [rdx - 0x10], xmm1
+00000001401e521d  sub      rcx, 1
+00000001401e5221  jne      0x1401e51d0
+00000001401e5223  mov      rcx, qword ptr [rax]
+00000001401e5226  add      r9, 0x108
+00000001401e522d  mov      qword ptr [rdx], rcx
+00000001401e5230  test     r8, r8
+00000001401e5233  jne      0x1401e51a0
+00000001401e5239  jmp      0x1401e523e ; CGameEffectList::Marshal+0x36e
+00000001401e523b  mov      r10, r14
+00000001401e523e  mov      qword ptr [r13], r10
+00000001401e5242  mov      eax, ebx
+00000001401e5244  mov      rcx, qword ptr [rsp + 0x170]
+00000001401e524c  xor      rcx, rsp
+00000001401e524f  call     0x1404f67c0 ; __security_check_cookie+0x0
+00000001401e5254  add      rsp, 0x188
+00000001401e525b  pop      r14
+00000001401e525d  pop      r13
+00000001401e525f  pop      r12
+00000001401e5261  pop      rdi
+00000001401e5262  pop      rsi
+00000001401e5263  pop      rbx
+00000001401e5264  ret
+00000001401e5265  int3
+00000001401e5266  int3
+00000001401e5267  int3
+00000001401e5268  int3
+00000001401e5269  int3
+00000001401e526a  int3
+00000001401e526b  int3
+00000001401e526c  int3
+00000001401e526d  int3
+00000001401e526e  int3
+00000001401e526f  int3

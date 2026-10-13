@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "runtime": "lupa.lua51",
+      "scenarios": 11
+    },
+    {
+      "runtime": "lupa.luajit21",
+      "scenarios": 11
+    }
+  ],
+  "scope": "Actual modules and store, explicit engine/native boundary doubles; no rendered/game acceptance"
+}

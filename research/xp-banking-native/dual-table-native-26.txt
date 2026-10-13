@@ -1,0 +1,77 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+C2DArray::GetAt+0x0 [0x1401151c0, 0x1401152b0)
+00000001401151c0  mov      qword ptr [rsp + 0x10], rbx
+00000001401151c5  push     rsi
+00000001401151c6  push     rdi
+00000001401151c7  push     r14
+00000001401151c9  sub      rsp, 0x20
+00000001401151cd  mov      rbx, rcx
+00000001401151d0  mov      rdi, r8
+00000001401151d3  lea      rcx, [rsp + 0x58]
+00000001401151d8  call     0x1403fcd00 ; CString::CString+0x0
+00000001401151dd  lea      rcx, [rsp + 0x58]
+00000001401151e2  call     0x1403fdd50 ; CString::MakeUpper+0x0
+00000001401151e7  mov      rdx, rdi
+00000001401151ea  lea      rcx, [rsp + 0x40]
+00000001401151ef  call     0x1403fcd00 ; CString::CString+0x0
+00000001401151f4  lea      rcx, [rsp + 0x40]
+00000001401151f9  call     0x1403fdd50 ; CString::MakeUpper+0x0
+00000001401151fe  xor      edi, edi
+0000000140115200  mov      esi, edi
+0000000140115202  cmp      di, word ptr [rbx + 0x30]
+0000000140115206  jge      0x140115234
+0000000140115208  mov      r14d, edi
+000000014011520b  nop      dword ptr [rax + rax]
+0000000140115210  mov      rax, qword ptr [rbx + 0x10]
+0000000140115214  mov      rdx, qword ptr [rsp + 0x58]
+0000000140115219  mov      rcx, qword ptr [r14 + rax]
+000000014011521d  call     0x140502d6c ; _mbscmp+0x0
+0000000140115222  test     eax, eax
+0000000140115224  je       0x14011525d
+0000000140115226  movsx    eax, word ptr [rbx + 0x30]
+000000014011522a  inc      esi
+000000014011522c  add      r14, 8
+0000000140115230  cmp      esi, eax
+0000000140115232  jl       0x140115210
+0000000140115234  add      rbx, 0x28
+0000000140115238  lea      rcx, [rsp + 0x40]
+000000014011523d  call     0x1403fce00 ; CString::~CString+0x0
+0000000140115242  lea      rcx, [rsp + 0x58]
+0000000140115247  call     0x1403fce00 ; CString::~CString+0x0
+000000014011524c  mov      rax, rbx
+000000014011524f  mov      rbx, qword ptr [rsp + 0x48]
+0000000140115254  add      rsp, 0x20
+0000000140115258  pop      r14
+000000014011525a  pop      rdi
+000000014011525b  pop      rsi
+000000014011525c  ret
+000000014011525d  cmp      di, word ptr [rbx + 0x32]
+0000000140115261  jge      0x140115234
+0000000140115263  mov      r14, rdi
+0000000140115266  nop      word ptr [rax + rax]
+0000000140115270  mov      rax, qword ptr [rbx + 0x18]
+0000000140115274  mov      rdx, qword ptr [rsp + 0x40]
+0000000140115279  mov      rcx, qword ptr [r14 + rax]
+000000014011527d  call     0x140502d6c ; _mbscmp+0x0
+0000000140115282  test     eax, eax
+0000000140115284  je       0x140115296
+0000000140115286  movsx    eax, word ptr [rbx + 0x32]
+000000014011528a  inc      edi
+000000014011528c  add      r14, 8
+0000000140115290  cmp      edi, eax
+0000000140115292  jl       0x140115270
+0000000140115294  jmp      0x140115234 ; C2DArray::GetAt+0x74
+0000000140115296  movsx    eax, word ptr [rbx + 0x30]
+000000014011529a  imul     eax, edi
+000000014011529d  add      eax, esi
+000000014011529f  movsxd   rcx, eax
+00000001401152a2  mov      rax, qword ptr [rbx + 0x20]
+00000001401152a6  lea      rbx, [rax + rcx*8]
+00000001401152aa  jmp      0x140115238 ; C2DArray::GetAt+0x78
+00000001401152ac  int3
+00000001401152ad  int3
+00000001401152ae  int3
+00000001401152af  int3

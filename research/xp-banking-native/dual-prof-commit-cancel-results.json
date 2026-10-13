@@ -1,0 +1,46 @@
+{
+  "2.6": {
+    "native_cancel_window": [
+      "0x2b196a",
+      "0x2b19ca"
+    ],
+    "class_records": 47,
+    "unchanged_extra_records": 2,
+    "additive_native_bookkeeping_records": 1,
+    "observed_calls": {
+      "lookup": 46,
+      "recalculation": 46,
+      "resolve": 2300,
+      "apply": 2300
+    },
+    "all_original_effect_and_node_identities_preserved": true,
+    "stubs": [
+      "installed GetProficiencyId maps indices to stat89..134",
+      "ProcessEffectList routes to actual timed HandleList, not full game recalc"
+    ],
+    "scope": "ordinary surviving timing9 records; arbitrary external effect mutation remains guarded",
+    "game_launched": false
+  },
+  "2.7": {
+    "native_cancel_window": [
+      "0x2b1fea",
+      "0x2b204a"
+    ],
+    "class_records": 47,
+    "unchanged_extra_records": 2,
+    "additive_native_bookkeeping_records": 1,
+    "observed_calls": {
+      "lookup": 46,
+      "recalculation": 46,
+      "resolve": 2300,
+      "apply": 2300
+    },
+    "all_original_effect_and_node_identities_preserved": true,
+    "stubs": [
+      "installed GetProficiencyId maps indices to stat89..134",
+      "ProcessEffectList routes to actual timed HandleList, not full game recalc"
+    ],
+    "scope": "ordinary surviving timing9 records; arbitrary external effect mutation remains guarded",
+    "game_launched": false
+  }
+}

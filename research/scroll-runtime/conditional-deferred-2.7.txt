@@ -1,0 +1,496 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CPersistantEffectApplyEffect::AIUpdate+0x0 [0x1401a47b0, 0x1401a4ab0)
+00000001401a47b0  push     rbx
+00000001401a47b2  push     r14
+00000001401a47b4  sub      rsp, 0x68
+00000001401a47b8  mov      rax, qword ptr [rip + 0x4c0219]
+00000001401a47bf  xor      rax, rsp
+00000001401a47c2  mov      qword ptr [rsp + 0x48], rax
+00000001401a47c7  mov      rax, qword ptr [rip + 0x4c2d7a]
+00000001401a47ce  mov      rbx, rcx
+00000001401a47d1  mov      r11d, r8d
+00000001401a47d4  mov      r14, rdx
+00000001401a47d7  mov      rcx, qword ptr [rax + 0x1090]
+00000001401a47de  cmp      dword ptr [rcx + 0x9690], 0
+00000001401a47e5  je       0x1401a4812
+00000001401a47e7  mov      eax, dword ptr [rdx + 0x48]
+00000001401a47ea  cmp      dword ptr [rcx + 0x9694], eax
+00000001401a47f0  je       0x1401a4812
+00000001401a47f2  cmp      dword ptr [r14 + 0x4ea4], 0
+00000001401a47fa  mov      eax, 0x13f8
+00000001401a47ff  mov      edx, 0x20a0
+00000001401a4804  cmove    eax, edx
+00000001401a4807  cmp      dword ptr [rax + r14], 0
+00000001401a480c  je       0x1401a4a84
+00000001401a4812  mov      eax, dword ptr [rcx + 0x7978]
+00000001401a4818  sub      eax, 0x1016e
+00000001401a481d  test     eax, 0xfffdffff
+00000001401a4822  je       0x1401a4a84
+00000001401a4828  mov      ecx, dword ptr [rbx + 0x28]
+00000001401a482b  mov      eax, 0x88888889
+00000001401a4830  mov      r10d, dword ptr [rbx + 0x1c]
+00000001401a4834  mov      r9d, ecx
+00000001401a4837  imul     r11d
+00000001401a483a  inc      r10d
+00000001401a483d  mov      qword ptr [rsp + 0x60], rbp
+00000001401a4842  add      r8d, edx
+00000001401a4845  mov      dword ptr [rbx + 0x1c], r10d
+00000001401a4849  sar      r8d, 3
+00000001401a484d  sub      r9d, r11d
+00000001401a4850  mov      eax, r8d
+00000001401a4853  mov      dword ptr [rbx + 0x28], r9d
+00000001401a4857  shr      eax, 0x1f
+00000001401a485a  xor      ebp, ebp
+00000001401a485c  add      r8d, eax
+00000001401a485f  cmp      r9d, ecx
+00000001401a4862  jle      0x1401a486c
+00000001401a4864  mov      dword ptr [rbx + 0x28], ebp
+00000001401a4867  mov      r9d, ebp
+00000001401a486a  jmp      0x1401a4871 ; CPersistantEffectApplyEffect::AIUpdate+0xc1
+00000001401a486c  test     r9d, r9d
+00000001401a486f  jg       0x1401a4890
+00000001401a4871  mov      eax, 0x88888889
+00000001401a4876  mov      dword ptr [rbx + 8], 1
+00000001401a487d  imul     ecx
+00000001401a487f  lea      r8d, [rcx + rdx]
+00000001401a4883  sar      r8d, 3
+00000001401a4887  mov      eax, r8d
+00000001401a488a  shr      eax, 0x1f
+00000001401a488d  add      r8d, eax
+00000001401a4890  test     r8d, r8d
+00000001401a4893  jne      0x1401a48b6
+00000001401a4895  mov      eax, 0x88888889
+00000001401a489a  imul     r10d
+00000001401a489d  add      edx, r10d
+00000001401a48a0  sar      edx, 3
+00000001401a48a3  mov      eax, edx
+00000001401a48a5  shr      eax, 0x1f
+00000001401a48a8  add      edx, eax
+00000001401a48aa  imul     ecx, edx, 0xf
+00000001401a48ad  cmp      r10d, ecx
+00000001401a48b0  jne      0x1401a4a7f
+00000001401a48b6  mov      eax, 0x88888889
+00000001401a48bb  imul     r10d
+00000001401a48be  add      edx, r10d
+00000001401a48c1  sar      edx, 3
+00000001401a48c4  mov      ecx, edx
+00000001401a48c6  shr      ecx, 0x1f
+00000001401a48c9  add      edx, ecx
+00000001401a48cb  imul     ecx, edx, 0xf
+00000001401a48ce  cmp      r10d, ecx
+00000001401a48d1  jne      0x1401a48d9
+00000001401a48d3  inc      r8d
+00000001401a48d6  mov      dword ptr [rbx + 0x1c], ebp
+00000001401a48d9  test     r9d, r9d
+00000001401a48dc  jg       0x1401a48f6
+00000001401a48de  mov      eax, 0x88888889
+00000001401a48e3  imul     r9d
+00000001401a48e6  add      edx, r9d
+00000001401a48e9  sar      edx, 3
+00000001401a48ec  mov      eax, edx
+00000001401a48ee  shr      eax, 0x1f
+00000001401a48f1  add      edx, eax
+00000001401a48f3  add      r8d, edx
+00000001401a48f6  lea      rdx, [rsp + 0x30]
+00000001401a48fb  mov      dword ptr [rsp + 0x30], r8d
+00000001401a4900  lea      rcx, [rsp + 0x34]
+00000001401a4905  mov      dword ptr [rsp + 0x34], 0x64
+00000001401a490d  call     0x140407bc0 ; min+0x0
+00000001401a4912  mov      r10d, eax
+00000001401a4915  movzx    edx, bp
+00000001401a4918  mov      r8d, ebp
+00000001401a491b  test     eax, eax
+00000001401a491d  jle      0x1401a4961
+00000001401a491f  movsx    r9d, word ptr [rbx + 0x20]
+00000001401a4924  mov      eax, r9d
+00000001401a4927  test     r9d, r9d
+00000001401a492a  je       0x1401a494a
+00000001401a492c  sub      eax, 2
+00000001401a492f  je       0x1401a4944
+00000001401a4931  cmp      eax, 1
+00000001401a4934  jne      0x1401a4959
+00000001401a4936  inc      word ptr [rbx + 0x1a]
+00000001401a493a  movzx    eax, word ptr [rbx + 0x1a]
+00000001401a493e  cmp      ax, word ptr [rbx + 0x18]
+00000001401a4942  jl       0x1401a4959
+00000001401a4944  movzx    edx, word ptr [rbx + 0x24]
+00000001401a4948  jmp      0x1401a4959 ; CPersistantEffectApplyEffect::AIUpdate+0x1a9
+00000001401a494a  cmp      word ptr [rbx + 0x22], bp
+00000001401a494e  jle      0x1401a4a99
+00000001401a4954  mov      edx, 1
+00000001401a4959  inc      r8d
+00000001401a495c  cmp      r8d, r10d
+00000001401a495f  jl       0x1401a4924
+00000001401a4961  movsx    eax, dx
+00000001401a4964  test     eax, eax
+00000001401a4966  jle      0x1401a4a7f
+00000001401a496c  mov      qword ptr [rsp + 0x58], rsi
+00000001401a4971  mov      esi, eax
+00000001401a4973  mov      qword ptr [rsp + 0x50], rdi
+00000001401a4978  nop      dword ptr [rax + rax]
+00000001401a4980  mov      rdx, qword ptr [rbx + 0x30]
+00000001401a4984  lea      rcx, [rsp + 0x38]
+00000001401a4989  call     0x14019fba0 ; CGameEffectFile::CGameEffectFile+0x0
+00000001401a498e  mov      rcx, qword ptr [rsp + 0x38]
+00000001401a4993  test     rcx, rcx
+00000001401a4996  je       0x1401a4a66
+00000001401a499c  call     0x1403f6d50 ; CRes::Demand+0x0
+00000001401a49a1  test     rax, rax
+00000001401a49a4  je       0x1401a4a40
+00000001401a49aa  lea      rcx, [rax + 8]
+00000001401a49ae  call     0x1401e2d30 ; CGameEffect::DecodeEffectFromBase+0x0
+00000001401a49b3  mov      rdi, rax
+00000001401a49b6  lea      rcx, [rax + 0x30]
+00000001401a49ba  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a49bf  lea      rcx, [rdi + 0x70]
+00000001401a49c3  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a49c8  lea      rcx, [rdi + 0x78]
+00000001401a49cc  call     0x140400030 ; CResRef::MakeUpper+0x0
+00000001401a49d1  mov      dword ptr [rdi + 0xcc], 1
+00000001401a49db  mov      r9d, 1
+00000001401a49e1  mov      rcx, qword ptr [rbx + 0x38]
+00000001401a49e5  mov      dword ptr [rsp + 0x20], 1
+00000001401a49ed  mov      rdx, qword ptr [rcx + 0x80]
+00000001401a49f4  mov      qword ptr [rdi + 0x80], rdx
+00000001401a49fb  mov      rcx, qword ptr [rbx + 0x38]
+00000001401a49ff  mov      edx, dword ptr [rcx + 0x150]
+00000001401a4a05  mov      ecx, dword ptr [rcx + 0x110]
+00000001401a4a0b  mov      dword ptr [rdi + 0x110], ecx
+00000001401a4a11  mov      dword ptr [rdi + 0x150], edx
+00000001401a4a17  mov      rdx, rdi
+00000001401a4a1a  mov      rax, qword ptr [rbx + 0x38]
+00000001401a4a1e  mov      rcx, qword ptr [rax + 0x88]
+00000001401a4a25  mov      qword ptr [rdi + 0x88], rcx
+00000001401a4a2c  mov      rcx, r14
+00000001401a4a2f  mov      rax, qword ptr [r14]
+00000001401a4a32  movzx    r8d, byte ptr [rip + 0x408429]
+00000001401a4a3a  call     qword ptr [rax + 0xe8]
+00000001401a4a40  cmp      qword ptr [rsp + 0x38], rbp
+00000001401a4a45  je       0x1401a4a66
+00000001401a4a47  lea      rdx, [rip + 0x446d5f]
+00000001401a4a4e  lea      rcx, [rsp + 0x40]
+00000001401a4a53  call     0x1403ffb60 ; CResRef::operator!=+0x0
+00000001401a4a58  test     eax, eax
+00000001401a4a5a  je       0x1401a4a66
+00000001401a4a5c  mov      rcx, qword ptr [rsp + 0x38]
+00000001401a4a61  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::_Lock+0x0
+00000001401a4a66  mov      qword ptr [rsp + 0x38], rbp
+00000001401a4a6b  sub      rsi, 1
+00000001401a4a6f  jne      0x1401a4980
+00000001401a4a75  mov      rdi, qword ptr [rsp + 0x50]
+00000001401a4a7a  mov      rsi, qword ptr [rsp + 0x58]
+00000001401a4a7f  mov      rbp, qword ptr [rsp + 0x60]
+00000001401a4a84  mov      rcx, qword ptr [rsp + 0x48]
+00000001401a4a89  xor      rcx, rsp
+00000001401a4a8c  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401a4a91  add      rsp, 0x68
+00000001401a4a95  pop      r14
+00000001401a4a97  pop      rbx
+00000001401a4a98  ret
+00000001401a4a99  mov      dword ptr [rbx + 8], 1
+00000001401a4aa0  jmp      0x1401a4a7f ; CPersistantEffectApplyEffect::AIUpdate+0x2cf
+00000001401a4aa2  int3
+00000001401a4aa3  int3
+00000001401a4aa4  int3
+00000001401a4aa5  int3
+00000001401a4aa6  int3
+00000001401a4aa7  int3
+00000001401a4aa8  int3
+00000001401a4aa9  int3
+00000001401a4aaa  int3
+00000001401a4aab  int3
+00000001401a4aac  int3
+00000001401a4aad  int3
+00000001401a4aae  int3
+00000001401a4aaf  int3
+
+CGameEffectContingencyInstance::ApplyEffect+0x0 [0x1401a9fd0, 0x1401aa4b0)
+00000001401a9fd0  mov      qword ptr [rsp + 0x18], rbx
+00000001401a9fd5  mov      qword ptr [rsp + 0x20], rsi
+00000001401a9fda  push     rbp
+00000001401a9fdb  push     rdi
+00000001401a9fdc  push     r14
+00000001401a9fde  lea      rbp, [rsp - 0x47]
+00000001401a9fe3  sub      rsp, 0xe0
+00000001401a9fea  mov      rax, qword ptr [rip + 0x4ba9e7]
+00000001401a9ff1  xor      rax, rsp
+00000001401a9ff4  mov      qword ptr [rbp + 0x3f], rax
+00000001401a9ff8  mov      r14, rdx
+00000001401a9ffb  mov      rdi, rcx
+00000001401a9ffe  movzx    edx, word ptr [rip + 0x3e34d7]
+00000001401aa005  lea      rcx, [rbp - 0x29]
+00000001401aa009  xor      r8d, r8d
+00000001401aa00c  call     0x140130680 ; CAITrigger::CAITrigger+0x0
+00000001401aa011  mov      dword ptr [rsp + 0x40], 0xffffffff
+00000001401aa019  lea      rcx, [rbp + 0x1f]
+00000001401aa01d  mov      byte ptr [rsp + 0x38], 0
+00000001401aa022  xor      r9d, r9d
+00000001401aa025  mov      byte ptr [rsp + 0x30], 0
+00000001401aa02a  xor      r8d, r8d
+00000001401aa02d  mov      byte ptr [rsp + 0x28], 0
+00000001401aa032  xor      edx, edx
+00000001401aa034  mov      byte ptr [rsp + 0x20], 0
+00000001401aa039  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+00000001401aa03e  mov      dword ptr [rsp + 0x40], 0xffffffff
+00000001401aa046  lea      rcx, [rbp - 0x41]
+00000001401aa04a  mov      byte ptr [rsp + 0x38], 0
+00000001401aa04f  xor      r9d, r9d
+00000001401aa052  mov      byte ptr [rsp + 0x30], 0
+00000001401aa057  xor      r8d, r8d
+00000001401aa05a  mov      byte ptr [rsp + 0x28], 0
+00000001401aa05f  xor      edx, edx
+00000001401aa061  mov      byte ptr [rsp + 0x20], 0
+00000001401aa066  call     0x14011ba20 ; CAIObjectType::CAIObjectType+0x0
+00000001401aa06b  xor      eax, eax
+00000001401aa06d  mov      ecx, 0x1e0
+00000001401aa072  mov      dword ptr [rbp + 0x37], eax
+00000001401aa075  mov      byte ptr [rbp + 0x3b], al
+00000001401aa078  call     0x1404f7a88 ; operator_new+0x0
+00000001401aa07d  test     rax, rax
+00000001401aa080  je       0x1401aa08f
+00000001401aa082  mov      rcx, rax
+00000001401aa085  call     0x14019da60 ; CContingency::CContingency+0x0
+00000001401aa08a  mov      rsi, rax
+00000001401aa08d  jmp      0x1401aa091 ; CGameEffectContingencyInstance::ApplyEffect+0xc1
+00000001401aa08f  xor      esi, esi
+00000001401aa091  lea      r8, [rdi + 0x30]
+00000001401aa095  mov      dword ptr [rsi + 0x70], 0
+00000001401aa09c  lea      rcx, [rsi + 0x40]
+00000001401aa0a0  lea      rdx, [rbp + 0x17]
+00000001401aa0a4  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401aa0a9  lea      r8, [rdi + 0x70]
+00000001401aa0ad  lea      rcx, [rsi + 0x48]
+00000001401aa0b1  lea      rdx, [rbp + 0x17]
+00000001401aa0b5  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401aa0ba  lea      r8, [rdi + 0x78]
+00000001401aa0be  lea      rcx, [rsi + 0x50]
+00000001401aa0c2  lea      rdx, [rbp + 0x17]
+00000001401aa0c6  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401aa0cb  mov      eax, dword ptr [rdi + 0x20]
+00000001401aa0ce  mov      ebx, 0x4b
+00000001401aa0d3  movzx    eax, al
+00000001401aa0d6  cmp      eax, 0x15
+00000001401aa0d9  ja       0x1401aa261
+00000001401aa0df  lea      rdx, [rip - 0x1aa0e6]
+00000001401aa0e6  mov      ecx, dword ptr [rdx + rax*4 + 0x1aa454]
+00000001401aa0ed  add      rcx, rdx
+00000001401aa0f0  jmp      rcx
+00000001401aa0f2  mov      eax, 0x20
+00000001401aa0f7  mov      word ptr [rbp - 0x29], ax
+00000001401aa0fb  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa100  mov      eax, 0x401c
+00000001401aa105  mov      byte ptr [rbp + 0x37], 0xc
+00000001401aa109  mov      word ptr [rbp - 0x29], ax
+00000001401aa10d  jmp      0x1401aa247 ; CGameEffectContingencyInstance::ApplyEffect+0x277
+00000001401aa112  mov      eax, 0x402d
+00000001401aa117  mov      dword ptr [rbp - 0x25], 0x32
+00000001401aa11e  mov      word ptr [rbp - 0x29], ax
+00000001401aa122  jmp      0x1401aa243 ; CGameEffectContingencyInstance::ApplyEffect+0x273
+00000001401aa127  mov      eax, 0x402d
+00000001401aa12c  mov      dword ptr [rbp - 0x25], 0x19
+00000001401aa133  mov      word ptr [rbp - 0x29], ax
+00000001401aa137  jmp      0x1401aa243 ; CGameEffectContingencyInstance::ApplyEffect+0x273
+00000001401aa13c  mov      eax, 0x402d
+00000001401aa141  mov      dword ptr [rbp - 0x25], 0xa
+00000001401aa148  mov      word ptr [rbp - 0x29], ax
+00000001401aa14c  jmp      0x1401aa243 ; CGameEffectContingencyInstance::ApplyEffect+0x273
+00000001401aa151  mov      eax, 0x4037
+00000001401aa156  mov      word ptr [rbp - 0x29], ax
+00000001401aa15a  mov      eax, 0x20
+00000001401aa15f  jmp      0x1401aa240 ; CGameEffectContingencyInstance::ApplyEffect+0x270
+00000001401aa164  mov      eax, 0x4037
+00000001401aa169  mov      dword ptr [rbp - 0x25], 0x4000
+00000001401aa170  mov      word ptr [rbp - 0x29], ax
+00000001401aa174  jmp      0x1401aa243 ; CGameEffectContingencyInstance::ApplyEffect+0x273
+00000001401aa179  mov      eax, 2
+00000001401aa17e  mov      word ptr [rbp - 0x29], ax
+00000001401aa182  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa187  mov      eax, 0x40b3
+00000001401aa18c  mov      dword ptr [rbp - 0x25], 4
+00000001401aa193  mov      word ptr [rbp - 0x29], ax
+00000001401aa197  jmp      0x1401aa254 ; CGameEffectContingencyInstance::ApplyEffect+0x284
+00000001401aa19c  mov      eax, 0x40b3
+00000001401aa1a1  mov      dword ptr [rbp - 0x25], 0xa
+00000001401aa1a8  mov      word ptr [rbp - 0x29], ax
+00000001401aa1ac  jmp      0x1401aa254 ; CGameEffectContingencyInstance::ApplyEffect+0x284
+00000001401aa1b1  mov      eax, 0x4027
+00000001401aa1b6  mov      word ptr [rbp - 0x29], ax
+00000001401aa1ba  mov      eax, dword ptr [rdi + 0x48]
+00000001401aa1bd  mov      dword ptr [rbp - 0x25], eax
+00000001401aa1c0  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa1c5  mov      eax, 0xcc
+00000001401aa1ca  mov      word ptr [rbp - 0x29], ax
+00000001401aa1ce  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa1d3  mov      word ptr [rbp - 0x29], bx
+00000001401aa1d7  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa1dc  mov      eax, 0x401f
+00000001401aa1e1  mov      word ptr [rbp - 0x29], ax
+00000001401aa1e5  mov      eax, dword ptr [rdi + 0x48]
+00000001401aa1e8  mov      dword ptr [rbp - 0x25], eax
+00000001401aa1eb  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa1ed  mov      eax, 0x40b3
+00000001401aa1f2  mov      word ptr [rbp - 0x29], ax
+00000001401aa1f6  mov      eax, dword ptr [rdi + 0x48]
+00000001401aa1f9  mov      dword ptr [rbp - 0x25], eax
+00000001401aa1fc  jmp      0x1401aa254 ; CGameEffectContingencyInstance::ApplyEffect+0x284
+00000001401aa1fe  mov      eax, 0x4037
+00000001401aa203  jmp      0x1401aa239 ; CGameEffectContingencyInstance::ApplyEffect+0x269
+00000001401aa205  mov      eax, 0x25
+00000001401aa20a  mov      word ptr [rbp - 0x29], ax
+00000001401aa20e  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa210  mov      eax, 0x4a
+00000001401aa215  mov      word ptr [rbp - 0x29], ax
+00000001401aa219  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa21b  mov      eax, 8
+00000001401aa220  mov      word ptr [rbp - 0x29], ax
+00000001401aa224  jmp      0x1401aa261 ; CGameEffectContingencyInstance::ApplyEffect+0x291
+00000001401aa226  mov      eax, 0x4012
+00000001401aa22b  jmp      0x1401aa239 ; CGameEffectContingencyInstance::ApplyEffect+0x269
+00000001401aa22d  mov      eax, 0x402d
+00000001401aa232  jmp      0x1401aa239 ; CGameEffectContingencyInstance::ApplyEffect+0x269
+00000001401aa234  mov      eax, 0x40e2
+00000001401aa239  mov      word ptr [rbp - 0x29], ax
+00000001401aa23d  mov      eax, dword ptr [rdi + 0x48]
+00000001401aa240  mov      dword ptr [rbp - 0x25], eax
+00000001401aa243  mov      byte ptr [rbp + 0x37], 1
+00000001401aa247  lea      rdx, [rbp + 0x37]
+00000001401aa24b  lea      rcx, [rbp - 0x41]
+00000001401aa24f  call     0x14011ea50 ; CAIObjectType::SetSpecialCase+0x0
+00000001401aa254  lea      rdx, [rbp - 0x41]
+00000001401aa258  lea      rcx, [rbp - 0x21]
+00000001401aa25c  call     0x14011ea00 ; CAIObjectType::Set+0x0
+00000001401aa261  movzx    eax, word ptr [rbp - 0x29]
+00000001401aa265  lea      rcx, [rsi + 8]
+00000001401aa269  mov      word ptr [rsi], ax
+00000001401aa26c  lea      rdx, [rbp - 0x21]
+00000001401aa270  mov      eax, dword ptr [rbp - 0x25]
+00000001401aa273  mov      dword ptr [rsi + 4], eax
+00000001401aa276  call     0x14011ea00 ; CAIObjectType::Set+0x0
+00000001401aa27b  mov      eax, dword ptr [rbp - 9]
+00000001401aa27e  lea      rcx, [rsi + 0x30]
+00000001401aa282  mov      dword ptr [rsi + 0x20], eax
+00000001401aa285  lea      rdx, [rbp + 7]
+00000001401aa289  mov      eax, dword ptr [rbp - 5]
+00000001401aa28c  mov      dword ptr [rsi + 0x24], eax
+00000001401aa28f  mov      eax, dword ptr [rbp - 1]
+00000001401aa292  mov      dword ptr [rsi + 0x28], eax
+00000001401aa295  call     0x1403fd770 ; CString::operator=+0x0
+00000001401aa29a  lea      rcx, [rsi + 0x38]
+00000001401aa29e  lea      rdx, [rbp + 0xf]
+00000001401aa2a2  call     0x1403fd770 ; CString::operator=+0x0
+00000001401aa2a7  mov      ecx, dword ptr [rdi + 0x1c]
+00000001401aa2aa  xor      eax, eax
+00000001401aa2ac  mov      dword ptr [rbp + 0x37], eax
+00000001401aa2af  mov      byte ptr [rbp + 0x3b], al
+00000001401aa2b2  test     ecx, ecx
+00000001401aa2b4  je       0x1401aa2d3
+00000001401aa2b6  sub      ecx, 1
+00000001401aa2b9  je       0x1401aa2cd
+00000001401aa2bb  sub      ecx, 1
+00000001401aa2be  je       0x1401aa2c7
+00000001401aa2c0  cmp      ecx, 1
+00000001401aa2c3  jne      0x1401aa2e4
+00000001401aa2c5  jmp      0x1401aa2d7 ; CGameEffectContingencyInstance::ApplyEffect+0x307
+00000001401aa2c7  mov      byte ptr [rbp + 0x37], 0xc
+00000001401aa2cb  jmp      0x1401aa2d7 ; CGameEffectContingencyInstance::ApplyEffect+0x307
+00000001401aa2cd  mov      byte ptr [rbp + 0x37], 0xf
+00000001401aa2d1  jmp      0x1401aa2d7 ; CGameEffectContingencyInstance::ApplyEffect+0x307
+00000001401aa2d3  mov      byte ptr [rbp + 0x37], 1
+00000001401aa2d7  lea      rdx, [rbp + 0x37]
+00000001401aa2db  lea      rcx, [rbp + 0x1f]
+00000001401aa2df  call     0x14011ea50 ; CAIObjectType::SetSpecialCase+0x0
+00000001401aa2e4  lea      rcx, [rsi + 0x58]
+00000001401aa2e8  lea      rdx, [rbp + 0x1f]
+00000001401aa2ec  call     0x14011ea00 ; CAIObjectType::Set+0x0
+00000001401aa2f1  mov      eax, dword ptr [rdi + 0x48]
+00000001401aa2f4  mov      dword ptr [rsi + 0x70], eax
+00000001401aa2f7  cmp      dword ptr [rdi + 0x60], 0
+00000001401aa2fb  je       0x1401aa30d
+00000001401aa2fd  or       eax, 1
+00000001401aa300  mov      edx, ebx
+00000001401aa302  mov      rcx, r14
+00000001401aa305  mov      dword ptr [rsi + 0x70], eax
+00000001401aa308  call     0x140349120 ; CGameSprite::AddPortraitIcon+0x0
+00000001401aa30d  lea      rcx, [rsi + 0x78]
+00000001401aa311  mov      rdx, rdi
+00000001401aa314  call     0x1401a4370 ; CGameEffect::operator=+0x0
+00000001401aa319  mov      rax, qword ptr [rip + 0x4bd228]
+00000001401aa320  lea      r8, [rbp - 0x45]
+00000001401aa324  movzx    r9d, word ptr [rdi + 0x20]
+00000001401aa329  lea      rdx, [rbp - 0x49]
+00000001401aa32d  mov      rbx, qword ptr [rax + 0x1090]
+00000001401aa334  mov      rcx, rbx
+00000001401aa337  call     0x14023f900 ; CRuleTables::GetContingencyCondition+0x0
+00000001401aa33c  mov      eax, dword ptr [rbp - 0x49]
+00000001401aa33f  lea      r8, [rbp - 0x45]
+00000001401aa343  mov      dword ptr [rsi + 0x1d4], eax
+00000001401aa349  lea      rdx, [rbp - 0x49]
+00000001401aa34d  movzx    r9d, word ptr [rdi + 0x1c]
+00000001401aa352  mov      rcx, rbx
+00000001401aa355  call     0x14023f9e0 ; CRuleTables::GetContingencyTarget+0x0
+00000001401aa35a  mov      eax, dword ptr [rbp - 0x49]
+00000001401aa35d  lea      rcx, [r14 + 0x19d0]
+00000001401aa364  mov      rdx, rsi
+00000001401aa367  mov      dword ptr [rsi + 0x1d0], eax
+00000001401aa36d  call     0x1404075c0 ; CObList::AddTail+0x0
+00000001401aa372  mov      rax, qword ptr [r14]
+00000001401aa375  mov      rcx, r14
+00000001401aa378  call     qword ptr [rax + 0x20]
+00000001401aa37b  movzx    ecx, byte ptr [rip + 0x3e2b73]
+00000001401aa382  mov      esi, 0xffffffff
+00000001401aa387  mov      edx, 0xf0002a
+00000001401aa38c  cmp      byte ptr [rax + 8], cl
+00000001401aa38f  cmovbe   esi, edx
+00000001401aa392  cmp      dword ptr [rdi + 0x90], 1
+00000001401aa399  jne      0x1401aa3fc
+00000001401aa39b  lea      rdx, [rip + 0x44140b]
+00000001401aa3a2  lea      rcx, [rdi + 0x94]
+00000001401aa3a9  call     0x1403ffb60 ; CResRef::operator!=+0x0
+00000001401aa3ae  test     eax, eax
+00000001401aa3b0  je       0x1401aa3fc
+00000001401aa3b2  mov      ecx, 0x10
+00000001401aa3b7  call     0x1404f7a88 ; operator_new+0x0
+00000001401aa3bc  mov      rbx, rax
+00000001401aa3bf  test     rax, rax
+00000001401aa3c2  je       0x1401aa3d5
+00000001401aa3c4  mov      rcx, rax
+00000001401aa3c7  call     0x1403ff870 ; CTlkFileOverride::CTlkFileOverride+0x0
+00000001401aa3cc  mov      dword ptr [rbx + 0xc], 0
+00000001401aa3d3  jmp      0x1401aa3d7 ; CGameEffectContingencyInstance::ApplyEffect+0x407
+00000001401aa3d5  xor      ebx, ebx
+00000001401aa3d7  lea      r8, [rdi + 0x94]
+00000001401aa3de  mov      rcx, rbx
+00000001401aa3e1  lea      rdx, [rbp + 0x17]
+00000001401aa3e5  call     0x1403ff880 ; CResRef::operator=+0x0
+00000001401aa3ea  lea      rcx, [r14 + 0x1880]
+00000001401aa3f1  mov      dword ptr [rbx + 8], esi
+00000001401aa3f4  mov      rdx, rbx
+00000001401aa3f7  call     0x1404075c0 ; CObList::AddTail+0x0
+00000001401aa3fc  lea      rcx, [rbp - 0x41]
+00000001401aa400  call     0x1403fd740 ; CString::~CString+0x0
+00000001401aa405  lea      rcx, [rbp + 0x1f]
+00000001401aa409  call     0x1403fd740 ; CString::~CString+0x0
+00000001401aa40e  lea      rcx, [rbp + 0xf]
+00000001401aa412  call     0x1403fd740 ; CString::~CString+0x0
+00000001401aa417  lea      rcx, [rbp + 7]
+00000001401aa41b  call     0x1403fd740 ; CString::~CString+0x0
+00000001401aa420  lea      rcx, [rbp - 0x21]
+00000001401aa424  call     0x1403fd740 ; CString::~CString+0x0
+00000001401aa429  mov      eax, 1
+00000001401aa42e  mov      rcx, qword ptr [rbp + 0x3f]
+00000001401aa432  xor      rcx, rsp
+00000001401aa435  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401aa43a  lea      r11, [rsp + 0xe0]
+00000001401aa442  mov      rbx, qword ptr [r11 + 0x30]
+00000001401aa446  mov      rsi, qword ptr [r11 + 0x38]
+00000001401aa44a  mov      rsp, r11
+00000001401aa44d  pop      r14
+00000001401aa44f  pop      rdi
+00000001401aa450  pop      rbp
+00000001401aa451  ret
+00000001401aa452  nop
+00000001401aa454  movabs   al, byte ptr [0xa112001aa100001a]
+00000001401aa45e  sbb      al, byte ptr [rax]

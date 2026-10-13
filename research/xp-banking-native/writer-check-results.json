@@ -1,0 +1,48 @@
+[
+  {
+    "version": "2.6",
+    "functionRva": "0x372190",
+    "branchRva": "0x372707",
+    "tailRva": "0x3727d6",
+    "unwindBytes": "0104010004420000",
+    "bodySha256": "0a12eda8380940393abcc04a94d201885f2b2e95d6c5c995cfc5ee29f99c5607",
+    "callsBeforeTail": 0,
+    "callsInTail": 1,
+    "returnConstantFixups": [
+      [
+        1626,
+        7,
+        3
+      ],
+      [
+        1638,
+        7,
+        3
+      ]
+    ],
+    "gameLaunched": false
+  },
+  {
+    "version": "2.7",
+    "functionRva": "0x3727d0",
+    "branchRva": "0x372d47",
+    "tailRva": "0x372e16",
+    "unwindBytes": "0104010004420000",
+    "bodySha256": "3318faf1e8a88122219191d960615aad8ad3548a4444a944ff8ab656613c48c3",
+    "callsBeforeTail": 0,
+    "callsInTail": 1,
+    "returnConstantFixups": [
+      [
+        1626,
+        7,
+        3
+      ],
+      [
+        1638,
+        7,
+        3
+      ]
+    ],
+    "gameLaunched": false
+  }
+]

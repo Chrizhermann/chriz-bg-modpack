@@ -1,0 +1,1930 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CAIObjectType::IsUsableSubClass+0x0 [0x14011e070, 0x14011e2e0)
+000000014011e070  mov      qword ptr [rsp + 0x10], rbx
+000000014011e075  push     rsi
+000000014011e076  push     rdi
+000000014011e077  push     r14
+000000014011e079  sub      rsp, 0x30
+000000014011e07d  movzx    edi, dl
+000000014011e080  lea      r8, [rsp + 0x68]
+000000014011e085  lea      rdx, [rsp + 0x50]
+000000014011e08a  mov      rsi, rcx
+000000014011e08d  xor      ebx, ebx
+000000014011e08f  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+000000014011e094  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e098  cmp      byte ptr [rsp + 0x50], dl
+000000014011e09c  je       0x14011e14b
+000000014011e0a2  mov      ecx, dword ptr [rsi + 0xc]
+000000014011e0a5  cmp      ecx, -1
+000000014011e0a8  je       0x14011e271
+000000014011e0ae  lea      rdx, [rsp + 0x20]
+000000014011e0b3  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+000000014011e0b8  test     al, al
+000000014011e0ba  jne      0x14011e271
+000000014011e0c0  mov      rax, qword ptr [rsp + 0x20]
+000000014011e0c5  lea      rcx, [rax + 0x1120]
+000000014011e0cc  cmp      dword ptr [rax + 0x4ea4], ebx
+000000014011e0d2  jne      0x14011e0db
+000000014011e0d4  lea      rcx, [rax + 0x1dc8]
+000000014011e0db  movzx    r8d, byte ptr [rsp + 0x50]
+000000014011e0e1  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e0e5  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+000000014011e0ea  movzx    r14d, al
+000000014011e0ee  mov      rax, qword ptr [rsp + 0x20]
+000000014011e0f3  lea      rcx, [rax + 0x1120]
+000000014011e0fa  cmp      dword ptr [rax + 0x4ea4], ebx
+000000014011e100  jne      0x14011e109
+000000014011e102  lea      rcx, [rax + 0x1dc8]
+000000014011e109  movzx    r8d, byte ptr [rsp + 0x68]
+000000014011e10f  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e113  call     0x140152a30 ; CDerivedStats::GetLevel+0x0
+000000014011e118  movzx    eax, al
+000000014011e11b  cmp      dil, byte ptr [rsp + 0x50]
+000000014011e120  je       0x14011e195
+000000014011e122  cmp      dil, byte ptr [rsp + 0x68]
+000000014011e127  jne      0x14011e271
+000000014011e12d  cmp      r14d, eax
+000000014011e130  jbe      0x14011e271
+000000014011e136  mov      ebx, 1
+000000014011e13b  mov      eax, ebx
+000000014011e13d  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e142  add      rsp, 0x30
+000000014011e146  pop      r14
+000000014011e148  pop      rdi
+000000014011e149  pop      rsi
+000000014011e14a  ret
+000000014011e14b  movzx    eax, dl
+000000014011e14e  dec      eax
+000000014011e150  cmp      eax, 0x14
+000000014011e153  ja       0x14011e271
+000000014011e159  lea      r8, [rip - 0x11e160]
+000000014011e160  cdqe
+000000014011e162  mov      ecx, dword ptr [r8 + rax*4 + 0x11e284]
+000000014011e16a  add      rcx, r8
+000000014011e16d  jmp      rcx
+000000014011e16f  cmp      dil, dl
+000000014011e172  sete     bl
+000000014011e175  mov      eax, ebx
+000000014011e177  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e17c  add      rsp, 0x30
+000000014011e180  pop      r14
+000000014011e182  pop      rdi
+000000014011e183  pop      rsi
+000000014011e184  ret
+000000014011e185  cmp      dil, 1
+000000014011e189  je       0x14011e195
+000000014011e18b  cmp      dil, 4
+000000014011e18f  jne      0x14011e271
+000000014011e195  mov      ebx, 1
+000000014011e19a  mov      eax, ebx
+000000014011e19c  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e1a1  add      rsp, 0x30
+000000014011e1a5  pop      r14
+000000014011e1a7  pop      rdi
+000000014011e1a8  pop      rsi
+000000014011e1a9  ret
+000000014011e1aa  dec      dil
+000000014011e1ad  test     dil, 0xfd
+000000014011e1b1  sete     bl
+000000014011e1b4  mov      eax, ebx
+000000014011e1b6  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e1bb  add      rsp, 0x30
+000000014011e1bf  pop      r14
+000000014011e1c1  pop      rdi
+000000014011e1c2  pop      rsi
+000000014011e1c3  ret
+000000014011e1c4  sub      dil, 3
+000000014011e1c8  cmp      dil, 1
+000000014011e1cc  jmp      0x14011e26e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e1d1  sub      dil, 2
+000000014011e1d5  test     dil, 0xfd
+000000014011e1d9  sete     bl
+000000014011e1dc  mov      eax, ebx
+000000014011e1de  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e1e3  add      rsp, 0x30
+000000014011e1e7  pop      r14
+000000014011e1e9  pop      rdi
+000000014011e1ea  pop      rsi
+000000014011e1eb  ret
+000000014011e1ec  sub      dil, 2
+000000014011e1f0  cmp      dil, 1
+000000014011e1f4  jmp      0x14011e26e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e1f6  cmp      dil, 2
+000000014011e1fa  je       0x14011e195
+000000014011e1fc  cmp      dil, 0xb
+000000014011e200  jne      0x14011e271
+000000014011e202  mov      ebx, 1
+000000014011e207  mov      eax, ebx
+000000014011e209  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e20e  add      rsp, 0x30
+000000014011e212  pop      r14
+000000014011e214  pop      rdi
+000000014011e215  pop      rsi
+000000014011e216  ret
+000000014011e217  cmp      dil, 3
+000000014011e21b  je       0x14011e195
+000000014011e221  cmp      dil, 0xc
+000000014011e225  jne      0x14011e271
+000000014011e227  mov      ebx, 1
+000000014011e22c  mov      eax, ebx
+000000014011e22e  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e233  add      rsp, 0x30
+000000014011e237  pop      r14
+000000014011e239  pop      rdi
+000000014011e23a  pop      rsi
+000000014011e23b  ret
+000000014011e23c  dec      dil
+000000014011e23f  cmp      dil, 1
+000000014011e243  jmp      0x14011e26e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e245  lea      eax, [rdi - 1]
+000000014011e248  test     al, 0xfc
+000000014011e24a  jne      0x14011e271
+000000014011e24c  cmp      dil, 3
+000000014011e250  je       0x14011e271
+000000014011e252  mov      ebx, 1
+000000014011e257  mov      eax, ebx
+000000014011e259  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e25e  add      rsp, 0x30
+000000014011e262  pop      r14
+000000014011e264  pop      rdi
+000000014011e265  pop      rsi
+000000014011e266  ret
+000000014011e267  dec      dil
+000000014011e26a  cmp      dil, 2
+000000014011e26e  setbe    bl
+000000014011e271  mov      eax, ebx
+000000014011e273  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e278  add      rsp, 0x30
+000000014011e27c  pop      r14
+000000014011e27e  pop      rdi
+000000014011e27f  pop      rsi
+000000014011e280  ret
+000000014011e281  nop      dword ptr [rax]
+000000014011e284  outsd    dx, dword ptr [rsi]
+000000014011e285  loope    0x14011e298
+000000014011e287  add      byte ptr [rdi - 0x1f], ch
+000000014011e28a  adc      dword ptr [rax], eax
+000000014011e28c  outsd    dx, dword ptr [rsi]
+000000014011e28d  loope    0x14011e2a0
+000000014011e28f  add      byte ptr [rdi - 0x1f], ch
+000000014011e292  adc      dword ptr [rax], eax
+000000014011e294  outsd    dx, dword ptr [rsi]
+000000014011e295  loope    0x14011e2a8
+000000014011e297  add      byte ptr [rdi - 0x1f], ch
+000000014011e29a  adc      dword ptr [rax], eax
+000000014011e29c  cmp      al, 0xe2
+000000014011e29e  adc      dword ptr [rax], eax
+000000014011e2a0  in       al, dx
+000000014011e2a1  loope    0x14011e2b4
+000000014011e2a3  add      cl, dl
+000000014011e2a5  loope    0x14011e2b8
+000000014011e2a7  add      byte ptr [rbp - 0x1e], al
+000000014011e2aa  adc      dword ptr [rax], eax
+000000014011e2ac  outsd    dx, dword ptr [rsi]
+000000014011e2ad  loope    0x14011e2c0
+000000014011e2af  add      byte ptr [rdi - 0x1f], ch
+000000014011e2b2  adc      dword ptr [rax], eax
+000000014011e2b4  test     ecx, esp
+000000014011e2b6  adc      dword ptr [rax], eax
+000000014011e2b8  stosb    byte ptr [rdi], al
+000000014011e2b9  loope    0x14011e2cc
+000000014011e2bb  add      ah, al
+000000014011e2bd  loope    0x14011e2d0
+000000014011e2bf  add      dh, dh
+000000014011e2c1  loope    0x14011e2d4
+000000014011e2c3  add      byte ptr [rdi - 0x1e], ah
+000000014011e2c6  adc      dword ptr [rax], eax
+
+CScreenCharacter::OnLevelUpButtonClick+0x0 [0x1402aab00, 0x1402aac10)
+00000001402aab00  mov      qword ptr [rsp + 0x10], rbx
+00000001402aab05  push     rdi
+00000001402aab06  sub      rsp, 0x20
+00000001402aab0a  mov      rax, qword ptr [rip + 0x3ba58f]
+00000001402aab11  xor      edx, edx
+00000001402aab13  mov      rbx, rcx
+00000001402aab16  mov      rdi, qword ptr [rax + 0x1090]
+00000001402aab1d  mov      rax, qword ptr [rcx]
+00000001402aab20  call     qword ptr [rax + 0x1c0]
+00000001402aab26  cmp      ax, word ptr [rdi + 0x6630]
+00000001402aab2d  jl       0x1402aab36
+00000001402aab2f  mov      ecx, 0xffffffff
+00000001402aab34  jmp      0x1402aab41 ; CScreenCharacter::OnLevelUpButtonClick+0x41
+00000001402aab36  movsx    rax, ax
+00000001402aab3a  mov      ecx, dword ptr [rdi + rax*4 + 0x6618]
+00000001402aab41  lea      rdx, [rsp + 0x30]
+00000001402aab46  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402aab4b  test     al, al
+00000001402aab4d  jne      0x1402aac03
+00000001402aab53  mov      rdx, qword ptr [rsp + 0x30]
+00000001402aab58  mov      rcx, rbx
+00000001402aab5b  call     0x1402a8460 ; CScreenCharacter::IsLevelUpButtonClickable+0x0
+00000001402aab60  test     eax, eax
+00000001402aab62  je       0x1402aac03
+00000001402aab68  mov      rdx, qword ptr [rsp + 0x30]
+00000001402aab6d  xor      al, al
+00000001402aab6f  mov      dword ptr [rbx + 0x820], 1
+00000001402aab79  nop      dword ptr [rax]
+00000001402aab80  movzx    ecx, al
+00000001402aab83  cmp      byte ptr [rcx + rdx + 0x52fc], 0
+00000001402aab8b  jne      0x1402aabfb
+00000001402aab8d  inc      al
+00000001402aab8f  cmp      al, 9
+00000001402aab91  jbe      0x1402aab80
+00000001402aab93  mov      ecx, 0x10
+00000001402aab98  call     0x1404f6aa8 ; operator_new+0x0
+00000001402aab9d  test     rax, rax
+00000001402aaba0  je       0x1402aabb6
+00000001402aaba2  mov      r9, qword ptr [rsp + 0x30]
+00000001402aaba7  mov      rcx, rax
+00000001402aabaa  mov      edx, dword ptr [r9 + 0x48]
+00000001402aabae  mov      r8d, edx
+00000001402aabb1  call     0x1402a6dc0 ; CMessageStopActions::CMessageStopActions+0x0
+00000001402aabb6  mov      rcx, qword ptr [rip + 0x3ba4e3]
+00000001402aabbd  xor      r8d, r8d
+00000001402aabc0  add      rcx, 0x1768
+00000001402aabc7  mov      rdx, rax
+00000001402aabca  call     0x140204c60 ; CMessageHandler::AddMessage+0x0
+00000001402aabcf  mov      rax, qword ptr [rsp + 0x30]
+00000001402aabd4  mov      r8d, 0x1c
+00000001402aabda  mov      rcx, qword ptr [rip + 0x3ba4bf]
+00000001402aabe1  mov      edx, dword ptr [rax + 0x48]
+00000001402aabe4  mov      rcx, qword ptr [rcx + 0x10b8]
+00000001402aabeb  call     0x1402c37b0 ; CScreenCreateChar::StartEditing+0x0
+00000001402aabf0  mov      rbx, qword ptr [rsp + 0x38]
+00000001402aabf5  add      rsp, 0x20
+00000001402aabf9  pop      rdi
+00000001402aabfa  ret
+00000001402aabfb  mov      rcx, rbx
+00000001402aabfe  call     0x1402ac4c0 ; CScreenCharacter::ResumeSpellPicking+0x0
+00000001402aac03  mov      rbx, qword ptr [rsp + 0x38]
+00000001402aac08  add      rsp, 0x20
+00000001402aac0c  pop      rdi
+00000001402aac0d  ret
+00000001402aac0e  int3
+00000001402aac0f  int3
+
+CScreenCreateChar::CancelLevelUp+0x0 [0x1402b1790, 0x1402b1ac0)
+00000001402b1790  push     rdi
+00000001402b1792  push     r15
+00000001402b1794  sub      rsp, 0x38
+00000001402b1798  mov      rax, qword ptr [rip + 0x3b3901]
+00000001402b179f  lea      rdx, [rsp + 0x50]
+00000001402b17a4  mov      rdi, rcx
+00000001402b17a7  mov      ecx, dword ptr [rcx + 0x770]
+00000001402b17ad  mov      r15, qword ptr [rax + 0x1090]
+00000001402b17b4  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402b17b9  test     al, al
+00000001402b17bb  jne      0x1402b1a8b
+00000001402b17c1  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b17c6  mov      eax, 4
+00000001402b17cb  mov      rdx, qword ptr [rdi + 0x9a0]
+00000001402b17d2  add      rcx, 0x560
+00000001402b17d9  mov      qword ptr [rsp + 0x58], rbx
+00000001402b17de  mov      qword ptr [rsp + 0x30], rsi
+00000001402b17e3  mov      qword ptr [rsp + 0x28], r12
+00000001402b17e8  mov      qword ptr [rsp + 0x20], r14
+00000001402b17ed  nop      dword ptr [rax]
+00000001402b17f0  lea      rcx, [rcx + 0x80]
+00000001402b17f7  movups   xmm0, xmmword ptr [rdx]
+00000001402b17fa  lea      rdx, [rdx + 0x80]
+00000001402b1801  movups   xmmword ptr [rcx - 0x80], xmm0
+00000001402b1805  movups   xmm1, xmmword ptr [rdx - 0x70]
+00000001402b1809  movups   xmmword ptr [rcx - 0x70], xmm1
+00000001402b180d  movups   xmm0, xmmword ptr [rdx - 0x60]
+00000001402b1811  movups   xmmword ptr [rcx - 0x60], xmm0
+00000001402b1815  movups   xmm1, xmmword ptr [rdx - 0x50]
+00000001402b1819  movups   xmmword ptr [rcx - 0x50], xmm1
+00000001402b181d  movups   xmm0, xmmword ptr [rdx - 0x40]
+00000001402b1821  movups   xmmword ptr [rcx - 0x40], xmm0
+00000001402b1825  movups   xmm1, xmmword ptr [rdx - 0x30]
+00000001402b1829  movups   xmmword ptr [rcx - 0x30], xmm1
+00000001402b182d  movups   xmm0, xmmword ptr [rdx - 0x20]
+00000001402b1831  movups   xmmword ptr [rcx - 0x20], xmm0
+00000001402b1835  movups   xmm1, xmmword ptr [rdx - 0x10]
+00000001402b1839  movups   xmmword ptr [rcx - 0x10], xmm1
+00000001402b183d  sub      rax, 1
+00000001402b1841  jne      0x1402b17f0
+00000001402b1843  movups   xmm0, xmmword ptr [rdx]
+00000001402b1846  movups   xmmword ptr [rcx], xmm0
+00000001402b1849  movups   xmm1, xmmword ptr [rdx + 0x10]
+00000001402b184d  movups   xmmword ptr [rcx + 0x10], xmm1
+00000001402b1851  movups   xmm0, xmmword ptr [rdx + 0x20]
+00000001402b1855  movups   xmmword ptr [rcx + 0x20], xmm0
+00000001402b1859  movups   xmm1, xmmword ptr [rdx + 0x30]
+00000001402b185d  movups   xmmword ptr [rcx + 0x30], xmm1
+00000001402b1861  movups   xmm0, xmmword ptr [rdx + 0x40]
+00000001402b1865  movups   xmmword ptr [rcx + 0x40], xmm0
+00000001402b1869  movups   xmm1, xmmword ptr [rdx + 0x50]
+00000001402b186d  movups   xmmword ptr [rcx + 0x50], xmm1
+00000001402b1871  mov      rax, qword ptr [rdx + 0x60]
+00000001402b1875  mov      edx, 0x268
+00000001402b187a  mov      qword ptr [rcx + 0x60], rax
+00000001402b187e  mov      rcx, qword ptr [rdi + 0x9a0]
+00000001402b1885  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402b188a  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b188f  xor      r12d, r12d
+00000001402b1892  mov      rdx, qword ptr [rdi + 0x9a8]
+00000001402b1899  add      rcx, 0x1120
+00000001402b18a0  mov      qword ptr [rdi + 0x9a0], r12
+00000001402b18a7  call     0x14014f080 ; CDerivedStats::operator=+0x0
+00000001402b18ac  mov      rbx, qword ptr [rdi + 0x9a8]
+00000001402b18b3  test     rbx, rbx
+00000001402b18b6  je       0x1402b18cd
+00000001402b18b8  mov      rcx, rbx
+00000001402b18bb  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+00000001402b18c0  mov      edx, 0xca8
+00000001402b18c5  mov      rcx, rbx
+00000001402b18c8  call     0x14045d6b0 ; DSOUND_FreeDeviceHandle+0x0
+00000001402b18cd  mov      rcx, qword ptr [rdi + 0x9d0]
+00000001402b18d4  mov      qword ptr [rdi + 0x9a8], r12
+00000001402b18db  test     rcx, rcx
+00000001402b18de  je       0x1402b18ea
+00000001402b18e0  mov      rax, qword ptr [rcx]
+00000001402b18e3  mov      edx, 1
+00000001402b18e8  call     qword ptr [rax]
+00000001402b18ea  mov      ecx, dword ptr [rdi + 0x8e0]
+00000001402b18f0  lea      rsi, [rdi + 0x964]
+00000001402b18f7  mov      rax, qword ptr [rsp + 0x50]
+00000001402b18fc  mov      ebx, r12d
+00000001402b18ff  mov      qword ptr [rdi + 0x9d0], r12
+00000001402b1906  mov      dword ptr [rax + 0x4e40], ecx
+00000001402b190c  mov      dword ptr [rdi + 0x8e0], r12d
+00000001402b1913  nop      dword ptr [rax]
+00000001402b1917  nop      word ptr [rax + rax]
+00000001402b1920  mov      r8d, dword ptr [rsi]
+00000001402b1923  mov      edx, ebx
+00000001402b1925  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b192a  call     0x140373da0 ; CGameSprite::SetMaxMemorizedSpellsPriest+0x0
+00000001402b192f  inc      ebx
+00000001402b1931  lea      rsi, [rsi + 4]
+00000001402b1935  cmp      ebx, 7
+00000001402b1938  jl       0x1402b1920
+00000001402b193a  mov      ebx, r12d
+00000001402b193d  lea      rsi, [rdi + 0x940]
+00000001402b1944  nop      dword ptr [rax]
+00000001402b1948  nop      dword ptr [rax + rax]
+00000001402b1950  mov      r8d, dword ptr [rsi]
+00000001402b1953  mov      edx, ebx
+00000001402b1955  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b195a  call     0x140373d20 ; CGameSprite::SetMaxMemorizedSpellsMage+0x0
+00000001402b195f  inc      ebx
+00000001402b1961  lea      rsi, [rsi + 4]
+00000001402b1965  cmp      ebx, 9
+00000001402b1968  jl       0x1402b1950
+00000001402b196a  movsx    r14d, word ptr [r15 + 0x19ca]
+00000001402b1972  mov      esi, r12d
+00000001402b1975  test     r14d, r14d
+00000001402b1978  jle      0x1402b19ca
+00000001402b197a  mov      qword ptr [rsp + 0x60], rbp
+00000001402b197f  mov      rbp, r12
+00000001402b1982  nop      dword ptr [rax]
+00000001402b1986  nop      word ptr [rax + rax]
+00000001402b1990  mov      rax, qword ptr [rdi + 0x988]
+00000001402b1997  mov      edx, esi
+00000001402b1999  mov      rcx, r15
+00000001402b199c  movsx    ebx, byte ptr [rax + rbp]
+00000001402b19a0  call     0x140245d00 ; CRuleTables::GetProficiencyId+0x0
+00000001402b19a5  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b19aa  mov      edx, eax
+00000001402b19ac  mov      r9d, 1
+00000001402b19b2  mov      r8d, ebx
+00000001402b19b5  call     0x1403b2f70 ; CGameSprite::SetActiveProficiency+0x0
+00000001402b19ba  inc      esi
+00000001402b19bc  lea      rbp, [rbp + 8]
+00000001402b19c0  cmp      esi, r14d
+00000001402b19c3  jl       0x1402b1990
+00000001402b19c5  mov      rbp, qword ptr [rsp + 0x60]
+00000001402b19ca  mov      r14, qword ptr [rsp + 0x20]
+00000001402b19cf  lea      rsi, [rip - 0x2b19d6]
+00000001402b19d6  mov      ebx, r12d
+00000001402b19d9  nop      dword ptr [rax]
+00000001402b19e0  movzx    edx, bl
+00000001402b19e3  cmp      edx, 7
+00000001402b19e6  ja       0x1402b1a2c
+00000001402b19e8  mov      ecx, dword ptr [rsi + rdx*4 + 0x2b1a94]
+00000001402b19ef  add      rcx, rsi
+00000001402b19f2  jmp      rcx
+00000001402b19f4  mov      eax, dword ptr [rdi + 0x784]
+00000001402b19fa  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b19fc  mov      eax, dword ptr [rdi + 0x788]
+00000001402b1a02  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a04  mov      eax, dword ptr [rdi + 0x78c]
+00000001402b1a0a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a0c  mov      eax, dword ptr [rdi + 0x790]
+00000001402b1a12  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a14  mov      eax, dword ptr [rdi + 0x794]
+00000001402b1a1a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a1c  mov      eax, dword ptr [rdi + 0x798]
+00000001402b1a22  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a24  mov      eax, dword ptr [rdi + 0x79c]
+00000001402b1a2a  jmp      0x1402b1a2f ; CScreenCreateChar::CancelLevelUp+0x29f
+00000001402b1a2c  mov      eax, r12d
+00000001402b1a2f  mov      rcx, qword ptr [rsp + 0x50]
+00000001402b1a34  movzx    r8d, al
+00000001402b1a38  call     0x1403755c0 ; CGameSprite::SetSkillValue+0x0
+00000001402b1a3d  inc      ebx
+00000001402b1a3f  cmp      ebx, 8
+00000001402b1a42  jl       0x1402b19e0
+00000001402b1a44  lea      rcx, [rip + 0x2dbfd5]
+00000001402b1a4b  call     0x1403da410 ; uiPop+0x0
+00000001402b1a50  mov      rcx, qword ptr [rip + 0x3b3649]
+00000001402b1a57  xor      edx, edx
+00000001402b1a59  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b1a60  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402b1a65  mov      rcx, qword ptr [rip + 0x3b3634]
+00000001402b1a6c  mov      rax, qword ptr [rcx]
+00000001402b1a6f  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402b1a76  call     qword ptr [rax + 0xf0]
+00000001402b1a7c  mov      r12, qword ptr [rsp + 0x28]
+00000001402b1a81  mov      rsi, qword ptr [rsp + 0x30]
+00000001402b1a86  mov      rbx, qword ptr [rsp + 0x58]
+00000001402b1a8b  add      rsp, 0x38
+00000001402b1a8f  pop      r15
+00000001402b1a91  pop      rdi
+00000001402b1a92  ret
+00000001402b1a93  nop
+00000001402b1a94  hlt
+00000001402b1a95  sbb      dword ptr [rbx], ebp
+00000001402b1a97  add      ah, bh
+00000001402b1a99  sbb      dword ptr [rbx], ebp
+00000001402b1a9b  add      byte ptr [rdx + rbx], al
+00000001402b1a9e  sub      eax, dword ptr [rax]
+00000001402b1aa0  or       al, 0x1a
+00000001402b1aa2  sub      eax, dword ptr [rax]
+00000001402b1aa4  adc      al, 0x1a
+00000001402b1aa6  sub      eax, dword ptr [rax]
+00000001402b1aa8  sbb      al, 0x1a
+00000001402b1aaa  sub      eax, dword ptr [rax]
+00000001402b1aac  and      al, 0x1a
+00000001402b1aae  sub      eax, dword ptr [rax]
+00000001402b1ab0  or       al, 0x1a
+00000001402b1ab2  sub      eax, dword ptr [rax]
+00000001402b1ab4  int3
+00000001402b1ab5  int3
+00000001402b1ab6  int3
+00000001402b1ab7  int3
+00000001402b1ab8  int3
+00000001402b1ab9  int3
+00000001402b1aba  int3
+00000001402b1abb  int3
+00000001402b1abc  int3
+00000001402b1abd  int3
+00000001402b1abe  int3
+00000001402b1abf  int3
+
+CScreenCreateChar::OnDoneButtonClickCallback+0x0 [0x1402ba4b0, 0x1402ba5c0)
+00000001402ba4b0  mov      qword ptr [rsp + 0x18], rbx
+00000001402ba4b5  push     rdi
+00000001402ba4b6  sub      rsp, 0x20
+00000001402ba4ba  mov      edx, 0xffffffff
+00000001402ba4bf  mov      rdi, rcx
+00000001402ba4c2  mov      rcx, qword ptr [rip + 0x3aaf87]
+00000001402ba4c9  lea      r8d, [rdx + 2]
+00000001402ba4cd  call     0x1400d5f50 ; lua_rawgeti+0x0
+00000001402ba4d2  mov      rcx, qword ptr [rip + 0x3aaf77]
+00000001402ba4d9  xor      r8d, r8d
+00000001402ba4dc  lea      edx, [r8 - 1]
+00000001402ba4e0  call     0x1400d58a0 ; lua_tolstring+0x0
+00000001402ba4e5  mov      rdx, rax
+00000001402ba4e8  lea      rcx, [rsp + 0x30]
+00000001402ba4ed  call     0x1403fcd70 ; CString::CString+0x0
+00000001402ba4f2  mov      rcx, qword ptr [rip + 0x3aaf57]
+00000001402ba4f9  mov      edx, 0xfffffffe
+00000001402ba4fe  call     0x1400d5310 ; lua_settop+0x0
+00000001402ba503  mov      rcx, qword ptr [rip + 0x3aaf46]
+00000001402ba50a  mov      edx, 0xffffffff
+00000001402ba50f  lea      r8d, [rdx + 3]
+00000001402ba513  call     0x1400d5f50 ; lua_rawgeti+0x0
+00000001402ba518  mov      rcx, qword ptr [rip + 0x3aaf31]
+00000001402ba51f  xor      r8d, r8d
+00000001402ba522  lea      edx, [r8 - 1]
+00000001402ba526  call     0x1400d5650 ; lua_tonumberx+0x0
+00000001402ba52b  mov      rcx, qword ptr [rip + 0x3aaf1e]
+00000001402ba532  mov      edx, 0xfffffffe
+00000001402ba537  cvttsd2si ebx, xmm0
+00000001402ba53b  call     0x1400d5310 ; lua_settop+0x0
+00000001402ba540  cmp      ebx, dword ptr [rdi]
+00000001402ba542  jne      0x1402ba5ab
+00000001402ba544  mov      rax, qword ptr [rsp + 0x30]
+00000001402ba549  lea      rcx, [rsp + 0x30]
+00000001402ba54e  mov      edx, dword ptr [rax - 8]
+00000001402ba551  call     0x1403fda40 ; CString::GetBuffer+0x0
+00000001402ba556  mov      rcx, rax
+00000001402ba559  call     0x140133750 ; CPlatform::IsDLCContent+0x0
+00000001402ba55e  test     eax, eax
+00000001402ba560  je       0x1402ba582
+00000001402ba562  mov      rax, qword ptr [rsp + 0x30]
+00000001402ba567  lea      rcx, [rsp + 0x30]
+00000001402ba56c  mov      edx, dword ptr [rax - 8]
+00000001402ba56f  call     0x1403fda40 ; CString::GetBuffer+0x0
+00000001402ba574  mov      rcx, rax
+00000001402ba577  call     0x140132e40 ; CPlatform::HasDLCContent+0x0
+00000001402ba57c  test     eax, eax
+00000001402ba57e  je       0x1402ba5ab
+00000001402ba580  jmp      0x1402ba59d ; CScreenCreateChar::OnDoneButtonClickCallback+0xed
+00000001402ba582  lea      rdx, [rsp + 0x30]
+00000001402ba587  lea      rcx, [rsp + 0x38]
+00000001402ba58c  call     0x1403fcd00 ; CString::CString+0x0
+00000001402ba591  mov      rcx, rax
+00000001402ba594  call     0x140408d60 ; IsUnownedDLC+0x0
+00000001402ba599  test     eax, eax
+00000001402ba59b  jne      0x1402ba5ab
+00000001402ba59d  mov      rcx, qword ptr [rdi + 8]
+00000001402ba5a1  lea      rdx, [rsp + 0x30]
+00000001402ba5a6  call     0x140407ae0 ; CStringList::AddTail+0x0
+00000001402ba5ab  lea      rcx, [rsp + 0x30]
+00000001402ba5b0  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba5b5  mov      rbx, qword ptr [rsp + 0x40]
+00000001402ba5ba  add      rsp, 0x20
+00000001402ba5be  pop      rdi
+00000001402ba5bf  ret
+
+CScreenCreateChar::OnDoneButtonClick+0x0 [0x1402b89a0, 0x1402ba4b0)
+00000001402b89a0  push     rbp
+00000001402b89a2  push     rbx
+00000001402b89a3  push     r14
+00000001402b89a5  lea      rbp, [rsp - 0xca0]
+00000001402b89ad  sub      rsp, 0xda0
+00000001402b89b4  mov      rax, qword ptr [rip + 0x3a9b5d]
+00000001402b89bb  xor      rax, rsp
+00000001402b89be  mov      qword ptr [rbp + 0xc80], rax
+00000001402b89c5  mov      rax, qword ptr [rip + 0x3a3144]
+00000001402b89cc  mov      r14, rcx
+00000001402b89cf  mov      ebx, dword ptr [rcx + 0x770]
+00000001402b89d5  lea      rcx, [rbp - 0x80]
+00000001402b89d9  mov      qword ptr [rsp + 0x68], rax
+00000001402b89de  mov      qword ptr [rsp + 0x58], rax
+00000001402b89e3  mov      qword ptr [rsp + 0x50], rax
+00000001402b89e8  call     0x1403fef30 ; CTlkFileOverride::CTlkFileOverride+0x0
+00000001402b89ed  lea      rdx, [rip + 0x2e947c]
+00000001402b89f4  lea      rcx, [rsp + 0x60]
+00000001402b89f9  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b89fe  mov      rax, qword ptr [rip + 0x3a310b]
+00000001402b8a05  lea      rcx, [rbp - 0x50]
+00000001402b8a09  mov      qword ptr [rbp - 0x58], rax
+00000001402b8a0d  call     0x14040c6e0 ; CSound::CSound+0x0
+00000001402b8a12  lea      rdx, [rsp + 0x40]
+00000001402b8a17  mov      ecx, ebx
+00000001402b8a19  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402b8a1e  test     al, al
+00000001402b8a20  jne      0x1402ba36c
+00000001402b8a26  mov      rax, qword ptr [rip + 0x3ac673]
+00000001402b8a2d  lea      rcx, [rbp - 0x70]
+00000001402b8a31  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8a36  mov      qword ptr [rsp + 0xdc8], rsi
+00000001402b8a3e  add      rdx, 0x4b68
+00000001402b8a45  mov      qword ptr [rsp + 0xdd0], rdi
+00000001402b8a4d  mov      rdi, qword ptr [rax + 0x1090]
+00000001402b8a54  mov      rax, qword ptr [rip + 0x3a30b5]
+00000001402b8a5b  mov      qword ptr [rsp + 0xd98], r12
+00000001402b8a63  mov      qword ptr [rbp - 0x70], rax
+00000001402b8a67  mov      qword ptr [rsp + 0xd90], r15
+00000001402b8a6f  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b8a74  mov      rbx, qword ptr [rsp + 0x40]
+00000001402b8a79  mov      rcx, r14
+00000001402b8a7c  mov      rdx, rbx
+00000001402b8a7f  lea      rsi, [rbx + 0x1120]
+00000001402b8a86  call     0x1402b6170 ; CScreenCreateChar::IsDoneButtonClickable+0x0
+00000001402b8a8b  test     eax, eax
+00000001402b8a8d  je       0x1402ba336
+00000001402b8a93  movsxd   rdx, dword ptr [r14 + 0x768]
+00000001402b8a9a  cmp      edx, 0x1d
+00000001402b8a9d  ja       0x1402ba32a
+00000001402b8aa3  lea      r15, [rip - 0x2b8aaa]
+00000001402b8aaa  mov      eax, dword ptr [r15 + rdx*4 + 0x2ba3c4]
+00000001402b8ab2  add      rax, r15
+00000001402b8ab5  jmp      rax
+00000001402b8ab7  lea      rcx, [rip + 0x2e9582]
+00000001402b8abe  call     0x1403da410 ; uiPop+0x0
+00000001402b8ac3  mov      rax, qword ptr [rip + 0x3a3046]
+00000001402b8aca  mov      qword ptr [rsp + 0x78], rax
+00000001402b8acf  mov      rax, qword ptr [rip + 0x3ac5ca]
+00000001402b8ad6  mov      rcx, qword ptr [rax + 0x1090]
+00000001402b8add  call     0x140278ab0 ; CInfGame::GetSounds+0x0
+00000001402b8ae2  lea      rdx, [rip + 0x2e4217]
+00000001402b8ae9  mov      qword ptr [r14 + 0x848], rax
+00000001402b8af0  mov      rcx, rax
+00000001402b8af3  call     0x140407a70 ; CStringList::AddHead+0x0
+00000001402b8af8  mov      rcx, qword ptr [rip + 0x3ac951]
+00000001402b8aff  lea      rdx, [rip + 0x2ea0ea]
+00000001402b8b06  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b8b0b  mov      rax, qword ptr [r14 + 0x848]
+00000001402b8b12  xor      r8d, r8d
+00000001402b8b15  mov      rcx, qword ptr [rip + 0x3ac934]
+00000001402b8b1c  mov      edx, dword ptr [rax + 0x18]
+00000001402b8b1f  call     0x1400d5f90 ; lua_createtable+0x0
+00000001402b8b24  mov      rax, qword ptr [r14 + 0x848]
+00000001402b8b2b  mov      r12d, 1
+00000001402b8b31  mov      rbx, qword ptr [rax + 8]
+00000001402b8b35  test     rbx, rbx
+00000001402b8b38  je       0x1402b8b90
+00000001402b8b3a  nop      word ptr [rax + rax]
+00000001402b8b40  lea      rdx, [rbx + 0x10]
+00000001402b8b44  lea      rcx, [rsp + 0x78]
+00000001402b8b49  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b8b4e  mov      rcx, qword ptr [rip + 0x3ac8fb]
+00000001402b8b55  movd     xmm1, r12d
+00000001402b8b5a  cvtdq2pd xmm1, xmm1
+00000001402b8b5e  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402b8b63  mov      rdx, qword ptr [rsp + 0x78]
+00000001402b8b68  inc      r12d
+00000001402b8b6b  mov      rcx, qword ptr [rip + 0x3ac8de]
+00000001402b8b72  call     0x1400d5b10 ; lua_pushstring+0x0
+00000001402b8b77  mov      rcx, qword ptr [rip + 0x3ac8d2]
+00000001402b8b7e  mov      edx, 0xfffffffd
+00000001402b8b83  call     0x1400d6170 ; lua_settable+0x0
+00000001402b8b88  mov      rbx, qword ptr [rbx]
+00000001402b8b8b  test     rbx, rbx
+00000001402b8b8e  jne      0x1402b8b40
+00000001402b8b90  mov      rcx, qword ptr [rip + 0x3ac8b9]
+00000001402b8b97  lea      r8, [rip + 0x2ea1ea]
+00000001402b8b9e  mov      edx, 0xfffffffe
+00000001402b8ba3  call     0x1400d61a0 ; lua_setfield+0x0
+00000001402b8ba8  mov      rcx, qword ptr [rip + 0x3ac8a1]
+00000001402b8baf  mov      edx, 0xfffffffe
+00000001402b8bb4  call     0x1400d5310 ; lua_settop+0x0
+00000001402b8bb9  movsd    xmm1, qword ptr [rip + 0x351437]
+00000001402b8bc1  mov      rcx, qword ptr [rip + 0x3ac888]
+00000001402b8bc8  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402b8bcd  mov      rcx, qword ptr [rip + 0x3ac87c]
+00000001402b8bd4  lea      rdx, [rip + 0x2ea1bd]
+00000001402b8bdb  call     0x1400d60e0 ; lua_setglobal+0x0
+00000001402b8be0  xor      r15d, r15d
+00000001402b8be3  mov      dword ptr [r14 + 0x82c], 0x61
+00000001402b8bee  lea      rcx, [rsp + 0x78]
+00000001402b8bf3  mov      dword ptr [r14 + 0x828], r15d
+00000001402b8bfa  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b8bff  mov      dword ptr [r14 + 0x768], 0x10
+00000001402b8c0a  mov      dl, 1
+00000001402b8c0c  mov      rcx, qword ptr [rip + 0x3ac48d]
+00000001402b8c13  mov      rcx, qword ptr [rcx + 0x128]
+00000001402b8c1a  call     0x14040ebf0 ; CSoundMixer::QuietMusic+0x0
+00000001402b8c1f  lea      rcx, [rip + 0x2ea6ca]
+00000001402b8c26  call     0x1403da620 ; uiPush+0x0
+00000001402b8c2b  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8c30  mov      r12d, 1
+00000001402b8c36  mov      rcx, r14
+00000001402b8c39  mov      dword ptr [r14 + 0x768], r12d
+00000001402b8c40  call     0x1402c3470 ; CScreenCreateChar::ShowPortraitPanel+0x0
+00000001402b8c45  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8c4a  lea      rcx, [rip + 0x2ea6b7]
+00000001402b8c51  mov      dword ptr [r14 + 0x768], 4
+00000001402b8c5c  call     0x1403da410 ; uiPop+0x0
+00000001402b8c61  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8c66  lea      rcx, [rip + 0x2ea6ab]
+00000001402b8c6d  call     0x1403da410 ; uiPop+0x0
+00000001402b8c72  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8c77  mov      rcx, r14
+00000001402b8c7a  call     0x1402b2800 ; CScreenCreateChar::CompleteCharacterClass+0x0
+00000001402b8c7f  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8c84  mov      rcx, r14
+00000001402b8c87  call     0x1402c55d0 ; CScreenCreateChar::UpdateKitPanel+0x0
+00000001402b8c8c  cmp      dword ptr [r14 + 0x8fc], 1
+00000001402b8c94  jle      0x1402b8cb2
+00000001402b8c96  lea      rcx, [rip + 0x2ea68b]
+00000001402b8c9d  mov      dword ptr [r14 + 0x768], 6
+00000001402b8ca8  call     0x1403da620 ; uiPush+0x0
+00000001402b8cad  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8cb2  mov      dword ptr [r14 + 0x768], 7
+00000001402b8cbd  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8cc2  lea      rcx, [rip + 0x2ea65f]
+00000001402b8cc9  call     0x1403da410 ; uiPop+0x0
+00000001402b8cce  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8cd3  mov      rcx, r14
+00000001402b8cd6  mov      dword ptr [r14 + 0x768], 7
+00000001402b8ce1  call     0x1402b2800 ; CScreenCreateChar::CompleteCharacterClass+0x0
+00000001402b8ce6  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8ceb  lea      rcx, [rip + 0x2ea646]
+00000001402b8cf2  mov      dword ptr [r14 + 0x768], 8
+00000001402b8cfd  call     0x1403da410 ; uiPop+0x0
+00000001402b8d02  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8d07  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8d0c  mov      rcx, r14
+00000001402b8d0f  call     0x1402b2540 ; CScreenCreateChar::CompleteCharacterAbilities+0x0
+00000001402b8d14  lea      rcx, [rip + 0x2d4d95]
+00000001402b8d1b  call     0x1403da410 ; uiPop+0x0
+00000001402b8d20  mov      dword ptr [r14 + 0x768], 9
+00000001402b8d2b  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8d30  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8d35  mov      rcx, r14
+00000001402b8d38  mov      dword ptr [r14 + 0x768], 0xe
+00000001402b8d43  call     0x1402c18b0 ; CScreenCreateChar::ResetProficienciesPanel+0x0
+00000001402b8d48  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8d4d  xor      r8d, r8d
+00000001402b8d50  mov      rcx, r14
+00000001402b8d53  call     0x1402c7180 ; CScreenCreateChar::UpdateProficienciesPanel+0x0
+00000001402b8d58  lea      rcx, [rip + 0x2d4cc1]
+00000001402b8d5f  call     0x1403da620 ; uiPush+0x0
+00000001402b8d64  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8d69  lea      rcx, [rip + 0x2d4ce0]
+00000001402b8d70  call     0x1403da410 ; uiPop+0x0
+00000001402b8d75  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8d7a  mov      rcx, r14
+00000001402b8d7d  call     0x1402b1120 ; CScreenCreateChar::AddChosenSpellsToKnown+0x0
+00000001402b8d82  movzx    ecx, byte ptr [r14 + 0x8e4]
+00000001402b8d8a  inc      cl
+00000001402b8d8c  mov      byte ptr [r14 + 0x8e4], cl
+00000001402b8d93  cmp      dword ptr [r14 + 0x800], 6
+00000001402b8d9b  je       0x1402ba302
+00000001402b8da1  cmp      cl, byte ptr [r14 + 0x8e5]
+00000001402b8da8  ja       0x1402b8dd5
+00000001402b8daa  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8daf  mov      rcx, r14
+00000001402b8db2  call     0x1402bec70 ; CScreenCreateChar::ResetChooseMagePanel+0x0
+00000001402b8db7  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8dbc  mov      rcx, r14
+00000001402b8dbf  call     0x1402c42b0 ; CScreenCreateChar::UpdateChooseMagePanel+0x0
+00000001402b8dc4  lea      rcx, [rip + 0x2d4c85]
+00000001402b8dcb  call     0x1403da620 ; uiPush+0x0
+00000001402b8dd0  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8dd5  mov      ebx, 0xa
+00000001402b8dda  nop      word ptr [rax + rax]
+00000001402b8de0  mov      rax, qword ptr [rsp + 0x40]
+00000001402b8de5  lea      rdx, [rbp - 0x70]
+00000001402b8de9  mov      r8, rsi
+00000001402b8dec  mov      dword ptr [rsp + 0x20], ebx
+00000001402b8df0  mov      rcx, rdi
+00000001402b8df3  movzx    r9d, word ptr [rax + 0x79c]
+00000001402b8dfb  movzx    eax, word ptr [rax + 0x79e]
+00000001402b8e02  shl      r9d, 0x10
+00000001402b8e06  or       r9d, eax
+00000001402b8e09  call     0x140241cd0 ; CRuleTables::GetMaxMemorizedSpellsMage+0x0
+00000001402b8e0e  test     eax, eax
+00000001402b8e10  jne      0x1402b8e18
+00000001402b8e12  dec      ebx
+00000001402b8e14  test     ebx, ebx
+00000001402b8e16  jg       0x1402b8de0
+00000001402b8e18  lea      rcx, [rbp - 0x70]
+00000001402b8e1c  mov      byte ptr [r14 + 0x8e4], 1
+00000001402b8e24  mov      byte ptr [r14 + 0x8e5], bl
+00000001402b8e2b  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b8e30  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b8e35  cmp      al, 0x13
+00000001402b8e37  je       0x1402b8e7f
+00000001402b8e39  cmp      al, 0x15
+00000001402b8e3b  je       0x1402b8e78
+00000001402b8e3d  call     0x1403ba0a0 ; CGameSprite::UnmemorizeAllSpellsMage+0x0
+00000001402b8e42  mov      dword ptr [r14 + 0x768], 0xc
+00000001402b8e4d  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8e52  mov      rcx, r14
+00000001402b8e55  call     0x1402c0ef0 ; CScreenCreateChar::ResetMemorizeMagePanel+0x0
+00000001402b8e5a  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8e5f  mov      rcx, r14
+00000001402b8e62  call     0x1402c6d10 ; CScreenCreateChar::UpdateMemorizeMagePanel+0x0
+00000001402b8e67  lea      rcx, [rip + 0x2d4bfa]
+00000001402b8e6e  call     0x1403da620 ; uiPush+0x0
+00000001402b8e73  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8e78  call     0x1403ba140 ; CGameSprite::UnmemorizeAllSpellsPriest+0x0
+00000001402b8e7d  jmp      0x1402b8e84 ; CScreenCreateChar::OnDoneButtonClick+0x4e4
+00000001402b8e7f  call     0x1403ba0a0 ; CGameSprite::UnmemorizeAllSpellsMage+0x0
+00000001402b8e84  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8e89  mov      rcx, r14
+00000001402b8e8c  mov      dword ptr [r14 + 0x768], 0xf
+00000001402b8e97  call     0x1402b3160 ; CScreenCreateChar::CompleteCharacterSkills+0x0
+00000001402b8e9c  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8ea1  lea      rcx, [rip + 0x2d4bc0]
+00000001402b8ea8  call     0x1403da410 ; uiPop+0x0
+00000001402b8ead  inc      byte ptr [r14 + 0x8e4]
+00000001402b8eb4  movzx    eax, byte ptr [r14 + 0x8e4]
+00000001402b8ebc  cmp      al, byte ptr [r14 + 0x8e5]
+00000001402b8ec3  jbe      0x1402b8e4d
+00000001402b8ec5  lea      rcx, [rbp - 0x70]
+00000001402b8ec9  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b8ece  movzx    eax, al
+00000001402b8ed1  dec      eax
+00000001402b8ed3  cmp      eax, 0x14
+00000001402b8ed6  ja       0x1402ba336
+00000001402b8edc  cdqe
+00000001402b8ede  movzx    eax, byte ptr [r15 + rax + 0x2ba444]
+00000001402b8ee7  mov      ecx, dword ptr [r15 + rax*4 + 0x2ba43c]
+00000001402b8eef  add      rcx, r15
+00000001402b8ef2  jmp      rcx
+00000001402b8ef4  movsx    rdx, word ptr [rsi + 0x5a]
+00000001402b8ef9  movsx    ecx, word ptr [rdi + 0x30]
+00000001402b8efd  lea      eax, [rdx - 1]
+00000001402b8f00  cmp      eax, ecx
+00000001402b8f02  jge      0x1402b8f21
+00000001402b8f04  xor      r15d, r15d
+00000001402b8f07  cmp      r15w, word ptr [rdi + 0x32]
+00000001402b8f0c  jge      0x1402b8f21
+00000001402b8f0e  cmp      edx, 1
+00000001402b8f11  jl       0x1402b8f21
+00000001402b8f13  mov      rax, qword ptr [rdi + 0x20]
+00000001402b8f17  sub      rax, 8
+00000001402b8f1b  lea      rcx, [rax + rdx*8]
+00000001402b8f1f  jmp      0x1402b8f25 ; CScreenCreateChar::OnDoneButtonClick+0x585
+00000001402b8f21  lea      rcx, [rdi + 0x28]
+00000001402b8f25  mov      rcx, qword ptr [rcx]
+00000001402b8f28  lea      r8, [rsp + 0x4c]
+00000001402b8f2d  lea      rdx, [rip + 0x34de1c]
+00000001402b8f34  call     0x1400580f0 ; sscanf+0x0
+00000001402b8f39  mov      ebx, 0xa
+00000001402b8f3e  nop
+00000001402b8f40  lea      rax, [rsp + 0x4c]
+00000001402b8f45  mov      r9d, ebx
+00000001402b8f48  mov      r8, rsi
+00000001402b8f4b  mov      qword ptr [rsp + 0x20], rax
+00000001402b8f50  lea      rdx, [rbp - 0x70]
+00000001402b8f54  mov      rcx, rdi
+00000001402b8f57  call     0x140241f40 ; CRuleTables::GetMaxMemorizedSpellsPriest+0x0
+00000001402b8f5c  test     eax, eax
+00000001402b8f5e  jne      0x1402b8f66
+00000001402b8f60  dec      ebx
+00000001402b8f62  test     ebx, ebx
+00000001402b8f64  jg       0x1402b8f40
+00000001402b8f66  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b8f6b  mov      byte ptr [r14 + 0x8e4], 1
+00000001402b8f73  mov      byte ptr [r14 + 0x8e5], bl
+00000001402b8f7a  call     0x1403afd50 ; CGameSprite::RemoveAllSpellsPriest+0x0
+00000001402b8f7f  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b8f84  call     0x140348420 ; CGameSprite::AddNewSpellsPriest+0x0
+00000001402b8f89  mov      dword ptr [r14 + 0x768], 0xd
+00000001402b8f94  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8f99  mov      rcx, r14
+00000001402b8f9c  call     0x1402c1050 ; CScreenCreateChar::ResetMemorizePriestPanel+0x0
+00000001402b8fa1  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b8fa6  mov      rcx, r14
+00000001402b8fa9  call     0x1402c6f50 ; CScreenCreateChar::UpdateMemorizePriestPanel+0x0
+00000001402b8fae  lea      rcx, [rip + 0x2d4acb]
+00000001402b8fb5  call     0x1403da620 ; uiPush+0x0
+00000001402b8fba  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b8fbf  lea      rcx, [rip + 0x2d4aba]
+00000001402b8fc6  call     0x1403da410 ; uiPop+0x0
+00000001402b8fcb  inc      byte ptr [r14 + 0x8e4]
+00000001402b8fd2  movzx    eax, byte ptr [r14 + 0x8e4]
+00000001402b8fda  cmp      al, byte ptr [r14 + 0x8e5]
+00000001402b8fe1  jbe      0x1402b8f94
+00000001402b8fe3  lea      rcx, [rbp - 0x70]
+00000001402b8fe7  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b8fec  test     al, al
+00000001402b8fee  je       0x1402ba336
+00000001402b8ff4  cmp      al, 0x11
+00000001402b8ff6  jbe      0x1402b8e84
+00000001402b8ffc  cmp      al, 0x12
+00000001402b8ffe  je       0x1402b9d79
+00000001402b9004  sub      al, 0x13
+00000001402b9006  cmp      al, 2
+00000001402b9008  jbe      0x1402b8e84
+00000001402b900e  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9013  lea      rcx, [rip + 0x2d4a7e]
+00000001402b901a  call     0x1403da410 ; uiPop+0x0
+00000001402b901f  cmp      dword ptr [r14 + 0x800], 6
+00000001402b9027  jne      0x1402b8e84
+00000001402b902d  mov      dword ptr [r14 + 0x768], 0x1b
+00000001402b9038  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b903d  lea      r8, [rsp + 0x49]
+00000001402b9042  lea      rdx, [rsp + 0x48]
+00000001402b9047  lea      rcx, [rbp - 0x70]
+00000001402b904b  call     0x14011d9b0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+00000001402b9050  movzx    edx, byte ptr [rsp + 0x49]
+00000001402b9055  lea      rcx, [rbp - 0x70]
+00000001402b9059  mov      r12d, 1
+00000001402b905f  mov      r8d, r12d
+00000001402b9062  call     0x14011e070 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402b9067  mov      rsi, qword ptr [rsp + 0x40]
+00000001402b906c  xor      r15d, r15d
+00000001402b906f  mov      ebx, r15d
+00000001402b9072  movzx    ecx, word ptr [rsi + 0x79e]
+00000001402b9079  movzx    edi, word ptr [rsi + 0x79c]
+00000001402b9080  shl      edi, 0x10
+00000001402b9083  or       edi, ecx
+00000001402b9085  lea      rcx, [rbp - 0x70]
+00000001402b9089  test     eax, eax
+00000001402b908b  setne    bl
+00000001402b908e  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b9093  movzx    r9d, byte ptr [rsp + 0x49]
+00000001402b9099  movzx    edx, al
+00000001402b909c  mov      eax, dword ptr [rsi + 0x568]
+00000001402b90a2  mov      rcx, r14
+00000001402b90a5  movzx    r8d, byte ptr [rsp + 0x48]
+00000001402b90ab  mov      dword ptr [rsp + 0x30], edi
+00000001402b90af  mov      dword ptr [rsp + 0x28], eax
+00000001402b90b3  mov      dword ptr [rsp + 0x20], ebx
+00000001402b90b7  call     0x1402b1e60 ; CScreenCreateChar::CheckCompatibleEquipment+0x0
+00000001402b90bc  test     eax, eax
+00000001402b90be  je       0x1402b91d1
+00000001402b90c4  sub      eax, r12d
+00000001402b90c7  je       0x1402b913c
+00000001402b90c9  sub      eax, r12d
+00000001402b90cc  je       0x1402b90e9
+00000001402b90ce  cmp      eax, r12d
+00000001402b90d1  jne      0x1402b925d
+00000001402b90d7  mov      dword ptr [r14 + 0x928], 8
+00000001402b90e2  mov      edx, 0xf0040a
+00000001402b90e7  jmp      0x1402b914c ; CScreenCreateChar::OnDoneButtonClick+0x7ac
+00000001402b90e9  mov      rcx, qword ptr [rip + 0x3ac360]
+00000001402b90f0  lea      rdx, [rip + 0x2e8e61]
+00000001402b90f7  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b90fc  movsd    xmm1, qword ptr [rip + 0x2ea4cc]
+00000001402b9104  mov      rcx, qword ptr [rip + 0x3ac345]
+00000001402b910b  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402b9110  mov      rcx, qword ptr [rip + 0x3ac339]
+00000001402b9117  xor      r9d, r9d
+00000001402b911a  xor      r8d, r8d
+00000001402b911d  mov      qword ptr [rsp + 0x20], r15
+00000001402b9122  mov      edx, r12d
+00000001402b9125  call     0x1400d6510 ; lua_callk+0x0
+00000001402b912a  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b912f  mov      rcx, r14
+00000001402b9132  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b9137  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b913c  mov      dword ptr [r14 + 0x928], 2
+00000001402b9147  mov      edx, 0xf00384
+00000001402b914c  lea      rax, [rip + 0x2ea1fd]
+00000001402b9153  mov      dword ptr [r14 + 0x768], 0x17
+00000001402b915e  mov      qword ptr [rsp + 0x28], rax
+00000001402b9163  lea      r8, [rip + 0x2ea256]
+00000001402b916a  lea      rax, [rip + 0x2e8dc7]
+00000001402b9171  lea      r9, [rip + 0x2ea210]
+00000001402b9178  mov      qword ptr [rsp + 0x20], rax
+00000001402b917d  lea      rcx, [rip + 0x2e8c1c]
+00000001402b9184  call     0x1403ff830 ; va+0x0
+00000001402b9189  mov      rcx, qword ptr [rip + 0x3ac2c0]
+00000001402b9190  mov      rdx, rax
+00000001402b9193  call     0x1400d8b40 ; luaL_loadstring+0x0
+00000001402b9198  test     eax, eax
+00000001402b919a  jne      0x1402b925d
+00000001402b91a0  mov      rcx, qword ptr [rip + 0x3ac2a9]
+00000001402b91a7  lea      r8d, [rax - 1]
+00000001402b91ab  mov      qword ptr [rsp + 0x28], r15
+00000001402b91b0  xor      r9d, r9d
+00000001402b91b3  xor      edx, edx
+00000001402b91b5  mov      dword ptr [rsp + 0x20], r15d
+00000001402b91ba  call     0x1400d66b0 ; lua_pcallk+0x0
+00000001402b91bf  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b91c4  mov      rcx, r14
+00000001402b91c7  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b91cc  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b91d1  cmp      dword ptr [rip + 0x46f388], 2
+00000001402b91d8  jne      0x1402b9229
+00000001402b91da  lea      rdx, [rip + 0x2e8cdf]
+00000001402b91e1  lea      rcx, [rsp + 0x70]
+00000001402b91e6  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b91eb  mov      rcx, rax
+00000001402b91ee  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b91f3  test     al, al
+00000001402b91f5  je       0x1402b9229
+00000001402b91f7  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b91fc  mov      rcx, r14
+00000001402b91ff  call     0x1402c2620 ; CScreenCreateChar::ResetSpellTables+0x0
+00000001402b9204  mov      rcx, r14
+00000001402b9207  mov      dword ptr [r14 + 0x768], 0xe
+00000001402b9212  call     0x1402b89a0 ; CScreenCreateChar::OnDoneButtonClick+0x0
+00000001402b9217  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b921c  mov      rcx, r14
+00000001402b921f  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b9224  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9229  lea      rcx, [rip + 0x2d47f0]
+00000001402b9230  call     0x1403da410 ; uiPop+0x0
+00000001402b9235  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b923a  mov      rcx, r14
+00000001402b923d  call     0x1402b68f0 ; CScreenCreateChar::LevelUp+0x0
+00000001402b9242  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9247  mov      rcx, r14
+00000001402b924a  mov      dword ptr [r14 + 0x8e0], r15d
+00000001402b9251  mov      byte ptr [r14 + 0x8e4], r12b
+00000001402b9258  call     0x1402c30a0 ; CScreenCreateChar::ShowNextSpellScreen+0x0
+00000001402b925d  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9262  mov      rcx, r14
+00000001402b9265  call     0x1402b2cb0 ; CScreenCreateChar::CompleteCharacterHighLevelAbilities+0x0
+00000001402b926a  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b926f  cmp      dword ptr [rip + 0x46f2ea], 2
+00000001402b9276  jne      0x1402b92b2
+00000001402b9278  lea      rdx, [rip + 0x2d4849]
+00000001402b927f  lea      rcx, [rsp + 0x70]
+00000001402b9284  call     0x1403fcd70 ; CString::CString+0x0
+00000001402b9289  mov      rcx, rax
+00000001402b928c  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402b9291  test     al, al
+00000001402b9293  je       0x1402b92b2
+00000001402b9295  lea      rcx, [rip + 0x2d482c]
+00000001402b929c  call     0x1403da410 ; uiPop+0x0
+00000001402b92a1  lea      rcx, [rip + 0x2d4778]
+00000001402b92a8  call     0x1403da620 ; uiPush+0x0
+00000001402b92ad  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b92b2  lea      rcx, [rip + 0x2d4767]
+00000001402b92b9  call     0x1403da410 ; uiPop+0x0
+00000001402b92be  cmp      byte ptr [r14 + 0x8ea], 0
+00000001402b92c6  je       0x1402b9358
+00000001402b92cc  cmp      dword ptr [r14 + 0x8f0], 0
+00000001402b92d4  jne      0x1402b9317
+00000001402b92d6  lea      rcx, [rbp - 0x30]
+00000001402b92da  call     0x14014ea00 ; CDerivedStats::CDerivedStats+0x0
+00000001402b92df  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b92e4  lea      rcx, [rbp - 0x30]
+00000001402b92e8  add      rdx, 0x1120
+00000001402b92ef  call     0x14014f080 ; CDerivedStats::operator=+0x0
+00000001402b92f4  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b92f9  lea      rdx, [rbp - 0x30]
+00000001402b92fd  xor      r15d, r15d
+00000001402b9300  mov      dword ptr [rbp + 0x16], r15d
+00000001402b9304  mov      word ptr [rbp + 0x1a], r15w
+00000001402b9309  call     0x14036a370 ; CGameSprite::RemoveNewSpecialAbilities+0x0
+00000001402b930e  lea      rcx, [rbp - 0x30]
+00000001402b9312  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+00000001402b9317  mov      rax, qword ptr [rip + 0x3abd82]
+00000001402b931e  mov      rcx, r14
+00000001402b9321  mov      rdx, qword ptr [rax + 0x1090]
+00000001402b9328  cmp      dword ptr [rdx + 0x9684], 0
+00000001402b932f  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9334  je       0x1402b9347
+00000001402b9336  mov      r8d, dword ptr [rip + 0x3a121f]
+00000001402b933d  call     0x1402bb530 ; CScreenCreateChar::OnLevelUp+0x0
+00000001402b9342  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b9347  mov      r8d, dword ptr [rip + 0x3a1202]
+00000001402b934e  call     0x1402bb530 ; CScreenCreateChar::OnLevelUp+0x0
+00000001402b9353  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b9358  lea      rcx, [rbp - 0x70]
+00000001402b935c  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b9361  movzx    eax, al
+00000001402b9364  dec      eax
+00000001402b9366  cmp      eax, 0x14
+00000001402b9369  ja       0x1402ba336
+00000001402b936f  cdqe
+00000001402b9371  movzx    eax, byte ptr [r15 + rax + 0x2ba46c]
+00000001402b937a  mov      ecx, dword ptr [r15 + rax*4 + 0x2ba45c]
+00000001402b9382  add      rcx, r15
+00000001402b9385  jmp      rcx
+00000001402b9387  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b938c  call     0x1403afc60 ; CGameSprite::RemoveAllSpellsMage+0x0
+00000001402b9391  lea      rcx, [rbp - 0x70]
+00000001402b9395  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b939a  cmp      al, 0x15
+00000001402b939c  je       0x1402b93f1
+00000001402b939e  movzx    ebx, byte ptr [rip + 0x2f2ab6]
+00000001402b93a5  test     ebx, ebx
+00000001402b93a7  je       0x1402b8e84
+00000001402b93ad  nop      dword ptr [rax]
+00000001402b93b0  mov      rax, qword ptr [rsp + 0x40]
+00000001402b93b5  lea      rdx, [rbp - 0x70]
+00000001402b93b9  mov      r8, rsi
+00000001402b93bc  mov      dword ptr [rsp + 0x20], ebx
+00000001402b93c0  mov      rcx, rdi
+00000001402b93c3  movzx    r9d, word ptr [rax + 0x79c]
+00000001402b93cb  movzx    eax, word ptr [rax + 0x79e]
+00000001402b93d2  shl      r9d, 0x10
+00000001402b93d6  or       r9d, eax
+00000001402b93d9  call     0x140241cd0 ; CRuleTables::GetMaxMemorizedSpellsMage+0x0
+00000001402b93de  test     eax, eax
+00000001402b93e0  jne      0x1402b948e
+00000001402b93e6  dec      ebx
+00000001402b93e8  test     ebx, ebx
+00000001402b93ea  jg       0x1402b93b0
+00000001402b93ec  jmp      0x1402b948e ; CScreenCreateChar::OnDoneButtonClick+0xaee
+00000001402b93f1  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b93f6  call     0x1403afd50 ; CGameSprite::RemoveAllSpellsPriest+0x0
+00000001402b93fb  movsx    rdx, word ptr [rsi + 0x5a]
+00000001402b9400  movsx    ecx, word ptr [rdi + 0x30]
+00000001402b9404  lea      eax, [rdx - 1]
+00000001402b9407  cmp      eax, ecx
+00000001402b9409  jge      0x1402b9428
+00000001402b940b  xor      r15d, r15d
+00000001402b940e  cmp      r15w, word ptr [rdi + 0x32]
+00000001402b9413  jge      0x1402b9428
+00000001402b9415  cmp      edx, 1
+00000001402b9418  jl       0x1402b9428
+00000001402b941a  mov      rax, qword ptr [rdi + 0x20]
+00000001402b941e  sub      rax, 8
+00000001402b9422  lea      rcx, [rax + rdx*8]
+00000001402b9426  jmp      0x1402b942c ; CScreenCreateChar::OnDoneButtonClick+0xa8c
+00000001402b9428  lea      rcx, [rdi + 0x28]
+00000001402b942c  mov      rcx, qword ptr [rcx]
+00000001402b942f  lea      r8, [rsp + 0x4c]
+00000001402b9434  lea      rdx, [rip + 0x34d915]
+00000001402b943b  call     0x1400580f0 ; sscanf+0x0
+00000001402b9440  movzx    ebx, byte ptr [rip + 0x2f2a13]
+00000001402b9447  test     ebx, ebx
+00000001402b9449  je       0x1402b8e84
+00000001402b944f  nop
+00000001402b9450  lea      rax, [rsp + 0x4c]
+00000001402b9455  mov      byte ptr [r14 + 0x8e4], bl
+00000001402b945c  mov      r9d, ebx
+00000001402b945f  mov      qword ptr [rsp + 0x20], rax
+00000001402b9464  mov      r8, rsi
+00000001402b9467  lea      rdx, [rbp - 0x70]
+00000001402b946b  mov      rcx, rdi
+00000001402b946e  call     0x140241f40 ; CRuleTables::GetMaxMemorizedSpellsPriest+0x0
+00000001402b9473  test     eax, eax
+00000001402b9475  je       0x1402b9488
+00000001402b9477  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b947c  mov      rcx, r14
+00000001402b947f  call     0x1402b52b0 ; GetShamanExtraSpells+0x0
+00000001402b9484  test     eax, eax
+00000001402b9486  jg       0x1402b948e
+00000001402b9488  dec      ebx
+00000001402b948a  test     ebx, ebx
+00000001402b948c  jg       0x1402b9450
+00000001402b948e  test     ebx, ebx
+00000001402b9490  je       0x1402b8e84
+00000001402b9496  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b949b  mov      rcx, r14
+00000001402b949e  mov      byte ptr [r14 + 0x8e4], 1
+00000001402b94a6  mov      byte ptr [r14 + 0x8e5], bl
+00000001402b94ad  call     0x1402bec70 ; CScreenCreateChar::ResetChooseMagePanel+0x0
+00000001402b94b2  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b94b7  mov      rcx, r14
+00000001402b94ba  call     0x1402c42b0 ; CScreenCreateChar::UpdateChooseMagePanel+0x0
+00000001402b94bf  lea      rcx, [rip + 0x2d458a]
+00000001402b94c6  mov      dword ptr [r14 + 0x768], 0xb
+00000001402b94d1  call     0x1403da620 ; uiPush+0x0
+00000001402b94d6  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b94db  movsx    rdx, word ptr [rsi + 0x5a]
+00000001402b94e0  movsx    ecx, word ptr [rdi + 0x30]
+00000001402b94e4  lea      eax, [rdx - 1]
+00000001402b94e7  cmp      eax, ecx
+00000001402b94e9  jge      0x1402b9508
+00000001402b94eb  xor      r15d, r15d
+00000001402b94ee  cmp      r15w, word ptr [rdi + 0x32]
+00000001402b94f3  jge      0x1402b9508
+00000001402b94f5  cmp      edx, 1
+00000001402b94f8  jl       0x1402b9508
+00000001402b94fa  mov      rax, qword ptr [rdi + 0x20]
+00000001402b94fe  sub      rax, 8
+00000001402b9502  lea      rcx, [rax + rdx*8]
+00000001402b9506  jmp      0x1402b950c ; CScreenCreateChar::OnDoneButtonClick+0xb6c
+00000001402b9508  lea      rcx, [rdi + 0x28]
+00000001402b950c  mov      rcx, qword ptr [rcx]
+00000001402b950f  lea      r8, [rsp + 0x4c]
+00000001402b9514  lea      rdx, [rip + 0x34d835]
+00000001402b951b  call     0x1400580f0 ; sscanf+0x0
+00000001402b9520  mov      ebx, 0xa
+00000001402b9525  nop      word ptr [rax + rax]
+00000001402b9530  lea      rax, [rsp + 0x4c]
+00000001402b9535  mov      r9d, ebx
+00000001402b9538  mov      r8, rsi
+00000001402b953b  mov      qword ptr [rsp + 0x20], rax
+00000001402b9540  lea      rdx, [rbp - 0x70]
+00000001402b9544  mov      rcx, rdi
+00000001402b9547  call     0x140241f40 ; CRuleTables::GetMaxMemorizedSpellsPriest+0x0
+00000001402b954c  test     eax, eax
+00000001402b954e  jne      0x1402b8f66
+00000001402b9554  dec      ebx
+00000001402b9556  test     ebx, ebx
+00000001402b9558  jg       0x1402b9530
+00000001402b955a  jmp      0x1402b8f66 ; CScreenCreateChar::OnDoneButtonClick+0x5c6
+00000001402b955f  lea      rcx, [rip + 0x2e9e72]
+00000001402b9566  call     0x1403da410 ; uiPop+0x0
+00000001402b956b  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9570  mov      rcx, r14
+00000001402b9573  mov      dword ptr [r14 + 0x768], 7
+00000001402b957e  call     0x1402b2800 ; CScreenCreateChar::CompleteCharacterClass+0x0
+00000001402b9583  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9588  lea      rcx, [rip + 0x2e9e61]
+00000001402b958f  call     0x1403da410 ; uiPop+0x0
+00000001402b9594  mov      rcx, qword ptr [rip + 0x3abeb5]
+00000001402b959b  lea      rdx, [rip + 0x2e9816]
+00000001402b95a2  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b95a7  mov      rcx, qword ptr [rip + 0x3abea2]
+00000001402b95ae  xor      r8d, r8d
+00000001402b95b1  lea      edx, [r8 - 1]
+00000001402b95b5  call     0x1400d58a0 ; lua_tolstring+0x0
+00000001402b95ba  mov      rdx, rax
+00000001402b95bd  lea      rcx, [rsp + 0x50]
+00000001402b95c2  call     0x1403fced0 ; CString::operator=+0x0
+00000001402b95c7  mov      rcx, qword ptr [rip + 0x3abe82]
+00000001402b95ce  mov      edx, 0xfffffffe
+00000001402b95d3  call     0x1400d5310 ; lua_settop+0x0
+00000001402b95d8  lea      rcx, [rsp + 0x50]
+00000001402b95dd  call     0x1403febf0 ; CString::TrimLeft+0x0
+00000001402b95e2  lea      rcx, [rsp + 0x50]
+00000001402b95e7  call     0x1403fed60 ; CString::TrimRight+0x0
+00000001402b95ec  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b95f1  lea      rdx, [rsp + 0x50]
+00000001402b95f6  add      rcx, 0x3928
+00000001402b95fd  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b9602  mov      dword ptr [rbx + 0x560], 0xffffffff
+00000001402b960c  mov      dword ptr [r14 + 0x768], 0x12
+00000001402b9617  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b961c  mov      r8, qword ptr [rsp + 0x40]
+00000001402b9621  lea      rdx, [rsp + 0x70]
+00000001402b9626  mov      r9b, 0x4d
+00000001402b9629  mov      rcx, r14
+00000001402b962c  call     0x1402b4870 ; CScreenCreateChar::GetCurrentPortrait+0x0
+00000001402b9631  mov      rdx, rax
+00000001402b9634  lea      rcx, [rsp + 0x78]
+00000001402b9639  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402b963e  lea      rcx, [rsp + 0x70]
+00000001402b9643  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9648  mov      r8, qword ptr [rsp + 0x40]
+00000001402b964d  lea      rdx, [rsp + 0x70]
+00000001402b9652  mov      r9b, 0x4c
+00000001402b9655  mov      rcx, r14
+00000001402b9658  call     0x1402b4870 ; CScreenCreateChar::GetCurrentPortrait+0x0
+00000001402b965d  mov      rdx, rax
+00000001402b9660  lea      rcx, [rbp - 0x78]
+00000001402b9664  call     0x1403fedd0 ; CResRef::CResRef+0x0
+00000001402b9669  lea      rcx, [rsp + 0x70]
+00000001402b966e  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9673  lea      rcx, [rsp + 0x78]
+00000001402b9678  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+00000001402b967d  mov      r12d, 1
+00000001402b9683  mov      rcx, rax
+00000001402b9686  mov      edx, r12d
+00000001402b9689  call     0x140404ad0 ; dimmResourceExists+0x0
+00000001402b968e  test     eax, eax
+00000001402b9690  je       0x1402b96a8
+00000001402b9692  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9697  lea      rcx, [rsp + 0x78]
+00000001402b969c  add      rdx, 0x58c
+00000001402b96a3  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001402b96a8  lea      rcx, [rbp - 0x78]
+00000001402b96ac  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+00000001402b96b1  mov      rcx, rax
+00000001402b96b4  mov      edx, r12d
+00000001402b96b7  call     0x140404ad0 ; dimmResourceExists+0x0
+00000001402b96bc  test     eax, eax
+00000001402b96be  je       0x1402b96d5
+00000001402b96c0  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b96c5  lea      rcx, [rbp - 0x78]
+00000001402b96c9  add      rdx, 0x594
+00000001402b96d0  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001402b96d5  mov      rcx, qword ptr [r14 + 0x7c0]
+00000001402b96dc  test     rcx, rcx
+00000001402b96df  je       0x1402b96e9
+00000001402b96e1  mov      rax, qword ptr [rcx]
+00000001402b96e4  mov      edx, r12d
+00000001402b96e7  call     qword ptr [rax]
+00000001402b96e9  xor      r15d, r15d
+00000001402b96ec  cmp      dword ptr [r14 + 0x800], 6
+00000001402b96f4  mov      qword ptr [r14 + 0x7c0], r15
+00000001402b96fb  jne      0x1402b9792
+00000001402b9701  mov      rax, qword ptr [rip + 0x3ab998]
+00000001402b9708  lea      r8, [rsp + 0x78]
+00000001402b970d  lea      rdx, [rsp + 0x70]
+00000001402b9712  mov      rcx, qword ptr [rax + 0x10b0]
+00000001402b9719  add      rcx, 0x750
+00000001402b9720  call     0x1403fef40 ; CResRef::operator=+0x0
+00000001402b9725  mov      rax, qword ptr [rip + 0x3ab974]
+00000001402b972c  lea      r8, [rbp - 0x78]
+00000001402b9730  lea      rdx, [rsp + 0x70]
+00000001402b9735  mov      rcx, qword ptr [rax + 0x10b0]
+00000001402b973c  add      rcx, 0x758
+00000001402b9743  call     0x1403fef40 ; CResRef::operator=+0x0
+00000001402b9748  mov      rcx, qword ptr [rip + 0x3ab951]
+00000001402b974f  xor      edx, edx
+00000001402b9751  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b9758  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402b975d  mov      rcx, qword ptr [rip + 0x3ab93c]
+00000001402b9764  mov      rax, qword ptr [rcx]
+00000001402b9767  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402b976e  call     qword ptr [rax + 0xf0]
+00000001402b9774  cmp      dword ptr [rip + 0x46ede5], 2
+00000001402b977b  je       0x1402ba336
+00000001402b9781  lea      rcx, [rip + 0x2e8890]
+00000001402b9788  call     0x1403da620 ; uiPush+0x0
+00000001402b978d  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9792  cmp      word ptr [r14 + 0x8e6], r15w
+00000001402b979a  je       0x1402b9815
+00000001402b979c  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b97a1  movzx    ecx, word ptr [rdx + 0x79c]
+00000001402b97a8  movzx    eax, word ptr [rdx + 0x79e]
+00000001402b97af  shl      ecx, 0x10
+00000001402b97b2  or       ecx, eax
+00000001402b97b4  cmp      ecx, 0x4000
+00000001402b97ba  jne      0x1402b9815
+00000001402b97bc  add      rdx, 0x4b68
+00000001402b97c3  lea      rcx, [rbp - 0x70]
+00000001402b97c7  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b97cc  lea      rcx, [rbp - 0x70]
+00000001402b97d0  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b97d5  dec      al
+00000001402b97d7  cmp      al, 0x14
+00000001402b97d9  ja       0x1402ba336
+00000001402b97df  cmp      byte ptr [r14 + 0x8ea], r15b
+00000001402b97e6  je       0x1402ba336
+00000001402b97ec  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b97f1  mov      rcx, r14
+00000001402b97f4  mov      dword ptr [r14 + 0x768], 6
+00000001402b97ff  call     0x1402c55d0 ; CScreenCreateChar::UpdateKitPanel+0x0
+00000001402b9804  lea      rcx, [rip + 0x2e9b1d]
+00000001402b980b  call     0x1403da620 ; uiPush+0x0
+00000001402b9810  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9815  mov      dword ptr [r14 + 0x768], 3
+00000001402b9820  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9825  lea      rcx, [rip + 0x2e9bd4]
+00000001402b982c  call     0x1403da410 ; uiPop+0x0
+00000001402b9831  mov      edx, dword ptr [r14 + 0x818]
+00000001402b9838  test     edx, edx
+00000001402b983a  jns      0x1402b9843
+00000001402b983c  mov      edx, dword ptr [r14 + 0x81c]
+00000001402b9843  mov      rcx, qword ptr [r14 + 0x820]
+00000001402b984a  call     0x140406880 ; CPtrList::FindIndex+0x0
+00000001402b984f  lea      rdx, [rsp + 0x70]
+00000001402b9854  lea      rcx, [rbp - 0x80]
+00000001402b9858  lea      r8, [rax + 0x10]
+00000001402b985c  call     0x1403fef50 ; CResRef::operator=+0x0
+00000001402b9861  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9866  lea      rcx, [rbp - 0x80]
+00000001402b986a  add      rdx, 0x58c
+00000001402b9871  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001402b9876  mov      edx, dword ptr [r14 + 0x81c]
+00000001402b987d  mov      rcx, qword ptr [r14 + 0x820]
+00000001402b9884  call     0x140406880 ; CPtrList::FindIndex+0x0
+00000001402b9889  lea      rdx, [rsp + 0x70]
+00000001402b988e  lea      rcx, [rbp - 0x80]
+00000001402b9892  lea      r8, [rax + 0x10]
+00000001402b9896  call     0x1403fef50 ; CResRef::operator=+0x0
+00000001402b989b  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b98a0  lea      rcx, [rbp - 0x80]
+00000001402b98a4  add      rdx, 0x594
+00000001402b98ab  call     0x1403ff620 ; CResRef::GetResRef+0x0
+00000001402b98b0  mov      rcx, qword ptr [r14 + 0x820]
+00000001402b98b7  test     rcx, rcx
+00000001402b98ba  je       0x1402b98c6
+00000001402b98bc  mov      rax, qword ptr [rcx]
+00000001402b98bf  mov      edx, 1
+00000001402b98c4  call     qword ptr [rax]
+00000001402b98c6  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b98cb  xor      r15d, r15d
+00000001402b98ce  mov      qword ptr [r14 + 0x820], r15
+00000001402b98d5  cmp      word ptr [r14 + 0x8e6], r15w
+00000001402b98dd  je       0x1402b98fe
+00000001402b98df  movzx    ecx, word ptr [rdx + 0x79c]
+00000001402b98e6  movzx    eax, word ptr [rdx + 0x79e]
+00000001402b98ed  shl      ecx, 0x10
+00000001402b98f0  or       ecx, eax
+00000001402b98f2  cmp      ecx, 0x4000
+00000001402b98f8  je       0x1402b97bc
+00000001402b98fe  mov      rcx, r14
+00000001402b9901  mov      dword ptr [r14 + 0x768], 3
+00000001402b990c  call     0x1402c5c30 ; CScreenCreateChar::UpdateMainPanel+0x0
+00000001402b9911  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9916  lea      r8, [rip + 0x330b00]
+00000001402b991d  lea      rdx, [rsp + 0x70]
+00000001402b9922  lea      rcx, [rbp - 0x80]
+00000001402b9926  call     0x1403ff020 ; CResRef::operator=+0x0
+00000001402b992b  mov      edx, dword ptr [r14 + 0x828]
+00000001402b9932  test     edx, edx
+00000001402b9934  js       0x1402b9959
+00000001402b9936  mov      rcx, qword ptr [r14 + 0x848]
+00000001402b993d  call     0x140406880 ; CPtrList::FindIndex+0x0
+00000001402b9942  test     rax, rax
+00000001402b9945  je       0x1402b9959
+00000001402b9947  lea      r8, [rax + 0x10]
+00000001402b994b  lea      rdx, [rsp + 0x70]
+00000001402b9950  lea      rcx, [rbp - 0x80]
+00000001402b9954  call     0x1403fef50 ; CResRef::operator=+0x0
+00000001402b9959  lea      rdx, [rip + 0x2e33a0]
+00000001402b9960  lea      rcx, [rbp - 0x80]
+00000001402b9964  call     0x1403ff220 ; CResRef::operator!=+0x0
+00000001402b9969  test     eax, eax
+00000001402b996b  je       0x1402b9978
+00000001402b996d  lea      r8, [rbp - 0x80]
+00000001402b9971  lea      rdx, [rsp + 0x70]
+00000001402b9976  jmp      0x1402b9993 ; CScreenCreateChar::OnDoneButtonClick+0xff3
+00000001402b9978  lea      rdx, [rip + 0x330a9e]
+00000001402b997f  lea      rcx, [rsp + 0x70]
+00000001402b9984  call     0x1403fee80 ; CResRef::CResRef+0x0
+00000001402b9989  lea      r8, [rsp + 0x70]
+00000001402b998e  lea      rdx, [rsp + 0x78]
+00000001402b9993  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9998  add      rcx, 0x4e68
+00000001402b999f  call     0x1403fef40 ; CResRef::operator=+0x0
+00000001402b99a4  xor      r15d, r15d
+00000001402b99a7  mov      r12d, 0x9c
+00000001402b99ad  mov      esi, r15d
+00000001402b99b0  cmp      esi, 0x4a
+00000001402b99b3  je       0x1402b99ef
+00000001402b99b5  lea      rdx, [rsp + 0x78]
+00000001402b99ba  lea      rcx, [rbp - 0x80]
+00000001402b99be  call     0x1403ff630 ; CResRef::GetResRefStr+0x0
+00000001402b99c3  movzx    r9d, byte ptr [rbp - 0x5a]
+00000001402b99c8  lea      rdx, [rsp + 0x78]
+00000001402b99cd  mov      rbx, qword ptr [rsp + 0x40]
+00000001402b99d2  mov      r8d, esi
+00000001402b99d5  mov      rcx, rdi
+00000001402b99d8  call     0x14023c270 ; CRuleTables::GetCharacterSound+0x0
+00000001402b99dd  lea      rcx, [rsp + 0x78]
+00000001402b99e2  mov      dword ptr [rbx + r12 + 0x560], eax
+00000001402b99ea  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b99ef  inc      esi
+00000001402b99f1  add      r12, 4
+00000001402b99f5  cmp      esi, 0x64
+00000001402b99f8  jl       0x1402b99b0
+00000001402b99fa  mov      rcx, qword ptr [rip + 0x3ab69f]
+00000001402b9a01  mov      rcx, qword ptr [rcx + 0x128]
+00000001402b9a08  call     0x14040f4d0 ; CSoundMixer::StopAll+0x0
+00000001402b9a0d  mov      rcx, qword ptr [rip + 0x3ab68c]
+00000001402b9a14  xor      edx, edx
+00000001402b9a16  mov      rcx, qword ptr [rcx + 0x128]
+00000001402b9a1d  call     0x14040ebf0 ; CSoundMixer::QuietMusic+0x0
+00000001402b9a22  lea      rcx, [rip + 0x2e98c7]
+00000001402b9a29  call     0x1403da410 ; uiPop+0x0
+00000001402b9a2e  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9a33  mov      rcx, r14
+00000001402b9a36  mov      dword ptr [r14 + 0x768], 0x11
+00000001402b9a41  call     0x1402b35f0 ; CScreenCreateChar::CompleteCharacterSounds+0x0
+00000001402b9a46  mov      rcx, qword ptr [r14 + 0x848]
+00000001402b9a4d  test     rcx, rcx
+00000001402b9a50  je       0x1402b9a5c
+00000001402b9a52  mov      rax, qword ptr [rcx]
+00000001402b9a55  mov      edx, 1
+00000001402b9a5a  call     qword ptr [rax]
+00000001402b9a5c  mov      qword ptr [r14 + 0x848], r15
+00000001402b9a63  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9a68  lea      rcx, [rip + 0x2e9621]
+00000001402b9a6f  call     0x1403da410 ; uiPop+0x0
+00000001402b9a74  test     dword ptr [r14 + 0x904], 0xfffffffd
+00000001402b9a7f  jne      0x1402ba336
+00000001402b9a85  mov      edx, dword ptr [r14 + 0x830]
+00000001402b9a8c  mov      rcx, qword ptr [r14 + 0x838]
+00000001402b9a93  call     0x140406880 ; CPtrList::FindIndex+0x0
+00000001402b9a98  lea      rcx, [rsp + 0x58]
+00000001402b9a9d  lea      rdx, [rax + 0x10]
+00000001402b9aa1  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b9aa6  lea      rcx, [r14 + 0x920]
+00000001402b9aad  lea      rdx, [rsp + 0x58]
+00000001402b9ab2  call     0x1403fce30 ; CString::operator=+0x0
+00000001402b9ab7  lea      rdx, [rsp + 0x58]
+00000001402b9abc  mov      rcx, r14
+00000001402b9abf  call     0x1402b5410 ; CScreenCreateChar::ImportCharacter+0x0
+00000001402b9ac4  mov      rcx, qword ptr [r14 + 0x838]
+00000001402b9acb  mov      r12d, 1
+00000001402b9ad1  test     rcx, rcx
+00000001402b9ad4  je       0x1402b9ade
+00000001402b9ad6  mov      rax, qword ptr [rcx]
+00000001402b9ad9  mov      edx, r12d
+00000001402b9adc  call     qword ptr [rax]
+00000001402b9ade  mov      ecx, dword ptr [r14 + 0x770]
+00000001402b9ae5  lea      rdx, [rsp + 0x40]
+00000001402b9aea  xor      r15d, r15d
+00000001402b9aed  mov      qword ptr [r14 + 0x838], r15
+00000001402b9af4  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402b9af9  test     al, al
+00000001402b9afb  jne      0x1402ba336
+00000001402b9b01  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9b06  xor      edx, edx
+00000001402b9b08  call     0x140357290 ; CGameSprite::GetName+0x0
+00000001402b9b0d  lea      rdx, [rip + 0x330909]
+00000001402b9b14  mov      rcx, qword ptr [rax]
+00000001402b9b17  call     0x140502d6c ; _mbscmp+0x0
+00000001402b9b1c  test     eax, eax
+00000001402b9b1e  je       0x1402b9b98
+00000001402b9b20  mov      rcx, qword ptr [rip + 0x3ab929]
+00000001402b9b27  lea      rdx, [rip + 0x2e90c2]
+00000001402b9b2e  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b9b33  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9b38  xor      edx, edx
+00000001402b9b3a  call     0x140357290 ; CGameSprite::GetName+0x0
+00000001402b9b3f  mov      rdx, rax
+00000001402b9b42  lea      rcx, [rsp + 0x70]
+00000001402b9b47  call     0x1403fcd00 ; CString::CString+0x0
+00000001402b9b4c  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9b51  xor      edx, edx
+00000001402b9b53  call     0x140357290 ; CGameSprite::GetName+0x0
+00000001402b9b58  mov      rcx, qword ptr [rip + 0x3ab8f1]
+00000001402b9b5f  mov      rdx, qword ptr [rax]
+00000001402b9b62  call     0x1400d5b10 ; lua_pushstring+0x0
+00000001402b9b67  mov      rcx, qword ptr [rip + 0x3ab8e2]
+00000001402b9b6e  lea      r8, [rip + 0x34612f]
+00000001402b9b75  lea      edx, [r15 - 2]
+00000001402b9b79  call     0x1400d61a0 ; lua_setfield+0x0
+00000001402b9b7e  mov      rcx, qword ptr [rip + 0x3ab8cb]
+00000001402b9b85  lea      edx, [r15 - 2]
+00000001402b9b89  call     0x1400d5310 ; lua_settop+0x0
+00000001402b9b8e  lea      rcx, [rsp + 0x70]
+00000001402b9b93  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9b98  movzx    eax, byte ptr [rip + 0x2d1bd3]
+00000001402b9b9f  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9ba4  cmp      byte ptr [r14 + 0x98], al
+00000001402b9bab  jae      0x1402b9d49
+00000001402b9bb1  add      rdx, 0x594
+00000001402b9bb8  lea      rcx, [rbp - 0x78]
+00000001402b9bbc  call     0x1403feec0 ; CResRef::CResRef+0x0
+00000001402b9bc1  lea      rdx, [rsp + 0x78]
+00000001402b9bc6  lea      rcx, [rbp - 0x78]
+00000001402b9bca  call     0x1403ff630 ; CResRef::GetResRefStr+0x0
+00000001402b9bcf  mov      rax, qword ptr [rsp + 0x78]
+00000001402b9bd4  movsxd   rdx, dword ptr [rax - 8]
+00000001402b9bd8  cmp      byte ptr [rdx + rax - 1], 0x4c
+00000001402b9bdd  jne      0x1402b9c98
+00000001402b9be3  dec      edx
+00000001402b9be5  lea      rcx, [rsp + 0x78]
+00000001402b9bea  mov      r8b, 0x4d
+00000001402b9bed  call     0x1403fddf0 ; CString::SetAt+0x0
+00000001402b9bf2  lea      r8, [rsp + 0x78]
+00000001402b9bf7  lea      rdx, [rsp + 0x70]
+00000001402b9bfc  lea      rcx, [rbp - 0x78]
+00000001402b9c00  call     0x1403fef50 ; CResRef::operator=+0x0
+00000001402b9c05  lea      rcx, [rbp - 0x78]
+00000001402b9c09  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+00000001402b9c0e  mov      rcx, rax
+00000001402b9c11  mov      edx, r12d
+00000001402b9c14  call     0x140404ad0 ; dimmResourceExists+0x0
+00000001402b9c19  test     eax, eax
+00000001402b9c1b  je       0x1402b9c98
+00000001402b9c1d  mov      rbx, qword ptr [rsp + 0x40]
+00000001402b9c22  lea      rcx, [rbp - 0x78]
+00000001402b9c26  call     0x14001e1e0 ; std::basic_streambuf<char,std::char_traits<char>_>::setbuf+0x0
+00000001402b9c2b  lea      rdx, [rip + 0x2e8fbe]
+00000001402b9c32  mov      rcx, qword ptr [rax]
+00000001402b9c35  mov      qword ptr [rbx + 0x594], rcx
+00000001402b9c3c  mov      rcx, qword ptr [rip + 0x3ab80d]
+00000001402b9c43  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b9c48  lea      rdx, [rsp + 0x70]
+00000001402b9c4d  lea      rcx, [rbp - 0x78]
+00000001402b9c51  call     0x1403ff630 ; CResRef::GetResRefStr+0x0
+00000001402b9c56  mov      rcx, qword ptr [rip + 0x3ab7f3]
+00000001402b9c5d  mov      rdx, qword ptr [rax]
+00000001402b9c60  call     0x1400d5b10 ; lua_pushstring+0x0
+00000001402b9c65  lea      rcx, [rsp + 0x70]
+00000001402b9c6a  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9c6f  mov      rcx, qword ptr [rip + 0x3ab7da]
+00000001402b9c76  lea      r8, [rip + 0x2e8f7b]
+00000001402b9c7d  mov      edx, 0xfffffffe
+00000001402b9c82  call     0x1400d61a0 ; lua_setfield+0x0
+00000001402b9c87  mov      rcx, qword ptr [rip + 0x3ab7c2]
+00000001402b9c8e  mov      edx, 0xfffffffe
+00000001402b9c93  call     0x1400d5310 ; lua_settop+0x0
+00000001402b9c98  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9c9d  mov      edx, r12d
+00000001402b9ca0  add      rcx, 0x594
+00000001402b9ca7  call     0x140404ad0 ; dimmResourceExists+0x0
+00000001402b9cac  test     eax, eax
+00000001402b9cae  je       0x1402b9cce
+00000001402b9cb0  mov      rcx, r14
+00000001402b9cb3  mov      dword ptr [r14 + 0x768], r12d
+00000001402b9cba  call     0x1402c3470 ; CScreenCreateChar::ShowPortraitPanel+0x0
+00000001402b9cbf  lea      rcx, [rsp + 0x78]
+00000001402b9cc4  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9cc9  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9cce  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9cd3  movzx    ecx, word ptr [rdx + 0x79c]
+00000001402b9cda  movzx    eax, word ptr [rdx + 0x79e]
+00000001402b9ce1  shl      ecx, 0x10
+00000001402b9ce4  or       ecx, eax
+00000001402b9ce6  cmp      ecx, 0x4000
+00000001402b9cec  jne      0x1402b9d3a
+00000001402b9cee  add      rdx, 0x4b68
+00000001402b9cf5  lea      rcx, [rbp - 0x70]
+00000001402b9cf9  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b9cfe  lea      rcx, [rbp - 0x70]
+00000001402b9d02  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b9d07  dec      al
+00000001402b9d09  cmp      al, 0x14
+00000001402b9d0b  ja       0x1402b9d3a
+00000001402b9d0d  cmp      byte ptr [r14 + 0x8ea], r15b
+00000001402b9d14  je       0x1402b9d3a
+00000001402b9d16  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9d1b  mov      rcx, r14
+00000001402b9d1e  mov      dword ptr [r14 + 0x768], 6
+00000001402b9d29  call     0x1402c55d0 ; CScreenCreateChar::UpdateKitPanel+0x0
+00000001402b9d2e  lea      rcx, [rip + 0x2e95f3]
+00000001402b9d35  call     0x1403da620 ; uiPush+0x0
+00000001402b9d3a  lea      rcx, [rsp + 0x78]
+00000001402b9d3f  call     0x1403fce00 ; CString::~CString+0x0
+00000001402b9d44  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9d49  add      rdx, 0x4b68
+00000001402b9d50  lea      rcx, [rbp - 0x70]
+00000001402b9d54  call     0x14011e9e0 ; CAIObjectType::Set+0x0
+00000001402b9d59  lea      rcx, [rbp - 0x70]
+00000001402b9d5d  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402b9d62  cmp      al, 0xc
+00000001402b9d64  je       0x1402b9d6e
+00000001402b9d66  cmp      al, 0x12
+00000001402b9d68  jne      0x1402ba336
+00000001402b9d6e  mov      dword ptr [r14 + 0x764], 9
+00000001402b9d79  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9d7e  mov      ebx, 0xa
+00000001402b9d83  mov      rcx, r14
+00000001402b9d86  mov      dword ptr [r14 + 0x768], ebx
+00000001402b9d8d  call     0x1402bf130 ; CScreenCreateChar::ResetHatedRacePanel+0x0
+00000001402b9d92  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9d97  mov      rcx, r14
+00000001402b9d9a  call     0x1402c4df0 ; CScreenCreateChar::UpdateHatedRacePanel+0x0
+00000001402b9d9f  lea      rcx, [rip + 0x2d3cf2]
+00000001402b9da6  call     0x1403da620 ; uiPush+0x0
+00000001402b9dab  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9db0  mov      rcx, qword ptr [rip + 0x3ab2e9]
+00000001402b9db7  mov      edx, 1
+00000001402b9dbc  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402b9dc3  call     0x1402a9650 ; CScreenCharacter::OnCharacterExport+0x0
+00000001402b9dc8  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b9dcd  lea      rcx, [rip + 0x2e8f34]
+00000001402b9dd4  call     0x1403da410 ; uiPop+0x0
+00000001402b9dd9  mov      eax, dword ptr [r14 + 0x76c]
+00000001402b9de0  mov      ecx, dword ptr [r14 + 0x804]
+00000001402b9de7  mov      dword ptr [r14 + 0x768], eax
+00000001402b9dee  add      ecx, 0xf0000d
+00000001402b9df4  mov      rax, qword ptr [rsp + 0x40]
+00000001402b9df9  cmp      dword ptr [rax + 0x724], ecx
+00000001402b9dff  je       0x1402b9e09
+00000001402b9e01  mov      dword ptr [rax + 0x724], ecx
+00000001402b9e07  jmp      0x1402b9e48 ; CScreenCreateChar::OnDoneButtonClick+0x14a8
+00000001402b9e09  mov      rcx, qword ptr [rip + 0x3ab290]
+00000001402b9e10  lea      r8, [rbp - 0x58]
+00000001402b9e14  mov      edx, dword ptr [rax + 0x724]
+00000001402b9e1a  add      rcx, 0x1184
+00000001402b9e21  call     0x14041f7c0 ; CTlkFileOverride::Fetch+0x0
+00000001402b9e26  test     eax, eax
+00000001402b9e28  je       0x1402b9e48
+00000001402b9e2a  mov      rax, qword ptr [rsp + 0x40]
+00000001402b9e2f  mov      rcx, qword ptr [rip + 0x3ab26a]
+00000001402b9e36  add      rcx, 0x1184
+00000001402b9e3d  mov      edx, dword ptr [rax + 0x724]
+00000001402b9e43  call     0x14041fd00 ; CTlkFileOverride::Remove+0x0
+00000001402b9e48  mov      rcx, qword ptr [rip + 0x3ab601]
+00000001402b9e4f  lea      rdx, [rip + 0x2e8ec2]
+00000001402b9e56  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402b9e5b  mov      rcx, qword ptr [rip + 0x3ab5ee]
+00000001402b9e62  xor      r8d, r8d
+00000001402b9e65  lea      edx, [r8 - 1]
+00000001402b9e69  call     0x1400d58a0 ; lua_tolstring+0x0
+00000001402b9e6e  mov      rdx, rax
+00000001402b9e71  lea      rcx, [rbp - 0x58]
+00000001402b9e75  call     0x1403fced0 ; CString::operator=+0x0
+00000001402b9e7a  mov      rcx, qword ptr [rip + 0x3ab5cf]
+00000001402b9e81  mov      edx, 0xfffffffe
+00000001402b9e86  call     0x1400d5310 ; lua_settop+0x0
+00000001402b9e8b  mov      rax, qword ptr [rsp + 0x40]
+00000001402b9e90  lea      r8, [rbp - 0x58]
+00000001402b9e94  mov      rcx, qword ptr [rip + 0x3ab205]
+00000001402b9e9b  add      rcx, 0x1184
+00000001402b9ea2  mov      edx, dword ptr [rax + 0x724]
+00000001402b9ea8  call     0x14041f600 ; CTlkFileOverride::Add+0x0
+00000001402b9ead  jmp      0x1402ba343 ; CScreenCreateChar::OnDoneButtonClick+0x19a3
+00000001402b9eb2  mov      dword ptr [r14 + 0x768], 0x19
+00000001402b9ebd  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9ec2  mov      eax, dword ptr [r14 + 0xa0c]
+00000001402b9ec9  dec      eax
+00000001402b9ecb  cmp      eax, 0x13
+00000001402b9ece  ja       0x1402ba336
+00000001402b9ed4  cdqe
+00000001402b9ed6  movzx    eax, byte ptr [r15 + rax + 0x2ba498]
+00000001402b9edf  mov      ecx, dword ptr [r15 + rax*4 + 0x2ba484]
+00000001402b9ee7  add      rcx, r15
+00000001402b9eea  jmp      rcx
+00000001402b9eec  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9ef1  mov      dword ptr [r14 + 0x768], 0x1a
+00000001402b9efc  call     0x1403afc60 ; CGameSprite::RemoveAllSpellsMage+0x0
+00000001402b9f01  movzx    ebx, byte ptr [rip + 0x2f1f53]
+00000001402b9f08  test     ebx, ebx
+00000001402b9f0a  je       0x1402b9f48
+00000001402b9f0c  nop      dword ptr [rax]
+00000001402b9f10  mov      rax, qword ptr [rsp + 0x40]
+00000001402b9f15  lea      rdx, [rbp - 0x70]
+00000001402b9f19  mov      r8, rsi
+00000001402b9f1c  mov      dword ptr [rsp + 0x20], ebx
+00000001402b9f20  mov      rcx, rdi
+00000001402b9f23  movzx    r9d, word ptr [rax + 0x79c]
+00000001402b9f2b  movzx    eax, word ptr [rax + 0x79e]
+00000001402b9f32  shl      r9d, 0x10
+00000001402b9f36  or       r9d, eax
+00000001402b9f39  call     0x140241cd0 ; CRuleTables::GetMaxMemorizedSpellsMage+0x0
+00000001402b9f3e  test     eax, eax
+00000001402b9f40  jne      0x1402b9f48
+00000001402b9f42  dec      ebx
+00000001402b9f44  test     ebx, ebx
+00000001402b9f46  jg       0x1402b9f10
+00000001402b9f48  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9f4d  mov      rcx, r14
+00000001402b9f50  mov      byte ptr [r14 + 0x8e4], 1
+00000001402b9f58  mov      byte ptr [r14 + 0x8e5], bl
+00000001402b9f5f  call     0x1402c2620 ; CScreenCreateChar::ResetSpellTables+0x0
+00000001402b9f64  cmp      dword ptr [r14 + 0xa0c], 1
+00000001402b9f6c  jne      0x1402b9f9e
+00000001402b9f6e  mov      rcx, qword ptr [rsp + 0x40]
+00000001402b9f73  mov      dword ptr [r14 + 0x77c], 2
+00000001402b9f7e  call     0x14039c8d0 ; CGameSprite::GetKitMask+0x0
+00000001402b9f83  test     eax, 0x80003fc0
+00000001402b9f88  je       0x1402b9fa8
+00000001402b9f8a  inc      dword ptr [r14 + 0x77c]
+00000001402b9f91  xor      r15d, r15d
+00000001402b9f94  mov      word ptr [r14 + 0x8f6], r15w
+00000001402b9f9c  jmp      0x1402b9fa8 ; CScreenCreateChar::OnDoneButtonClick+0x1608
+00000001402b9f9e  xor      r15d, r15d
+00000001402b9fa1  mov      dword ptr [r14 + 0x77c], r15d
+00000001402b9fa8  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9fad  mov      rcx, r14
+00000001402b9fb0  call     0x1402c42b0 ; CScreenCreateChar::UpdateChooseMagePanel+0x0
+00000001402b9fb5  lea      rcx, [rip + 0x2d3a64]
+00000001402b9fbc  call     0x1403da410 ; uiPop+0x0
+00000001402b9fc1  lea      rcx, [rip + 0x2d3a88]
+00000001402b9fc8  call     0x1403da620 ; uiPush+0x0
+00000001402b9fcd  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402b9fd2  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9fd7  mov      ebx, 0xa
+00000001402b9fdc  mov      rcx, r14
+00000001402b9fdf  mov      dword ptr [r14 + 0x768], ebx
+00000001402b9fe6  call     0x1402bf130 ; CScreenCreateChar::ResetHatedRacePanel+0x0
+00000001402b9feb  mov      rdx, qword ptr [rsp + 0x40]
+00000001402b9ff0  mov      rcx, r14
+00000001402b9ff3  call     0x1402c4df0 ; CScreenCreateChar::UpdateHatedRacePanel+0x0
+00000001402b9ff8  lea      rcx, [rip + 0x2d3a21]
+00000001402b9fff  call     0x1403da410 ; uiPop+0x0
+00000001402ba004  lea      rcx, [rip + 0x2d3a8d]
+00000001402ba00b  call     0x1403da620 ; uiPush+0x0
+00000001402ba010  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba015  cmp      dword ptr [rip + 0x46e544], 2
+00000001402ba01c  jne      0x1402ba07f
+00000001402ba01e  lea      rdx, [rip + 0x2d3aa3]
+00000001402ba025  lea      rcx, [rsp + 0x70]
+00000001402ba02a  call     0x1403fcd70 ; CString::CString+0x0
+00000001402ba02f  mov      rcx, rax
+00000001402ba032  call     0x1403d8850 ; uiIsMenuOnStack+0x0
+00000001402ba037  test     al, al
+00000001402ba039  je       0x1402ba063
+00000001402ba03b  lea      rcx, [rip + 0x2d39de]
+00000001402ba042  mov      dword ptr [r14 + 0x768], 0x1b
+00000001402ba04d  call     0x1403da410 ; uiPop+0x0
+00000001402ba052  lea      rcx, [rip + 0x2d3a6f]
+00000001402ba059  call     0x1403da410 ; uiPop+0x0
+00000001402ba05e  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba063  lea      rcx, [rip + 0x2d3a5e]
+00000001402ba06a  mov      dword ptr [r14 + 0x768], 0x19
+00000001402ba075  call     0x1403da620 ; uiPush+0x0
+00000001402ba07a  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba07f  lea      rcx, [rip + 0x2d399a]
+00000001402ba086  mov      dword ptr [r14 + 0x768], 0x1b
+00000001402ba091  call     0x1403da410 ; uiPop+0x0
+00000001402ba096  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba09b  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba0a0  mov      rcx, r14
+00000001402ba0a3  call     0x1402b1120 ; CScreenCreateChar::AddChosenSpellsToKnown+0x0
+00000001402ba0a8  lea      rcx, [rip + 0x2d39a1]
+00000001402ba0af  call     0x1403da410 ; uiPop+0x0
+00000001402ba0b4  mov      dword ptr [r14 + 0x768], 0x1b
+00000001402ba0bf  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba0c4  lea      rcx, [rbp - 0x70]
+00000001402ba0c8  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402ba0cd  movzx    r8d, byte ptr [r14 + 0xa0c]
+00000001402ba0d5  lea      r9, [rsp + 0x48]
+00000001402ba0da  movzx    edx, al
+00000001402ba0dd  mov      rcx, rdi
+00000001402ba0e0  call     0x14023ff80 ; CRuleTables::GetDualClass+0x0
+00000001402ba0e5  mov      rsi, qword ptr [rsp + 0x40]
+00000001402ba0ea  lea      rcx, [rbp - 0x70]
+00000001402ba0ee  movzx    ebx, byte ptr [r14 + 0x8ea]
+00000001402ba0f6  or       ebx, dword ptr [r14 + 0xa0c]
+00000001402ba0fd  movzx    edi, word ptr [rsi + 0x79c]
+00000001402ba104  movzx    eax, word ptr [rsi + 0x79e]
+00000001402ba10b  shl      edi, 0x10
+00000001402ba10e  or       edi, eax
+00000001402ba110  call     0x14011dc20 ; CGameAnimationType::GetMoveScale+0x0
+00000001402ba115  movzx    edx, byte ptr [rsp + 0x48]
+00000001402ba11a  movzx    r9d, al
+00000001402ba11e  mov      eax, dword ptr [rsi + 0x568]
+00000001402ba124  xor      r15d, r15d
+00000001402ba127  mov      dword ptr [rsp + 0x30], edi
+00000001402ba12b  movzx    r8d, bl
+00000001402ba12f  mov      dword ptr [rsp + 0x28], eax
+00000001402ba133  mov      rcx, r14
+00000001402ba136  mov      dword ptr [rsp + 0x20], r15d
+00000001402ba13b  call     0x1402b1e60 ; CScreenCreateChar::CheckCompatibleEquipment+0x0
+00000001402ba140  test     eax, eax
+00000001402ba142  je       0x1402ba26e
+00000001402ba148  sub      eax, 1
+00000001402ba14b  je       0x1402ba1c7
+00000001402ba14d  sub      eax, 1
+00000001402ba150  je       0x1402ba180
+00000001402ba152  cmp      eax, 1
+00000001402ba155  jne      0x1402ba336
+00000001402ba15b  mov      rcx, r14
+00000001402ba15e  mov      dword ptr [r14 + 0x928], 9
+00000001402ba169  mov      dword ptr [r14 + 0x768], 0x17
+00000001402ba174  call     0x1402b89a0 ; CScreenCreateChar::OnDoneButtonClick+0x0
+00000001402ba179  mov      edx, 0xf0040a
+00000001402ba17e  jmp      0x1402ba1ea ; CScreenCreateChar::OnDoneButtonClick+0x184a
+00000001402ba180  mov      rcx, qword ptr [rip + 0x3ab2c9]
+00000001402ba187  lea      rdx, [rip + 0x2e7dca]
+00000001402ba18e  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402ba193  movsd    xmm1, qword ptr [rip + 0x2e9435]
+00000001402ba19b  mov      rcx, qword ptr [rip + 0x3ab2ae]
+00000001402ba1a2  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402ba1a7  mov      rcx, qword ptr [rip + 0x3ab2a2]
+00000001402ba1ae  xor      r9d, r9d
+00000001402ba1b1  xor      r8d, r8d
+00000001402ba1b4  mov      qword ptr [rsp + 0x20], r15
+00000001402ba1b9  lea      edx, [r9 + 1]
+00000001402ba1bd  call     0x1400d6510 ; lua_callk+0x0
+00000001402ba1c2  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba1c7  mov      rcx, r14
+00000001402ba1ca  mov      dword ptr [r14 + 0x928], 4
+00000001402ba1d5  mov      dword ptr [r14 + 0x768], 0x17
+00000001402ba1e0  call     0x1402b89a0 ; CScreenCreateChar::OnDoneButtonClick+0x0
+00000001402ba1e5  mov      edx, 0xf00384
+00000001402ba1ea  lea      rcx, [rip + 0x2e9227]
+00000001402ba1f1  call     0x1403ff830 ; va+0x0
+00000001402ba1f6  mov      rcx, qword ptr [rip + 0x3ab253]
+00000001402ba1fd  mov      rdx, rax
+00000001402ba200  call     0x1400d8b40 ; luaL_loadstring+0x0
+00000001402ba205  test     eax, eax
+00000001402ba207  jne      0x1402ba336
+00000001402ba20d  mov      rcx, qword ptr [rip + 0x3ab23c]
+00000001402ba214  lea      r8d, [rax - 1]
+00000001402ba218  mov      qword ptr [rsp + 0x28], r15
+00000001402ba21d  xor      r9d, r9d
+00000001402ba220  xor      edx, edx
+00000001402ba222  mov      dword ptr [rsp + 0x20], r15d
+00000001402ba227  call     0x1400d66b0 ; lua_pcallk+0x0
+00000001402ba22c  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba231  mov      edx, dword ptr [r14 + 0x928]
+00000001402ba238  mov      ecx, edx
+00000001402ba23a  sub      ecx, 2
+00000001402ba23d  je       0x1402ba2d7
+00000001402ba243  sub      ecx, 2
+00000001402ba246  je       0x1402ba262
+00000001402ba248  sub      ecx, 4
+00000001402ba24b  je       0x1402ba2d7
+00000001402ba251  cmp      ecx, 1
+00000001402ba254  je       0x1402ba262
+00000001402ba256  lea      rcx, [rip + 0x2e91cb]
+00000001402ba25d  jmp      0x1402ba331 ; CScreenCreateChar::OnDoneButtonClick+0x1991
+00000001402ba262  lea      rcx, [rip + 0x2d37b7]
+00000001402ba269  call     0x1403da410 ; uiPop+0x0
+00000001402ba26e  lea      rcx, [rip + 0x2d3863]
+00000001402ba275  call     0x1403da410 ; uiPop+0x0
+00000001402ba27a  mov      r8d, dword ptr [r14 + 0xa0c]
+00000001402ba281  mov      r9d, 1
+00000001402ba287  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba28c  mov      rcx, r14
+00000001402ba28f  call     0x1402ac250 ; CScreenCreateChar::RemoveAbilities+0x0
+00000001402ba294  movzx    r8d, byte ptr [r14 + 0xa0c]
+00000001402ba29c  mov      rcx, r14
+00000001402ba29f  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba2a4  call     0x1402b6cb0 ; CScreenCreateChar::MakeDualClass+0x0
+00000001402ba2a9  mov      rcx, qword ptr [rip + 0x3aadf0]
+00000001402ba2b0  xor      edx, edx
+00000001402ba2b2  mov      rcx, qword ptr [rcx + 0x10b0]
+00000001402ba2b9  call     0x1402ad240 ; CScreenCharacter::UpdateMainPanel+0x0
+00000001402ba2be  mov      rcx, qword ptr [rip + 0x3aaddb]
+00000001402ba2c5  mov      rax, qword ptr [rcx]
+00000001402ba2c8  mov      rdx, qword ptr [rcx + 0x10b0]
+00000001402ba2cf  call     qword ptr [rax + 0xf0]
+00000001402ba2d5  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba2d7  lea      rcx, [rip + 0x2d3742]
+00000001402ba2de  call     0x1403da410 ; uiPop+0x0
+00000001402ba2e3  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba2e8  mov      rcx, r14
+00000001402ba2eb  call     0x1402b68f0 ; CScreenCreateChar::LevelUp+0x0
+00000001402ba2f0  xor      r15d, r15d
+00000001402ba2f3  mov      byte ptr [r14 + 0x8e4], 1
+00000001402ba2fb  mov      dword ptr [r14 + 0x8e0], r15d
+00000001402ba302  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba307  mov      rcx, r14
+00000001402ba30a  call     0x1402c30a0 ; CScreenCreateChar::ShowNextSpellScreen+0x0
+00000001402ba30f  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba311  lea      rcx, [rip + 0x2d37d8]
+00000001402ba318  call     0x1403da410 ; uiPop+0x0
+00000001402ba31d  mov      dword ptr [r14 + 0x768], 0x1c
+00000001402ba328  jmp      0x1402ba336 ; CScreenCreateChar::OnDoneButtonClick+0x1996
+00000001402ba32a  lea      rcx, [rip + 0x2e9117]
+00000001402ba331  call     0x140447180 ; SDL_Log+0x0
+00000001402ba336  mov      rdx, qword ptr [rsp + 0x40]
+00000001402ba33b  mov      rcx, r14
+00000001402ba33e  call     0x1402c5c30 ; CScreenCreateChar::UpdateMainPanel+0x0
+00000001402ba343  lea      rcx, [rbp - 0x70]
+00000001402ba347  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba34c  mov      r15, qword ptr [rsp + 0xd90]
+00000001402ba354  mov      r12, qword ptr [rsp + 0xd98]
+00000001402ba35c  mov      rdi, qword ptr [rsp + 0xdd0]
+00000001402ba364  mov      rsi, qword ptr [rsp + 0xdc8]
+00000001402ba36c  lea      rcx, [rbp - 0x50]
+00000001402ba370  call     0x14040c8a0 ; CSound::~CSound+0x0
+00000001402ba375  lea      rcx, [rbp - 0x58]
+00000001402ba379  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba37e  lea      rcx, [rsp + 0x60]
+00000001402ba383  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba388  lea      rcx, [rsp + 0x50]
+00000001402ba38d  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba392  lea      rcx, [rsp + 0x58]
+00000001402ba397  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba39c  lea      rcx, [rsp + 0x68]
+00000001402ba3a1  call     0x1403fce00 ; CString::~CString+0x0
+00000001402ba3a6  mov      rcx, qword ptr [rbp + 0xc80]
+00000001402ba3ad  xor      rcx, rsp
+00000001402ba3b0  call     0x1404f67c0 ; __security_check_cookie+0x0
+00000001402ba3b5  add      rsp, 0xda0
+00000001402ba3bc  pop      r14
+00000001402ba3be  pop      rbx
+00000001402ba3bf  pop      rbp
+00000001402ba3c0  ret
+00000001402ba3c1  nop      dword ptr [rax]
+00000001402ba3c4  xor      byte ptr [rbx + rbp + 0x2b961c00], cl
+00000001402ba3cb  add      byte ptr [rip + 0x4a002b98], ah
+00000001402ba3d1  mov      word ptr [rbx], gs
+00000001402ba3d3  add      byte ptr [rsi - 0x74], ah
+00000001402ba3d6  sub      eax, dword ptr [rax]
+00000001402ba3d8  pop      rdi
+00000001402ba3d9  xchg     ebp, eax
+00000001402ba3da  sub      eax, dword ptr [rax]
+00000001402ba3dc  ret      0x2b8c
+00000001402ba3df  add      bl, ch
+00000001402ba3e1  mov      word ptr [rbx], gs
+00000001402ba3e3  add      byte ptr [rdi], al
+00000001402ba3e5  lea      ebp, [rbx]
+00000001402ba3e7  add      byte ptr [rax], dh
+00000001402ba3e9  lea      ebp, [rbx]
+00000001402ba3eb  add      byte ptr [rbx], dl
+00000001402ba3ed  nop
+00000001402ba3ee  sub      eax, dword ptr [rax]
+00000001402ba3f0  imul     ecx, dword ptr [rbp - 0x715effd5], 0x8fbf002b
+00000001402ba3fa  sub      eax, dword ptr [rax]
+00000001402ba3fc  outsd    dx, dword ptr [rsi]
+00000001402ba3fd  xchg     edx, eax
+00000001402ba3fe  sub      eax, dword ptr [rax]
+00000001402ba400  mov      bh, 0x8a
+00000001402ba402  sub      eax, dword ptr [rax]

@@ -1,0 +1,249 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::OnHLAButtonClick+0x0 [0x1402bad60, 0x1402baee0)
+00000001402bad60  mov      qword ptr [rsp + 0x18], rbx
+00000001402bad65  mov      qword ptr [rsp + 0x20], rsi
+00000001402bad6a  push     rdi
+00000001402bad6b  sub      rsp, 0x20
+00000001402bad6f  mov      edi, edx
+00000001402bad71  mov      rbx, rcx
+00000001402bad74  mov      ecx, dword ptr [rcx + 0x770]
+00000001402bad7a  lea      rdx, [rsp + 0x30]
+00000001402bad7f  mov      esi, r8d
+00000001402bad82  call     0x140276490 ; CGameObjectArray::GetDeny+0x0
+00000001402bad87  test     al, al
+00000001402bad89  jne      0x1402baecc
+00000001402bad8f  mov      rcx, qword ptr [rip + 0x3aa6ba]
+00000001402bad96  lea      rdx, [rip + 0x2e7e53]
+00000001402bad9d  mov      qword ptr [rsp + 0x38], rbp
+00000001402bada2  call     0x1400d5dd0 ; lua_getglobal+0x0
+00000001402bada7  mov      rcx, qword ptr [rip + 0x3aa6a2]
+00000001402badae  lea      r8, [rip + 0x2e7f9f]
+00000001402badb5  mov      edx, 0xffffffff
+00000001402badba  call     0x1400d5e90 ; lua_getfield+0x0
+00000001402badbf  mov      rcx, qword ptr [rip + 0x3aa68a]
+00000001402badc6  movd     xmm1, edi
+00000001402badca  cvtdq2pd xmm1, xmm1
+00000001402badce  call     0x1400d5a50 ; lua_pushnumber+0x0
+00000001402badd3  mov      rcx, qword ptr [rip + 0x3aa676]
+00000001402badda  mov      edx, 0xfffffffe
+00000001402baddf  call     0x1400d5e60 ; lua_gettable+0x0
+00000001402bade4  mov      rcx, qword ptr [rip + 0x3aa665]
+00000001402badeb  lea      r8, [rip + 0x2e7d9e]
+00000001402badf2  mov      edx, 0xffffffff
+00000001402badf7  call     0x1400d5e90 ; lua_getfield+0x0
+00000001402badfc  mov      rcx, qword ptr [rip + 0x3aa64d]
+00000001402bae03  xor      r8d, r8d
+00000001402bae06  lea      edx, [r8 - 1]
+00000001402bae0a  call     0x1400d58a0 ; lua_tolstring+0x0
+00000001402bae0f  mov      rcx, qword ptr [rip + 0x3aa63a]
+00000001402bae16  mov      edx, 0xfffffffe
+00000001402bae1b  call     0x1400d5310 ; lua_settop+0x0
+00000001402bae20  mov      rcx, qword ptr [rip + 0x3aa629]
+00000001402bae27  lea      r8, [rip + 0x34c58e]
+00000001402bae2e  mov      edx, 0xffffffff
+00000001402bae33  call     0x1400d5e90 ; lua_getfield+0x0
+00000001402bae38  mov      rcx, qword ptr [rip + 0x3aa611]
+00000001402bae3f  xor      r8d, r8d
+00000001402bae42  lea      edx, [r8 - 1]
+00000001402bae46  call     0x1400d5650 ; lua_tonumberx+0x0
+00000001402bae4b  mov      rcx, qword ptr [rip + 0x3aa5fe]
+00000001402bae52  mov      edx, 0xfffffffe
+00000001402bae57  cvttsd2si ebp, xmm0
+00000001402bae5b  call     0x1400d5310 ; lua_settop+0x0
+00000001402bae60  mov      rcx, qword ptr [rip + 0x3aa5e9]
+00000001402bae67  mov      edx, 0xfffffffe
+00000001402bae6c  call     0x1400d5310 ; lua_settop+0x0
+00000001402bae71  test     esi, esi
+00000001402bae73  jle      0x1402baea3
+00000001402bae75  mov      eax, dword ptr [rbx + 0x9dc]
+00000001402bae7b  test     eax, eax
+00000001402bae7d  jle      0x1402baea1
+00000001402bae7f  dec      eax
+00000001402bae81  dec      dil
+00000001402bae84  mov      dword ptr [rbx + 0x9dc], eax
+00000001402bae8a  movzx    eax, byte ptr [rbx + 0xa08]
+00000001402bae91  mov      byte ptr [rax + rbx + 0x9f0], dil
+00000001402bae99  inc      byte ptr [rbx + 0xa08]
+00000001402bae9f  jmp      0x1402baeba ; CScreenCreateChar::OnHLAButtonClick+0x15a
+00000001402baea1  test     esi, esi
+00000001402baea3  jns      0x1402baeba
+00000001402baea5  test     ebp, ebp
+00000001402baea7  jle      0x1402baeba
+00000001402baea9  inc      dword ptr [rbx + 0x9dc]
+00000001402baeaf  lea      edx, [rdi - 1]
+00000001402baeb2  mov      rcx, rbx
+00000001402baeb5  call     0x1402be400 ; CScreenCreateChar::RemoveSelectedAbility+0x0
+00000001402baeba  mov      rdx, qword ptr [rsp + 0x30]
+00000001402baebf  mov      rcx, rbx
+00000001402baec2  call     0x1402c4fd0 ; CScreenCreateChar::UpdateHighLevelAbilitiesPanel+0x0
+00000001402baec7  mov      rbp, qword ptr [rsp + 0x38]
+00000001402baecc  mov      rbx, qword ptr [rsp + 0x40]
+00000001402baed1  mov      rsi, qword ptr [rsp + 0x48]
+00000001402baed6  add      rsp, 0x20
+00000001402baeda  pop      rdi
+00000001402baedb  ret
+00000001402baedc  int3
+00000001402baedd  int3
+00000001402baede  int3
+00000001402baedf  int3
+
+CScreenCreateChar::CheckAbilityEnabled+0x0 [0x1402b1cf0, 0x1402b1e60)
+00000001402b1cf0  mov      qword ptr [rsp + 0x10], rbp
+00000001402b1cf5  mov      qword ptr [rsp + 0x18], rsi
+00000001402b1cfa  mov      qword ptr [rsp + 0x20], rdi
+00000001402b1cff  push     r14
+00000001402b1d01  sub      rsp, 0x20
+00000001402b1d05  movzx    eax, byte ptr [rcx + 0x9e0]
+00000001402b1d0c  mov      rsi, r8
+00000001402b1d0f  mov      rdi, rdx
+00000001402b1d12  mov      rbp, rcx
+00000001402b1d15  mov      r14d, 1
+00000001402b1d1b  cmp      eax, dword ptr [r8 + 0x18]
+00000001402b1d1f  jl       0x1402b1e4f
+00000001402b1d25  cmp      eax, dword ptr [r8 + 0x1c]
+00000001402b1d29  jg       0x1402b1e4f
+00000001402b1d2f  mov      rcx, qword ptr [r8 + 0x28]
+00000001402b1d33  lea      rdx, [rip + 0x34f27e]
+00000001402b1d3a  mov      qword ptr [rsp + 0x30], rbx
+00000001402b1d3f  call     0x140502d6c ; _mbscmp+0x0
+00000001402b1d44  test     eax, eax
+00000001402b1d46  je       0x1402b1d6b
+00000001402b1d48  lea      r8, [rsi + 0x28]
+00000001402b1d4c  mov      rdx, rdi
+00000001402b1d4f  mov      rcx, rbp
+00000001402b1d52  call     0x1402b06b0 ; CScreenCreateChar::AbilityExistsInEffectList+0x0
+00000001402b1d57  test     eax, eax
+00000001402b1d59  jne      0x1402b1d6b
+00000001402b1d5b  lea      rdx, [rsi + 0x28]
+00000001402b1d5f  mov      rcx, rbp
+00000001402b1d62  call     0x1402b43a0 ; CScreenCreateChar::ExistsInSelectedList+0x0
+00000001402b1d67  test     eax, eax
+00000001402b1d69  je       0x1402b1de5
+00000001402b1d6b  mov      rcx, qword ptr [rsi + 0x30]
+00000001402b1d6f  lea      rbx, [rsi + 0x30]
+00000001402b1d73  lea      rdx, [rip + 0x34f23e]
+00000001402b1d7a  call     0x140502d6c ; _mbscmp+0x0
+00000001402b1d7f  test     eax, eax
+00000001402b1d81  je       0x1402b1da4
+00000001402b1d83  mov      r8, rbx
+00000001402b1d86  mov      rdx, rdi
+00000001402b1d89  mov      rcx, rbp
+00000001402b1d8c  call     0x1402b06b0 ; CScreenCreateChar::AbilityExistsInEffectList+0x0
+00000001402b1d91  test     eax, eax
+00000001402b1d93  jne      0x1402b1de5
+00000001402b1d95  mov      rdx, rbx
+00000001402b1d98  mov      rcx, rbp
+00000001402b1d9b  call     0x1402b43a0 ; CScreenCreateChar::ExistsInSelectedList+0x0
+00000001402b1da0  test     eax, eax
+00000001402b1da2  jne      0x1402b1de5
+00000001402b1da4  mov      rcx, qword ptr [rsi + 0x38]
+00000001402b1da8  lea      rdx, [rip + 0x34f209]
+00000001402b1daf  call     0x140502d6c ; _mbscmp+0x0
+00000001402b1db4  test     eax, eax
+00000001402b1db6  je       0x1402b1e22
+00000001402b1db8  mov      rax, qword ptr [rdi]
+00000001402b1dbb  mov      rcx, rdi
+00000001402b1dbe  call     qword ptr [rax + 0x20]
+00000001402b1dc1  mov      rdx, qword ptr [rip + 0x3db588]
+00000001402b1dc8  mov      rcx, qword ptr [rsi + 0x38]
+00000001402b1dcc  movzx    ebx, byte ptr [rax + 0x17]
+00000001402b1dd0  call     0x140502d6c ; _mbscmp+0x0
+00000001402b1dd5  test     eax, eax
+00000001402b1dd7  jne      0x1402b1e02
+00000001402b1dd9  lea      eax, [rbx - 0x11]
+00000001402b1ddc  test     al, 0xcf
+00000001402b1dde  jne      0x1402b1e22
+00000001402b1de0  cmp      bl, 0x41
+00000001402b1de3  je       0x1402b1e22
+00000001402b1de5  xor      eax, eax
+00000001402b1de7  mov      rbx, qword ptr [rsp + 0x30]
+00000001402b1dec  mov      rbp, qword ptr [rsp + 0x38]
+00000001402b1df1  mov      rsi, qword ptr [rsp + 0x40]
+00000001402b1df6  mov      rdi, qword ptr [rsp + 0x48]
+00000001402b1dfb  add      rsp, 0x20
+00000001402b1dff  pop      r14
+00000001402b1e01  ret
+00000001402b1e02  mov      rdx, qword ptr [rip + 0x3db54f]
+00000001402b1e09  mov      rcx, qword ptr [rsi + 0x38]
+00000001402b1e0d  call     0x140502d6c ; _mbscmp+0x0
+00000001402b1e12  test     eax, eax
+00000001402b1e14  jne      0x1402b1e22
+00000001402b1e16  lea      eax, [rbx - 0x13]
+00000001402b1e19  test     al, 0xcf
+00000001402b1e1b  jne      0x1402b1e22
+00000001402b1e1d  cmp      bl, 0x43
+00000001402b1e20  jmp      0x1402b1de3 ; CScreenCreateChar::CheckAbilityEnabled+0xf3
+00000001402b1e22  lea      r8, [rsi + 0x10]
+00000001402b1e26  mov      rdx, rdi
+00000001402b1e29  mov      rcx, rbp
+00000001402b1e2c  call     0x1402b0610 ; CScreenCreateChar::AbilityCountInEffectList+0x0
+00000001402b1e31  lea      rdx, [rsi + 0x10]
+00000001402b1e35  mov      rcx, rbp
+00000001402b1e38  mov      edi, eax
+00000001402b1e3a  call     0x1402b3f50 ; CScreenCreateChar::CountInSelectedList+0x0
+00000001402b1e3f  add      edi, eax
+00000001402b1e41  xor      eax, eax
+00000001402b1e43  cmp      edi, dword ptr [rsi + 0x20]
+00000001402b1e46  cmovge   r14d, eax
+00000001402b1e4a  mov      eax, r14d
+00000001402b1e4d  jmp      0x1402b1de7 ; CScreenCreateChar::CheckAbilityEnabled+0xf7
+00000001402b1e4f  xor      eax, eax
+00000001402b1e51  jmp      0x1402b1dec ; CScreenCreateChar::CheckAbilityEnabled+0xfc
+00000001402b1e53  int3
+00000001402b1e54  int3
+00000001402b1e55  int3
+00000001402b1e56  int3
+00000001402b1e57  int3
+00000001402b1e58  int3
+00000001402b1e59  int3
+00000001402b1e5a  int3
+00000001402b1e5b  int3
+00000001402b1e5c  int3
+00000001402b1e5d  int3
+00000001402b1e5e  int3
+00000001402b1e5f  int3
+
+CScreenCreateChar::RemoveSelectedAbility+0x0 [0x1402be400, 0x1402be470)
+00000001402be400  movzx    r8d, byte ptr [rcx + 0xa08]
+00000001402be408  xor      eax, eax
+00000001402be40a  test     r8d, r8d
+00000001402be40d  je       0x1402be425
+00000001402be40f  lea      r9, [rcx + 0x9f0]
+00000001402be416  cmp      byte ptr [r9], dl
+00000001402be419  je       0x1402be425
+00000001402be41b  inc      eax
+00000001402be41d  inc      r9
+00000001402be420  cmp      eax, r8d
+00000001402be423  jl       0x1402be416
+00000001402be425  cmp      eax, r8d
+00000001402be428  je       0x1402be466
+00000001402be42a  lea      edx, [rax + 1]
+00000001402be42d  cmp      edx, r8d
+00000001402be430  jge      0x1402be45c
+00000001402be432  cdqe
+00000001402be434  lea      r8, [rcx + 0x9f0]
+00000001402be43b  add      r8, rax
+00000001402be43e  nop
+00000001402be440  movzx    eax, byte ptr [r8 + 1]
+00000001402be445  inc      edx
+00000001402be447  mov      byte ptr [r8], al
+00000001402be44a  inc      r8
+00000001402be44d  movzx    eax, byte ptr [rcx + 0xa08]
+00000001402be454  cmp      edx, eax
+00000001402be456  jl       0x1402be440
+00000001402be458  movzx    r8d, al
+00000001402be45c  dec      r8b
+00000001402be45f  mov      byte ptr [rcx + 0xa08], r8b
+00000001402be466  ret
+00000001402be467  int3
+00000001402be468  int3
+00000001402be469  int3
+00000001402be46a  int3
+00000001402be46b  int3
+00000001402be46c  int3
+00000001402be46d  int3
+00000001402be46e  int3
+00000001402be46f  int3

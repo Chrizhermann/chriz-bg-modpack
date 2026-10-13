@@ -74,7 +74,7 @@ function M.install(config)
     -- M_ scripts may be evaluated again when the UI is reloaded.
     if CBMID_State and CBMID_State.installed then return false end
     assert(EEex_Active, "Generic unidentified artwork requires EEex / InfinityLoader")
-    for _, name in ipairs({"EEex_TryLabel", "EEex_ReadU8", "EEex_Read32", "EEex_Write8",
+    for _, name in ipairs({"EEex_TryLabel", "EEex_ReadU8", "EEex_Read32", "EEex_WriteU8",
         "EEex_Malloc", "EEex_Free", "EEex_WriteLString", "EEex_HookBeforeCallWithLabels",
         "EEex_DisableCodeProtection", "EEex_EnableCodeProtection"}) do
         assert(type(_G[name]) == "function", "Required EEex API is missing: " .. name)
@@ -130,7 +130,7 @@ function M.install(config)
         -- Startup is synchronous. Restore all original call bytes before any
         -- game screen can execute a partially installed set of hooks.
         for _, hook in ipairs(hooks) do
-            for i = 1, 5 do EEex_Write8(hook.address + i - 1, hook.saved[i]) end
+            for i = 1, 5 do EEex_WriteU8(hook.address + i - 1, hook.saved[i]) end
         end
     end
     EEex_EnableCodeProtection()

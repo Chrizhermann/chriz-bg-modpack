@@ -1,0 +1,135 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CGameEffect::DecodeEffectFromBase+0x0 [0x1401e2d30, 0x1401e2de0)
+00000001401e2d30  mov      r11, rsp
+00000001401e2d33  mov      qword ptr [r11 + 0x10], rbx
+00000001401e2d37  push     rdi
+00000001401e2d38  sub      rsp, 0x80
+00000001401e2d3f  mov      rax, qword ptr [rip + 0x481c92]
+00000001401e2d46  xor      rax, rsp
+00000001401e2d49  mov      qword ptr [rsp + 0x70], rax
+00000001401e2d4e  xor      eax, eax
+00000001401e2d50  mov      qword ptr [r11 - 0x58], 0xffffffffffffffff
+00000001401e2d58  mov      qword ptr [r11 - 0x48], rax
+00000001401e2d5c  lea      r9, [r11 - 0x58]
+00000001401e2d60  mov      qword ptr [r11 - 0x40], rax
+00000001401e2d64  lea      rdx, [r11 - 0x50]
+00000001401e2d68  mov      qword ptr [r11 - 0x38], rax
+00000001401e2d6c  mov      rdi, rcx
+00000001401e2d6f  mov      qword ptr [r11 - 0x30], rax
+00000001401e2d73  mov      r8d, 0xffffffff
+00000001401e2d79  mov      qword ptr [r11 - 0x28], rax
+00000001401e2d7d  mov      qword ptr [r11 - 0x20], rax
+00000001401e2d81  movzx    eax, word ptr [rcx + 8]
+00000001401e2d85  lea      rcx, [r11 - 0x48]
+00000001401e2d89  mov      word ptr [rsp + 0x40], ax
+00000001401e2d8e  mov      qword ptr [r11 - 0x50], 0xffffffffffffffff
+00000001401e2d96  mov      dword ptr [rsp + 0x20], 0xffffffff
+00000001401e2d9e  call     0x1401de3d0 ; CGameEffect::DecodeEffect+0x0
+00000001401e2da3  mov      rdx, rdi
+00000001401e2da6  mov      rcx, rax
+00000001401e2da9  mov      rbx, rax
+00000001401e2dac  call     0x1401dcaf0 ; CGameEffect::CopyFromBase+0x0
+00000001401e2db1  mov      rax, rbx
+00000001401e2db4  mov      rcx, qword ptr [rsp + 0x70]
+00000001401e2db9  xor      rcx, rsp
+00000001401e2dbc  call     0x1404f77a0 ; __security_check_cookie+0x0
+00000001401e2dc1  mov      rbx, qword ptr [rsp + 0x98]
+00000001401e2dc9  add      rsp, 0x80
+00000001401e2dd0  pop      rdi
+00000001401e2dd1  ret
+00000001401e2dd2  int3
+00000001401e2dd3  int3
+00000001401e2dd4  int3
+00000001401e2dd5  int3
+00000001401e2dd6  int3
+00000001401e2dd7  int3
+00000001401e2dd8  int3
+00000001401e2dd9  int3
+00000001401e2dda  int3
+00000001401e2ddb  int3
+00000001401e2ddc  int3
+00000001401e2ddd  int3
+00000001401e2dde  int3
+00000001401e2ddf  int3
+
+CGameEffectList::Unmarshal+0x0 [0x1401e88e0, 0x1401e8a00)
+00000001401e88e0  mov      qword ptr [rsp + 0x10], rbx
+00000001401e88e5  mov      qword ptr [rsp + 0x18], rbp
+00000001401e88ea  push     rdi
+00000001401e88eb  push     r14
+00000001401e88ed  push     r15
+00000001401e88ef  sub      rsp, 0x40
+00000001401e88f3  xor      ebx, ebx
+00000001401e88f5  mov      r15, rcx
+00000001401e88f8  mov      rbp, r9
+00000001401e88fb  mov      r14, rdx
+00000001401e88fe  mov      ecx, r8d
+00000001401e8901  cmp      byte ptr [rsp + 0x80], bl
+00000001401e8908  jne      0x1401e899d
+00000001401e890e  movabs   rax, 0xaaaaaaaaaaaaaaab
+00000001401e8918  mul      rcx
+00000001401e891b  mov      rdi, rdx
+00000001401e891e  shr      rdi, 5
+00000001401e8922  test     edi, edi
+00000001401e8924  jle      0x1401e89e7
+00000001401e892a  mov      qword ptr [rsp + 0x60], rsi
+00000001401e892f  mov      qword ptr [rsp + 0x30], 0xffffffffffffffff
+00000001401e8938  mov      qword ptr [rsp + 0x38], 0xffffffffffffffff
+00000001401e8941  movsx    rax, bx
+00000001401e8945  lea      r9, [rsp + 0x30]
+00000001401e894a  mov      r8d, 0xffffffff
+00000001401e8950  mov      dword ptr [rsp + 0x20], 0xffffffff
+00000001401e8958  lea      rdx, [rsp + 0x38]
+00000001401e895d  lea      rcx, [rax + rax*2]
+00000001401e8961  shl      rcx, 4
+00000001401e8965  add      rcx, r14
+00000001401e8968  call     0x1401de3d0 ; CGameEffect::DecodeEffect+0x0
+00000001401e896d  mov      rdx, rax
+00000001401e8970  mov      rcx, r15
+00000001401e8973  mov      rsi, rax
+00000001401e8976  call     0x1404075c0 ; CObList::AddTail+0x0
+00000001401e897b  inc      bx
+00000001401e897e  dec      edi
+00000001401e8980  test     rbp, rbp
+00000001401e8983  je       0x1401e8992
+00000001401e8985  mov      r8, qword ptr [rsi]
+00000001401e8988  mov      rdx, rbp
+00000001401e898b  mov      rcx, rsi
+00000001401e898e  call     qword ptr [r8 + 0x30]
+00000001401e8992  test     edi, edi
+00000001401e8994  jg       0x1401e8941
+00000001401e8996  mov      rsi, qword ptr [rsp + 0x60]
+00000001401e899b  jmp      0x1401e89e7 ; CGameEffectList::Unmarshal+0x107
+00000001401e899d  movabs   rax, 0xf83e0f83e0f83e1
+00000001401e89a7  mul      rcx
+00000001401e89aa  mov      rdi, rdx
+00000001401e89ad  shr      rdi, 4
+00000001401e89b1  test     edi, edi
+00000001401e89b3  jle      0x1401e89e7
+00000001401e89b5  nop      word ptr [rax + rax]
+00000001401e89c0  movsx    rax, bx
+00000001401e89c4  imul     rcx, rax, 0x108
+00000001401e89cb  add      rcx, r14
+00000001401e89ce  call     0x1401e2d30 ; CGameEffect::DecodeEffectFromBase+0x0
+00000001401e89d3  mov      rdx, rax
+00000001401e89d6  mov      rcx, r15
+00000001401e89d9  call     0x1404075c0 ; CObList::AddTail+0x0
+00000001401e89de  inc      bx
+00000001401e89e1  dec      edi
+00000001401e89e3  test     edi, edi
+00000001401e89e5  jg       0x1401e89c0
+00000001401e89e7  mov      rbx, qword ptr [rsp + 0x68]
+00000001401e89ec  mov      rbp, qword ptr [rsp + 0x70]
+00000001401e89f1  add      rsp, 0x40
+00000001401e89f5  pop      r15
+00000001401e89f7  pop      r14
+00000001401e89f9  pop      rdi
+00000001401e89fa  ret
+00000001401e89fb  int3
+00000001401e89fc  int3
+00000001401e89fd  int3
+00000001401e89fe  int3
+00000001401e89ff  int3

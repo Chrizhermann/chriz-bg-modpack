@@ -1,0 +1,64 @@
+EXE: <BG2EE 2.6.6.0 install>\Baldur.exe
+SHA256: fc821a4806a0305b84fd85f1aad2bd472c8db642ed34b4494ae62351cae1c580
+ImageBase: 0x140000000
+
+CScreenCreateChar::OnMenuButtonClick+0x300 [0x1402bc970, 0x1402bcaa0)
+00000001402bc970  or       byte ptr [r8], r8b
+00000001402bc973  add      byte ptr [rax - 0x75], cl
+00000001402bc976  adc      dword ptr [rax + 0x39000010], 0x9684b0
+00000001402bc980  add      byte ptr [rdi], cl
+00000001402bc982  test     byte ptr [rdx], bh
+00000001402bc984  or       byte ptr [rax], al
+00000001402bc986  add      byte ptr [rax + 0x38], al
+00000001402bc989  mov      bl, 0xea
+00000001402bc98b  or       byte ptr [rax], al
+00000001402bc98d  add      byte ptr [rax + riz + 0x66], dh
+00000001402bc991  cmp      dword ptr [rbx + 0x8e6], esi
+00000001402bc997  je       0x1402bd1c1
+00000001402bc99d  movzx    eax, byte ptr [rip + 0x2cedce]
+00000001402bc9a4  cmp      byte ptr [rbx + 0x8f4], al
+00000001402bc9aa  jb       0x1402bd1c1
+00000001402bc9b0  lea      rcx, [rsp + 0x50]
+00000001402bc9b5  call     0x14014ea00 ; CDerivedStats::CDerivedStats+0x0
+00000001402bc9ba  mov      rdx, qword ptr [rsp + 0x20]
+00000001402bc9bf  lea      rcx, [rsp + 0x50]
+00000001402bc9c4  add      rdx, 0x1120
+00000001402bc9cb  call     0x14014f080 ; CDerivedStats::operator=+0x0
+00000001402bc9d0  mov      rcx, qword ptr [rsp + 0x20]
+00000001402bc9d5  lea      rdx, [rsp + 0x50]
+00000001402bc9da  mov      dword ptr [rbp - 0x6a], esi
+00000001402bc9dd  mov      word ptr [rbp - 0x66], si
+00000001402bc9e1  call     0x14036a370 ; CGameSprite::RemoveNewSpecialAbilities+0x0
+00000001402bc9e6  mov      rcx, qword ptr [rsp + 0x20]
+00000001402bc9eb  lea      rdx, [rsp + 0x50]
+00000001402bc9f0  mov      r8d, 1
+00000001402bc9f6  call     0x140347e90 ; CGameSprite::AddNewSpecialAbilities+0x0
+00000001402bc9fb  mov      rax, qword ptr [rip + 0x3a869e]
+00000001402bca02  mov      rdx, qword ptr [rsp + 0x20]
+00000001402bca07  mov      r8d, dword ptr [rip + 0x39db4e]
+00000001402bca0e  mov      rcx, qword ptr [rax + 0x1090]
+00000001402bca15  cmp      dword ptr [rcx + 0x9684], esi
+00000001402bca1b  mov      rcx, rbx
+00000001402bca1e  jne      0x1402bca27
+00000001402bca20  mov      r8d, dword ptr [rip + 0x39db29]
+00000001402bca27  call     0x1402bb530 ; CScreenCreateChar::OnLevelUp+0x0
+00000001402bca2c  mov      rdx, qword ptr [rsp + 0x20]
+00000001402bca31  mov      rcx, rbx
+00000001402bca34  mov      dword ptr [rbx + 0x768], 0x1c
+00000001402bca3e  call     0x1402bf260 ; CScreenCreateChar::ResetLevelUpPanel+0x0
+00000001402bca43  mov      rdx, qword ptr [rsp + 0x20]
+00000001402bca48  mov      r8d, 1
+00000001402bca4e  mov      rcx, rbx
+00000001402bca51  call     0x1402c7180 ; CScreenCreateChar::UpdateProficienciesPanel+0x0
+00000001402bca56  cmp      dword ptr [rip + 0x46bb03], 2
+00000001402bca5d  lea      rax, [rip + 0x2d0fbc]
+00000001402bca64  lea      rcx, [rip + 0x2d0fcd]
+00000001402bca6b  cmovne   rcx, rax
+00000001402bca6f  call     0x1403da620 ; uiPush+0x0
+00000001402bca74  lea      rcx, [rsp + 0x50]
+00000001402bca79  call     0x1401a3da0 ; CDerivedStats::~CDerivedStats+0x0
+00000001402bca7e  jmp      0x1402bd1c1 ; CScreenCreateChar::OnMenuButtonClick+0xb51
+00000001402bca83  lea      rdx, [rip + 0x2db7fe]
+00000001402bca8a  movaps   xmmword ptr [rsp + 0xd10], xmm6
+00000001402bca92  lea      rcx, [rsp + 0x28]
+00000001402bca97  call     0x1403fcd70 ; CString::CString+0x0

@@ -15,6 +15,7 @@ from lupa.lua51 import LuaRuntime
 
 from tests import test_evandra_sorcerer as evandra
 from tests import test_baeloth_spellbook as baeloth
+from tests import test_degrodel_fight as degrodel
 from tests import test_edwin_redwizard as edwin
 from tests import test_release_archive as release_archive
 from tests import test_unidentified_items_installer as unidentified
@@ -228,6 +229,24 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assertEqual("translated:UI_LABEL", lua.globals().legacy_ui_message)
             self.assert_restored(game, 640, before)
 
+
+    def test_660_extracted_degrodel_choice_installs_and_restores_dialog(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-degrodel-") as raw:
+            game = degrodel.make_game(
+                Path(raw), degrodel.make_dialog(stalker="STALKE_", interjections=True))
+            game.before = self.extract_release(game)
+            bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+            with patch.object(degrodel, "WEIDU", bundled):
+                degrodel.install(game)
+                degrodel.assert_choice(game, handin_state=4)
+                result, transcript = degrodel.run(game, uninstall=True)
+            self.assertEqual(0, result.returncode, transcript)
+            restored = self.game_files(game.root)
+            # WeiDU keeps appended dialog.tlk strings; everything else is restored.
+            restored.pop(degrodel.TLK_KEY)
+            expected = dict(game.before)
+            expected.pop(degrodel.TLK_KEY)
+            self.assertEqual(expected, restored)
 
 if __name__ == "__main__":
     unittest.main()

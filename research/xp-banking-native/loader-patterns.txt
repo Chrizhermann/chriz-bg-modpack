@@ -1,0 +1,6 @@
+; RESEARCH ONLY. Not installed or included by any TP2.
+; Validated against the two executable hashes recorded in the research note.
+; This creates a NEW label; stock EEex does not provide an XP-award callback.
+[CBMXPProbe::Opcode104Apply]
+Pattern=4C8BC14C8BCA8B492085C90F848700
+Operations=ADD 0

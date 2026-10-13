@@ -37,7 +37,15 @@ def runtime(request):
             if n >= 2147483648 then n = n - 4294967296 end
             return n
         end
-        EEex_Write8 = function(addr, val) calls.writes=calls.writes+1; memory[addr]=val end
+        EEex_WriteU8 = function(addr, val)
+            assert(val == math.floor(val) and val >= 0 and val <= 255, "arg #2 too large (max: 255)")
+            calls.writes=calls.writes+1; memory[addr]=val
+        end
+        -- InfinityLoader's EEex_Write8 is int8: code bytes above 127 are refused.
+        EEex_Write8 = function(addr, val)
+            assert(val == math.floor(val) and val >= -128 and val <= 127, "arg #2 too large (max: 127)")
+            calls.writes=calls.writes+1; memory[addr]=val % 256
+        end
         EEex_Malloc = function(size) calls.allocated=calls.allocated+1; allocationSize=size; return 0x300000 end
         EEex_Free = function(ptr) calls.freed=calls.freed+1 end
         EEex_WriteLString = function(ptr, val, size)

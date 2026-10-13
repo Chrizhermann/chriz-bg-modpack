@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "runtime": "lupa.lua51",
+      "cases": 16
+    },
+    {
+      "runtime": "lupa.luajit21",
+      "cases": 16
+    }
+  ],
+  "scope": "Detached controller/account/native boundary protocol only; no rendered UI or game mutation"
+}

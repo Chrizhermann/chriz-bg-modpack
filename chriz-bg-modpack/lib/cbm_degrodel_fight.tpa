@@ -1,0 +1,345 @@
+// Degrodel's Helm of Balduran hand-in becomes a choice:
+// - hand over the helm: the installed hand-in transition, unchanged apart from
+//   receiving reply text when it had none;
+// - refuse: Degrodel keeps nothing, pays nothing and stays. He turns hostile and
+//   summons the same servants the installed hand-in creates.
+//
+// The hand-in is located by meaning, not by state number or exact action text:
+// the one transition whose actions take HELM07 from the party (TakePartyItem*)
+// and leave the area (EscapeArea*). Action text is compared case- and
+// whitespace-insensitively, so recompiled dialogs and other mods' extra or
+// reordered actions are supported. Everything else in DEGROD.DLG, including
+// companion interjections on other states, is left alone.
+//
+// The component is skipped (ABORT: rolled back, nothing written, not logged as
+// installed) when the hand-in cannot be extended unambiguously: no hand-in, more
+// than one, a reply-less sibling transition on the hand-in state (for example a
+// companion interjection there, whose behavior adding replies would change), an
+// already-applied choice, or a structurally invalid DLG.
+
+// ---------------------------------------------------------------------------
+// Fight path. This is the single place that defines what refusing does.
+// A later difficulty layer should extend this function, or key creature and
+// area scripts on the CBMDegrodelFight global it sets (1 = fight started).
+//   servants: the installed hand-in's top-level CreateCreature* actions, verbatim
+//   journal:  its top-level EraseJournalEntry actions, verbatim
+// Each input action ends with a newline. No EscapeArea, item or gold action is
+// ever part of this path.
+// ---------------------------------------------------------------------------
+DEFINE_ACTION_FUNCTION cbm_degrodel_fight_actions
+  STR_VAR
+    servants = ~~
+    journal = ~~
+  RET
+    actions
+BEGIN
+  OUTER_TEXT_SPRINT actions ~%servants%%journal%SetGlobal("CBMDegrodelFight","GLOBAL",1)%LNL%Enemy()%LNL%~
+END
+
+// Split one DLG action string into top-level actions (parentheses balanced,
+// string literals respected) and keep the servant and journal actions.
+DEFINE_PATCH_FUNCTION cbm_degrodel_split_actions
+  STR_VAR
+    text = ~~
+  RET
+    ok
+    servants
+    journal
+    dropped
+    n_servants
+    n_journal
+BEGIN
+  SET ok = 1
+  TEXT_SPRINT servants ~~
+  TEXT_SPRINT journal ~~
+  TEXT_SPRINT dropped ~~
+  SET n_servants = 0
+  SET n_journal = 0
+  INNER_PATCH ~%text%~ BEGIN
+    SET depth = 0
+    SET in_string = 0
+    SET start = 0 - 1
+    SET open = 0 - 1
+    FOR (i = 0; i < BUFFER_LENGTH AND ok; ++i) BEGIN
+      READ_BYTE i c
+      PATCH_IF in_string BEGIN
+        PATCH_IF c = 34 BEGIN SET in_string = 0 END
+      END ELSE PATCH_IF c = 34 BEGIN
+        SET in_string = 1
+        PATCH_IF depth = 0 BEGIN SET ok = 0 END
+      END ELSE PATCH_IF c = 40 BEGIN
+        PATCH_IF start < 0 BEGIN SET ok = 0 END
+        PATCH_IF depth = 0 BEGIN SET open = i END
+        SET depth += 1
+      END ELSE PATCH_IF c = 41 BEGIN
+        SET depth -= 1
+        PATCH_IF depth < 0 BEGIN
+          SET ok = 0
+        END ELSE PATCH_IF depth = 0 BEGIN
+          READ_ASCII start action (i - start + 1)
+          READ_ASCII start name (open - start)
+          INNER_PATCH_SAVE key ~%name%~ BEGIN
+            REPLACE_TEXTUALLY ~[ %TAB%%MNL%%LNL%]~ ~~
+          END
+          TO_LOWER key
+          PATCH_IF (INDEX (CASE_INSENSITIVE EVALUATE_REGEXP ~^createcreature~ ~%key%~) = 0) BEGIN
+            TEXT_SPRINT servants ~%servants%%action%%LNL%~
+            SET n_servants += 1
+          END ELSE PATCH_IF (~%key%~ STR_EQ ~erasejournalentry~) BEGIN
+            TEXT_SPRINT journal ~%journal%%action%%LNL%~
+            SET n_journal += 1
+          END ELSE BEGIN
+            TEXT_SPRINT dropped ~%dropped% %name%~
+          END
+          SET start = 0 - 1
+        END
+      END ELSE PATCH_IF depth = 0 AND start < 0 AND c != 32 AND c != 9 AND c != 10 AND c != 13 BEGIN
+        SET start = i
+      END
+    END
+    PATCH_IF depth != 0 OR in_string OR start >= 0 BEGIN SET ok = 0 END
+  END
+END
+
+// Scan a DLG V1.0 buffer for the Helm of Balduran hand-in.
+// status: 0 found, 1 invalid DLG, 2 no hand-in, 3 several hand-ins,
+//         4 reply-less sibling on the hand-in state, 5 choice already present,
+//         6 hand-in actions cannot be split into actions
+DEFINE_PATCH_FUNCTION cbm_degrodel_scan
+  RET
+    status
+    reason
+    matches
+    match_states
+    state
+    transition
+    has_reply
+    trigger
+    servants
+    journal
+    dropped
+    n_servants
+    n_journal
+BEGIN
+  SET status = 0
+  TEXT_SPRINT reason ~~
+  SET matches = 0
+  TEXT_SPRINT match_states ~~
+  SET state = 0 - 1
+  SET transition = 0 - 1
+  SET has_reply = 0
+  TEXT_SPRINT trigger ~~
+  TEXT_SPRINT servants ~~
+  TEXT_SPRINT journal ~~
+  TEXT_SPRINT dropped ~~
+  SET n_servants = 0
+  SET n_journal = 0
+  SET already = 0
+  SET match_flags = 0
+  SET match_index = 0 - 1
+  SET match_first = 0
+  SET match_count = 0
+  TEXT_SPRINT match_text ~~
+
+  SET size = BUFFER_LENGTH
+  PATCH_IF size < 0x30 BEGIN
+    SET status = 1
+    TEXT_SPRINT reason ~the file is shorter than a DLG V1.0 header~
+  END ELSE BEGIN
+    READ_ASCII 0 signature (8)
+    PATCH_IF NOT (~%signature%~ STR_EQ ~DLG V1.0~) BEGIN
+      SET status = 1
+      TEXT_SPRINT reason ~the DLG V1.0 signature is missing~
+    END
+  END
+  PATCH_IF status = 0 BEGIN
+    READ_LONG 0x08 n_states
+    READ_LONG 0x0c off_states
+    READ_LONG 0x10 n_trans
+    READ_LONG 0x14 off_trans
+    READ_LONG 0x20 off_ttrig
+    READ_LONG 0x24 n_ttrig
+    READ_LONG 0x28 off_act
+    READ_LONG 0x2c n_act
+    PATCH_IF n_states < 0 OR off_states < 0 OR off_states + n_states * 0x10 > size
+        OR n_trans < 0 OR off_trans < 0 OR off_trans + n_trans * 0x20 > size
+        OR n_ttrig < 0 OR off_ttrig < 0 OR off_ttrig + n_ttrig * 8 > size
+        OR n_act < 0 OR off_act < 0 OR off_act + n_act * 8 > size BEGIN
+      SET status = 1
+      TEXT_SPRINT reason ~a state, transition, trigger or action table lies outside the file~
+    END
+  END
+  FOR (s = 0; s < n_states AND status = 0; ++s) BEGIN
+    READ_LONG off_states + s * 0x10 + 0x04 first
+    READ_LONG off_states + s * 0x10 + 0x08 count
+    PATCH_IF first < 0 OR count < 0 OR first + count > n_trans BEGIN
+      SET status = 1
+      TEXT_SPRINT reason ~state %s% points outside the transition table~
+    END
+    FOR (k = 0; k < count AND status = 0; ++k) BEGIN
+      SET t = first + k
+      READ_LONG off_trans + t * 0x20 flags
+      PATCH_IF (flags BAND 4) BEGIN
+        READ_LONG off_trans + t * 0x20 + 0x10 action_index
+        PATCH_IF action_index < 0 OR action_index >= n_act BEGIN
+          SET status = 1
+          TEXT_SPRINT reason ~transition %t% points outside the action table~
+        END ELSE BEGIN
+          READ_LONG off_act + action_index * 8 text_offset
+          READ_LONG off_act + action_index * 8 + 4 text_length
+          PATCH_IF text_offset < 0 OR text_length < 0 OR text_offset + text_length > size BEGIN
+            SET status = 1
+            TEXT_SPRINT reason ~action %action_index% lies outside the file~
+          END ELSE PATCH_IF text_length > 0 BEGIN
+            READ_ASCII text_offset text (text_length)
+            INNER_PATCH_SAVE plain ~%text%~ BEGIN
+              REPLACE_TEXTUALLY ~[ %TAB%%MNL%%LNL%]~ ~~
+            END
+            TO_LOWER plain
+            PATCH_IF (INDEX (CASE_INSENSITIVE EXACT_MATCH ~"cbmdegrodelfight"~ ~%plain%~) >= 0) BEGIN
+              SET already = 1
+            END
+            PATCH_IF (INDEX (CASE_INSENSITIVE EVALUATE_REGEXP ~takepartyitem[a-z]*("helm07"~ ~%plain%~) >= 0)
+                AND (INDEX (CASE_INSENSITIVE EVALUATE_REGEXP ~escapearea[a-z]*(~ ~%plain%~) >= 0) BEGIN
+              SET matches += 1
+              TEXT_SPRINT match_states ~%match_states% %s%~
+              SET state = s
+              SET transition = k
+              SET match_flags = flags
+              SET match_index = t
+              SET match_first = first
+              SET match_count = count
+              TEXT_SPRINT match_text ~%text%~
+            END
+          END
+        END
+      END
+    END
+  END
+
+  PATCH_IF status = 0 AND already BEGIN
+    SET status = 5
+  END ELSE PATCH_IF status = 0 AND matches = 0 BEGIN
+    SET status = 2
+  END ELSE PATCH_IF status = 0 AND matches > 1 BEGIN
+    SET status = 3
+  END
+  // Adding replies to a state whose other transitions are reply-less
+  // continuations would change what those transitions do.
+  FOR (k = 0; k < match_count AND status = 0; ++k) BEGIN
+    PATCH_IF (match_first + k) != match_index BEGIN
+      READ_LONG off_trans + (match_first + k) * 0x20 sibling_flags
+      PATCH_IF NOT (sibling_flags BAND 1) BEGIN
+        SET status = 4
+      END
+    END
+  END
+  PATCH_IF status = 0 BEGIN
+    SET has_reply = (match_flags BAND 1) ? 1 : 0
+    PATCH_IF (match_flags BAND 2) BEGIN
+      READ_LONG off_trans + match_index * 0x20 + 0x0c trigger_index
+      PATCH_IF trigger_index < 0 OR trigger_index >= n_ttrig BEGIN
+        SET status = 1
+        TEXT_SPRINT reason ~the hand-in transition points outside the trigger table~
+      END ELSE BEGIN
+        READ_LONG off_ttrig + trigger_index * 8 trigger_offset
+        READ_LONG off_ttrig + trigger_index * 8 + 4 trigger_length
+        PATCH_IF trigger_offset < 0 OR trigger_length < 0 OR trigger_offset + trigger_length > size BEGIN
+          SET status = 1
+          TEXT_SPRINT reason ~the hand-in trigger lies outside the file~
+        END ELSE PATCH_IF trigger_length > 0 BEGIN
+          READ_ASCII trigger_offset trigger (trigger_length)
+        END
+      END
+    END
+  END
+  PATCH_IF status = 0 BEGIN
+    LPF cbm_degrodel_split_actions STR_VAR text = EVAL ~%match_text%~
+      RET split_ok = ok servants journal dropped n_servants n_journal END
+    PATCH_IF NOT split_ok BEGIN
+      SET status = 6
+    END
+  END
+END
+
+// Read-only scan of the effective dialog.
+COPY_EXISTING ~DEGROD.DLG~ ~override~
+  LPF cbm_degrodel_scan
+    RET
+      cbm_dgf_status = status
+      cbm_dgf_reason = reason
+      cbm_dgf_matches = matches
+      cbm_dgf_match_states = match_states
+      cbm_dgf_state = state
+      cbm_dgf_transition = transition
+      cbm_dgf_has_reply = has_reply
+      cbm_dgf_trigger = trigger
+      cbm_dgf_servants = servants
+      cbm_dgf_journal = journal
+      cbm_dgf_dropped = dropped
+      cbm_dgf_n_servants = n_servants
+      cbm_dgf_n_journal = n_journal
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+ACTION_IF cbm_dgf_status = 1 BEGIN ABORT @1666 END
+ACTION_IF cbm_dgf_status = 2 BEGIN ABORT @1667 END
+ACTION_IF cbm_dgf_status = 3 BEGIN ABORT @1668 END
+ACTION_IF cbm_dgf_status = 4 BEGIN ABORT @1669 END
+ACTION_IF cbm_dgf_status = 5 BEGIN ABORT @1670 END
+ACTION_IF cbm_dgf_status = 6 BEGIN ABORT @1671 END
+ACTION_IF cbm_dgf_status != 0 BEGIN
+  FAIL ~cbm_degrodel_fight: unexpected scan status %cbm_dgf_status%.~
+END
+
+LAF cbm_degrodel_fight_actions
+  STR_VAR
+    servants = EVAL ~%cbm_dgf_servants%~
+    journal = EVAL ~%cbm_dgf_journal%~
+  RET
+    cbm_dgf_fight_actions = actions
+END
+
+OUTER_SET cbm_dgf_reply_hand = RESOLVE_STR_REF (@1662)
+OUTER_SET cbm_dgf_reply_refuse = RESOLVE_STR_REF (@1663)
+OUTER_SET cbm_dgf_say = RESOLVE_STR_REF (@1664)
+OUTER_SET cbm_dgf_journal_ref = RESOLVE_STR_REF (@1665)
+
+// A hand-in that already has reply text keeps it; a reply-less one gets the
+// hand-over line so that both choices are player replies.
+ACTION_IF cbm_dgf_has_reply BEGIN
+  OUTER_TEXT_SPRINT cbm_dgf_alter ~~
+END ELSE BEGIN
+  OUTER_TEXT_SPRINT cbm_dgf_alter "ALTER_TRANS ~DEGROD~ BEGIN %cbm_dgf_state% END BEGIN %cbm_dgf_transition% END BEGIN ~REPLY~ ~#%cbm_dgf_reply_hand%~ END"
+END
+// The refusal is offered exactly when the hand-in is.
+ACTION_IF ~%cbm_dgf_trigger%~ STR_EQ ~~ BEGIN
+  OUTER_TEXT_SPRINT cbm_dgf_trigger_clause "~~"
+END ELSE BEGIN
+  OUTER_TEXT_SPRINT cbm_dgf_trigger_clause "~~~~~%cbm_dgf_trigger%~~~~~"
+END
+
+<<<<<<<< .../cbm_degrodel_fight.d
+%cbm_dgf_alter%
+EXTEND_BOTTOM ~DEGROD~ %cbm_dgf_state%
+  IF %cbm_dgf_trigger_clause% THEN REPLY #%cbm_dgf_reply_refuse% GOTO cbm_degrodel_refused
+END
+APPEND ~DEGROD~
+  IF ~~ THEN BEGIN cbm_degrodel_refused
+    SAY #%cbm_dgf_say%
+    IF ~~ THEN DO ~~~~~%cbm_dgf_fight_actions%~~~~~ SOLVED_JOURNAL #%cbm_dgf_journal_ref% EXIT
+  END
+END
+>>>>>>>>
+
+COMPILE EVALUATE_BUFFER ~.../cbm_degrodel_fight.d~
+
+// Verify the written dialog: exactly one hand-in remains and the choice exists.
+COPY_EXISTING ~DEGROD.DLG~ ~override~
+  LPF cbm_degrodel_scan RET cbm_dgf_check = status cbm_dgf_check_matches = matches END
+BUT_ONLY_IF_IT_CHANGES
+ACTION_IF cbm_dgf_check != 5 OR cbm_dgf_check_matches != 1 BEGIN
+  FAIL ~cbm_degrodel_fight: the compiled DEGROD.DLG did not verify (status %cbm_dgf_check%, %cbm_dgf_check_matches% hand-ins). The component was rolled back.~
+END
+
+PRINT @1672

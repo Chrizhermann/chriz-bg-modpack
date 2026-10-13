@@ -1,0 +1,274 @@
+EXE: %USERPROFILE%\CEBG-Tests\Combined-20260908\game\Baldur.exe
+SHA256: b51093a49140b2b8a7c046b4652bb8e535be24ebbc12b1d735e0b94217a14d57
+ImageBase: 0x140000000
+
+CAIObjectType::IsUsableSubClass+0x0 [0x14011e090, 0x14011e300)
+000000014011e090  mov      qword ptr [rsp + 0x10], rbx
+000000014011e095  push     rsi
+000000014011e096  push     rdi
+000000014011e097  push     r14
+000000014011e099  sub      rsp, 0x30
+000000014011e09d  movzx    edi, dl
+000000014011e0a0  lea      r8, [rsp + 0x68]
+000000014011e0a5  lea      rdx, [rsp + 0x50]
+000000014011e0aa  mov      rsi, rcx
+000000014011e0ad  xor      ebx, ebx
+000000014011e0af  call     0x14011d9d0 ; CAIObjectType::GetActiveInactiveClasses+0x0
+000000014011e0b4  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e0b8  cmp      byte ptr [rsp + 0x50], dl
+000000014011e0bc  je       0x14011e16b
+000000014011e0c2  mov      ecx, dword ptr [rsi + 0xc]
+000000014011e0c5  cmp      ecx, -1
+000000014011e0c8  je       0x14011e291
+000000014011e0ce  lea      rdx, [rsp + 0x20]
+000000014011e0d3  call     0x140276700 ; CGameObjectArray::GetDeny+0x0
+000000014011e0d8  test     al, al
+000000014011e0da  jne      0x14011e291
+000000014011e0e0  mov      rax, qword ptr [rsp + 0x20]
+000000014011e0e5  lea      rcx, [rax + 0x1120]
+000000014011e0ec  cmp      dword ptr [rax + 0x4ea4], ebx
+000000014011e0f2  jne      0x14011e0fb
+000000014011e0f4  lea      rcx, [rax + 0x1dc8]
+000000014011e0fb  movzx    r8d, byte ptr [rsp + 0x50]
+000000014011e101  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e105  call     0x140152c40 ; CDerivedStats::GetLevel+0x0
+000000014011e10a  movzx    r14d, al
+000000014011e10e  mov      rax, qword ptr [rsp + 0x20]
+000000014011e113  lea      rcx, [rax + 0x1120]
+000000014011e11a  cmp      dword ptr [rax + 0x4ea4], ebx
+000000014011e120  jne      0x14011e129
+000000014011e122  lea      rcx, [rax + 0x1dc8]
+000000014011e129  movzx    r8d, byte ptr [rsp + 0x68]
+000000014011e12f  movzx    edx, byte ptr [rsi + 0xb]
+000000014011e133  call     0x140152c40 ; CDerivedStats::GetLevel+0x0
+000000014011e138  movzx    eax, al
+000000014011e13b  cmp      dil, byte ptr [rsp + 0x50]
+000000014011e140  je       0x14011e1b5
+000000014011e142  cmp      dil, byte ptr [rsp + 0x68]
+000000014011e147  jne      0x14011e291
+000000014011e14d  cmp      r14d, eax
+000000014011e150  jbe      0x14011e291
+000000014011e156  mov      ebx, 1
+000000014011e15b  mov      eax, ebx
+000000014011e15d  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e162  add      rsp, 0x30
+000000014011e166  pop      r14
+000000014011e168  pop      rdi
+000000014011e169  pop      rsi
+000000014011e16a  ret
+000000014011e16b  movzx    eax, dl
+000000014011e16e  dec      eax
+000000014011e170  cmp      eax, 0x14
+000000014011e173  ja       0x14011e291
+000000014011e179  lea      r8, [rip - 0x11e180]
+000000014011e180  cdqe
+000000014011e182  mov      ecx, dword ptr [r8 + rax*4 + 0x11e2a4]
+000000014011e18a  add      rcx, r8
+000000014011e18d  jmp      rcx
+000000014011e18f  cmp      dil, dl
+000000014011e192  sete     bl
+000000014011e195  mov      eax, ebx
+000000014011e197  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e19c  add      rsp, 0x30
+000000014011e1a0  pop      r14
+000000014011e1a2  pop      rdi
+000000014011e1a3  pop      rsi
+000000014011e1a4  ret
+000000014011e1a5  cmp      dil, 1
+000000014011e1a9  je       0x14011e1b5
+000000014011e1ab  cmp      dil, 4
+000000014011e1af  jne      0x14011e291
+000000014011e1b5  mov      ebx, 1
+000000014011e1ba  mov      eax, ebx
+000000014011e1bc  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e1c1  add      rsp, 0x30
+000000014011e1c5  pop      r14
+000000014011e1c7  pop      rdi
+000000014011e1c8  pop      rsi
+000000014011e1c9  ret
+000000014011e1ca  dec      dil
+000000014011e1cd  test     dil, 0xfd
+000000014011e1d1  sete     bl
+000000014011e1d4  mov      eax, ebx
+000000014011e1d6  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e1db  add      rsp, 0x30
+000000014011e1df  pop      r14
+000000014011e1e1  pop      rdi
+000000014011e1e2  pop      rsi
+000000014011e1e3  ret
+000000014011e1e4  sub      dil, 3
+000000014011e1e8  cmp      dil, 1
+000000014011e1ec  jmp      0x14011e28e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e1f1  sub      dil, 2
+000000014011e1f5  test     dil, 0xfd
+000000014011e1f9  sete     bl
+000000014011e1fc  mov      eax, ebx
+000000014011e1fe  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e203  add      rsp, 0x30
+000000014011e207  pop      r14
+000000014011e209  pop      rdi
+000000014011e20a  pop      rsi
+000000014011e20b  ret
+000000014011e20c  sub      dil, 2
+000000014011e210  cmp      dil, 1
+000000014011e214  jmp      0x14011e28e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e216  cmp      dil, 2
+000000014011e21a  je       0x14011e1b5
+000000014011e21c  cmp      dil, 0xb
+000000014011e220  jne      0x14011e291
+000000014011e222  mov      ebx, 1
+000000014011e227  mov      eax, ebx
+000000014011e229  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e22e  add      rsp, 0x30
+000000014011e232  pop      r14
+000000014011e234  pop      rdi
+000000014011e235  pop      rsi
+000000014011e236  ret
+000000014011e237  cmp      dil, 3
+000000014011e23b  je       0x14011e1b5
+000000014011e241  cmp      dil, 0xc
+000000014011e245  jne      0x14011e291
+000000014011e247  mov      ebx, 1
+000000014011e24c  mov      eax, ebx
+000000014011e24e  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e253  add      rsp, 0x30
+000000014011e257  pop      r14
+000000014011e259  pop      rdi
+000000014011e25a  pop      rsi
+000000014011e25b  ret
+000000014011e25c  dec      dil
+000000014011e25f  cmp      dil, 1
+000000014011e263  jmp      0x14011e28e ; CAIObjectType::IsUsableSubClass+0x1fe
+000000014011e265  lea      eax, [rdi - 1]
+000000014011e268  test     al, 0xfc
+000000014011e26a  jne      0x14011e291
+000000014011e26c  cmp      dil, 3
+000000014011e270  je       0x14011e291
+000000014011e272  mov      ebx, 1
+000000014011e277  mov      eax, ebx
+000000014011e279  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e27e  add      rsp, 0x30
+000000014011e282  pop      r14
+000000014011e284  pop      rdi
+000000014011e285  pop      rsi
+000000014011e286  ret
+000000014011e287  dec      dil
+000000014011e28a  cmp      dil, 2
+000000014011e28e  setbe    bl
+000000014011e291  mov      eax, ebx
+000000014011e293  mov      rbx, qword ptr [rsp + 0x58]
+000000014011e298  add      rsp, 0x30
+000000014011e29c  pop      r14
+000000014011e29e  pop      rdi
+000000014011e29f  pop      rsi
+000000014011e2a0  ret
+000000014011e2a1  nop      dword ptr [rax]
+
+CScreenWizSpell::CanCastMageSpells+0x0 [0x1402e8650, 0x1402e86c0)
+00000001402e8650  push     rbx
+00000001402e8652  sub      rsp, 0x20
+00000001402e8656  lea      rbx, [rdx + 0x4b68]
+00000001402e865d  mov      r8d, 1
+00000001402e8663  movzx    edx, byte ptr [rip + 0x2a48b0]
+00000001402e866a  mov      rcx, rbx
+00000001402e866d  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402e8672  test     eax, eax
+00000001402e8674  jne      0x1402e86aa
+00000001402e8676  movzx    edx, byte ptr [rip + 0x2a48af]
+00000001402e867d  lea      r8d, [rax + 1]
+00000001402e8681  mov      rcx, rbx
+00000001402e8684  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402e8689  test     eax, eax
+00000001402e868b  jne      0x1402e86aa
+00000001402e868d  movzx    edx, byte ptr [rip + 0x2a488a]
+00000001402e8694  lea      r8d, [rax + 1]
+00000001402e8698  mov      rcx, rbx
+00000001402e869b  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402e86a0  test     eax, eax
+00000001402e86a2  jne      0x1402e86aa
+00000001402e86a4  add      rsp, 0x20
+00000001402e86a8  pop      rbx
+00000001402e86a9  ret
+00000001402e86aa  mov      eax, 1
+00000001402e86af  add      rsp, 0x20
+00000001402e86b3  pop      rbx
+00000001402e86b4  ret
+00000001402e86b5  int3
+00000001402e86b6  int3
+00000001402e86b7  int3
+00000001402e86b8  int3
+00000001402e86b9  int3
+00000001402e86ba  int3
+00000001402e86bb  int3
+00000001402e86bc  int3
+00000001402e86bd  int3
+00000001402e86be  int3
+00000001402e86bf  int3
+
+CScreenPriestSpell::CanCastPriestSpells+0x0 [0x1402dc1a0, 0x1402dc280)
+00000001402dc1a0  mov      qword ptr [rsp + 8], rbx
+00000001402dc1a5  mov      qword ptr [rsp + 0x10], rbp
+00000001402dc1aa  mov      qword ptr [rsp + 0x18], rsi
+00000001402dc1af  push     rdi
+00000001402dc1b0  sub      rsp, 0x20
+00000001402dc1b4  mov      rbp, rdx
+00000001402dc1b7  mov      ebx, 1
+00000001402dc1bc  movzx    edx, byte ptr [rip + 0x2b0d59]
+00000001402dc1c3  mov      r8d, ebx
+00000001402dc1c6  lea      rcx, [rbp + 0x4b68]
+00000001402dc1cd  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402dc1d2  xor      edi, edi
+00000001402dc1d4  test     eax, eax
+00000001402dc1d6  jne      0x1402dc24e
+00000001402dc1d8  movzx    edx, byte ptr [rip + 0x2b0d45]
+00000001402dc1df  lea      rcx, [rbp + 0x4b68]
+00000001402dc1e6  mov      r8d, ebx
+00000001402dc1e9  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402dc1ee  test     eax, eax
+00000001402dc1f0  jne      0x1402dc24e
+00000001402dc1f2  movzx    edx, byte ptr [rip + 0x2b0d35]
+00000001402dc1f9  lea      rcx, [rbp + 0x4b68]
+00000001402dc200  mov      r8d, ebx
+00000001402dc203  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402dc208  test     eax, eax
+00000001402dc20a  jne      0x1402dc24e
+00000001402dc20c  movzx    edx, byte ptr [rip + 0x2b0d0c]
+00000001402dc213  lea      rcx, [rbp + 0x4b68]
+00000001402dc21a  mov      r8d, ebx
+00000001402dc21d  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402dc222  test     eax, eax
+00000001402dc224  je       0x1402dc232
+00000001402dc226  mov      rcx, rbp
+00000001402dc229  call     0x14039cf10 ; CGameSprite::GetKitMask+0x0
+00000001402dc22e  test     al, 0x10
+00000001402dc230  je       0x1402dc24e
+00000001402dc232  movzx    edx, byte ptr [rip + 0x2b0cec]
+00000001402dc239  lea      rcx, [rbp + 0x4b68]
+00000001402dc240  mov      r8d, ebx
+00000001402dc243  call     0x14011e090 ; CAIObjectType::IsUsableSubClass+0x0
+00000001402dc248  test     eax, eax
+00000001402dc24a  jne      0x1402dc24e
+00000001402dc24c  mov      ebx, edi
+00000001402dc24e  test     dword ptr [rbp + 0x568], 0x600
+00000001402dc258  mov      rbp, qword ptr [rsp + 0x38]
+00000001402dc25d  mov      rsi, qword ptr [rsp + 0x40]
+00000001402dc262  cmove    edi, ebx
+00000001402dc265  mov      rbx, qword ptr [rsp + 0x30]
+00000001402dc26a  mov      eax, edi
+00000001402dc26c  add      rsp, 0x20
+00000001402dc270  pop      rdi
+00000001402dc271  ret
+00000001402dc272  int3
+00000001402dc273  int3
+00000001402dc274  int3
+00000001402dc275  int3
+00000001402dc276  int3
+00000001402dc277  int3
+00000001402dc278  int3
+00000001402dc279  int3
+00000001402dc27a  int3
+00000001402dc27b  int3
+00000001402dc27c  int3
+00000001402dc27d  int3
+00000001402dc27e  int3
+00000001402dc27f  int3

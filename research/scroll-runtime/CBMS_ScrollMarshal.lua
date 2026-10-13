@@ -1,0 +1,91 @@
+-- Actor envelope adapter. The startup transaction attaches its native runtime.
+-- No numbers represent UUIDs, runtime addresses or origin IDs in this format.
+local handlerName, stateKey = "CBM_SCROLL_CONTEXT", "CBMS_ScrollMarshal"
+
+local function state(sprite)
+    local aux = EEex_GetUDAux(sprite)
+    local value = aux[stateKey]
+    if not value then value = {}; aux[stateKey] = value end
+    return value, aux
+end
+
+local function reject(value, reason)
+    value.error = reason
+    CBMS_NativeRejectEnvelope(reason) -- native latch survives EEex TryIgnore
+end
+
+local function importer(sprite, envelope)
+    local value = state(sprite)
+    if value.raw ~= nil then
+        -- Preserve both conflicting envelopes in memory for recovery. An
+        -- operation with this fault must be cancelled, never exported as valid.
+        value.conflicts = value.conflicts or {value.raw}
+        value.conflicts[#value.conflicts + 1] = envelope
+        reject(value, "duplicate scroll actor envelope; cancel this load")
+        return
+    end
+    value.raw = envelope -- retain before parsing or calling the native bridge
+    if type(envelope) ~= "table" or envelope.schema ~= 1 or type(envelope.payload) ~= "string" then
+        reject(value, "unknown scroll actor envelope schema; retained unchanged")
+        return
+    end
+    -- Unknown fields may belong to a newer implementation. Do not normalize
+    -- them away by claiming this complete envelope belongs to schema1.
+    for key in pairs(envelope) do
+        if key ~= "schema" and key ~= "payload" then
+            reject(value, "unknown scroll actor envelope fields; retained unchanged")
+            return
+        end
+    end
+    if not CBMS_NativeHealthy() then
+        value.error = "scroll native bridge unavailable; retained unchanged"
+        return
+    end
+    local ok, reason = CBMS_NativeStage(sprite, envelope.payload)
+    if not ok then reject(value, reason or "native scroll actor envelope rejected") end
+end
+
+local function exporter(sprite)
+    local value, aux = state(sprite)
+    local fallback = aux.EEex_Sprite_FallbackMarshalStorage
+    if fallback and fallback[handlerName] ~= nil then
+        -- EEex appends fallback storage separately. Returning it here too
+        -- duplicates the handler. Late activation cannot infer decoded pairs.
+        reject(value, "scroll envelope loaded before handler; retain fallback and reload with native decoder")
+        return nil
+    end
+    if value.raw ~= nil then return value.raw end
+    if not CBMS_NativeHealthy() then return nil end
+    local payload, reason = CBMS_NativeExport(sprite)
+    if payload == nil then
+        reject(value, reason or "native scroll envelope export failed")
+        return nil
+    end
+    if payload == "" then return nil end -- ordinary actor, no owned effects
+    return {schema = 1, payload = payload}
+end
+
+EEex_Sprite_AddMarshalHandlers(handlerName, exporter, importer)
+-- Independent DLL route: EEex has updated both UUID local fields before this
+-- function. Bind before its earlier callbacks/listeners can dispatch spells.
+-- Installing after load is insufficient; reload is required for saved pairs.
+local previousLoaded = EEex_Sprite_LuaHook_OnAfterEffectListUnmarshalled
+if type(previousLoaded) == "function" then
+    EEex_Sprite_LuaHook_OnAfterEffectListUnmarshalled = function(sprite)
+        if CBMS_NativeHealthy() then
+            local variable = sprite.m_pLocalVariables:find("EEEX_UUID")
+            if variable then
+                CBMS_NativeActorUUID(sprite, variable.m_intValue, variable.m_dWValue)
+            else
+                CBMS_NativeRejectEnvelope("EEex actor UUID local missing after native registration")
+            end
+        end
+        return previousLoaded(sprite)
+    end
+end
+EEex_Sprite_AddLoadedListener(function(sprite)
+    local value = state(sprite)
+    if not value.error and CBMS_NativeImportFinished(sprite) then
+        value.raw = nil -- native association committed before loaded listeners
+    end
+end)

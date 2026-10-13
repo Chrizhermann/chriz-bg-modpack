@@ -1,0 +1,12 @@
+[
+  {
+    "runtime": "Lua5.1",
+    "scenarios": 15,
+    "passed": true
+  },
+  {
+    "runtime": "LuaJIT2.1",
+    "scenarios": 15,
+    "passed": true
+  }
+]
