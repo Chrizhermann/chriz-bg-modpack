@@ -102,6 +102,26 @@ def test_sync_rejects_changed_binary_before_writing_package(tmp_path):
     assert not (root / package.PACKAGE).exists()
 
 
+def test_sync_writes_its_manifest_with_repository_line_endings(tmp_path):
+    bundle, root = tmp_path / "bundle", tmp_path / "repo"
+    bundle.mkdir()
+    selected = {}
+    for name in package.NATIVE:
+        (bundle / name).write_bytes(b"native fixture")
+        selected[name] = package.digest(b"native fixture")
+    for name in ("bank_notice.lua", "bank_record.lua"):
+        selected[f"xp-banking-native/{name}"] = "source"
+        source = root / "research/xp-banking-native" / name
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_bytes(b"-- fixture\r\nreturn true\n")
+    (root / "research/xp-banking-native/bank_recruitment_patch.tpa").write_bytes(b"// fixture\n")
+    (bundle / "research-build.json").write_text(json.dumps({"researchOnly": True, "files": selected}))
+    package.sync(bundle, root)
+    written = (root / package.PACKAGE / "package-manifest.json").read_bytes()
+    assert b"\r\n" not in written and written.endswith(b"}\n")
+    assert b"\r\n" not in (root / package.PACKAGE / "runtime/xp-banking-native/bank_notice.lua").read_bytes()
+
+
 def test_text_mirrors_use_stable_repository_line_endings(tmp_path):
     source = tmp_path / "source.lua"
     source.write_bytes(b"line one\r\nline two\n")

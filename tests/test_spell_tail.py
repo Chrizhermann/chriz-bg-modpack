@@ -853,6 +853,8 @@ BUT_ONLY
         self.assert_already_patched_is_stable(410, patched)
 
     def test_410_checks_slice_start_capacity_without_rejecting_valid_slice_ends(self):
+        # Both cases need WeiDU, and the stability check below uses the first case's result.
+        self.require_weidu()
         for first in (65455, 65456):
             with self.subTest(first=first):
                 source = dispel_resources()

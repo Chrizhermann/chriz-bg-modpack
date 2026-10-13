@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -97,6 +98,47 @@ class ReleaseBuilderTests(unittest.TestCase):
 
             content_lines = first.contents_file.read_text(encoding="utf-8").splitlines()
             self.assertEqual(expected_entries, [line.split("  ", 2)[2] for line in content_lines])
+
+    def test_committed_only_build_packages_exactly_the_committed_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest, weidu, _ = self.make_source(root)
+
+            def git(*args):
+                subprocess.run(
+                    ["git", "-C", str(root), "-c", "core.autocrlf=false",
+                     "-c", "user.name=Test", "-c", "user.email=test@example.invalid", *args],
+                    check=True, capture_output=True,
+                )
+
+            git("init", "-q")
+            git("add", "-A")
+            git("commit", "-q", "-m", "fixture")
+            clean = build_release.build_release(
+                root, manifest, root / "clean", weidu, committed_only=True
+            )
+
+            # Same text, CRLF line endings: Git can treat this as unchanged.
+            readme = root / "README.md"
+            readme.write_bytes(readme.read_bytes().replace(b"\n", b"\r\n"))
+            with self.assertRaisesRegex(ValueError, "differs from the committed file.*README.md"):
+                build_release.build_release(
+                    root, manifest, root / "crlf", weidu, committed_only=True
+                )
+            self.assertFalse((root / "crlf").exists())
+            # Development builds may still package the working copy explicitly.
+            loose = build_release.build_release(root, manifest, root / "loose", weidu)
+            self.assertNotEqual(loose.sha256, clean.sha256)
+
+            readme.write_bytes(readme.read_bytes().replace(b"\r\n", b"\n"))
+            (root / "CHANGELOG.md").unlink()
+            git("rm", "-q", "--cached", "CHANGELOG.md")
+            git("commit", "-q", "-m", "drop changelog")
+            (root / "CHANGELOG.md").write_bytes(b"alpha notes\n")
+            with self.assertRaisesRegex(ValueError, "CHANGELOG.md"):
+                build_release.build_release(
+                    root, manifest, root / "untracked", weidu, committed_only=True
+                )
 
     def test_unlisted_runtime_file_is_rejected(self):
         with tempfile.TemporaryDirectory(prefix="cbm-release-unlisted-") as raw_temp:
