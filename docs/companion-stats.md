@@ -1,6 +1,6 @@
 # Optional companion stat improvements
 
-**Components 230-234** — **unreleased**; not in alpha.11.
+**Components 230-234** — optional, added in alpha.12.
 
 These five independent components raise the base ability scores of companions
 that are otherwise weak. Select any combination; none requires a class, kit,

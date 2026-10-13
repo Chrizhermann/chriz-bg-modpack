@@ -3,18 +3,19 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.11`
+**Release:** `v0.2.0-alpha.12`
 
-Development adds independently selectable **230**-**234**, optional base
-ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle. They are
-**not in alpha.11**; collection selection is decided separately. See the
+Alpha.12 adds independently selectable **230**-**234**, optional base
+ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle;
+collection selection is decided separately. **196/197** now patch the Faldorn and
+Dynaheir variants present instead of requiring every one. See the
+[release notes](docs/releases/v0.2.0-alpha.12.md) and the
 [companion stat guide](docs/companion-stats.md).
 
-Alpha.11 adds independent Fade/Evandra first-recruitment XP catch-up
-(**237/238**) and replaces **430** with reader-level scroll casting. It also
+Alpha.11 added independent Fade/Evandra first-recruitment XP catch-up
+(**237/238**) and replaced **430** with reader-level scroll casting. It also
 ships optional, experimental campaign XP banking (**650/651**), off by default.
-See the [release notes](docs/releases/v0.2.0-alpha.11.md),
-[recruitment XP](docs/recruitment-xp.md), [scroll casting](docs/scroll-casting.md)
+See [recruitment XP](docs/recruitment-xp.md), [scroll casting](docs/scroll-casting.md)
 and the [banking guide](docs/campaign-xp-banking.md).
 
 Alpha.10 added independently selectable **235**, Baeloth's spells-known
@@ -67,11 +68,11 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
 | 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
 | 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
-| 230 (unreleased) | `cbm_rasaad_stats` | Rasaad: base Dexterity 17 and Constitution 16 |
-| 231 (unreleased) | `cbm_dorn_stats` | Dorn: base Constitution 16 |
-| 232 (unreleased) | `cbm_eldoth_stats` | Eldoth: base Strength 17, Intelligence 14, Wisdom 9 and Constitution 16 |
-| 233 (unreleased) | `cbm_garrick_stats` | Garrick: base Dexterity 17 and Intelligence 15 |
-| 234 (unreleased) | `cbm_quayle_stats` | Quayle: base Constitution 15 |
+| 230 | `cbm_rasaad_stats` | Rasaad: base Dexterity 17 and Constitution 16 |
+| 231 | `cbm_dorn_stats` | Dorn: base Constitution 16 |
+| 232 | `cbm_eldoth_stats` | Eldoth: base Strength 17, Intelligence 14, Wisdom 9 and Constitution 16 |
+| 233 | `cbm_garrick_stats` | Garrick: base Dexterity 17 and Intelligence 15 |
+| 234 | `cbm_quayle_stats` | Quayle: base Constitution 15 |
 | 235 | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
 | 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
 | 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
@@ -88,7 +89,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 640 | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI/Dragonspear UI on EE 2.7 |
 | 650 (experimental) | `cbm_campaign_xp` | Retain excess XP beyond BG1/SoD caps; unbanked duals use vanilla XP accounting; EET and Windows EEex |
 | 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650 |
-| 660 (unreleased) | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
+| 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
