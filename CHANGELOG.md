@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- Add five independent, optional companion stat components: Rasaad DEX 17/CON 16
+  (**230**), Dorn CON 16 (**231**), Eldoth STR 17/CON 16/WIS 9/INT 14 (**232**),
+  Garrick DEX 17/INT 15 (**233**) and Quayle CON 15 (**234**). Cover 35 named
+  creature resources across BG:EE, SoD, BG2:EE and EET, including later-campaign
+  appearances. Patch the variants present, in override or BIFF archives, and warn
+  about missing ones without requiring a complete family.
+- The selected scores are authoritative: incoming scores, class, kit, level, XP
+  and HP never gate the change. Clear Eldoth's exceptional strength with STR 17.
+  Stored HP, every other field and saved actors stay unchanged. Install after
+  other companion stat/class/kit changes, before the companion first appears.
+  No collection selection changes. See the
+  [companion stat guide](docs/companion-stats.md).
+
 ## v0.2.0-alpha.11 - 2026-10-13
 
 - Add independent **237/238** options for Fade/Evandra first-recruitment SoA

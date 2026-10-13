@@ -5,6 +5,11 @@ compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
 **Release:** `v0.2.0-alpha.11`
 
+Development adds independently selectable **230**-**234**, optional base
+ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle. They are
+**not in alpha.11**; collection selection is decided separately. See the
+[companion stat guide](docs/companion-stats.md).
+
 Alpha.11 adds independent Fade/Evandra first-recruitment XP catch-up
 (**237/238**) and replaces **430** with reader-level scroll casting. It also
 ships optional, experimental campaign XP banking (**650/651**), off by default.
@@ -62,6 +67,11 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
 | 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
 | 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
+| 230 (unreleased) | `cbm_rasaad_stats` | Rasaad: base Dexterity 17 and Constitution 16 |
+| 231 (unreleased) | `cbm_dorn_stats` | Dorn: base Constitution 16 |
+| 232 (unreleased) | `cbm_eldoth_stats` | Eldoth: base Strength 17, Intelligence 14, Wisdom 9 and Constitution 16 |
+| 233 (unreleased) | `cbm_garrick_stats` | Garrick: base Dexterity 17 and Intelligence 15 |
+| 234 (unreleased) | `cbm_quayle_stats` | Quayle: base Constitution 15 |
 | 235 | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
 | 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
 | 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
@@ -123,14 +133,20 @@ allocations. Those presets replace incoming proficiencies, including earlier
 mod allocations; they do not require particular starting HP or proficiency values.
 
 The collection also recommends components `192` through `198` where their NPCs and
-prerequisites are present. Garrick needs no component here: the collection selects
-Artisan's Kitpack component `99001` directly.
+prerequisites are present. For Garrick's kit, the collection selects Artisan's
+Kitpack component `99001` directly; his optional stat improvement (`233`) is separate.
 
 Yoshimo's Swashbuckler option (`220`) is independent. Hexxat's options
 (`221`-`223`) are mutually exclusive; skip the group to retain her current class.
 They work with vanilla kits or installed Artisan revisions and leave Clara
 unchanged. See the [companion class guide](docs/companion-classes.md) for
 installation, progression and compatibility details.
+
+The stat options (`230`-`234`) are independent of each other and of any class or
+kit choice. Each sets only its listed base scores in every known recruitment and
+later-campaign variant that exists; missing variants are named in installer
+warnings and skipped. They do not change stored HP or repair saved actors. See
+the [companion stat guide](docs/companion-stats.md).
 
 ## Dependencies and ordering
 
@@ -172,6 +188,9 @@ installation, progression and compatibility details.
   using them instead of another class conversion or respec component for the
   same companion. Their CRE changes require a save from before the companion
   first appeared in the world. They do not require EEex or Artisan's Kitpack.
+- Install `230`-`234` after companion content, EET's BG1 import and other
+  stat/class/kit conversions, before the companion first appears. A later mod
+  that rewrites these scores or replaces the creature file overrides the choice.
 - Install `440` after Ascension's Improved Slayer Transformation and EE Fixpack.
   Install `450` after the SCS shapechange-spell tweak and EE Fixpack.
 - Install `610` after EEex, EET finalization and other utility-XP tweaks, then
@@ -206,6 +225,11 @@ eight additional disposable installs against copied pristine/modded resources,
 with byte-exact uninstall restoration. Source review found no need for a broad
 live test matrix. A short Fighter/Thief recruitment/level-up/save-reload check
 remains optional additional confidence and has not been performed here.
+
+Components `230`-`234` have focused synthetic and extracted-archive installer
+coverage, plus disposable installs of creature files copied from two EET games,
+with byte-exact uninstall restoration. Recruitment, level-up and save/reload in
+a running game have not been tested.
 
 ## License
 
