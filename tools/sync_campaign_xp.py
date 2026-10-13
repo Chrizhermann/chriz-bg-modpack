@@ -67,7 +67,9 @@ def sync(bundle: Path, root: Path = ROOT) -> dict:
         records[name] = {**record, "sha256": digest(data)}
     result = {"schema": 1, "status": "experimental-unreleased", "nativePlaytestRequired": True,
               "files": records}
-    (package / "package-manifest.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    (package / "package-manifest.json").write_text(
+        json.dumps(result, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     check(root)
     return result
 

@@ -9,6 +9,7 @@ import io
 import json
 from pathlib import Path, PurePosixPath
 import stat
+import subprocess
 import urllib.request
 import zipfile
 
@@ -94,6 +95,41 @@ def _read_source_payloads(
         if missing:
             raise ValueError(f"listed runtime file is missing: {missing[0]}")
     return payloads
+
+
+def _uncommitted_inputs(source_root: Path, payloads: dict[str, bytes]) -> list[str]:
+    """Return inputs whose bytes differ from their committed HEAD blob, or that HEAD lacks.
+
+    A release must contain exactly what its commit contains. A working copy can
+    differ without Git reporting a change, for example a generated text file
+    rewritten with CRLF where the repository stores LF.
+    """
+    names = sorted(payloads)
+    request = "".join(f"HEAD:{name}\n" for name in names).encode("utf-8")
+    try:
+        output = subprocess.run(
+            ["git", "-C", str(source_root), "cat-file", "--batch"],
+            input=request,
+            capture_output=True,
+            check=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ValueError(f"cannot read the committed release inputs: {exc}") from exc
+    differing: list[str] = []
+    position = 0
+    for name in names:
+        end = output.index(b"\n", position)
+        header = output[position:end].split()
+        position = end + 1
+        if len(header) != 3:
+            differing.append(name)
+            continue
+        size = int(header[2])
+        blob = output[position : position + size]
+        position += size + 1
+        if header[1] != b"blob" or blob != payloads[name]:
+            differing.append(name)
+    return differing
 
 
 def _validate_release_identity(
@@ -217,13 +253,27 @@ def build_release(
     manifest_path: Path,
     output_dir: Path,
     weidu_archive: Path | None = None,
+    *,
+    committed_only: bool = False,
 ) -> ReleaseArtifacts:
-    """Build and describe a release after all inputs pass validation."""
+    """Build and describe a release after all inputs pass validation.
+
+    With committed_only, every repository input must equal its HEAD blob, so the
+    archive is reproducible from the commit on any machine.
+    """
 
     source_root = source_root.resolve()
     manifest = _load_manifest(manifest_path)
     paths = _manifest_file_paths(manifest)
     payloads = _read_source_payloads(source_root, paths)
+    if committed_only:
+        differing = _uncommitted_inputs(source_root, payloads)
+        if differing:
+            more = f" (and {len(differing) - 1} more)" if len(differing) > 1 else ""
+            raise ValueError(
+                "release input differs from the committed file (local edit or line "
+                f"endings): {differing[0]}{more}; commit it or restore it from Git first"
+            )
     _validate_release_identity(manifest, payloads)
 
     weidu = manifest.get("weidu")
@@ -275,6 +325,11 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=Path("release-manifest.json"))
     parser.add_argument("--output", type=Path, default=Path("dist"))
     parser.add_argument("--weidu-archive", type=Path)
+    parser.add_argument(
+        "--allow-uncommitted",
+        action="store_true",
+        help="package the working copy as it is; never use this for a release",
+    )
     args = parser.parse_args()
     source_root = args.source_root.resolve()
     manifest = args.manifest
@@ -283,7 +338,13 @@ def main() -> int:
     output = args.output
     if not output.is_absolute():
         output = source_root / output
-    artifacts = build_release(source_root, manifest, output, args.weidu_archive)
+    artifacts = build_release(
+        source_root,
+        manifest,
+        output,
+        args.weidu_archive,
+        committed_only=not args.allow_uncommitted,
+    )
     print(artifacts.archive)
     print(artifacts.checksum_file)
     print(artifacts.contents_file)
