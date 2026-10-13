@@ -277,48 +277,74 @@ ACTION_FOR_EACH cbm_skie_cre IN ~SKIE~ ~SKIE6~ ~BDSKIE~ ~BDSKIED~ BEGIN
   BUT_ONLY
 END
 
-// Kit-only Avenger default for Faldorn.
+// Kit-only Avenger default for Faldorn. Each present variant is patched and
+// each missing one is reported; with none present nothing changes.
 BEGIN @196 DESIGNATED 196 GROUP @1100 LABEL ~cbm_faldorn_avenger~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~FALDOR.CRE~ ~cbm_faldorn_avenger: FALDOR.CRE is missing.~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~FALDOR5.CRE~ ~cbm_faldorn_avenger: FALDOR5.CRE is missing.~
 INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
-LAF cbm_collection_resolve_class STR_VAR symbol = ~DRUID~ RET class_id END
-LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
-OUTER_SET cbm_faldorn_source_kit = kit_dword
-LAF cbm_collection_resolve_kit STR_VAR symbol = ~BEASTFRIEND~ RET kit_dword END
-OUTER_SET cbm_faldorn_target_kit = kit_dword
+OUTER_SET cbm_faldorn_present = 0
 ACTION_FOR_EACH cbm_faldorn_cre IN ~FALDOR~ ~FALDOR5~ BEGIN
-  COPY_EXISTING ~%cbm_faldorn_cre%.CRE~ ~override~
-    LPF cbm_collection_make_faldorn_avenger
-      INT_VAR expected_class = class_id source_kit = cbm_faldorn_source_kit target_kit = cbm_faldorn_target_kit
-      STR_VAR expected_dv = ~FALDORN~
+  ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_faldorn_cre%.CRE~ BEGIN
+    OUTER_SET cbm_faldorn_present += 1
+  END ELSE BEGIN
+    PRINT ~WARNING: cbm_faldorn_avenger: %cbm_faldorn_cre%.CRE is missing; skipping this variant. Other or renamed variants may remain unpatched.~
+  END
+END
+ACTION_IF (cbm_faldorn_present > 0) BEGIN
+  LAF cbm_collection_resolve_class STR_VAR symbol = ~DRUID~ RET class_id END
+  LAF cbm_collection_resolve_kit STR_VAR symbol = ~TRUECLASS~ RET kit_dword END
+  OUTER_SET cbm_faldorn_source_kit = kit_dword
+  LAF cbm_collection_resolve_kit STR_VAR symbol = ~BEASTFRIEND~ RET kit_dword END
+  OUTER_SET cbm_faldorn_target_kit = kit_dword
+  ACTION_FOR_EACH cbm_faldorn_cre IN ~FALDOR~ ~FALDOR5~ BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_faldorn_cre%.CRE~ BEGIN
+      COPY_EXISTING ~%cbm_faldorn_cre%.CRE~ ~override~
+        LPF cbm_collection_make_faldorn_avenger
+          INT_VAR expected_class = class_id source_kit = cbm_faldorn_source_kit target_kit = cbm_faldorn_target_kit
+          STR_VAR expected_dv = ~FALDORN~
+        END
+      BUT_ONLY
     END
-  BUT_ONLY
+  END
+  PRINT ~cbm_faldorn_avenger: processed %cbm_faldorn_present% present Faldorn variant(s).~
+END ELSE BEGIN
+  PRINT ~WARNING: cbm_faldorn_avenger: no supported Faldorn variants found; no resources changed.~
 END
 
-// Add the effective installed WIZARD_HASTE spell to Dynaheir once.
+// Add the effective installed WIZARD_HASTE spell to Dynaheir once. Each present
+// variant is patched and each missing one is reported; with none present
+// nothing changes.
 BEGIN @197 DESIGNATED 197 GROUP @1100 LABEL ~cbm_dynaheir_haste~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE.CRE~ ~cbm_dynaheir_haste: DYNAHE.CRE is missing.~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE2.CRE~ ~cbm_dynaheir_haste: DYNAHE2.CRE is missing.~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE4.CRE~ ~cbm_dynaheir_haste: DYNAHE4.CRE is missing.~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE6.CRE~ ~cbm_dynaheir_haste: DYNAHE6.CRE is missing.~
-  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DYNAHE7.CRE~ ~cbm_dynaheir_haste: DYNAHE7.CRE is missing.~
 INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
-LAF cbm_collection_resolve_class STR_VAR symbol = ~MAGE~ RET class_id END
-LAF cbm_collection_resolve_kit STR_VAR symbol = ~MAGESCHOOL_INVOKER~ RET kit_dword END
-OUTER_SET cbm_dynaheir_kit = kit_dword
-LAF cbm_collection_resolve_wizard_spell STR_VAR symbol = ~WIZARD_HASTE~ RET spell_resref END
+OUTER_SET cbm_dynaheir_present = 0
 ACTION_FOR_EACH cbm_dynaheir_cre IN ~DYNAHE~ ~DYNAHE2~ ~DYNAHE4~ ~DYNAHE6~ ~DYNAHE7~ BEGIN
-  OUTER_SPRINT cbm_dynaheir_dv ~Dynaheir~
-  ACTION_IF (~%cbm_dynaheir_cre%~ STRING_EQUAL_CASE ~DYNAHE7~) BEGIN
-    OUTER_SPRINT cbm_dynaheir_dv ~DYNAHEIR~
+  ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_dynaheir_cre%.CRE~ BEGIN
+    OUTER_SET cbm_dynaheir_present += 1
+  END ELSE BEGIN
+    PRINT ~WARNING: cbm_dynaheir_haste: %cbm_dynaheir_cre%.CRE is missing; skipping this variant. Other or renamed variants may remain unpatched.~
   END
-  COPY_EXISTING ~%cbm_dynaheir_cre%.CRE~ ~override~
-    LPF cbm_collection_add_dynaheir_haste
-      INT_VAR expected_class = class_id expected_kit = cbm_dynaheir_kit
-      STR_VAR expected_dv = ~%cbm_dynaheir_dv%~ haste_resref = ~%spell_resref%~
+END
+ACTION_IF (cbm_dynaheir_present > 0) BEGIN
+  LAF cbm_collection_resolve_class STR_VAR symbol = ~MAGE~ RET class_id END
+  LAF cbm_collection_resolve_kit STR_VAR symbol = ~MAGESCHOOL_INVOKER~ RET kit_dword END
+  OUTER_SET cbm_dynaheir_kit = kit_dword
+  LAF cbm_collection_resolve_wizard_spell STR_VAR symbol = ~WIZARD_HASTE~ RET spell_resref END
+  ACTION_FOR_EACH cbm_dynaheir_cre IN ~DYNAHE~ ~DYNAHE2~ ~DYNAHE4~ ~DYNAHE6~ ~DYNAHE7~ BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_dynaheir_cre%.CRE~ BEGIN
+      OUTER_SPRINT cbm_dynaheir_dv ~Dynaheir~
+      ACTION_IF (~%cbm_dynaheir_cre%~ STRING_EQUAL_CASE ~DYNAHE7~) BEGIN
+        OUTER_SPRINT cbm_dynaheir_dv ~DYNAHEIR~
+      END
+      COPY_EXISTING ~%cbm_dynaheir_cre%.CRE~ ~override~
+        LPF cbm_collection_add_dynaheir_haste
+          INT_VAR expected_class = class_id expected_kit = cbm_dynaheir_kit
+          STR_VAR expected_dv = ~%cbm_dynaheir_dv%~ haste_resref = ~%spell_resref%~
+        END
+      BUT_ONLY
     END
-  BUT_ONLY
+  END
+  PRINT ~cbm_dynaheir_haste: processed %cbm_dynaheir_present% present Dynaheir variant(s).~
+END ELSE BEGIN
+  PRINT ~WARNING: cbm_dynaheir_haste: no supported Dynaheir variants found; no resources changed.~
 END
 
 // Kit-only Archer default for Kivan.

@@ -14,6 +14,10 @@
   other companion stat/class/kit changes, before the companion first appears.
   No collection selection changes. See the
   [companion stat guide](docs/companion-stats.md).
+- **196** (Faldorn Avenger) and **197** (Dynaheir Haste) no longer require every
+  creature variant. They patch each variant that exists and name missing ones in
+  installer warnings; with none present they install and change nothing. The
+  class, kit and death-variable checks on patched variants are unchanged.
 
 ## v0.2.0-alpha.11 - 2026-10-13
 

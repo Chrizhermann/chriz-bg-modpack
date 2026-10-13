@@ -172,6 +172,8 @@ the [companion stat guide](docs/companion-stats.md).
 - `160`, `170`, and `192`-`198` target EET resources. Component `160` requires Skie
   to already be a Swashbuckler; `195` performs that conversion and applies the skill
   correction atomically.
+- `196` and `197` patch each Faldorn or Dynaheir variant that exists and name missing
+  variants in installer warnings; with none present they change nothing.
 - `170` requires Artisan's Kitpack component `20000` and Artisan's NPC component
   `20002` to be installed first.
 - `192` preserves Viconia's existing memorized spells, including when an earlier
