@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.0-alpha.12 - 2026-10-14
 
 - Add five independent, optional companion stat components: Rasaad DEX 17/CON 16
   (**230**), Dorn CON 16 (**231**), Eldoth STR 17/CON 16/WIS 9/INT 14 (**232**),
@@ -18,6 +18,12 @@
   creature variant. They patch each variant that exists and name missing ones in
   installer warnings; with none present they install and change nothing. The
   class, kit and death-variable checks on patched variants are unchanged.
+- Release builds package exactly the committed files. The builder refuses an
+  input whose bytes differ from the commit, such as a CRLF copy from a Windows
+  checkout, so a local build and the CI build of a release are byte-identical.
+  Installed content is unchanged.
+- All alpha.11 components remain available. No unrelated defaults changed.
+  In-game acceptance of 230-234 is still pending.
 
 ## v0.2.0-alpha.11 - 2026-10-13
 

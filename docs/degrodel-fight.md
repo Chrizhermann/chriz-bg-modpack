@@ -1,7 +1,7 @@
 # Degrodel: hand over the Helm of Balduran or fight him
 
-Component **660**, label `cbm_degrodel_fight`, is optional and unreleased (after
-v0.2.0-alpha.11). It supports EET and BG:EE and needs Degrodel's dialog
+Component **660**, label `cbm_degrodel_fight`, is optional and was added in
+v0.2.0-alpha.11. It supports EET and BG:EE and needs Degrodel's dialog
 `DEGROD.DLG`. EEex and SCS are not required.
 
 ## In game
