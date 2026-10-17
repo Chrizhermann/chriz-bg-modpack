@@ -49,6 +49,7 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 "chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf",
                 "chriz-bg-modpack/imoen-xp/m_cbmixp.lua",
                 "chriz-bg-modpack/lib/cbm_companion_stats.tpa",
+                "chriz-bg-modpack/lib/cbm_defensive_stance_ai.tpa",
                 "docs/companion-continuity.md",
                 "docs/companion-stats.md",
                 "docs/imoen-spellhold-xp.md",

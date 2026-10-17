@@ -16,6 +16,7 @@ from lupa.lua51 import LuaRuntime
 from tests import test_evandra_sorcerer as evandra
 from tests import test_baeloth_spellbook as baeloth
 from tests import test_companion_stats as stats
+from tests import test_defensive_stance_ai as stance
 from tests import test_degrodel_fight as degrodel
 from tests import test_edwin_redwizard as edwin
 from tests import test_release_archive as release_archive
@@ -279,6 +280,18 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             expected = dict(game.before)
             expected.pop(degrodel.TLK_KEY)
             self.assertEqual(expected, restored)
+
+    def test_460_extracted_party_ai_gate_installs_and_restores(self) -> None:
+        weidu = stance.find_weidu()
+        if weidu is None:
+            self.skipTest("set WEIDU_BIN to compile authored script fixtures")
+        with tempfile.TemporaryDirectory(prefix="cbm-release-stance-") as raw:
+            game = stance.stage_game(Path(raw), weidu)
+            before = self.extract_release(game)
+            self.run_component(game, 460)
+            after = self.game_files(game.root)
+            self.assertEqual(stance.expected_tree(game, before, prefix="OVERRIDE/"), after)
+            self.assert_restored(game, 460, before)
 
 if __name__ == "__main__":
     unittest.main()

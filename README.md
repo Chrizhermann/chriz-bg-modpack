@@ -5,6 +5,10 @@ compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
 **Release:** `v0.2.0-alpha.12`
 
+Development adds **460**, which makes the party AI use Defensive Stance only
+while **Use special abilities** is on, including EET's BG1-only stance block.
+It is **not in alpha.12**; collection selection is decided separately.
+
 Alpha.12 adds independently selectable **230**-**234**, optional base
 ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle;
 collection selection is decided separately. **196/197** now patch the Faldorn and
@@ -82,6 +86,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 430 | `cbm_uai_caster_level` | Reader-level scroll casting; half the highest active class level when no applicable caster level exists; Windows EEex |
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
+| 460 (unreleased) | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is on |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
 | 611 | `cbm_story_utility_xp` | BG1-sized utility XP through SoD, native BG2 rewards from SoA; requires EET and EEex; alternative to 610 |
 | 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
@@ -196,6 +201,9 @@ the [companion stat guide](docs/companion-stats.md).
   that rewrites these scores or replaces the creature file overrides the choice.
 - Install `440` after Ascension's Improved Slayer Transformation and EE Fixpack.
   Install `450` after the SCS shapechange-spell tweak and EE Fixpack.
+- Install `460` after EET and any mod that adds or changes party AI scripts.
+  It patches the scripts `PARTYAI.2DA` names; existing saves use the fix after
+  a restart.
 - Install `610` after EEex, EET finalization and other utility-XP tweaks, then
   launch through `InfinityLoader.exe`. It uses the protagonist's total XP plus
   the retired class's level threshold for dual classes, giving all thieves and
@@ -233,6 +241,12 @@ Components `230`-`234` have focused synthetic and extracted-archive installer
 coverage, plus disposable installs of creature files copied from two EET games,
 with byte-exact uninstall restoration. Recruitment, level-up and save/reload in
 a running game have not been tested.
+
+Component `460` has focused synthetic and extracted-archive installer coverage
+with byte-exact uninstall restoration. The same gate, developed first in the
+Artisan's Kitpack fork, stopped the protagonist's BG1 Defensive Stance with the
+option off in a disposable EET lab; the lab set the option's variable instead of
+clicking the record-screen checkbox.
 
 ## License
 
