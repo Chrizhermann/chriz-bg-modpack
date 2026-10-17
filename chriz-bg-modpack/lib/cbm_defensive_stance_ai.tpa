@@ -1,0 +1,134 @@
+// Party AI uses Defensive Stance only while "Use special abilities" is on.
+//
+// The record screen's option writes the LOCALS variable BDAI_DISABLE_SPECIAL.
+// PARTYAI.2DA names the party AI scripts: row 1 is the default script, used by
+// the protagonist and by every NPC without a row of its own; column 1 of the
+// later rows names companion scripts. EET appends a BG1-only Defensive Stance
+// (SPDWD02) block to the default BDDEFAI without the option check, so those
+// characters keep entering the stance with the option off.
+//
+// Every block of a party AI script that casts SPDWD02 without reading the
+// option gains Global("BDAI_DISABLE_SPECIAL","LOCALS",0) as its first
+// condition. A block that already reads the option, in any form, keeps its own
+// condition. Other blocks keep their text, and scripts without such a block are
+// not recompiled, so their bytes stay unchanged.
+
+// Gate the blocks of the decompiled script in the buffer. Returns how many
+// blocks cast the ability and how many of them were gated.
+DEFINE_PATCH_FUNCTION cbm_dsai_gate_baf
+  STR_VAR
+    ability = ~SPDWD02~
+  RET
+    casting
+    gated
+BEGIN
+  SET casting = 0
+  SET gated = 0
+  SPRINT cbm_dsai_nl ~%LNL%~
+  PATCH_IF (INDEX_BUFFER (CASE_SENSITIVE EXACT_MATCH ~%WNL%~) >= 0) BEGIN
+    SPRINT cbm_dsai_nl ~%WNL%~
+  END
+  SPRINT cbm_dsai_gate ~  Global("BDAI_DISABLE_SPECIAL","LOCALS",0)%cbm_dsai_nl%~
+  SET cbm_dsai_cursor = 0
+  WHILE (cbm_dsai_cursor >= 0) BEGIN
+    SET cbm_dsai_if = INDEX_BUFFER (CASE_SENSITIVE EVALUATE_REGEXP ~^IF[ %TAB%%MNL%]*$~ cbm_dsai_cursor)
+    PATCH_IF (cbm_dsai_if < 0) BEGIN
+      SET cbm_dsai_cursor = 0 - 1
+    END ELSE BEGIN
+      SET cbm_dsai_then = INDEX_BUFFER (CASE_SENSITIVE EVALUATE_REGEXP ~^THEN[ %TAB%%MNL%]*$~ cbm_dsai_if)
+      SET cbm_dsai_end = 0 - 1
+      PATCH_IF (cbm_dsai_then >= 0) BEGIN
+        SET cbm_dsai_end = INDEX_BUFFER (CASE_SENSITIVE EVALUATE_REGEXP ~^END[ %TAB%%MNL%]*$~ cbm_dsai_then)
+      END
+      PATCH_IF (cbm_dsai_end < 0) BEGIN
+        PATCH_FAIL ~cbm_defensive_stance_ai: the decompiled script block at offset %cbm_dsai_if% has no THEN/END.~
+      END
+      READ_ASCII cbm_dsai_if cbm_dsai_triggers (cbm_dsai_then - cbm_dsai_if)
+      READ_ASCII cbm_dsai_then cbm_dsai_responses (cbm_dsai_end - cbm_dsai_then)
+      SET cbm_dsai_casts = 0
+      INNER_PATCH ~%cbm_dsai_responses%~ BEGIN
+        // Any spell action naming the stance: SpellRES, ForceSpellRES, ApplySpellRES...
+        SET cbm_dsai_casts = (INDEX_BUFFER (CASE_INSENSITIVE EVALUATE_REGEXP
+          ~[A-Za-z]*Spell[A-Za-z]*([ %TAB%]*"%ability%"~) >= 0)
+      END
+      SET cbm_dsai_reads = 0
+      INNER_PATCH ~%cbm_dsai_triggers%~ BEGIN
+        SET cbm_dsai_reads = (INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~"BDAI_DISABLE_SPECIAL"~) >= 0)
+      END
+      PATCH_IF cbm_dsai_casts BEGIN
+        SET casting += 1
+      END
+      PATCH_IF (cbm_dsai_casts AND NOT cbm_dsai_reads) BEGIN
+        // First condition of the block, so an OR() group below keeps its members.
+        SET cbm_dsai_at = INDEX_BUFFER (CASE_SENSITIVE EXACT_MATCH ~%LNL%~ cbm_dsai_if) + 1
+        SET cbm_dsai_size = STRING_LENGTH ~%cbm_dsai_gate%~
+        INSERT_BYTES cbm_dsai_at cbm_dsai_size
+        WRITE_ASCIIE cbm_dsai_at ~%cbm_dsai_gate%~ (cbm_dsai_size)
+        SET cbm_dsai_end += cbm_dsai_size
+        SET gated += 1
+      END
+      SET cbm_dsai_cursor = cbm_dsai_end + 3
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_defensive_stance_ai_install BEGIN
+  ACTION_CLEAR_ARRAY cbm_dsai_scripts
+  OUTER_SET cbm_dsai_valid = 0
+  COPY_EXISTING ~PARTYAI.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW cbm_dsai_rows 1
+    PATCH_IF (cbm_dsai_rows > 2) BEGIN
+      READ_2DA_ENTRY_FORMER cbm_dsai_rows 0 0 cbm_dsai_signature
+      PATCH_IF (~%cbm_dsai_signature%~ STRING_EQUAL_CASE ~2DA~) BEGIN
+        SET cbm_dsai_valid = 1
+        READ_2DA_ENTRY_FORMER cbm_dsai_rows 1 0 cbm_dsai_script
+        TO_UPPER cbm_dsai_script
+        SET $cbm_dsai_scripts(~%cbm_dsai_script%~) = 1
+        FOR (cbm_dsai_row = 3; cbm_dsai_row < cbm_dsai_rows; ++cbm_dsai_row) BEGIN
+          PATCH_IF (VARIABLE_IS_SET $cbm_dsai_rows(~%cbm_dsai_row%~ ~1~)) BEGIN
+            READ_2DA_ENTRY_FORMER cbm_dsai_rows cbm_dsai_row 1 cbm_dsai_script
+            TO_UPPER cbm_dsai_script
+            SET $cbm_dsai_scripts(~%cbm_dsai_script%~) = 1
+          END
+        END
+      END
+    END
+  BUT_ONLY
+  ACTION_IF NOT cbm_dsai_valid BEGIN
+    FAIL ~cbm_defensive_stance_ai: PARTYAI.2DA is not a readable 2DA table, so the party AI scripts are unknown.~
+  END
+
+  OUTER_SET cbm_dsai_casting_total = 0
+  OUTER_SET cbm_dsai_gated_total = 0
+  ACTION_PHP_EACH cbm_dsai_scripts AS cbm_dsai_script => cbm_dsai_unused BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_dsai_script%.BCS~ BEGIN
+      OUTER_SET cbm_dsai_casting = 0
+      OUTER_SET cbm_dsai_gated = 0
+      COPY_EXISTING ~%cbm_dsai_script%.BCS~ ~override~
+        PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~"SPDWD02"~) >= 0) BEGIN
+          // Dry run first: recompile only a script that has a block to gate.
+          READ_ASCII 0 cbm_dsai_bcs (BUFFER_LENGTH)
+          INNER_PATCH ~%cbm_dsai_bcs%~ BEGIN
+            DECOMPILE_BCS_TO_BAF
+            LPF cbm_dsai_gate_baf RET cbm_dsai_casting = casting cbm_dsai_gated = gated END
+          END
+          PATCH_IF cbm_dsai_gated BEGIN
+            DECOMPILE_AND_PATCH BEGIN
+              LPF cbm_dsai_gate_baf RET cbm_dsai_gated = gated END
+            END
+          END
+        END
+      BUT_ONLY
+      OUTER_SET cbm_dsai_casting_total += cbm_dsai_casting
+      OUTER_SET cbm_dsai_gated_total += cbm_dsai_gated
+      ACTION_IF cbm_dsai_gated BEGIN
+        PRINT ~[cbm_defensive_stance_ai] %cbm_dsai_script%.BCS now checks "Use special abilities" in %cbm_dsai_gated% Defensive Stance block(s).~
+      END
+    END
+  END
+  ACTION_IF (cbm_dsai_casting_total = 0) BEGIN
+    PRINT ~[cbm_defensive_stance_ai] no party AI script uses Defensive Stance; nothing to gate.~
+  END ELSE ACTION_IF (cbm_dsai_gated_total = 0) BEGIN
+    PRINT ~[cbm_defensive_stance_ai] every party AI use of Defensive Stance already checks "Use special abilities".~
+  END
+END

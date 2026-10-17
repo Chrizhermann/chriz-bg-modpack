@@ -529,6 +529,13 @@ BEGIN @450 DESIGNATED 450 GROUP @1400 LABEL ~cbm_scs_shapechange_eefp_fix~
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DW-SSRA.SPL~ ~cbm_scs_shapechange_eefp_fix: DW-SSRA.SPL is missing.~
 INCLUDE ~chriz-bg-modpack/lib/cbm_scs_shapechange_eefp_fix.tpa~
 
+// EET's BG1-only Defensive Stance block in the default party AI ignores the
+// "Use special abilities" option. Gate every party AI block like it.
+BEGIN @460 DESIGNATED 460 GROUP @1400 LABEL ~cbm_defensive_stance_ai~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~PARTYAI.2DA~ ~cbm_defensive_stance_ai: PARTYAI.2DA is missing.~
+INCLUDE ~chriz-bg-modpack/lib/cbm_defensive_stance_ai.tpa~
+LAF cbm_defensive_stance_ai_install END
+
 // =====================================================================
 // Gameplay tweaks (600-699)
 // =====================================================================

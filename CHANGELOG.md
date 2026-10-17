@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Add **460**: the party AI uses Defensive Stance only while **Use special
+  abilities** is on. EET adds a BG1-only Defensive Stance block to the default
+  party AI script `BDDEFAI` without that check, so the protagonist and other
+  characters on the default script kept entering the stance with the option off
+  ([Gibberlings3/EET#210](https://github.com/Gibberlings3/EET/issues/210)).
+  The component reads the party AI scripts from `PARTYAI.2DA` and adds the check
+  to each block that uses `SPDWD02` without it; other blocks and scripts keep
+  their bytes. Existing saves use the fix after a restart. No collection
+  selection changes.
+
 ## v0.2.0-alpha.12 - 2026-10-14
 
 - Add five independent, optional companion stat components: Rasaad DEX 17/CON 16
