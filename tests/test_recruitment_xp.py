@@ -43,6 +43,9 @@ IDS = {
     "stats": "IDS V1.0\n44 XP\n34 LEVEL\n",
     "statmod": "IDS V1.0\n1 ADD\n2 SET\n",
 }
+# EET's TRIGGER.IDS lists 0x4043 five times; WeiDU decompiles the last name.
+EET_PARTY_ALIASES = ("0x4043 IfValidForPartyDialog(O:Object*)\n0x4043 IfValidForPartyDialogue(O:Object*)\n"
+                     "0x4043 IsValidForPartyDialog(O:Object*)\n0x4043 IsValidForPartyDialogue(O:Object*)\n")
 STORY_BLOCKS = (
     'IF\n Global("QuestAlpha","LOCALS",0)\nTHEN\n RESPONSE #100\n'
     ' SetGlobal("QuestAlpha","LOCALS",1)\n Continue()\nEND\n',
@@ -97,9 +100,11 @@ def creature(script, *, converted=False):
 
 
 def make_game(tmp_path, *, game_type="bg2ee", sr=False, converted=False,
-              renamed=False, reversed_blocks=False, provider=None):
+              renamed=False, reversed_blocks=False, provider=None, party_aliases=False):
     game = SyntheticGame(tmp_path / "game", game=game_type, eeex=False)
     for name, source in IDS.items():
+        if name == "trigger" and party_aliases:
+            source += EET_PARTY_ALIASES
         (game.override / f"{name}.ids").write_text(source, encoding="ascii")
     for name in ("ea", "general", "race", "class", "specific", "gender", "align"):
         (game.override / f"{name}.ids").write_text("IDS V1.0\n", encoding="ascii")
@@ -382,7 +387,10 @@ def test_invalid_inputs_and_foreign_private_clone_fail_without_changes(tmp_path,
 @pytest.mark.parametrize("component", COMPONENTS)
 @pytest.mark.parametrize("reordered", (False, True))
 @pytest.mark.parametrize("marker", ("ProviderHasJoined", "Provider.Once"))
-def test_existing_one_shot_protagonist_xp_provider_is_preserved(tmp_path, component, reordered, marker):
+@pytest.mark.parametrize("party_aliases", (False, True))
+def test_existing_one_shot_protagonist_xp_provider_is_preserved(tmp_path, component, reordered, marker,
+                                                                 party_aliases):
+    # With EET's TRIGGER.IDS the installed provider reads IsValidForPartyDialogue(Myself).
     conditions = [f'Global("{marker}","LOCALS",0)', 'InParty(Myself)', 'XPGT(Player1,599999)']
     if reordered:
         conditions.reverse()
@@ -390,7 +398,9 @@ def test_existing_one_shot_protagonist_xp_provider_is_preserved(tmp_path, compon
         f' SetInterrupt(FALSE)\n SetGlobal("{marker}","LOCALS",1)\n'
         ' ChangeStat(Myself,XP,600000,SET)\n SetInterrupt(TRUE)\n Continue()\nEND\n'
     )
-    game = make_game(tmp_path, provider=provider, renamed=True)
+    game = make_game(tmp_path, provider=provider, renamed=True, party_aliases=party_aliases)
+    if party_aliases:
+        assert "IsValidForPartyDialogue(Myself)" in decompile_script(game, game.source_script)
     result, transcript = install(game, component)
     assert result.returncode in (0, 3), transcript
     assert "NOT INSTALLED DUE TO ERRORS" not in transcript

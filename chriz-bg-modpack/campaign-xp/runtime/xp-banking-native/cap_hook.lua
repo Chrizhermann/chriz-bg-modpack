@@ -4,6 +4,14 @@
 local M={errors={}}
 local U32=4294967295
 local phase={BG1=true,SOD=true,SOA=true,TOB=true}
+local chapterCaps={
+    CH1=16000, CH2=16000, CH3=20000, CH4=32000,
+    CH5=64000, CH6=85000, CH7=161000,
+    CH8=200000, CH9=250000, CH10=350000, CH11=420000,
+    CH12=500000, CH13=500000, CH14=1000000, CH15=2500000,
+    CH16=2900000, CH17=3250000, CH18=3500000, CH19=3500000,
+    CH20=5000000, CH21=8000000, CH22=8900000,
+}
 local function uint(n) return type(n)=="number" and n>=0 and n<=U32 and n%1==0 end
 
 -- Snapshot is provided by an actor-owned, versioned adapter. retiredDebit is
@@ -12,10 +20,14 @@ function M.Select(snapshot,nativeCap,derivedXP)
     if not uint(nativeCap) or not uint(derivedXP) then return nil,"Invalid native XP/cap." end
     if type(snapshot)~="table" or type(snapshot.eligible)~="boolean" then return nil,"Missing verified eligibility." end
     if not snapshot.eligible then return derivedXP end
-    if snapshot.policy~="bg1_sod" and snapshot.policy~="bg1_sod_soa" then return nil,"Unknown saved cap policy." end
-    if not phase[snapshot.phase] or not uint(snapshot.usableFloor) then return nil,"Invalid saved phase/adoption floor." end
+    if snapshot.policy~="bg1_sod" and snapshot.policy~="bg1_sod_soa"
+        and snapshot.policy~="chapter_caps" then return nil,"Unknown saved cap policy." end
+    local validPhase=(snapshot.policy=="chapter_caps" and chapterCaps[snapshot.phase]~=nil)
+        or (snapshot.policy~="chapter_caps" and phase[snapshot.phase]==true)
+    if not validPhase or not uint(snapshot.usableFloor) then return nil,"Invalid saved phase/adoption floor." end
     local limit=nativeCap
-    if snapshot.phase=="BG1" then limit=161000
+    if snapshot.policy=="chapter_caps" then limit=chapterCaps[snapshot.phase]
+    elseif snapshot.phase=="BG1" then limit=161000
     elseif snapshot.phase=="SOD" then limit=500000
     elseif snapshot.phase=="SOA" and snapshot.policy=="bg1_sod_soa" then limit=2950000 end
     limit=math.min(nativeCap,math.max(limit,snapshot.usableFloor))

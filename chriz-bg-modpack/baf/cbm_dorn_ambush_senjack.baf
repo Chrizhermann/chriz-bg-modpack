@@ -1,0 +1,13 @@
+// Prepended to SENJACK.BCS by component 135 (cbm_dorn_ambush_camera_fix).
+// Once Senjak is no longer neutral, the ambush scene is over: release any
+// camera lock it left on him, once, then continue to his existing blocks.
+// His original hostility block keeps its own conditions and actions.
+IF
+  !Allegiance(Myself,NEUTRAL)
+  Global("CBM_DornAmbushUnlock","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_DornAmbushUnlock","LOCALS",1)
+    UnlockScroll()
+    Continue()
+END

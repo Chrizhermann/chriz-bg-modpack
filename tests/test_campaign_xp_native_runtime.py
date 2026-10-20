@@ -574,6 +574,31 @@ def test_first_award_adopts_actual_pre_award_baseline(runtime):
     ''')
 
 
+def test_first_cap_check_adopts_unowned_party_member(runtime):
+    # A new game's protagonist reaches the party from character creation without a
+    # party-ready or loaded adoption; its first native stat check must adopt it with
+    # the actual baseline instead of failing the cap callback.
+    runtime.execute('''
+        local errors=#cap.errors
+        local a=actor(64000)
+        cap.BeforeNativeClamp(a,8000000)
+        assert(#cap.errors==errors and a.m_derivedStats.m_nXP==64000)
+        assert(a.aux.CBMBank.floor==64000 and a.aux.CBMBankLifetime.origin=='adopted')
+        local e=award(a,200000);assert(R.BeforeAward(a,e)==1);assert(finishAward(a,e))
+        local view=R.Snapshot(a,8000000)
+        assert(view.activeUsable==161000 and view.activeBank==103000 and a.aux.CBMBank.floor==64000)
+        local enemy=actor(1000);enemy.party=false
+        assert(R.Snapshot(enemy,8000000).eligible==false and enemy.aux.CBMBank==nil)
+        local copy=actor(1000);copy.identity.serializing=true
+        local ok,why=pcall(R.Snapshot,copy,8000000)
+        assert(not ok and tostring(why):find('not been initialized') and copy.aux.CBMBank==nil)
+        phase='SOA';ending=0
+        local waiting=actor(89000)
+        view=R.Snapshot(waiting,8000000)
+        assert(view.initializing and waiting.aux.CBMBank.initializing and waiting.aux.CBMBank.baseAtAdoption==89000)
+    ''')
+
+
 def test_overflow_during_campaign_initialization_keeps_baseline_and_bank(runtime):
     runtime.execute('''
         phase='SOA';ending=0
@@ -887,3 +912,137 @@ def test_old_progression_does_not_invent_history_or_resume_incomplete_manual_wor
         result,why=R.OldProgression(ordinary)
         assert(result==nil and why:find('no retired class'))
     ''')
+
+
+def test_chapter_caps_runtime_advances_stages_notices_and_supports_cdtweaks_ceiling(runtime):
+    runtime.execute('''
+        chapter=1
+        function EEex_GameState_GetGlobalInt(key)
+            if key=='ENDOFBG1' then return ending end
+            if key=='INTOB' then return intoB end
+            if key=='CHAPTER' then return chapter end
+            error('unexpected global: '..tostring(key))
+        end
+        R.choice='chapter_caps'
+        local a=actor(1000); R.OnLoaded(a)
+        assert(a.aux.CBMBank.policy=='chapter_caps' and a.aux.CBMBank.phase=='CH1')
+        a.m_baseStats.m_xp=9000000; a.m_derivedStats.m_nXP=9000000
+        -- 4294967295 (0xFFFFFFFF) is the native ceiling when cdtweaks #2090 is installed.
+        cap.BeforeNativeClamp(a,4294967295)
+        assert(a.m_derivedStats.m_nXP==16000 and a.m_baseStats.m_xp==9000000)
+        local notices=R.PendingNotices(a)
+        assert(#notices.items==1 and notices.items[1].key=='cap:CH1')
+        assert(notices.items[1].text=='Chapter XP limit reached: 16000. Further XP will be saved for a later chapter.')
+        assert(R.AckNotice(a,notices.ownerKey,notices.incarnation,'cap:CH1'))
+        -- Chapter 2 shares the 16,000 cap; no XP is released.
+        chapter=2
+        local view=R.Snapshot(a,4294967295)
+        assert(view.phase=='CH2' and view.activeUsable==16000 and view.activeBank==8984000)
+        notices=R.PendingNotices(a)
+        assert(#notices.items==1 and notices.items[1].key=='cap:CH2')
+        assert(R.AckNotice(a,notices.ownerKey,notices.incarnation,'cap:CH2'))
+        -- Chapter 3 raises the cap to 20,000 and releases 4,000 banked XP.
+        chapter=3
+        view=R.Snapshot(a,4294967295)
+        assert(view.phase=='CH3' and view.activeUsable==20000 and view.activeBank==8980000)
+        notices=R.PendingNotices(a)
+        assert(#notices.items==2 and notices.items[1].key=='release:CH2:CH3')
+        assert(notices.items[1].text=='Chapter change: 4000 banked XP is now available for level-up.')
+        assert(notices.items[2].key=='cap:CH3')
+        -- Walk remaining EET chapters through ToB Finale (CH22 = 8,900,000).
+        local schedule={
+            {'BG1',0,0,4,'CH4',32000},
+            {'BG1',0,0,5,'CH5',64000},
+            {'BG1',0,0,6,'CH6',85000},
+            {'BG1',0,0,7,'CH7',161000},
+            {'SOD',1,0,7,'CH7',161000},
+            {'SOD',1,0,8,'CH8',200000},
+            {'SOD',1,0,9,'CH9',250000},
+            {'SOD',1,0,10,'CH10',350000},
+            {'SOD',1,0,11,'CH11',420000},
+            {'SOD',1,0,12,'CH12',500000},
+            {'SOD',1,0,13,'CH13',500000},
+            {'SOA',2,0,13,'CH13',500000},
+            {'SOA',2,0,14,'CH14',1000000},
+            {'SOA',2,0,15,'CH15',2500000},
+            {'SOA',2,0,16,'CH16',2900000},
+            {'SOA',2,0,17,'CH17',3250000},
+            {'SOA',2,0,18,'CH18',3500000},
+            {'SOA',2,0,19,'CH19',3500000},
+            {'TOB',2,1,20,'CH20',5000000},
+            {'TOB',2,1,21,'CH21',8000000},
+            {'TOB',2,1,22,'CH22',8900000},
+        }
+        for _,step in ipairs(schedule) do
+            phase,ending,intoB,chapter=step[1],step[2],step[3],step[4]
+            view=R.Snapshot(a,4294967295)
+            assert(view.phase==step[5] and view.cap==step[6])
+            assert(view.activeUsable==step[6] and view.activeBank==9000000-step[6])
+        end
+        assert(R.Status(a,4294967295)=='Usable XP: 8900000; banked XP: 100000; cap: 8900000; campaign: CH22')
+    ''')
+
+
+def test_chapter_caps_awards_and_setters_during_chapter_initialization(runtime):
+    # With chapter caps, a party member adopted before CHAPTER is initialized (EET's BG1
+    # prologue runs at CHAPTER 0) must still receive XP awards and setters. The pending
+    # adoption is validated against the policy's first phase (CH1), not the BG1 campaign.
+    runtime.execute('''
+        chapter=0
+        function EEex_GameState_GetGlobalInt(key)
+            if key=='ENDOFBG1' then return ending end
+            if key=='INTOB' then return intoB end
+            if key=='CHAPTER' then return chapter end
+            error('unexpected global: '..tostring(key))
+        end
+        R.choice='chapter_caps'
+        local a=actor(0); R.OnLoaded(a)
+        assert(a.aux.CBMBank.initializing and a.aux.CBMBank.policy=='chapter_caps')
+        local e=award(a,100); assert(R.BeforeAward(a,e)==1); assert(finishAward(a,e))
+        assert(a.m_baseStats.m_xp==100 and a.aux.CBMBank.initializing and a.aux.CBMBank.baseAtAdoption==0)
+        assert(writeXP(a,40,1)==1); assert(finishWrite(a))
+        assert(a.m_baseStats.m_xp==140 and a.aux.CBMBank.initializing)
+        local fresh=actor(0); e=award(fresh,50)
+        assert(R.BeforeAward(fresh,e)==1); assert(finishAward(fresh,e))
+        assert(fresh.m_baseStats.m_xp==50 and fresh.aux.CBMBank.baseAtAdoption==0)
+        chapter=1
+        local view=R.Snapshot(a,4294967295)
+        assert(view.phase=='CH1' and view.activeUsable==140 and a.aux.CBMBank.floor==0)
+        e=award(a,20000); assert(R.BeforeAward(a,e)==1); assert(finishAward(a,e))
+        view=R.Snapshot(a,4294967295)
+        assert(view.activeUsable==16000 and view.activeBank==4140)
+    ''')
+
+
+def test_chapter_caps_standalone_mode_maps_bg2_chapters_to_canonical_phases(runtime):
+    runtime.execute('''
+        chapter=1; ending=0; intoB=0; phase='SOA'
+        function EEex_GameState_GetGlobalInt(key)
+            if key=='ENDOFBG1' then return ending end
+            if key=='INTOB' then return intoB end
+            if key=='CHAPTER' then return chapter end
+            error('unexpected global: '..tostring(key))
+        end
+        R.choice='chapter_caps'; R.standalone=true
+        local a=actor(89000); R.OnLoaded(a)
+        assert(a.aux.CBMBank.phase=='CH13')
+        a.m_baseStats.m_xp=9000000
+        local schedule={
+            {'SOA',0,1,'CH13',500000},
+            {'SOA',0,2,'CH14',1000000},
+            {'SOA',0,3,'CH15',2500000},
+            {'SOA',0,4,'CH16',2900000},
+            {'SOA',0,5,'CH17',3250000},
+            {'SOA',0,6,'CH18',3500000},
+            {'SOA',0,7,'CH19',3500000},
+            {'TOB',1,8,'CH20',5000000},
+            {'TOB',1,9,'CH21',8000000},
+            {'TOB',1,10,'CH22',8900000},
+        }
+        for _,step in ipairs(schedule) do
+            phase,intoB,chapter=step[1],step[2],step[3]
+            local view=R.Snapshot(a,4294967295)
+            assert(view.phase==step[4] and view.cap==step[5] and view.activeUsable==step[5])
+        end
+    ''')
+

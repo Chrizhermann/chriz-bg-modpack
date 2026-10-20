@@ -1,0 +1,195 @@
+// Dorn's BG1 ambush can leave the camera locked on Senjak.
+//
+// The ambush cutscene CUTDN1B runs LockScroll() as its cutscene actor, Senjak,
+// and then starts Dorn's dialogue. Nothing in the cutscene releases that lock.
+// Only SENJACK.BCS does, after the conversation reaches its last state
+// (senjack_combat) while Senjak is still neutral. When the conversation stalls,
+// leaving the area unloads it and deletes Senjak. The engine never clears the
+// camera-follow target on an area change, so the next frame dereferences the
+// deleted creature and the game crashes.
+//
+// 1. CUTDN1B.BCS: remove every LockScroll() action. The cutscene never releases
+//    its own lock, and the dialogue it starts centres on the speakers anyway.
+//    The action records are removed from the compiled script itself, so every
+//    other block, trigger and action keeps its exact bytes, including other
+//    mods' additions. Area names are never read (BG:EE uses AR####, EET BG####).
+//    A cutscene without LockScroll() is already fixed and stays untouched.
+// 2. SENJACK.BCS: prepend a one-shot block that runs UnlockScroll() once
+//    Senjak is no longer neutral, whatever made him hostile, then continues to
+//    his existing blocks. His original hostility block is unchanged. A script
+//    that already has this block stays untouched. Without SENJACK.BCS only the
+//    cutscene changes.
+//
+// The component is aborted (rolled back, nothing written, not logged as
+// installed) when either script is not a compiled BCS, or when a LockScroll()
+// action cannot be read as a complete action record.
+
+// head:   the start of any LockScroll() action, whitespace-tolerant
+// record: one complete compiled action record. Its eight lines are AC, the
+//         action number with the opener of object 1, object 1, the opener and
+//         body of objects 2 and 3, then the parameters closed by AC. Object
+//         bodies never span lines. Either line ending is accepted.
+DEFINE_PATCH_FUNCTION cbm_dorn_ambush_patterns
+  RET
+    head
+    record
+BEGIN
+  TEXT_SPRINT nl ~%MNL%?%LNL%~
+  TEXT_SPRINT line ~[^%MNL%%LNL%]*~
+  TEXT_SPRINT head ~AC[ %TAB%]*%nl%[ %TAB%]*135[ %TAB%]*OB~
+  TEXT_SPRINT record ~AC%nl%135OB%nl%%line%OB%nl%OB%nl%%line%OB%nl%OB%nl%%line%OB%nl%%line%AC%nl%~
+END
+
+// Scan a compiled BCS buffer.
+// status: 0 valid, 1 not a compiled BCS, 2 a LockScroll() action has an
+//         unrecognized record layout
+// locks:   LockScroll() actions (engine action 135 in every EE ACTION.IDS)
+// records: those that are complete, removable action records
+// marked:  mentions of the SENJACK.BCS release block's variable
+DEFINE_PATCH_FUNCTION cbm_dorn_ambush_scan
+  RET
+    status
+    reason
+    locks
+    records
+    marked
+BEGIN
+  LPF cbm_dorn_ambush_patterns RET head = head record = record END
+  SET status = 0
+  TEXT_SPRINT reason ~~
+  SET locks = 0
+  SET records = 0
+  SET marked = 0
+  PATCH_IF BUFFER_LENGTH < 6 BEGIN
+    SET status = 1
+    TEXT_SPRINT reason ~the file is shorter than an empty script~
+  END ELSE BEGIN
+    READ_ASCII 0 signature (2)
+    READ_BYTE 2 first
+    READ_BYTE 3 second
+    PATCH_IF NOT (~%signature%~ STRING_EQUAL ~SC~) OR NOT (first = 10 OR (first = 13 AND second = 10)) BEGIN
+      SET status = 1
+      TEXT_SPRINT reason ~the SC script header is missing~
+    END
+  END
+  PATCH_IF status = 0 BEGIN
+    SET tail_end = BUFFER_LENGTH
+    SET trimming = 1
+    WHILE trimming AND tail_end > 0 BEGIN
+      READ_BYTE (tail_end - 1) ch
+      PATCH_IF ch = 10 OR ch = 13 OR ch = 32 OR ch = 9 BEGIN
+        SET tail_end -= 1
+      END ELSE BEGIN
+        SET trimming = 0
+      END
+    END
+    PATCH_IF tail_end < 4 BEGIN
+      SET status = 1
+      TEXT_SPRINT reason ~the SC script footer is missing~
+    END ELSE BEGIN
+      READ_ASCII (tail_end - 2) footer (2)
+      PATCH_IF NOT (~%footer%~ STRING_EQUAL ~SC~) BEGIN
+        SET status = 1
+        TEXT_SPRINT reason ~the SC script footer is missing~
+      END
+    END
+  END
+  PATCH_IF status = 0 BEGIN
+    COUNT_REGEXP_INSTANCES CASE_SENSITIVE ~%head%~ locks
+    COUNT_REGEXP_INSTANCES CASE_SENSITIVE ~%record%~ records
+    COUNT_REGEXP_INSTANCES CASE_INSENSITIVE EXACT_MATCH ~CBM_DornAmbushUnlock~ marked
+    PATCH_IF locks != records BEGIN
+      SET status = 2
+    END
+  END
+END
+
+// Remove every complete LockScroll() action record; nothing else changes.
+DEFINE_PATCH_FUNCTION cbm_dorn_ambush_remove_locks
+  RET
+    removed
+BEGIN
+  LPF cbm_dorn_ambush_patterns RET record = record END
+  COUNT_REGEXP_INSTANCES CASE_SENSITIVE ~%record%~ removed
+  REPLACE_TEXTUALLY CASE_SENSITIVE ~%record%~ ~~
+END
+
+// Read-only scans of the effective scripts; nothing is written yet.
+COPY_EXISTING ~CUTDN1B.BCS~ ~override~
+  LPF cbm_dorn_ambush_scan
+    RET
+      cbm_dac_cut_status = status
+      cbm_dac_cut_reason = reason
+      cbm_dac_locks = locks
+      cbm_dac_records = records
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+OUTER_SET cbm_dac_senjack = 0
+OUTER_SET cbm_dac_sj_status = 0
+OUTER_TEXT_SPRINT cbm_dac_sj_reason ~~
+OUTER_SET cbm_dac_sj_marked = 0
+ACTION_IF FILE_EXISTS_IN_GAME ~SENJACK.BCS~ BEGIN
+  OUTER_SET cbm_dac_senjack = 1
+  COPY_EXISTING ~SENJACK.BCS~ ~override~
+    LPF cbm_dorn_ambush_scan
+      RET
+        cbm_dac_sj_status = status
+        cbm_dac_sj_reason = reason
+        cbm_dac_sj_marked = marked
+    END
+  BUT_ONLY_IF_IT_CHANGES
+END
+
+ACTION_IF cbm_dac_cut_status = 1 BEGIN
+  OUTER_TEXT_SPRINT cbm_dac_file ~CUTDN1B.BCS~
+  OUTER_TEXT_SPRINT cbm_dac_reason ~%cbm_dac_cut_reason%~
+  ABORT @1352
+END
+ACTION_IF cbm_dac_cut_status = 2 BEGIN
+  ABORT @1353
+END
+// The release block only prepends to SENJACK.BCS, so an unusual LockScroll()
+// record there (status 2) is no obstacle; only an invalid script is.
+ACTION_IF cbm_dac_senjack AND cbm_dac_sj_status = 1 BEGIN
+  OUTER_TEXT_SPRINT cbm_dac_file ~SENJACK.BCS~
+  OUTER_TEXT_SPRINT cbm_dac_reason ~%cbm_dac_sj_reason%~
+  ABORT @1352
+END
+ACTION_IF cbm_dac_cut_status != 0 BEGIN
+  FAIL ~cbm_dorn_ambush_camera_fix: unexpected CUTDN1B.BCS scan status %cbm_dac_cut_status%.~
+END
+
+ACTION_IF cbm_dac_locks > 0 BEGIN
+  COPY_EXISTING ~CUTDN1B.BCS~ ~override~
+    LPF cbm_dorn_ambush_remove_locks RET cbm_dac_removed = removed END
+  BUT_ONLY_IF_IT_CHANGES
+  PRINT @1354
+END ELSE BEGIN
+  PRINT @1355
+END
+
+ACTION_IF NOT cbm_dac_senjack BEGIN
+  PRINT @1358
+END ELSE ACTION_IF cbm_dac_sj_marked > 0 BEGIN
+  PRINT @1357
+END ELSE BEGIN
+  EXTEND_TOP ~SENJACK.BCS~ ~chriz-bg-modpack/baf/cbm_dorn_ambush_senjack.baf~
+  PRINT @1356
+END
+
+// Verify the written scripts.
+COPY_EXISTING ~CUTDN1B.BCS~ ~override~
+  LPF cbm_dorn_ambush_scan RET cbm_dac_check = status cbm_dac_check_locks = locks END
+BUT_ONLY_IF_IT_CHANGES
+ACTION_IF cbm_dac_check != 0 OR cbm_dac_check_locks != 0 BEGIN
+  FAIL ~cbm_dorn_ambush_camera_fix: CUTDN1B.BCS did not verify (status %cbm_dac_check%, %cbm_dac_check_locks% LockScroll actions left). The component was rolled back.~
+END
+ACTION_IF cbm_dac_senjack BEGIN
+  COPY_EXISTING ~SENJACK.BCS~ ~override~
+    LPF cbm_dorn_ambush_scan RET cbm_dac_check = status cbm_dac_check_marked = marked END
+  BUT_ONLY_IF_IT_CHANGES
+  ACTION_IF cbm_dac_check = 1 OR cbm_dac_check_marked < 1 BEGIN
+    FAIL ~cbm_dorn_ambush_camera_fix: SENJACK.BCS did not verify (status %cbm_dac_check%, release block missing). The component was rolled back.~
+  END
+END

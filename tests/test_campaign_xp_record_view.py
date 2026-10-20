@@ -191,3 +191,36 @@ def test_display_neither_decides_nor_shows_a_pending_unbanked_dual(record_runtim
         assert(a.aux.CBMBank.pendingDual~=nil and a.m_baseStats.m_xp==80000)
         assert(R.RecordView(a,8000000)==nil)
     ''')
+
+
+def test_chapter_caps_record_projection_across_eet_chapters_without_mutation(record_runtime):
+    record_runtime.execute('''
+        chapter=1
+        function EEex_GameState_GetGlobalInt(key)
+            if key=='ENDOFBG1' then return ending end
+            if key=='INTOB' then return intoB end
+            if key=='CHAPTER' then return chapter end
+            error('unexpected global: '..tostring(key))
+        end
+        R.choice='chapter_caps'
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=9000000
+        R.choice='bg1_sod'
+        local unchanged=checkpoint(a)
+        local checks={
+            {'BG1',0,0,2,'CH2',8984000,16000},
+            {'BG1',0,0,5,'CH5',8936000,64000},
+            {'SOD',1,0,10,'CH10',8650000,350000},
+            {'SOA',2,0,14,'CH14',8000000,1000000},
+            {'SOA',2,0,15,'CH15',6500000,2500000},
+            {'TOB',2,1,22,'CH22',100000,8900000},
+        }
+        for _,check in ipairs(checks) do
+            phase,ending,intoB,chapter=check[1],check[2],check[3],check[4]
+            local view=assert(R.RecordView(a,4294967295))
+            assert(view.phase==check[5] and view.policy=='chapter_caps')
+            assert(view.bank==check[6] and view.cap==check[7])
+            unchanged()
+        end
+        assert(a.aux.CBMBank.phase=='CH1' and a.aux.CBMBank.notices==nil)
+    ''')
+

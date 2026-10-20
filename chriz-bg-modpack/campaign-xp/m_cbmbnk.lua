@@ -5,6 +5,30 @@
 if CBMBankStartupAttempted then return end
 CBMBankStartupAttempted=true
 local started=false
+-- A failed start leaves XP uncapped and unbanked. In a real run the log line
+-- alone went unnoticed for days (2026-10-13 to 10-17), so the player is also
+-- told in the game's message log: once per loaded game, at the first action
+-- taken there. CBMBank_Status() repeats it. Nothing here retries startup.
+local function warnInGame(reason)
+ local detail=tostring(reason):gsub("^.-([%w_]+%.lua:%d+:)","%1")
+ local text="Campaign XP caps (Modpack 650) did not start, so XP is not capped or banked in this game. "..
+  "See [CBM campaign XP] in the loader log. Reason: "..detail
+ if CBMBank_Status==nil then
+  CBMBank_Status=function()
+   if type(Infinity_DisplayString)=="function" then pcall(Infinity_DisplayString,text) end
+   return text
+  end
+ end
+ if type(Infinity_DisplayString)~="function" or type(EEex_Action_AddSpriteStartedActionListener)~="function"
+  or type(EEex_GameState_AddDestroyedListener)~="function" then return end
+ local shown=false
+ EEex_Action_AddSpriteStartedActionListener(function()
+  if shown then return end
+  shown=true
+  pcall(Infinity_DisplayString,text)
+ end)
+ EEex_GameState_AddDestroyedListener(function() shown=false end)
+end
 local function start()
  if started then return end
  started=true
@@ -35,6 +59,7 @@ local function start()
     EEex_Sprite_SetLocalInt(sprite,"CBM_SoARecruitXP",1)
    end
   end
+  warnInGame(result)
  else
   print("[CBM campaign XP] Experimental component initialized. Game testing is still pending.")
  end

@@ -3,7 +3,25 @@
 local M = {}
 local MAX = 9007199254740991 -- exact integer limit in both supported Lua runtimes
 local rank = {BG1 = 1, SOD = 2, SOA = 3, TOB = 4}
-local policies = {bg1_sod = true, bg1_sod_soa = true}
+local chapterRank = {
+    CH1 = 1, CH2 = 2, CH3 = 3, CH4 = 4, CH5 = 5, CH6 = 6, CH7 = 7,
+    CH8 = 8, CH9 = 9, CH10 = 10, CH11 = 11, CH12 = 12, CH13 = 13,
+    CH14 = 14, CH15 = 15, CH16 = 16, CH17 = 17, CH18 = 18, CH19 = 19,
+    CH20 = 20, CH21 = 21, CH22 = 22,
+}
+local chapterCaps = {
+    CH1 = 16000, CH2 = 16000, CH3 = 20000, CH4 = 32000,
+    CH5 = 64000, CH6 = 85000, CH7 = 161000,
+    CH8 = 200000, CH9 = 250000, CH10 = 350000, CH11 = 420000,
+    CH12 = 500000, CH13 = 500000, CH14 = 1000000, CH15 = 2500000,
+    CH16 = 2900000, CH17 = 3250000, CH18 = 3500000, CH19 = 3500000,
+    CH20 = 5000000, CH21 = 8000000, CH22 = 8900000,
+}
+local policies = {bg1_sod = true, bg1_sod_soa = true, chapter_caps = true}
+local function phaseRank(policy, phase)
+    if policy == "chapter_caps" then return chapterRank[phase] end
+    return rank[phase]
+end
 
 local function integer(value)
     return type(value) == "number" and value >= 0 and value <= MAX
@@ -26,7 +44,7 @@ end
 
 function M.Campaign(current, endBG1, inToB, savedPhase)
     if not rank[current] then return nil, "Unsupported campaign." end
-    if not integer(endBG1) or endBG1 > 2 or not integer(inToB) or inToB > 1 then
+    if not integer(endBG1) or endBG1 > 2 or not integer(inToB) or not (inToB <= 1) then
         return nil, "Invalid campaign flags."
     end
     if savedPhase ~= nil and not rank[savedPhase] then
@@ -45,7 +63,77 @@ function M.Campaign(current, endBG1, inToB, savedPhase)
     return phase
 end
 
+function M.ChapterPhase(current, endBG1, inToB, chapter, savedPhase, standalone)
+    if savedPhase ~= nil and not chapterRank[savedPhase] then
+        return nil, "Invalid save-owned chapter progress."
+    end
+    if not integer(chapter) then return nil, "Invalid chapter." end
+    local campaignPhase, reason
+    if standalone then
+        if not rank[current] then return nil, "Unsupported campaign." end
+        if not integer(endBG1) or endBG1 > 2 or not integer(inToB) or inToB > 1 then
+            return nil, "Invalid campaign flags."
+        end
+        campaignPhase = inToB == 1 and "TOB" or current
+    else
+        campaignPhase, reason = M.Campaign(current, endBG1, inToB)
+        if not campaignPhase then return nil, reason end
+    end
+    local canonical
+    if campaignPhase == "BG1" then
+        if chapter == 0 then
+            if savedPhase then return savedPhase end
+            return nil, "Waiting for chapter initialization."
+        end
+        if chapter < 1 or chapter > 7 then return nil, "Invalid chapter for campaign." end
+        canonical = chapter
+    elseif campaignPhase == "SOD" then
+        if chapter < 7 then
+            if savedPhase and chapter <= 6 then return savedPhase end
+            return nil, "Waiting for SoD chapter initialization."
+        end
+        if chapter > 13 then return nil, "Invalid chapter for campaign." end
+        canonical = chapter
+    elseif campaignPhase == "SOA" then
+        if standalone then
+            if chapter == 0 then
+                if savedPhase then return savedPhase end
+                return nil, "Waiting for SoA chapter initialization."
+            end
+            if chapter < 1 or chapter > 7 then return nil, "Invalid chapter for campaign." end
+            canonical = chapter + 12
+        else
+            if chapter < 13 then
+                if savedPhase then return savedPhase end
+                return nil, "Waiting for SoA chapter initialization."
+            end
+            if chapter > 19 then return nil, "Invalid chapter for campaign." end
+            canonical = chapter
+        end
+    else
+        if standalone then
+            if chapter < 8 then
+                if savedPhase and chapter <= 7 then return savedPhase end
+                return nil, "Waiting for ToB chapter initialization."
+            end
+            if chapter > 10 then return nil, "Invalid chapter for campaign." end
+            canonical = chapter + 12
+        else
+            if chapter < 20 then
+                if savedPhase then return savedPhase end
+                return nil, "Waiting for ToB chapter initialization."
+            end
+            if chapter > 22 then return nil, "Invalid chapter for campaign." end
+            canonical = chapter
+        end
+    end
+    local phase = "CH" .. tostring(canonical)
+    if savedPhase and chapterRank[savedPhase] > chapterRank[phase] then phase = savedPhase end
+    return phase
+end
+
 local function cap(policy, phase)
+    if policy == "chapter_caps" then return chapterCaps[phase] end
     if phase == "BG1" then return 161000 end
     if phase == "SOD" then return 500000 end
     if phase == "SOA" and policy == "bg1_sod_soa" then return 2950000 end
@@ -56,7 +144,7 @@ local function validate(state)
     if type(state) ~= "table" or state.schema ~= 1 then
         return nil, "Unknown bank schema; preserve the original payload."
     end
-    if not policies[state.policy] or not rank[state.phase] then
+    if not policies[state.policy] or not phaseRank(state.policy, state.phase) then
         return nil, "Invalid saved policy or campaign."
     end
     if state.classKind ~= "single" and state.classKind ~= "multi" then
@@ -118,8 +206,10 @@ end
 function M.Advance(state, nextPhase)
     local ok, reason = validate(state)
     if not ok then return nil, reason end
-    if not rank[nextPhase] then return nil, "Unsupported campaign." end
-    if rank[nextPhase] < rank[state.phase] then
+    local currentRank = phaseRank(state.policy, state.phase)
+    local nextRank = phaseRank(state.policy, nextPhase)
+    if not nextRank then return nil, "Unsupported campaign." end
+    if nextRank < currentRank then
         return nil, "Campaign regression requires loading that save's own state."
     end
     if nextPhase == state.phase then
@@ -175,7 +265,8 @@ function M.Apply(state, proposed)
     result.revision = proposed.revision
     ok, reason = validate(result)
     if not ok then return nil, reason end
-    if result.revision ~= state.revision + 1 or rank[result.phase] < rank[state.phase] then
+    if result.revision ~= state.revision + 1
+        or phaseRank(result.policy, result.phase) < phaseRank(state.policy, state.phase) then
         return nil, "Invalid operation revision or campaign."
     end
     return result

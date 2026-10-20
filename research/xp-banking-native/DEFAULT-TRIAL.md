@@ -30,8 +30,11 @@ reviewed 2.7.3 executable/EEex profile. The second supported executable remains
 covered by the existing offline checks; do not create a second playtest matrix.
 The actual source installation and collection use EEex 1.2.0. Its required APIs
 and hook layouts were checked, and its lifetime entries are now included in the
-reviewed profiles. The focused loader and actual installed callback checks pass;
-an upgrade to the research version (1.3.1) is not required.
+reviewed profiles. The focused loader and actual installed callback checks pass.
+Correction, October 20: the earlier conclusion here that an EEex 1.3.1 upgrade
+is not required is superseded. The collection now targets EEex v1.3.1 on
+2.7.3.0; the October 17 actor-lifetime hook fix was checked in game on
+EEex 1.2.0 (October 17) and on EEex v1.3.1 (October 20).
 The source installation's effective `override/XPLEVEL.2DA` was read on October 9:
 Fighter levels 8/9 require 125,000/250,000, and Thief levels 6/10 require
 20,000/160,000. The trial amounts below follow that installed table.

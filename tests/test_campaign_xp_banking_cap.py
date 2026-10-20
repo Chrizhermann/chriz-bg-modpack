@@ -53,8 +53,24 @@ def test_ineligible_actor_retains_original_derived_xp(model):
     assert m.Select(lua.table_from(dict(eligible=False)), 8000000, 700000) == 700000
 
 
+@pytest.mark.parametrize("phase,expected", [
+    ("CH1", 16000), ("CH2", 16000), ("CH3", 20000), ("CH4", 32000),
+    ("CH5", 64000), ("CH6", 85000), ("CH7", 161000),
+    ("CH8", 200000), ("CH9", 250000), ("CH10", 350000), ("CH11", 420000),
+    ("CH12", 500000), ("CH13", 500000), ("CH14", 1000000), ("CH15", 2500000),
+    ("CH16", 2900000), ("CH17", 3250000), ("CH18", 3500000), ("CH19", 3500000),
+    ("CH20", 5000000), ("CH21", 8000000), ("CH22", 8900000),
+])
+def test_chapter_caps_and_cdtweaks_uncapped_native_ceiling(model, phase, expected):
+    lua, m = model
+    # 0xFFFFFFFF (4294967295) is the native ceiling when cdtweaks #2090 sets XPCAP.2DA = -1.
+    assert m.Select(state(lua, phase=phase, policy="chapter_caps"), 4294967295, 9500000) == expected
+
+
 @pytest.mark.parametrize("changes", [
     dict(eligible=None), dict(eligible=1), dict(phase="UNKNOWN"), dict(policy="unknown"),
+    dict(policy="chapter_caps", phase="BG1"), dict(policy="bg1_sod", phase="CH1"),
+    dict(policy="chapter_caps", phase="CH0"), dict(policy="chapter_caps", phase="CH23"),
     dict(usableFloor=-1), dict(usableFloor=0.5), dict(classKind="dual"),
     dict(classKind="dual", retiredDebit=100, retiredNativeXP=101),
     dict(classKind="other"), dict(usableFloor=float("inf")),

@@ -371,3 +371,98 @@ def test_malformed_plan_cannot_silently_change_entitlement_or_policy(model, fiel
     rejected(policy.Apply, state, proposed)
     assert snapshot(state) == before
     assert snapshot(proposed) == plan_before
+
+
+CHAPTER_CAPS = [
+    ("CH1", 16000), ("CH2", 16000), ("CH3", 20000), ("CH4", 32000),
+    ("CH5", 64000), ("CH6", 85000), ("CH7", 161000),
+    ("CH8", 200000), ("CH9", 250000), ("CH10", 350000), ("CH11", 420000),
+    ("CH12", 500000), ("CH13", 500000), ("CH14", 1000000), ("CH15", 2500000),
+    ("CH16", 2900000), ("CH17", 3250000), ("CH18", 3500000), ("CH19", 3500000),
+    ("CH20", 5000000), ("CH21", 8000000), ("CH22", 8900000),
+]
+
+
+@pytest.mark.parametrize("phase,expected", CHAPTER_CAPS)
+def test_chapter_caps_policy_returns_exact_chapter_limits(model, phase, expected):
+    state = adopt(model, policy="chapter_caps", phase=phase)
+    assert result(model[1].Cap, state) == (expected, None)
+
+
+@pytest.mark.parametrize("current,ending,tob,chapter,saved,standalone,expected", [
+    # EET chapters 1..22
+    ("BG1", 0, 0, 1, None, False, "CH1"),
+    ("BG1", 0, 0, 2, "CH1", False, "CH2"),
+    ("BG1", 0, 0, 7, "CH6", False, "CH7"),
+    ("SOD", 1, 0, 7, "CH7", False, "CH7"),
+    ("SOD", 1, 0, 8, "CH7", False, "CH8"),
+    ("SOD", 1, 0, 12, "CH11", False, "CH12"),
+    ("SOD", 1, 0, 13, "CH12", False, "CH13"),
+    ("SOA", 2, 0, 13, "CH12", False, "CH13"),
+    ("SOA", 2, 0, 14, "CH13", False, "CH14"),
+    ("SOA", 2, 0, 15, "CH14", False, "CH15"),
+    ("SOA", 2, 0, 19, "CH18", False, "CH19"),
+    ("TOB", 2, 1, 20, "CH19", False, "CH20"),
+    ("TOB", 2, 1, 21, "CH20", False, "CH21"),
+    ("TOB", 2, 1, 22, "CH21", False, "CH22"),
+    # EET intermediate transition frame: ENDOFBG1=2 or INTOB=1 before Chapter updates
+    ("SOA", 2, 0, 7, "CH7", False, "CH7"),
+    ("SOA", 2, 0, 12, "CH12", False, "CH12"),
+    ("TOB", 2, 1, 19, "CH19", False, "CH19"),
+    # Standalone chapters (BG1 1..7, SOD 7..13, SOA 1..7 -> CH13..CH19, TOB 8..10 -> CH20..CH22)
+    ("BG1", 0, 0, 1, None, True, "CH1"),
+    ("BG1", 0, 0, 5, "CH4", True, "CH5"),
+    ("SOD", 0, 0, 7, None, True, "CH7"),
+    ("SOD", 0, 0, 12, "CH11", True, "CH12"),
+    ("SOA", 0, 0, 1, None, True, "CH13"),
+    ("SOA", 0, 0, 2, "CH13", True, "CH14"),
+    ("SOA", 0, 0, 3, "CH14", True, "CH15"),
+    ("SOA", 0, 0, 7, "CH18", True, "CH19"),
+    ("TOB", 0, 1, 8, None, True, "CH20"),
+    ("TOB", 0, 1, 9, "CH20", True, "CH21"),
+    ("TOB", 0, 1, 10, "CH21", True, "CH22"),
+    # Save-owned high-water mark prevents chapter regression within a run
+    ("SOA", 2, 0, 14, "CH16", False, "CH16"),
+    ("SOA", 0, 0, 2, "CH15", True, "CH15"),
+])
+def test_chapter_phase_resolves_eet_and_standalone_without_collision(
+        model, current, ending, tob, chapter, saved, standalone, expected):
+    assert success(
+        model[1].ChapterPhase, current, ending, tob, chapter, saved, standalone
+    ) == expected
+
+
+@pytest.mark.parametrize("current,ending,tob,chapter,saved,standalone", [
+    ("BG1", 0, 0, 0, None, False),
+    ("SOD", 1, 0, 1, None, False),
+    ("SOA", 2, 0, 1, None, False),
+    ("TOB", 2, 1, 13, None, False),
+    ("SOA", 0, 0, 0, None, True),
+    ("TOB", 0, 1, 2, None, True),
+    ("BG1", 0, 0, 8, None, False),
+    ("SOD", 1, 0, 14, None, False),
+    ("SOA", 2, 0, 20, None, False),
+    ("TOB", 2, 1, 23, None, False),
+    ("SOA", 0, 0, 8, None, True),
+    ("TOB", 0, 1, 11, None, True),
+    ("BG1", 0, 0, 1, "BG1", False),
+])
+def test_chapter_phase_rejects_uninitialized_or_out_of_range_chapters(
+        model, current, ending, tob, chapter, saved, standalone):
+    rejected(model[1].ChapterPhase, current, ending, tob, chapter, saved, standalone)
+
+
+def test_chapter_caps_earn_and_advance_step_by_step(model):
+    state = adopt(model, usable=0, phase="CH1", policy="chapter_caps")
+    state, _ = apply(model, state, "Earn", 50000)
+    assert (state.usable, state.bank, state.phase) == (16000, 34000, "CH1")
+    state, plan_ch2 = apply(model, state, "Advance", "CH2")
+    assert (state.usable, state.bank, plan_ch2.usableDelta) == (16000, 34000, 0)
+    state, plan_ch3 = apply(model, state, "Advance", "CH3")
+    assert (state.usable, state.bank, plan_ch3.usableDelta) == (20000, 30000, 4000)
+    state, plan_ch4 = apply(model, state, "Advance", "CH4")
+    assert (state.usable, state.bank, plan_ch4.usableDelta) == (32000, 18000, 12000)
+    state, plan_ch5 = apply(model, state, "Advance", "CH5")
+    assert (state.usable, state.bank, plan_ch5.usableDelta) == (50000, 0, 18000)
+    rejected(model[1].Advance, state, "CH4")
+

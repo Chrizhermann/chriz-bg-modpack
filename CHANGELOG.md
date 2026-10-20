@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.0-alpha.13 - 2026-10-20
 
 - Add **460**: the party AI uses Defensive Stance only while **Use special
   abilities** is on. EET adds a BG1-only Defensive Stance block to the default
@@ -11,6 +11,49 @@
   to each block that uses `SPDWD02` without it; other blocks and scripts keep
   their bytes. Existing saves use the fix after a restart. No collection
   selection changes.
+- **650/651**: banking now really works; it was checked in game on EEex 1.2.0
+  and v1.3.1. Alpha.11 and alpha.12 never wrote the two actor-lifetime hooks
+  inside `EEex.dll`: EEex's hook writer
+  cannot reach `EEex.dll` from its code pages beside the game and silently left
+  the entries unchanged. Banking still started, but no character got a bank
+  account, so every permanent XP award was refused: XP stayed unchanged and
+  nothing was banked. The bank now places its own small relay pages beside
+  `EEex.dll`, writes those two entries itself, restores the original memory
+  protection, and refuses to start if any of its hooks, in the game or in
+  `EEex.dll`, was not written. A startup failure leaves XP uncapped and
+  unbanked as before, and is now also shown in the game's message log once per
+  loaded game; `CBMBank_Status()` repeats it. XP refused under alpha.11/12 is
+  not restored. A new game's main character now gets its account at its first
+  cap check; until its first XP change, every cap check used to fail.
+- **652** (`cbm_campaign_xp_chapters`): optional, experimental chapter-by-chapter
+  XP caps across BG1, SoD, SoA, and ToB (requires **650**, mutually exclusive
+  with **651**). Caps usable XP per chapter (BG1: Ch. 1-2 16k, Ch. 3 20k,
+  Ch. 4 32k, Ch. 5 64k, Ch. 6 85k, Ch. 7 161k; SoD: Ch. 7 161k, Ch. 8 200k,
+  Ch. 9 250k, Ch. 10 350k, Ch. 11 420k, Ch. 12-13 500k; SoA: Ch. 1/EET 13 500k,
+  Ch. 2/EET 14 1,000k, Ch. 3/EET 15 2,500k, Ch. 4/EET 16 2,900k, Ch. 5/EET 17
+  3,250k, Ch. 6-7/EET 18-19 3,500k; ToB: Ch. 8/EET 20 5,000k, Ch. 9/EET 21
+  8,000k, Ch. 10/EET 22 8,900k), banks excess XP and releases it as chapters
+  advance, and gates Baeloth's Larswood spawn (`BAINVI.BCS`) to Chapter 5+
+  when `BAINVI.BCS` is present. If another mod replaced his entrance scene or
+  the script is not valid, the caps still install, `BAINVI.BCS` stays
+  unchanged and the installer warns. Compatible with `cdtweaks` component 2090.
+- Add optional **239** for EET: EET's own SoA join-XP ladder and ToB raise for
+  every joinable NPC whose scripts lack them, found from EET's campaign tables
+  and NPC transitions rather than a list of NPCs. Existing catch-ups of any
+  owner, SCS customization and a second installation are left unchanged. See the
+  [EET join-XP guide](docs/eet-join-xp.md).
+- **237/238** now recognise an existing catch-up ladder under EET's
+  `TRIGGER.IDS`, where WeiDU decompiles `InParty(Myself)` as
+  `IsValidForPartyDialogue(Myself)`. Before, they added their ladder even next
+  to an existing one.
+- Add optional **135 — Dorn's BG1 ambush: no camera lock on Senjak**. The ambush
+  cutscene locked the camera on Senjak, and only a completed conversation
+  released it. After a stalled conversation, leaving the area crashed the game.
+  135 removes the lock from `CUTDN1B.BCS` without touching the rest of the
+  scene, and adds a one-shot release to `SENJACK.BCS` once Senjak is no longer
+  neutral. His hostility behavior is unchanged. Works on BG:EE and EET; already
+  fixed scripts stay unchanged. See the [Dorn ambush guide](docs/dorn-ambush-camera.md).
+  No collection selection changes.
 
 ## v0.2.0-alpha.12 - 2026-10-14
 

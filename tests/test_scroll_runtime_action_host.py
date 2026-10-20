@@ -21,6 +21,7 @@ from test_scroll_runtime_detours import action_image, execute, module as emitter
 sys.path.insert(0, str(SOURCE))
 import generate_action_profiles as generator
 from action_loader import bundle
+from local_paths import resolve
 
 PROFILES = json.loads((SOURCE / "action-profiles.json").read_text())
 pytestmark = pytest.mark.skipif(os.name != "nt", reason="actual Windows x64 hook host")
@@ -128,10 +129,19 @@ class Sites:
         assert self.windows.VirtualFree(self.base, 0, 0x8000)
 
 
-def test_generated_recipes_match_audited_native_emitter():
-    profiles = generator.generate()
-    assert profiles == PROFILES
-    assert generator.header(profiles) == (SOURCE / "action_profiles.hpp").read_text()
+def test_committed_header_matches_committed_recipes():
+    assert [p["version"] for p in PROFILES] == [s["version"] for s in generator.sources()]
+    assert generator.header(PROFILES) == (SOURCE / "action_profiles.hpp").read_text()
+
+
+@pytest.mark.parametrize("index", range(len(PROFILES)), ids=[p["version"] for p in PROFILES])
+def test_generated_recipe_matches_audited_native_emitter(index):
+    # Like the other offline proofs, each version's audit reads only that
+    # version's unbundled pinned executable; a missing one skips only itself.
+    source = generator.sources()[index]
+    if not resolve(source["source"]).is_file():
+        pytest.skip(f"offline {source['version']} recipe audit requires its unbundled pinned executable")
+    assert generator.profile(source) == PROFILES[index]
 
 
 @pytest.mark.parametrize("failure", [0, 1, 2, 3, 100])

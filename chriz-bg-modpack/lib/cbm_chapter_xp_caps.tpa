@@ -1,0 +1,103 @@
+// Component 652: chapter-bound XP caps across BG1, SoD, SoA, and ToB,
+// plus Baeloth's Chapter 5+ spawn gate in BAINVI.BCS when BG1 content is present.
+//
+// The gate keeps Baeloth's starting XP under the chapter cap without changing
+// BAELOTH.CRE: every BAINVI.BCS block that starts his Larswood entrance (it
+// names BA_START_SCENE or CUTBA01) gets GlobalGT("Chapter","GLOBAL",4). The
+// caps do not depend on the gate. When BAINVI.BCS is not a compiled script or
+// has no entrance block (another mod replaced the scene), the script stays
+// unchanged and the installer warns instead of dropping the caps. Banking keeps
+// a joiner's XP above a lower cap and banks what he earns until the cap passes it.
+COPY ~chriz-bg-modpack/campaign-xp/cbmbkchp.lua~ ~override/CBMBKCFG.lua~
+
+// Gate a decompiled BAINVI.BCS buffer.
+// status:  0 every block is complete, 1 a block has no END
+// matched: entrance blocks
+// gated:   entrance blocks that got the Chapter 5+ trigger now
+DEFINE_PATCH_FUNCTION cbm_chapter_baeloth_gate
+  RET
+    status
+    matched
+    gated
+BEGIN
+  SET status = 0
+  SET matched = 0
+  SET gated = 0
+  SET cbmg_start = INDEX_BUFFER (~^IF~ 0)
+  WHILE cbmg_start >= 0 BEGIN
+    SET cbmg_end = INDEX_BUFFER (~^END~ cbmg_start)
+    PATCH_IF cbmg_end < cbmg_start BEGIN
+      SET status = 1
+      SET cbmg_start = 0 - 1
+    END ELSE BEGIN
+      SET cbmg_length = cbmg_end + 3 - cbmg_start
+      READ_ASCII cbmg_start cbmg_block (cbmg_length)
+      SET cbmg_modified = 0
+      INNER_PATCH_SAVE cbmg_block ~%cbmg_block%~ BEGIN
+        PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE ~"BA_START_SCENE"~) >= 0)
+            OR (INDEX_BUFFER (CASE_INSENSITIVE ~"CUTBA01"~) >= 0) BEGIN
+          SET matched += 1
+          PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE ~GlobalGT("Chapter","GLOBAL",4)~) < 0) BEGIN
+            REPLACE_TEXTUALLY ~^IF~ ~IF%LNL%  GlobalGT("Chapter","GLOBAL",4)~
+            SET cbmg_modified = 1
+          END
+        END
+      END
+      PATCH_IF cbmg_modified BEGIN
+        SET gated += 1
+        DELETE_BYTES cbmg_start cbmg_length
+        SET cbmg_length = STRING_LENGTH ~%cbmg_block%~
+        INSERT_BYTES cbmg_start cbmg_length
+        WRITE_ASCIIE cbmg_start ~%cbmg_block%~
+      END
+      SET cbmg_next = cbmg_start + cbmg_length
+      SET cbmg_start = INDEX_BUFFER (~^IF~ cbmg_next)
+    END
+  END
+END
+
+ACTION_IF FILE_EXISTS_IN_GAME ~BAINVI.BCS~ BEGIN
+  // Dry run first: BAINVI.BCS is recompiled only when an entrance block needs the gate.
+  OUTER_SET cbm_cxc_status = 0
+  OUTER_SET cbm_cxc_matched = 0
+  OUTER_SET cbm_cxc_gated = 0
+  OUTER_TEXT_SPRINT cbm_cxc_reason ~~
+  COPY_EXISTING ~BAINVI.BCS~ ~override~
+    PATCH_IF BUFFER_LENGTH < 6 BEGIN
+      SET cbm_cxc_status = 2
+      TEXT_SPRINT cbm_cxc_reason ~the file is shorter than an empty script~
+    END ELSE BEGIN
+      READ_ASCII 0 cbm_cxc_signature (2)
+      PATCH_IF NOT (~%cbm_cxc_signature%~ STRING_EQUAL ~SC~) BEGIN
+        SET cbm_cxc_status = 2
+        TEXT_SPRINT cbm_cxc_reason ~the SC script header is missing~
+      END
+    END
+    PATCH_IF cbm_cxc_status = 0 BEGIN
+      READ_ASCII 0 cbm_cxc_bcs (BUFFER_LENGTH)
+      INNER_PATCH ~%cbm_cxc_bcs%~ BEGIN
+        DECOMPILE_BCS_TO_BAF
+        LPF cbm_chapter_baeloth_gate
+          RET cbm_cxc_status = status cbm_cxc_matched = matched cbm_cxc_gated = gated
+        END
+      END
+      PATCH_IF cbm_cxc_status = 1 BEGIN
+        SET cbm_cxc_status = 2
+        TEXT_SPRINT cbm_cxc_reason ~a decompiled script block has no END~
+      END
+    END
+    PATCH_IF (cbm_cxc_status = 0) AND (cbm_cxc_gated > 0) BEGIN
+      DECOMPILE_AND_PATCH BEGIN
+        LPF cbm_chapter_baeloth_gate RET cbm_cxc_gated = gated END
+      END
+    END
+  BUT_ONLY_IF_IT_CHANGES
+
+  ACTION_IF cbm_cxc_status = 2 BEGIN
+    WARN @1658
+  END ELSE ACTION_IF cbm_cxc_matched = 0 BEGIN
+    WARN @1659
+  END
+END
+
+PRINT @1657

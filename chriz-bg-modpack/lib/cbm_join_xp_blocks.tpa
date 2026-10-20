@@ -1,0 +1,110 @@
+// How the join-XP components (237, 238, 239) read one decompiled script block.
+// armed: the one-shot variables the block tests at 0 and sets to a positive
+//   value, as NAME"SCOPE in upper case.
+// provider: a one-shot, protagonist-based XP catch-up of any owner: Beamdog's
+//   BD_JOINXP ladders, 237/238's own, or another mod's ladder keyed on its own
+//   variable, with its own thresholds or cap.
+// raise: a one-shot raise to a fixed XP value that ignores the protagonist,
+//   the form of EET's ToB raise. disarm: completes an armed variable without
+//   such a raise, so a later raise on that variable can no longer run.
+// tob_excluded: the block cannot run in ToB (INTOB 0, or ENDOFBG1 below 2).
+// scs_setup / scs_reset: SCS NPC customization's actor setup and its zero-level
+//   XP reset, a different owner of joining XP. A global component check cannot
+//   tell whether it handled this NPC.
+// WeiDU prints trigger 0x4043 under its last TRIGGER.IDS name, so a compiled
+// InParty(Myself) decompiles as IsValidForPartyDialogue(Myself) in EET, whose
+// TRIGGER.IDS has five names for it (lab, 2026-10-17).
+DEFINE_PATCH_FUNCTION cbm_join_xp_block
+  RET provider raise disarm tob_excluded scs_setup scs_reset
+  RET_ARRAY armed
+BEGIN
+  CLEAR_ARRAY armed
+  SET provider = 0
+  SET raise = 0
+  SET disarm = 0
+  SET scs_setup = (INDEX_BUFFER (~^[ ]*ApplySpellRES("dw#aulel",Myself)~) >= 0)
+    AND (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0)
+  SET scs_reset = (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0)
+    AND (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,0,SET)~) >= 0)
+  SET tob_excluded = (INDEX_BUFFER (~^[ ]*!Global("INTOB","GLOBAL",1)~) >= 0)
+    OR (INDEX_BUFFER (~^[ ]*Global("INTOB","GLOBAL",0)~) >= 0)
+    OR (INDEX_BUFFER (~^[ ]*GlobalLT("ENDOFBG1","GLOBAL",2)~) >= 0)
+    OR (INDEX_BUFFER (~^[ ]*Global("ENDOFBG1","GLOBAL",[01])~) >= 0)
+  // Triggers end at THEN; a response may name Player1 for other reasons.
+  SET cbmjb_then = INDEX_BUFFER (~^THEN~)
+  PATCH_IF cbmjb_then < 0 BEGIN SET cbmjb_then = BUFFER_LENGTH END
+  SET cbmjb_player = INDEX_BUFFER (~Player1~)
+  SET cbmjb_player = (cbmjb_player >= 0) AND (cbmjb_player < cbmjb_then)
+  CLEAR_ARRAY cbmjb_completes
+  REPLACE_EVALUATE ~^[ ]*SetGlobal("\([^"]+\)","\([^"]+\)",[1-9][0-9]*)~ BEGIN
+    SPRINT cbmjb_key ~%MATCH1%"%MATCH2%~
+    TO_UPPER cbmjb_key
+    SET $cbmjb_completes(~%cbmjb_key%~) = 1
+  END ~%MATCH0%~
+  SET cbmjb_armed = 0
+  REPLACE_EVALUATE ~^[ ]*Global("\([^"]+\)","\([^"]+\)",0)~ BEGIN
+    SPRINT cbmjb_key ~%MATCH1%"%MATCH2%~
+    TO_UPPER cbmjb_key
+    PATCH_IF VARIABLE_IS_SET $cbmjb_completes(~%cbmjb_key%~) BEGIN
+      SET $armed(~%cbmjb_key%~) = 1
+      SET cbmjb_armed = 1
+    END
+  END ~%MATCH0%~
+  PATCH_IF cbmjb_armed BEGIN
+    // An OR group can make the party condition optional.
+    SET cbmjb_party = (INDEX_BUFFER (~^[ ]*\(InParty\|I[fs]ValidForPartyDialog\(ue\)?\)(Myself)~) >= 0)
+      AND (INDEX_BUFFER (~^[ ]*OR(~) < 0)
+    SET cbmjb_set = (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,[1-9][0-9]*,SET)~) >= 0)
+    SET provider = cbmjb_party AND cbmjb_set AND (INDEX_BUFFER (~^[ ]*XPGT(Player1,[0-9]+)~) >= 0)
+    SET raise = cbmjb_party AND cbmjb_set AND NOT cbmjb_player
+    SET disarm = NOT raise
+  END
+END
+
+// Reads a whole decompiled script. provider: some block is a provider.
+// tob_provider: some provider block can run in ToB. tob_raise: a raise runs
+// before any block that would disarm its variable, counting only blocks that
+// can run in ToB. scs: SCS set this actor up.
+DEFINE_ACTION_FUNCTION cbm_join_xp_script
+  STR_VAR script = ~~
+  RET provider tob_provider tob_raise scs
+BEGIN
+  OUTER_SET provider = 0
+  OUTER_SET tob_provider = 0
+  OUTER_SET tob_raise = 0
+  OUTER_SET cbmjs_setup = 0
+  OUTER_SET cbmjs_reset = 0
+  ACTION_CLEAR_ARRAY cbmjs_disarmed
+  COPY_EXISTING - ~%script%.BCS~ ~.../cbmj-script~
+    DECOMPILE_BCS_TO_BAF
+    SET cbmjs_next = 0
+    SET cbmjs_start = INDEX_BUFFER (~^IF~ cbmjs_next)
+    WHILE cbmjs_start >= 0 BEGIN
+      SET cbmjs_end = INDEX_BUFFER (~^END~ cbmjs_start)
+      PATCH_IF cbmjs_end < cbmjs_start BEGIN PATCH_FAIL ~%script%.BCS: incomplete script block.~ END
+      READ_ASCII cbmjs_start cbmjs_block (cbmjs_end - cbmjs_start)
+      CLEAR_ARRAY cbmjs_armed
+      INNER_PATCH ~%cbmjs_block%~ BEGIN
+        LPF cbm_join_xp_block RET cbmjs_provider = provider cbmjs_raise = raise cbmjs_disarm = disarm
+          cbmjs_excluded = tob_excluded cbmjs_block_setup = scs_setup cbmjs_block_reset = scs_reset
+          RET_ARRAY cbmjs_armed = armed END
+      END
+      SET provider = provider OR cbmjs_provider
+      SET cbmjs_setup = cbmjs_setup OR cbmjs_block_setup
+      SET cbmjs_reset = cbmjs_reset OR cbmjs_block_reset
+      PATCH_IF NOT cbmjs_excluded BEGIN
+        SET tob_provider = tob_provider OR cbmjs_provider
+        PHP_EACH cbmjs_armed AS cbmjs_key => cbmjs_unused BEGIN
+          PATCH_IF cbmjs_raise AND NOT VARIABLE_IS_SET $cbmjs_disarmed(~%cbmjs_key%~) BEGIN
+            SET tob_raise = 1
+          END
+          PATCH_IF cbmjs_disarm BEGIN
+            SET $cbmjs_disarmed(~%cbmjs_key%~) = 1
+          END
+        END
+      END
+      SET cbmjs_next = cbmjs_end + 3
+      SET cbmjs_start = INDEX_BUFFER (~^IF~ cbmjs_next)
+    END
+  OUTER_SET scs = cbmjs_setup AND cbmjs_reset
+END

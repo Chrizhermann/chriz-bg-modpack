@@ -40,6 +40,15 @@ local function number(n)
     return (grouped:gsub("^,",""))
 end
 local function explanation(view)
+    if view.policy=="chapter_caps" then
+        local ch=view.phase:match("^CH(%d+)$")
+        local label=ch and ("Chapter "..ch) or view.phase
+        local cap=label.." usable XP limit: "..number(view.cap).."."
+        local release=view.phase=="CH22"
+            and "Final chapter XP limit reached. Other installed XP limits still apply."
+            or "Banked XP becomes usable as later chapters raise the cap. Other installed XP limits still apply."
+        return cap.."\n"..release
+    end
     local campaign=({BG1="BG1",SOD="SoD",SOA="SoA",TOB="ToB"})[view.phase]
     local capped=view.phase=="BG1" or view.phase=="SOD"
         or (view.phase=="SOA" and view.policy=="bg1_sod_soa")

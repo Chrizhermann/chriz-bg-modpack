@@ -45,7 +45,7 @@
     },
     "runtime/xp-banking-native/bank_bootstrap.lua": {
       "source": "research/xp-banking-native/bank_bootstrap.lua",
-      "sha256": "37d57457cfd8ad8a965f2c56ba002a3976ddfe12f80a9ec87090f3c2ee0cc529"
+      "sha256": "0e88dae4dc9d30e8021597bbb84959873d876dc9da9b637afb86526ed91bb299"
     },
     "runtime/xp-banking-native/bank_compat.lua": {
       "source": "research/xp-banking-native/bank_compat.lua",
@@ -57,11 +57,11 @@
     },
     "runtime/xp-banking-native/bank_record.lua": {
       "source": "research/xp-banking-native/bank_record.lua",
-      "sha256": "0e1b9d4c9f719b3ad41cf963ecce3ab60d9c78f38654996b15f69be13cd1e71c"
+      "sha256": "1fd3cae3f2f86f11e67856cb2fc1f3ea592f896a48172c0dd1fdfb6d1fd5c08d"
     },
     "runtime/xp-banking-native/bank_runtime.lua": {
       "source": "research/xp-banking-native/bank_runtime.lua",
-      "sha256": "b7b42b9ee713ea40ef03ccfd12185f27c65c0bd8035905d39c7888b27fa0e8b2"
+      "sha256": "3e28bc9c0ace2adec8c9b88e0658edb592590ce1057e97eacd6dfcd591c3c20e"
     },
     "runtime/xp-banking-native/callback_abi.lua": {
       "source": "research/xp-banking-native/callback_abi.lua",
@@ -69,7 +69,7 @@
     },
     "runtime/xp-banking-native/cap_hook.lua": {
       "source": "research/xp-banking-native/cap_hook.lua",
-      "sha256": "1b2aca5886c19c09eae9963d46c03e485896733d40a3aa4bfebfc7782e109229"
+      "sha256": "b550a723fe58c75f6938cc0a3aa1aeaecf40301f9a520ef854b7390ccff69568"
     },
     "runtime/xp-banking-native/dual_bootstrap.lua": {
       "source": "research/xp-banking-native/dual_bootstrap.lua",
@@ -157,7 +157,7 @@
     },
     "runtime/xp-banking-native/identity_hooks.lua": {
       "source": "research/xp-banking-native/identity_hooks.lua",
-      "sha256": "5ee497f06ef457c4b11133dab3af99767376c6387bb11100c92397f59805a5c8"
+      "sha256": "1232e6773f0650b59800f288659208e8df3c6755df4b3088b75d627581c019fe"
     },
     "runtime/xp-banking-native/identity_profiles.lua": {
       "source": "research/xp-banking-native/identity_profiles.lua",
@@ -189,7 +189,7 @@
     },
     "runtime/xp-banking/cbmbank_policy.lua": {
       "source": "research/xp-banking/cbmbank_policy.lua",
-      "sha256": "3f42d36099f766e96a41081e04754c3551c63305f23aaf5686e4a274b9ed9776"
+      "sha256": "553a666d9aa61f0112f814d57285dec3dd7bee54ec16a3274255b406aa4f1be6"
     },
     "runtime/xp-banking/cbmbank_store.lua": {
       "source": "research/xp-banking/cbmbank_store.lua",
@@ -197,7 +197,7 @@
     },
     "runtime/xp-banking/native_account.lua": {
       "source": "research/xp-banking/native_account.lua",
-      "sha256": "6060eaf060bf31e6ea9ab9fc886a869a72310497f302fa29376a6591e4dd0a57"
+      "sha256": "65f81b7c48bcef2664cf9024c064d9aca6ae85298231b84a1bd8ee5cca230f95"
     }
   }
 }

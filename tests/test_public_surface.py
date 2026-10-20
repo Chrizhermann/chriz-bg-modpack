@@ -17,6 +17,7 @@ CHANGELOG = ROOT / "CHANGELOG.md"
 PUBLIC_COMPONENTS = {
     110,
     130,
+    135,
     140,
     160,
     170,
@@ -46,6 +47,7 @@ PUBLIC_COMPONENTS = {
     236,
     237,
     238,
+    239,
     400,
     410,
     430,
@@ -59,6 +61,7 @@ PUBLIC_COMPONENTS = {
     640,
     650,
     651,
+    652,
     660,
 }
 
@@ -90,6 +93,7 @@ class PublicSurfaceTests(unittest.TestCase):
             )
         }
         expected = {
+            135: "cbm_dorn_ambush_camera_fix",
             188: "cbm_yeslick_alaghor",
             189: "cbm_safana_inventory",
             190: "cbm_sarah_archer",
@@ -114,9 +118,11 @@ class PublicSurfaceTests(unittest.TestCase):
             236: "cbm_edwin_redwizard",
             237: "cbm_fade_recruitment_xp",
             238: "cbm_evandra_recruitment_xp",
+            239: "cbm_eet_join_xp",
             640: "cbm_legacy_ui_strings",
             650: "cbm_campaign_xp",
             651: "cbm_campaign_xp_soa",
+            652: "cbm_campaign_xp_chapters",
             660: "cbm_degrodel_fight",
         }
         for component, label in expected.items():
@@ -165,6 +171,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/npc-builds.md",
             "docs/yeslick-alaghor.md",
             "docs/evandra.md",
+            "docs/eet-join-xp.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
@@ -188,6 +195,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/companion-continuity.md",
                 "docs/companion-stats.md",
                 "docs/degrodel-fight.md",
+                "docs/dorn-ambush-camera.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/recruitment-xp.md",
                 "docs/campaign-xp-banking.md",
@@ -197,8 +205,9 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/evandra.md",
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
+                "docs/eet-join-xp.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.12.md",
+                "docs/releases/v0.2.0-alpha.13.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

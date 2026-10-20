@@ -8,12 +8,32 @@ repair or migration was performed.
 
 Component **650** limits usable XP to 161,000 in BG1 and 500,000 in SoD while
 retaining excess earned XP for later. Optional component **651** also limits
-Shadows of Amn to 2,950,000 XP and requires 650. Both are optional. Without 651,
-this mod stops imposing a campaign cap in SoA; with it, the restriction ends in
-ToB. Other installed total caps and level tables still apply.
+Shadows of Amn to 2,950,000 XP and requires 650. Optional component **652**
+(`cbm_campaign_xp_chapters`, requires 650 and is mutually exclusive with 651)
+instead applies chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB:
 
-The initial target is EET on Windows with EEex. The collection's EEex 1.2 and
-2.7.3 game have been checked offline; no upgrade to EEex 1.3.1 is required.
+- **BG1:** Ch. 1-2: 16,000 | Ch. 3: 20,000 | Ch. 4: 32,000 | Ch. 5: 64,000 | Ch. 6: 85,000 | Ch. 7: 161,000
+- **SoD:** Ch. 7: 161,000 | Ch. 8: 200,000 | Ch. 9: 250,000 | Ch. 10: 350,000 | Ch. 11: 420,000 | Ch. 12-13: 500,000
+- **SoA:** Ch. 1 (EET 13): 500,000 | Ch. 2 (EET 14): 1,000,000 | Ch. 3 (EET 15): 2,500,000 | Ch. 4 (EET 16): 2,900,000 | Ch. 5 (EET 17): 3,250,000 | Ch. 6-7 (EET 18-19): 3,500,000
+- **ToB:** Ch. 8 (EET 20): 5,000,000 | Ch. 9 (EET 21): 8,000,000 | Ch. 10 (EET 22): 8,900,000
+
+Component **652** also gates Baeloth's Larswood entrance scene (`BAINVI.BCS`) to
+Chapter 5+ (`GlobalGT("Chapter","GLOBAL",4)`) when `BAINVI.BCS` is present, so
+his 40,000 starting XP fits under Chapter 5's 64,000 XP cap without altering
+`BAELOTH.CRE`. The gate patches the blocks that start his entrance (they name
+`BA_START_SCENE` or `CUTBA01`). If another mod replaced the scene, or
+`BAINVI.BCS` is not a valid script, 652 still installs the caps, leaves the
+script unchanged and warns. Baeloth can then join earlier; banking keeps his
+starting XP and banks what he earns until the chapter cap passes it.
+
+To reach the 8,900,000 cap in ToB Finale (Ch. 10 / EET Ch. 22), use an XP cap remover such as Tweaks Anthology (`cdtweaks`) component 2090;
+other installed total caps and level tables still apply.
+
+The initial target is EET on Windows with EEex. The collection targets game
+2.7.3.0 with EEex v1.3.1. Alpha.12 gave no character a bank account there; the
+hook fix below was checked in game on EEex 1.2.0 and on EEex v1.3.1 (see the
+lab checks below).
+
 Install after EET finalization and the companion XP options you use. SR is not
 a dependency. This component neither increases rewards nor levels characters
 automatically. Multiclasses share one character cap.
@@ -76,24 +96,92 @@ triple-class accounting is unchanged.
 
 ## Remaining limits
 
-This candidate remains experimental. Live gameplay acceptance of startup, level-up,
-Cancel/Continue, save/load and reactivation is still pending. Offline checks cover
-the accounting, actual hook instructions, saved data and installer behavior;
-they do not replace that later player check.
+This candidate remains experimental. Live gameplay acceptance of level-up,
+Cancel/Continue and reactivation is still pending. Offline checks cover the
+accounting, actual hook instructions, saved data and installer behavior; the lab
+checks below cover startup, capping, banking and save/load on two installs. They
+do not replace that later player check.
 
 The first real start (Steam 2.7.3.0, EEex 1.2.0) refused to bank. EEex's
 assembler writes the first call of its stats-hook relays with a REX prefix
 (`40 E8`), which the startup check did not accept. The check now accepts that
 form, plain `E8` and the address-table form `FF 15`, as long as the call still
-reaches the original game function. If banking still cannot start, the log says
-so, and Imoen's Spellhold XP (620) and the 237/238 recruitment catch-up behave as
-they did before 650 was installed.
+reaches the original game function.
+
+Alpha.11 and alpha.12 then started, but never wrote the two actor-lifetime hooks
+inside `EEex.dll`. EEex 1.2.0 writes a hook as a 32-bit jump to code it places
+beside the game. `EEex.dll` loads more than 2 GB away, and EEex's hook writer
+then leaves the entry unchanged without an error. No character got a bank
+account, so every permanent XP award was refused and XP stayed unchanged. The
+bank now places its own small relay pages beside `EEex.dll`, writes those two
+entries itself and restores the original memory protection. Before banking
+starts, it checks that every hook it installs, in the game or in `EEex.dll`, was
+written. XP refused under alpha.11/12 is not restored.
+
+If banking cannot start, XP is neither capped nor banked, and Imoen's Spellhold
+XP (620) and the 237/238 recruitment catch-up behave as they did before 650 was
+installed. The reason is written to the loader log and shown in the game's
+message log once per loaded game, at the first action taken there.
+`CBMBank_Status()` repeats it.
 
 The saved account retains its chosen cap policy. Changing installer selections
 is not a migration of an existing account. Existing-save repair, arbitrary
 external respecs/direct XP memory writes and automatic release before uninstall
 are outside this candidate. Removing 650 or EEex does not cash out an old-class
 bank; do not remove them from a run whose bank you need to keep using.
+
+## Lab checks
+
+October 17, on a disposable copy of the collection install (Steam 2.7.3.0,
+EEex 1.2.0, EET with Spell Revisions), with saves copied from a real run:
+
+- **BG1 (650):** a party award, a script `ChangeStat` award and kill XP stopped
+  usable XP at 161,000 and banked the excess for the three characters who
+  crossed it; the others were unchanged. Saving and reloading in the same game,
+  and loading in a new game process, kept the same amounts. A later 600 XP party
+  award added 100 to each bank.
+- **SoA (650 and 651):** a large party award stopped five characters, two of
+  them dual-classed, at 2,950,000 and banked the excess; a sixth stayed below
+  the cap. A save and reload kept the same amounts.
+- **Startup failure** (forced with an invalid cap policy): banking did not
+  start and XP stayed uncapped and unbanked. The reason appeared once in the
+  message log right after loading, not again on later actions, and
+  `CBMBank_Status()` repeated it.
+
+Not covered there: manual level-up, a multiclass sharing the cap, the dual-class
+level-up pages, the record screen and a campaign transition that releases XP.
+
+October 20, on a disposable copy of the collection's Recommended install (Steam
+2.7.3.0, EEex v1.3.1, EET with Spell Revisions), with this release's package:
+
+- **Alpha.12 first:** as reported, no character got a bank account and every
+  XP change was refused.
+- **Startup:** every hook was written, including the two `EEex.dll`
+  actor-lifetime entries. Characters from loaded saves, joiners and a
+  dual-classed character got accounts.
+- **BG1 (652):** awards above a chapter cap kept usable XP at the cap and
+  banked the rest (Chapters 1-2: 16,000 usable, 4,600 banked). Raising the
+  chapter released banked XP up to the new cap. Saves reloaded with the same
+  amounts, also in a new game process.
+- **SoD and SoA (652):** the same at the SoD chapter steps and at SoA
+  Chapters 1 and 2 (EET 13 and 14).
+- **Baeloth (652):** at Chapter 4 he did not appear in Larswood; at Chapter 5
+  he appeared and joined at 40,000 XP.
+- **SoA (651):** usable XP stopped at 2,950,000 and the rest was banked; a save
+  reloaded unchanged.
+- **A save from alpha.12** loaded with an account and lost no XP.
+
+That check found two faults, fixed and checked again in the same lab before
+this release. A new game's main character got no account until its first XP
+change, so every cap check before then failed with "Party bank has not been
+initialized before cap check"; it is now adopted at its first cap check. With
+652, XP awards in the BG1 prologue (Chapter 0) were refused until the chapter
+was set; an account still waiting for EET's campaign or chapter flags is now
+checked against the first phase of its own cap policy.
+
+Chapters were set directly and XP was given from the console, not through
+story progression. Manual level-up, multiclass characters and the record
+screen were not covered.
 
 ## Short check for later
 
