@@ -18,8 +18,10 @@ def host(request):
     lua.globals().research=str(ROOT.parent).replace("\\","/")
     lua.execute(r'''
         memory={}; original={}; labels={}; writes=0; patches=0; exposed=0
-        protected=true; log={}; nextJIT=0x141000000
+        protected=true; log={}; nextJIT=0x141000000; heap=0x800000; procs={}
+        images={}; protections={}; granules={}; flushes={}; protects=0; lifetimeAt={}
         local base,eeex=0x140000000,0x7ff000000000
+        gameBase,eeexBase=base,eeex
         local function put(at,value,n)
             for i=0,n-1 do memory[at+i]=value%256;value=math.floor(value/256) end
         end
@@ -29,6 +31,17 @@ def host(request):
         local function header(at,timestamp,size)
             put(at,0x5a4d,2);put(at+0x3c,0x100,4);put(at+0x100,0x4550,4)
             put(at+0x104,0x8664,2);put(at+0x108,timestamp,4);put(at+0x150,size,4)
+            images[at]=size
+        end
+        -- Windows-like address space: both images plus the pages VirtualAlloc
+        -- placed. EEex.dll's code stays PAGE_EXECUTE_READ unless VirtualProtect
+        -- changes it; EEex_DisableCodeProtection covers only the game image.
+        local PAGE,GRANULE=4096,0x10000
+        local function imageAt(at)
+            for start,size in pairs(images) do if at>=start and at<start+size then return start end end
+        end
+        function protectionAt(at)
+            return protections[at-at%PAGE] or (imageAt(at)==eeex and 0x20 or nil)
         end
         local ip=dofile(research..'/xp-banking-native/identity_profiles.lua')['2.6']
         local rp=dofile(research..'/xp-banking-native/reset_profiles.lua')['2.6']
@@ -37,8 +50,8 @@ def host(request):
         local wp=dofile(research..'/xp-banking-native/writer_profiles.lua')['2.6']
         identityProfiles={fixture=ip};resetProfiles={fixture=rp}
         header(base,ip.gameTimestamp,ip.gameSize);header(eeex,ip.eeexTimestamp,ip.eeexSize)
-        for _,e in pairs(ip.entries) do
-            local at=(e.module=='game' and base or eeex)+e.rva;hex(at,e.bytes)
+        for slot,e in pairs(ip.entries) do
+            local at=(e.module=='game' and base or eeex)+e.rva;hex(at,e.bytes);lifetimeAt[slot]=at
             if e.label then labels[e.label]=at end
         end
         hex(base+rp.entry.rva,rp.entry.bytes);hex(base+rp.capRva,rp.capBytes)
@@ -92,7 +105,13 @@ def host(request):
         end
         function EEex_WriteU8(at,b)
             cbm_checked(b,0,255)
-            assert(not protected,'code write with protection enabled');memory[at]=b;writes=writes+1
+            local image=imageAt(at)
+            if image==base then assert(not protected,'code write with protection enabled')
+            elseif image or granules[at-at%GRANULE] then
+                local protection=protectionAt(at)
+                assert(protection==0x04 or protection==0x40,'write to a read-only native page')
+            end
+            memory[at]=b;writes=writes+1
             if failAddress==at then failAddress=nil;error('injected partial write') end
         end
         -- InfinityLoader's EEex_Write8 is int8: code bytes above 127 are refused.
@@ -103,8 +122,8 @@ def host(request):
             if failPartyWrite then failPartyWrite=false;error('injected partial party patch') end
         end
         configs={}
-        function EEex_Write64(at,n) configs[at]=n end
-        function EEex_Malloc() return 0x800000+#log*100 end
+        function EEex_Write64(at,n) configs[at]=n;put(at,n,8) end
+        function EEex_Malloc(n) local at=heap;heap=heap+4096;return at end
         function EEex_Free() end
         function EEex_DisableCodeProtection() protected=false end
         function EEex_EnableCodeProtection() protected=true end
@@ -112,22 +131,82 @@ def host(request):
         function EEex_TryLabel(name) return labels[name] end
         function EEex_DefineAssemblyLabel(name,n) labels[name]=n end
         function EEex_ClearAssemblyLabel(name) labels[name]=nil end
+        -- kernel32 as the identity loader's helpers call it: each stub loads its
+        -- argument block into rbx ([0] address, [8] size, [16] protection) and
+        -- stores results at [24] and [32].
+        local kernel,KERNEL={},0x650000
+        function kernel.VirtualAlloc(cell)
+            local at=read(cell,8);local granule=at-at%GRANULE
+            local free=granule>=GRANULE and granule<0x7fffffff0000 and not granules[granule]
+                and not imageAt(granule) and not imageAt(granule+PAGE-1) and not (reserved and reserved(granule))
+            if free then granules[granule]=true;protections[granule]=0x04 end
+            put(cell+24,free and granule or 0,8)
+        end
+        function kernel.VirtualProtect(cell)
+            local at,size,protection=read(cell,8),read(cell+8,8),read(cell+16,4)
+            protects=protects+1
+            local ok=failProtect~=protects and size>0
+            for page=at-at%PAGE,at+size-1,PAGE do ok=ok and protectionAt(page)~=nil end
+            if ok then
+                put(cell+32,protectionAt(at),4)
+                for page=at-at%PAGE,at+size-1,PAGE do protections[page]=protection end
+            end
+            put(cell+24,ok and 1 or 0,4)
+        end
+        function kernel.GetCurrentProcess() end
+        function kernel.FlushInstructionCache(cell)
+            flushes[#flushes+1]={at=read(cell,8),size=read(cell+8,8)};put(cell+24,1,4)
+        end
+        local exportAt,kernelAt={},{}
+        for i,name in ipairs({'VirtualAlloc','VirtualProtect','GetCurrentProcess','FlushInstructionCache'}) do
+            exportAt[name]=KERNEL+i*16;kernelAt[KERNEL+i*16]=kernel[name]
+        end
         function EEex_LoadLibrary(name)
             if name=='EEex.dll' then return eeex end -- existing loaded module
+            if name=='kernel32.dll' then return KERNEL end
             log[#log+1]='dll';return 0x600000
         end
-        function EEex_GetProcAddressInternal(_,name)
-            log[#log+1]=name;return 0x700000+#log*16
+        function EEex_GetProcAddressInternal(module,name)
+            if module==KERNEL then return exportAt[name] end
+            log[#log+1]=name;procs[name]=0x700000+#log*16;return procs[name]
         end
         function EEex_FlattenTable(t) return t end
         function EEex_StoreBytesAssembly() return {'reviewed original bytes'} end
         function EEex_JITNear() nextJIT=nextJIT+256;return nextJIT end
-        function EEex_JITAt(at)
-            patches=patches+1;EEex_WriteU8(at,0xe9)
-            if failPatch==patches then error('injected partial progression patch')end
+        -- EEex assembles hook jumps toward the pages EEex_JITNear allocates
+        -- beside the game. AsmJit cannot encode a jump beyond rel32 reach and
+        -- EEex_JITAt discards that error, leaving the site unchanged. The
+        -- unwritten knob models the same silent failure for a reachable site.
+        local function jumpAt(at,opcode,to,span,failure)
+            patches=patches+1
+            local delta=to-(at+5)
+            if delta<-2147483648 or delta>2147483647 or unwritten==at then return end
+            EEex_WriteU8(at,opcode)
+            if failPatch==patches then error(failure) end
+            delta=delta%4294967296
+            for i=1,4 do EEex_WriteU8(at+i,delta%256);delta=math.floor(delta/256) end
+            for i=5,span-1 do EEex_WriteU8(at+i,0x90) end
         end
-        function EEex_JITNearAsLuaFunction(name)
-            _G[name]=function() log[#log+1]=name;return true end
+        function EEex_JITAt(at,assembly)
+            local call=type(assembly)=='table' and assembly[1]=='call short '
+            local to=type(assembly)=='table' and type(assembly[2])=='number' and assembly[2] or EEex_JITNear()
+            jumpAt(at,call and 0xe8 or 0xe9,to,5,'injected partial progression patch')
+        end
+        function EEex_JITNearAsLuaFunction(name,assembly)
+            -- A stub runs the kernel32 calls it assembles on the argument block it loads into rbx.
+            local cell,calls=nil,{}
+            for i,part in ipairs(type(assembly)=='table' and assembly or {}) do
+                local before=assembly[i-1]
+                if type(part)=='number' and type(before)=='string' then
+                    if before:match('mov rbx, $') then cell=part
+                    elseif before:match('call $') and kernelAt[part] then calls[#calls+1]=kernelAt[part] end
+                end
+            end
+            _G[name]=function()
+                log[#log+1]=name
+                for _,call in ipairs(calls) do call(cell) end
+                return true
+            end
         end
         EEex_LuaCallReturnType={Boolean=0,Number=1}
         function EEex_GenLuaCall(name,options)
@@ -144,17 +223,15 @@ def host(request):
                 return 'world','world','1',string.rep('a',32),false,true,true
             end
         end
-        function EEex_HookReplaceFunctionMaintainOriginal(at,span)
+        function EEex_HookReplaceFunctionMaintainOriginal(at,span,label,target)
             assert(CBMBank_IdentityNativeQuery,'identity query must be exposed before patch')
-            patches=patches+1
-            EEex_WriteU8(at,0xe9)
-            if failPatch==patches then error('injected partial entry patch') end
-            for i=1,span-1 do EEex_WriteU8(at+i,0xcc) end
+            labels[label]=EEex_JITNear()
+            -- EEex's shim: jmp qword ptr [rip+2], two filler bytes, the target.
+            local shim=EEex_JITNear();hex(shim,'ff2502000000cccc');put(shim+8,target,8)
+            jumpAt(at,0xe9,shim,span,'injected partial entry patch')
         end
         function EEex_HookAfterCall(at)
-            patches=patches+1;EEex_WriteU8(at,0xe9)
-            if failPatch==patches then error('injected partial cap patch') end
-            for i=1,4 do EEex_WriteU8(at+i,0xcc) end
+            jumpAt(at,0xe9,EEex_JITNear(),5,'injected partial cap patch')
         end
         EEex_Active=true;EEex_GameState_Private_AlreadyInitialized=false
         EEex_Sprite_Private_MarshalHandlers={};EEex_Sprite_LoadedListeners={};EEex_GameState_DestroyedListeners={}
@@ -188,6 +265,9 @@ def host(request):
         function assertRestored()
             assert(protected,'protection not restored')
             for at,b in pairs(original) do assert(memory[at]==b,'native byte was not restored') end
+            for page,protection in pairs(protections) do
+                assert(imageAt(page)~=eeex or protection==0x20,'EEex code page left writable')
+            end
         end
         function useIdentityProfile(gameKey,alternateKey)
             local profile=dofile(research..'/xp-banking-native/identity_profiles.lua')[gameKey]
@@ -195,9 +275,9 @@ def host(request):
             header(base,profile.gameTimestamp,profile.gameSize)
             header(eeex,build.eeexTimestamp,build.eeexSize)
             for _,entries in ipairs({profile.entries,build.entries})do
-                for _,entry in pairs(entries)do
+                for slot,entry in pairs(entries)do
                     local at=(entry.module=='game' and base or eeex)+entry.rva
-                    hex(at,entry.bytes)
+                    hex(at,entry.bytes);lifetimeAt[slot]=at
                     if entry.label then labels[entry.label]=at end
                 end
             end
@@ -238,10 +318,15 @@ def test_actual_bootstrap_inert_then_connects_real_modules(host):
     ''')
 
 
-@pytest.mark.parametrize("failure",["failPatch=1","failPatch=4","failPatch=7","failPatch=8","failPatch=9",
+# EEex's hook writer patches the four game entries (patches 1-4); reset (5-6),
+# award (7), cap (8) and progression (9+) follow. The two EEex.dll entries are
+# ours: VirtualProtect calls 1-2 seal their relays, 3-6 surround their writes.
+@pytest.mark.parametrize("failure",["failPatch=1","failPatch=4","failPatch=5","failPatch=6","failPatch=7","failPatch=8",
                                      "failPartyWrite=true","failLoaded=true","failExpose=1","failExpose=3","failExpose=4",
                                      "failExpose=7","failAddress=writerAt+7","failAddress=removeAt+2","failAddress=previewAt+3",
-                                     "failAddress=manualAt","failAddress=hlaAt","failAddress=entryAt","failMenuListener=true","failNoticeListener=true"])
+                                     "failAddress=manualAt","failAddress=hlaAt","failAddress=entryAt","failMenuListener=true",
+                                     "failNoticeListener=true","failAddress=lifetimeAt.construct+2","failAddress=lifetimeAt.destruct",
+                                     "failProtect=1","failProtect=4","failProtect=6"])
 def test_actual_bootstrap_restores_all_owned_bytes_and_callbacks_on_failure(host,failure):
     host.execute(failure)
     host.execute('''
@@ -274,13 +359,15 @@ def test_actual_bootstrap_refuses_late_conflicting_or_modified_host_before_nativ
     ''')
 
 
-@pytest.mark.parametrize("failure",[1,3,6])
+@pytest.mark.parametrize("failure",["failPatch=1","failPatch=3","failPatch=4","failAddress=lifetimeAt.construct",
+                                     "failAddress=lifetimeAt.destruct+6","failProtect=3","failProtect=4","failProtect=6",
+                                     "unwritten=lifetimeAt.import"])
 def test_identity_installer_own_partial_patch_rollback_and_nonretryable_config(host,failure):
-    host.globals().failPatch=failure
+    host.execute(failure)
     host.execute('''
         local id=dofile(research..'/xp-banking-native/identity_hooks.lua')
         local ok,why=pcall(id.Install,{researchOnly=true,dllPath='synthetic.dll',profiles=identityProfiles})
-        assert(not ok and tostring(why):find('rolled back'))
+        assert(not ok and tostring(why):find('rolled back'),tostring(why))
         assertRestored();assert(not id.installed and id.attempted)
         assert(CBMBank_IdentityNativeQuery==nil and CBMBank_Identity==nil)
         local again,msg=pcall(id.Install,{researchOnly=true})
@@ -297,8 +384,13 @@ def test_collection_eeex_12_lifetime_profile_uses_actual_module_and_entries(host
         assert(p.entries.construct.rva==0xd350 and p.entries.destruct.rva==0xd390)
         assert(identityProfiles.fixture.entries.construct.rva~=p.entries.construct.rva)
         id.Install{researchOnly=true,dllPath='synthetic.dll',profiles=identityProfiles}
-        assert(id.installed and patches==6 and protected)
-        assert(memory[eeex+0xd350]==0xe9 and memory[eeex+0xd390]==0xe9)
+        -- EEex's hook writer patches the game entries; the EEex.dll entries are ours.
+        assert(id.installed and patches==4 and protected)
+        assert(lifetimeAt.construct==eeex+0xd350 and lifetimeAt.destruct==eeex+0xd390)
+        for slot,handler in pairs({copy='CBMI_Copy',marshal='CBMI_Marshal',export='CBMI_CharacterExport',
+            import='CBMI_CharacterImport',construct='CBMI_Construct',destruct='CBMI_Destruct'}) do
+            assert(id.JumpTarget(lifetimeAt[slot],p.entries[slot].span)==procs[handler],slot)
+        end
     ''')
 
 
@@ -322,19 +414,104 @@ def test_scroll_chain_offer_is_exact_owned_destructor_and_refuses_later_changes(
         local id=dofile(research..'/xp-banking-native/identity_hooks.lua')
         local at=labels['EEex::Sprite_Hook_OnDestruct']
         assert(id.ActorDestroyChain(at)==nil)
-        local hook=EEex_HookReplaceFunctionMaintainOriginal
-        function EEex_HookReplaceFunctionMaintainOriginal(address,span,label,target)
-            hook(address,span,label,target)
-            -- Actual upstream shape: five-byte E9 plus two NOPs. The model
-            -- does not execute this displacement; native scroll checks do.
-            EEex_WriteU8(address+5,0x90);EEex_WriteU8(address+6,0x90)
-        end
         id.Install{researchOnly=true,dllPath='synthetic.dll',profiles=identityProfiles}
         local offer=id.ActorDestroyChain(at)
-        assert(offer.schema==1 and offer.entry==at and offer.handler>0)
-        assert(offer.original=='4c8bdc49894b08' and offer.replacement=='e9cccccccc9090')
+        assert(offer.schema==1 and offer.entry==at and offer.handler==procs.CBMI_Destruct)
+        -- What component 430's authenticate_bank_actor accepts: E9 rel32 90 90
+        -- into a relay that starts jmp qword ptr [rip+0] and holds the handler
+        -- on an executable page.
+        local relay=eeexBase-0x20000
+        local delta,rel=(relay-(at+5))%4294967296,{}
+        for i=1,4 do rel[i]=string.format('%02x',delta%256);delta=math.floor(delta/256) end
+        assert(offer.original=='4c8bdc49894b08' and offer.replacement=='e9'..table.concat(rel)..'9090',offer.replacement)
+        assert(EEex_ReadU16(relay)==0x25ff and EEex_ReadU32(relay+2)==0 and EEex_Read64(relay+6)==offer.handler)
+        assert(protectionAt(relay)==0x20)
         assert(id.ActorDestroyChain(at+1)==nil)
         offer.handler=0;assert(id.ActorDestroyChain(at).handler>0)
         memory[at+1]=0
         assert(id.ActorDestroyChain(at)==nil)
+    ''')
+
+
+@pytest.mark.parametrize("profile",[None,"collection-1.2"])
+def test_eeex_dll_lifetime_entries_jump_through_relays_beside_them(host,profile):
+    # EEex's own hook writer cannot reach EEex.dll from its code pages beside
+    # the game and leaves the entry unchanged without an error (lab, EEex 1.2.0).
+    if profile:
+        host.execute(f"useIdentityProfile('2.7','{profile}')")
+    host.execute('''
+        local id=dofile(research..'/xp-banking-native/identity_hooks.lua')
+        id.Install{researchOnly=true,dllPath='synthetic.dll',profiles=identityProfiles}
+        for i,slot in ipairs({'construct','destruct'}) do
+            local at=lifetimeAt[slot]
+            assert(memory[at]==0xe9 and memory[at+5]==0x90 and memory[at+6]==0x90,slot)
+            local relay=at+5+EEex_Read32(at+1)
+            -- Nearest free allocation granule; above the entries lies EEex.dll itself.
+            assert(relay==eeexBase-i*0x10000,slot)
+            for j,b in ipairs({0xff,0x25,0,0,0,0}) do assert(memory[relay+j-1]==b,slot) end
+            assert(EEex_Read64(relay+6)==procs[slot=='construct' and 'CBMI_Construct' or 'CBMI_Destruct'],slot)
+            assert(protectionAt(relay)==0x20 and protectionAt(at)==0x20,slot)
+            local flushed=false
+            for _,f in ipairs(flushes) do flushed=flushed or (f.at==at and f.size==7) end
+            assert(flushed,slot)
+            assert(labels['CBMI::original_'..slot]>0,slot)
+        end
+    ''')
+
+
+def test_relay_search_reaches_the_farthest_granule_rel32_allows(host):
+    host.execute('''
+        local limit,farthest=0x7ffe0000,0
+        reserved=function(granule)
+            farthest=math.max(farthest,math.abs(granule-eeexBase))
+            return granule~=eeexBase+limit and granule~=eeexBase-limit
+        end
+        local id=dofile(research..'/xp-banking-native/identity_hooks.lua')
+        id.Install{researchOnly=true,dllPath='synthetic.dll',profiles=identityProfiles}
+        assert(farthest==limit)
+        for slot,relay in pairs({construct=eeexBase+limit,destruct=eeexBase-limit}) do
+            local at=lifetimeAt[slot]
+            local handler=procs[slot=='construct' and 'CBMI_Construct' or 'CBMI_Destruct']
+            assert(at+5+EEex_Read32(at+1)==relay and id.JumpTarget(at,7)==handler,slot)
+        end
+    ''')
+
+
+@pytest.mark.parametrize("free",["false","granule==eeexBase-0x10000"])
+def test_relay_shortage_refuses_and_rolls_back_cleanly(host,free):
+    # No granule at all, or one granule only for the construct relay.
+    host.execute(f"reserved=function(granule) return not ({free}) end")
+    host.execute('''
+        local ok,why=pcall(bootstrap)
+        why=tostring(why)
+        assert(not ok and why:find('No free page within rel32 reach',1,true),why)
+        assert(why:find('rolled back; restart required',1,true) and not why:find('rollback failed',1,true),why)
+        assertRestored()
+    ''')
+
+
+@pytest.mark.parametrize("site,message",[
+    ("lifetimeAt.copy","Native lifetime entry was not installed: copy"),
+    ("capAt","Native hook at game+0x34E71C was not written"),
+    ("manualAt","Native hook at game+0x"),
+])
+def test_actual_bootstrap_refuses_a_hook_eeex_left_unwritten(host,site,message):
+    host.execute(f"unwritten={site}")
+    host.globals().expected=message
+    host.execute('''
+        local ok,why=pcall(bootstrap)
+        assert(not ok and tostring(why):find(expected,1,true),tostring(why))
+        assert(tostring(why):find('rolled back; restart required',1,true),tostring(why))
+        assertRestored()
+    ''')
+
+
+def test_actual_bootstrap_names_a_changed_eeex_entry_by_its_full_address(host):
+    # Stock Lua 5.1/5.2 cannot format a 64-bit address with %X.
+    host.execute('''
+        memory[lifetimeAt.destruct+1]=0
+        local ok,why=pcall(bootstrap)
+        assert(not ok and writes==0 and #log==0 and protected)
+        assert(tostring(why):find('ABI mismatch at 0x7FF00000E8C0 (expected 4C8BDC49894B08, found 4C00DC49894B08)',1,true),
+            tostring(why))
     ''')

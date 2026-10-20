@@ -12,17 +12,22 @@ local ownedGlobals={"CBMBank_Identity","CBMBank_IdentityNativeQuery","CBMBank_Id
     "CBMBank_Writer","CBMBank_BeforeWrite","CBMBank_CompleteWrite","CBMBank_UncertainWrite",
     "CBMBank_WriterConfigure","CBMBank_WriterNativeQuery","CBMBank_WriterNativePlan","CBMBank_WriterNativeOwnedSet",
     "CBMBank_ActiveXP","CBMBank_ImoenXPSet","CBMBank_Catchup","CBMBank_Status"}
+local function where(at)
+    local base=EEex_GetImageBase()
+    local size=EEex_ReadU32(base+EEex_ReadU32(base+0x3C)+0x50)
+    if at>=base and at<base+size then return ("game+0x%X"):format(at-base) end
+    -- Stock Lua 5.1/5.2 format %X through a 32-bit long on Windows.
+    local high,low=math.floor(at/4294967296),at%4294967296
+    return high==0 and ("0x%X"):format(low) or ("0x%X%08X"):format(high,low)
+end
 local function verify(at,hex)
     assert(type(hex)=="string" and #hex%2==0,"Invalid native profile bytes")
     for i=1,#hex,2 do
         if EEex_ReadU8(at+(i-1)/2)~=tonumber(hex:sub(i,i+1),16) then
             -- Name the place and what is there, so a log shows which hook got there first.
             local found={};for j=0,#hex/2-1 do found[#found+1]=("%02X"):format(EEex_ReadU8(at+j)) end
-            local base=EEex_GetImageBase()
-            local size=EEex_ReadU32(base+EEex_ReadU32(base+0x3C)+0x50)
-            local where=(at>=base and at<base+size) and ("game+0x%X"):format(at-base) or ("0x%X"):format(at)
             error(("Native bootstrap ABI mismatch at %s (expected %s, found %s); no hooks installed")
-                :format(where,hex:upper(),table.concat(found)),2)
+                :format(where(at),hex:upper(),table.concat(found)),2)
         end
     end
 end
@@ -40,7 +45,8 @@ function M.Install(options)
     assert(type(options)=="table" and options.researchOnly==true,"Explicit research-only install required")
     assert(type(options.researchDir)=="string" and type(options.dllPath)=="string")
     assert(type(options.progressionDLLDirectory)=="string","Explicit private progression DLL directory required")
-    assert(options.policy=="bg1_sod" or options.policy=="bg1_sod_soa","Unknown banking policy")
+    assert(options.policy=="bg1_sod" or options.policy=="bg1_sod_soa"
+        or options.policy=="chapter_caps","Unknown banking policy")
     assert(EEex_Active==true,"EEex is required")
     -- Actual EEex startup state, not a caller assertion. The flag is set once
     -- after engine Lua initialization; a main-menu/hot-load is too late.
@@ -154,6 +160,14 @@ function M.Install(options)
             identityDLLPath=options.dllPath,callbacks=callbacks})
         notices.Install{researchOnly=true,runtime=runtime,reset=reset}
         record.Install{runtime=runtime,reset=reset}
+        -- EEex_JITAt discards assembler errors, so a hook EEex could not write
+        -- leaves its site unchanged without failing. Every remembered site is
+        -- one this startup patches.
+        for _,r in ipairs(ranges) do
+            local changed=false
+            for i=0,r.count-1 do if EEex_ReadU8(r.at+i)~=r.bytes[i] then changed=true;break end end
+            if not changed then error(("Native hook at %s was not written"):format(where(r.at))) end
+        end
         -- Register only after all native boundaries exist. These real EEex APIs
         -- append/store callbacks synchronously; no actor is loaded by them.
         EEex_Sprite_AddMarshalHandlers(runtime.key,runtime.Export,runtime.Import)
@@ -173,9 +187,13 @@ function M.Install(options)
         removeOwn(EEex_GameState_DestroyedListeners,destroyed)
         local restored,restoreWhy=pcall(function()
             EEex_DisableCodeProtection()
-            for _,r in ipairs(ranges) do for i=0,r.count-1 do
-                if EEex_ReadU8(r.at+i)~=r.bytes[i] then EEex_WriteU8(r.at+i,r.bytes[i]) end
-            end end
+            for _,r in ipairs(ranges) do
+                -- EEex_DisableCodeProtection does not cover EEex.dll's entries.
+                if identity.IsFar(r.at) then identity.RestoreFar(r.at,r.bytes,r.count)
+                else for i=0,r.count-1 do
+                    if EEex_ReadU8(r.at+i)~=r.bytes[i] then EEex_WriteU8(r.at+i,r.bytes[i]) end
+                end end
+            end
         end)
         EEex_EnableCodeProtection()
         if restored then

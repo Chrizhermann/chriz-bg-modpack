@@ -42,11 +42,19 @@ function R.RetiredThreshold(info)
     assert(uint(value),"Installed XPLEVEL lacks a valid retired threshold")
     return value
 end
-function R.CurrentPhase(saved)
+function R.CurrentPhase(saved,policy)
     local game=EngineGlobals.g_pBaldurChitin.m_pObjectGame
     local campaign=string.upper(game.m_sCurrentCampaign.m_pchData:get())
-    local phase,reason=R.policy.Campaign(campaign,EEex_GameState_GetGlobalInt("ENDOFBG1"),
-        EEex_GameState_GetGlobalInt("INTOB"),saved)
+    local activePolicy=policy or (type(saved)=="string" and saved:match("^CH%d+$") and "chapter_caps") or R.choice
+    local phase,reason
+    if activePolicy=="chapter_caps" then
+        phase,reason=R.policy.ChapterPhase(campaign,EEex_GameState_GetGlobalInt("ENDOFBG1"),
+            EEex_GameState_GetGlobalInt("INTOB"),EEex_GameState_GetGlobalInt("CHAPTER"),
+            saved,R.standalone)
+    else
+        phase,reason=R.policy.Campaign(campaign,EEex_GameState_GetGlobalInt("ENDOFBG1"),
+            EEex_GameState_GetGlobalInt("INTOB"),saved)
+    end
     assert(phase,reason); return phase
 end
 function R.Report(message)
@@ -58,7 +66,7 @@ function R.Configure(policy,account,wire,choice,receipts)
     assert(type(policy)=="table" and type(policy.Campaign)=="function","Campaign policy module required")
     assert(type(account)=="table" and type(account.Inspect)=="function","Native account module required")
     assert(type(wire)=="table" and type(wire.WireSnapshot)=="function","Marshal wire validator required")
-    assert(choice=="bg1_sod" or choice=="bg1_sod_soa","Invalid component choice")
+    assert(choice=="bg1_sod" or choice=="bg1_sod_soa" or choice=="chapter_caps","Invalid component choice")
     assert(not R.policy,"Runtime already configured")
     R.policy,R.account,R.wire,R.choice=policy,account,wire,choice
     R.receipts=receipts
@@ -81,7 +89,8 @@ local function validateOwned(payload)
         and payload.ownerKey:match("^[0-9a-f]+$"),"Invalid saved bank owner")
 end
 local function stageNotices(state,view,released,previousPhase)
-    local capped=state.phase=="BG1" or state.phase=="SOD" or
+    local chapterMode=state.policy=="chapter_caps"
+    local capped=chapterMode or state.phase=="BG1" or state.phase=="SOD" or
         (state.phase=="SOA" and state.policy=="bg1_sod_soa")
     local seen=state.notices and state.notices.seen or {}
     local reachedKey="cap:"..state.phase
@@ -96,8 +105,17 @@ local function stageNotices(state,view,released,previousPhase)
         n.notices.seen[key]=true
         n.notices.pending[#n.notices.pending+1]={key=key,text=message}
     end
-    if release then add(releaseKey,string.format("Campaign change: %.0f banked XP is now available for level-up.",released)) end
-    if reached then add(reachedKey,string.format("Campaign XP limit reached: %.0f. Further XP will be saved for a later campaign.",view.cap)) end
+    if release then
+        local prefix=chapterMode and "Chapter change" or "Campaign change"
+        add(releaseKey,string.format("%s: %.0f banked XP is now available for level-up.",prefix,released))
+    end
+    if reached then
+        if chapterMode then
+            add(reachedKey,string.format("Chapter XP limit reached: %.0f. Further XP will be saved for a later chapter.",view.cap))
+        else
+            add(reachedKey,string.format("Campaign XP limit reached: %.0f. Further XP will be saved for a later campaign.",view.cap))
+        end
+    end
     return detached(n)
 end
 local function bind(aux,identity,state,origin)
@@ -139,6 +157,11 @@ local function accountFromSeed(seed,info,phase)
     validateOwned(result)
     return result
 end
+-- A pending adoption (campaign or chapter flags not initialized yet) is checked as an
+-- account in the first phase of its own policy: CH1 for chapter caps, BG1 otherwise.
+local function seedAccount(state,sprite)
+    return accountFromSeed(state,R.ClassInfo(sprite),state.policy=="chapter_caps" and "CH1" or "BG1")
+end
 
 -- Called only by the native identity/adoption path, not from a marshal exporter.
 -- A real party-member lookup is required as well as the scoped identity result.
@@ -156,10 +179,11 @@ function R.Adopt(sprite)
         overflow=0,revision=0}
     -- Capture the actual first-party baseline even if EET's campaign flags are
     -- not initialized yet. Later awards must not become grandfathered progress.
-    accountFromSeed(seed,info,"BG1") -- validate the complete captured baseline
+    local initialPhase=R.choice=="chapter_caps" and "CH1" or "BG1"
+    accountFromSeed(seed,info,initialPhase) -- validate the complete captured baseline
     aux[R.key]=detached(seed)
     aux[R.bindingKey]={incarnation=identity.incarnation,ownerKey=seed.ownerKey,origin="adopted"}
-    local known,phase=pcall(R.CurrentPhase)
+    local known,phase=pcall(R.CurrentPhase,nil,seed.policy)
     if not known then return false,phase end
     local state=accountFromSeed(seed,info,phase)
     bind(aux,identity,state,"adopted")
@@ -269,7 +293,7 @@ function R.ReconcileCHR(sprite)
         (info.oldClass==state.old.class and info.newClass==state.old.newClass)),
         "Native CHR import changed class identity")
     local nextState=detached(state)
-    nextState.phase=R.CurrentPhase() -- NEW run: never carry the old run's high-water mark
+    nextState.phase=R.CurrentPhase(nil,nextState.policy) -- NEW run: never carry the old run's high-water mark
     nextState.floor=receipt.usable -- retain already usable progress, not the bank
     nextState.ownerKey=pending.newOwner
     assert(nextState.revision<9007199254740991,"Account revision exhausted")
@@ -331,7 +355,7 @@ function R.BeforeAward(sprite,effect)
     assertBound(aux,identity,state)
     assert(not state.pendingAward and not state.pendingDual and not state.pendingWrite,
         "An earlier native XP transaction needs reconciliation")
-    local account=state.initializing and accountFromSeed(state,R.ClassInfo(sprite),"BG1") or state
+    local account=state.initializing and seedAccount(state,sprite) or state
     -- Validate the complete resulting balance and exact storage BEFORE allowing
     -- the native leaf to write anything. No overflow is credited at preparation.
     R.account.CompleteAward(account,boundary.preBase,boundary.amount,boundary.applied,
@@ -353,7 +377,7 @@ function R.CompleteAward(sprite,effect)
     local state=aux[R.key]
     assertBound(aux,identity,state)
     local pending=state.pendingAward
-    local account=state.initializing and accountFromSeed(state,R.ClassInfo(sprite),"BG1") or state
+    local account=state.initializing and seedAccount(state,sprite) or state
     assert(pending and pending.stage=="prepared" and pending.incarnation==identity.incarnation
         and pending.ownerKey==state.ownerKey and pending.revision==account.revision
         and pending.preOverflow==account.overflow,"XP completion has no unchanged prepared journal")
@@ -416,7 +440,7 @@ function R.BeforeWrite(sprite)
     assertBound(aux,identity,state)
     assert(not state.pendingAward and not state.pendingDual and not state.pendingWrite,
         "An earlier native XP transaction needs reconciliation")
-    local account=state.initializing and accountFromSeed(state,R.ClassInfo(sprite),"BG1") or state
+    local account=state.initializing and seedAccount(state,sprite) or state
     local after,target,receipt=R.account.PrepareWrite(account,boundary.preBase,
         boundary.rawValue,boundary.mode,boundary.origin,boundary.source,boundary.effectMode)
     if state.initializing then
@@ -447,7 +471,7 @@ function R.CompleteWrite(sprite)
     local state=aux[R.key]
     assertBound(aux,identity,state)
     local pending=state.pendingWrite
-    local account=state.initializing and accountFromSeed(state,R.ClassInfo(sprite),"BG1") or state
+    local account=state.initializing and seedAccount(state,sprite) or state
     assert(pending and pending.stage=="prepared" and pending.incarnation==identity.incarnation
         and pending.ownerKey==state.ownerKey and pending.revision==account.revision
         and pending.preOverflow==account.overflow,"XP setter completion has no unchanged prepared journal")
@@ -643,8 +667,16 @@ function R.Snapshot(sprite,nativeCap)
     if type(state)=="table" and state.excluded==true then return {eligible=false} end
     if state==nil then
         -- Existing unowned enemies/summons are not silently adopted here.
-        assert(EEex_Sprite_GetCharacterIndex(sprite)<0,"Party bank has not been initialized before cap check")
-        return {eligible=false}
+        if EEex_Sprite_GetCharacterIndex(sprite)<0 then return {eligible=false} end
+        -- A new game's protagonist is placed in the party by character creation:
+        -- neither the party-ready hook nor a loaded event sees it as a party member,
+        -- so its first native stat check can come before its first XP award/setter.
+        -- Adopt here with the same baseline those paths capture (a cap check never
+        -- changes base XP). Serialization/copy views still never adopt.
+        assert(identity.canMutate and not identity.serializing,
+            "Party bank has not been initialized before cap check")
+        R.Adopt(sprite)
+        state=aux[R.key]
     end
     if state.chrPending then
         R.ReconcileCHR(sprite)
@@ -655,8 +687,9 @@ function R.Snapshot(sprite,nativeCap)
     local info=R.ClassInfo(sprite)
     local initializing=false
     if state.initializing then
-        local known,phase=pcall(R.CurrentPhase)
-        state=accountFromSeed(state,info,known and phase or "BG1")
+        local initialPhase=state.policy=="chapter_caps" and "CH1" or "BG1"
+        local known,phase=pcall(R.CurrentPhase,nil,state.policy)
+        state=accountFromSeed(state,info,known and phase or initialPhase)
         if known then
             assert(identity.canMutate and not identity.serializing,"Cannot finish adoption during serialization")
             aux[R.key]=state
@@ -682,7 +715,7 @@ function R.Snapshot(sprite,nativeCap)
         assert(info.oldClass==state.old.class and info.newClass==state.old.newClass,
             "Native dual identity differs from the saved account")
     end
-    local phase=initializing and state.phase or R.CurrentPhase(state.phase)
+    local phase=initializing and state.phase or R.CurrentPhase(state.phase,state.policy)
     local nextState=state
     if phase~=state.phase then
         assert(not inDual,"Campaign changed during native dual transaction")
@@ -731,7 +764,7 @@ function R.RecordView(sprite,nativeCap)
         assert(info.oldClass==state.old.class and info.newClass==state.old.newClass,
             "Native dual identity differs from the saved account")
     end
-    local phase=R.CurrentPhase(state.phase)
+    local phase=R.CurrentPhase(state.phase,state.policy)
     -- Advance returns a copy; a record-screen draw never publishes it.
     local projected=phase==state.phase and state or R.account.Advance(state,phase,nativeCap)
     local view=R.account.Inspect(projected,sprite.m_baseStats.m_xp,nativeCap,R.RetiredThreshold(info))

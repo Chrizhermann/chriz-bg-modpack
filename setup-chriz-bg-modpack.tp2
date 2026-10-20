@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.12~
+VERSION ~v0.2.0-alpha.13~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -57,6 +57,13 @@ COPY ~chriz-bg-modpack/baf/cbm_kivan_saha01.baf~ ~override/X#SAHA01.BCS~
   COMPILE_BAF_TO_BCS
 COPY ~chriz-bg-modpack/baf/cbm_kivan_saha02.baf~ ~override/X#SAHA02.BCS~
   COMPILE_BAF_TO_BCS
+
+// Dorn's BG1 ambush cutscene locks the camera on Senjak, and only a completed
+// conversation releases it; leaving the area after a stall crashes the game.
+// Remove the lock and release it once Senjak turns hostile. BG:EE, SoD, EET.
+BEGIN @135 DESIGNATED 135 GROUP @1100 LABEL ~cbm_dorn_ambush_camera_fix~
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~CUTDN1B.BCS~ @1351
+INCLUDE ~chriz-bg-modpack/lib/cbm_dorn_ambush_camera_fix.tpa~
 
 // Replace Mazzy's weapon/style proficiencies with the authored Short Bow /
 // Short Sword allocation for each of the five shipped BG2 variants.
@@ -485,6 +492,12 @@ BEGIN @238 DESIGNATED 238 GROUP @1100 LABEL ~cbm_evandra_recruitment_xp~
 INCLUDE ~chriz-bg-modpack/lib/cbm_recruitment_xp.tpa~
 LAF cbm_recruitment_xp STR_VAR creature = ~RH#EVA~ private_script = ~CBMEXP~ companion = ~Evandra~ END
 
+// Reads EET's campaign tables and transition scripts; install after NPC mods.
+BEGIN @239 DESIGNATED 239 GROUP @1100 LABEL ~cbm_eet_join_xp~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @1239
+INCLUDE ~chriz-bg-modpack/lib/cbm_eet_join_xp.tpa~
+LAF cbm_eet_join_xp END
+
 // =====================================================================
 // Spell and compatibility fixes (400-499)
 // =====================================================================
@@ -596,5 +609,11 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_campaign_xp.tpa~
 
 BEGIN @651 DESIGNATED 651 GROUP @1600 LABEL ~cbm_campaign_xp_soa~
   REQUIRE_COMPONENT ~setup-chriz-bg-modpack.tp2~ ~650~ @1654
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 652) @1656
 COPY ~chriz-bg-modpack/campaign-xp/cbmbksoa.lua~ ~override/CBMBKCFG.lua~
 PRINT @1655
+
+BEGIN @652 DESIGNATED 652 GROUP @1600 LABEL ~cbm_campaign_xp_chapters~
+  REQUIRE_COMPONENT ~setup-chriz-bg-modpack.tp2~ ~650~ @1654
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 651) @1656
+INCLUDE ~chriz-bg-modpack/lib/cbm_chapter_xp_caps.tpa~

@@ -50,8 +50,13 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 "chriz-bg-modpack/imoen-xp/m_cbmixp.lua",
                 "chriz-bg-modpack/lib/cbm_companion_stats.tpa",
                 "chriz-bg-modpack/lib/cbm_defensive_stance_ai.tpa",
+                "chriz-bg-modpack/lib/cbm_eet_join_xp.tpa",
+                "chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa",
+                "chriz-bg-modpack/baf/cbm_eet_join_xp_soa.baf",
+                "chriz-bg-modpack/baf/cbm_eet_join_xp_tob.baf",
                 "docs/companion-continuity.md",
                 "docs/companion-stats.md",
+                "docs/eet-join-xp.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/yeslick-alaghor.md",
             ):

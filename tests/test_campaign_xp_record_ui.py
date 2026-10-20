@@ -302,6 +302,9 @@ def test_translated_details_headings_extra_items_and_order_are_preserved(ui):
     ("SOA", "bg1_sod_soa", 2950000, "SoA usable XP limit: 2,950,000.", "usable in ToB"),
     ("SOA", "bg1_sod", 8000000, "No campaign cap in SoA. Installed XP limit: 8,000,000.", "subject to installed XP limits."),
     ("TOB", "bg1_sod_soa", 8000000, "No campaign cap in ToB. Installed XP limit: 8,000,000.", "subject to installed XP limits."),
+    ("CH2", "chapter_caps", 16000, "Chapter 2 usable XP limit: 16,000.", "later chapters raise the cap."),
+    ("CH14", "chapter_caps", 1000000, "Chapter 14 usable XP limit: 1,000,000.", "later chapters raise the cap."),
+    ("CH22", "chapter_caps", 8900000, "Chapter 22 usable XP limit: 8,900,000.", "Final chapter XP limit reached."),
 ])
 def test_campaign_explanation_matches_policy(ui, phase, policy, cap, expected, release):
     actor = ui.globals().actors[11]

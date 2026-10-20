@@ -1,5 +1,7 @@
 // New SoA recruitment actors only. Clone the effective override script so
 // existing actors, shared script users and ToB scripts retain their behavior.
+INCLUDE ~chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa~
+
 DEFINE_ACTION_FUNCTION cbm_recruitment_xp
   STR_VAR creature = ~~ private_script = ~~ companion = ~~ BEGIN
   ACTION_IF NOT FILE_EXISTS_IN_GAME ~%creature%.CRE~ BEGIN
@@ -22,6 +24,8 @@ DEFINE_ACTION_FUNCTION cbm_recruitment_xp
     OUTER_SET cbmr_owned = 0
     // Read canonical decompiled blocks independently: separate quest rewards
     // and protagonist conditions must not accidentally identify one provider.
+    // An existing one-shot, protagonist-based catch-up provider is preserved,
+    // including a different threshold ladder or cap chosen by that mod.
     COPY_EXISTING - ~%cbmr_script%.BCS~ ~.../cbmr-script~
       DECOMPILE_BCS_TO_BAF
       PATCH_IF ~%cbmr_script%~ STRING_EQUAL_CASE ~%private_script%~ BEGIN
@@ -37,41 +41,12 @@ DEFINE_ACTION_FUNCTION cbm_recruitment_xp
         PATCH_IF cbmr_end < cbmr_start BEGIN PATCH_FAIL ~%companion%: incomplete script block.~ END
         READ_ASCII cbmr_start cbmr_block (cbmr_end - cbmr_start)
         INNER_PATCH ~%cbmr_block%~ BEGIN
-          // SCS's actor setup and zero-level XP reset are a different owner.
-          // A global component check cannot tell whether it handled this NPC.
-          PATCH_IF (INDEX_BUFFER (~^[ ]*ApplySpellRES("dw#aulel",Myself)~) >= 0)
-            AND (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0) BEGIN
-            SET cbmr_scs_setup = 1
-          END
-          PATCH_IF (INDEX_BUFFER (~^[ ]*CheckStat(Myself,0,LEVEL)~) >= 0)
-            AND (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,0,SET)~) >= 0) BEGIN
-            SET cbmr_scs_reset = 1
-          END
-          // Preserve an existing one-shot, protagonist-based catch-up provider,
-          // including a different threshold ladder or cap chosen by that mod.
-          PATCH_IF (INDEX_BUFFER (~^[ ]*InParty(Myself)~) >= 0)
-            AND (INDEX_BUFFER (~^[ ]*XPGT(Player1,[0-9]+)~) >= 0)
-            AND (INDEX_BUFFER (~^[ ]*ChangeStat(Myself,XP,[1-9][0-9]*,SET)~) >= 0)
-            AND (INDEX_BUFFER (~^[ ]*OR(~) < 0) BEGIN
-            CLEAR_ARRAY cbmr_completes
-            REPLACE_EVALUATE ~^[ ]*SetGlobal("\([^"]+\)","\([^"]+\)",[1-9][0-9]*)~ BEGIN
-              SPRINT cbmr_once_name ~%MATCH1%~
-              SPRINT cbmr_once_scope ~%MATCH2%~
-              TO_UPPER cbmr_once_name
-              TO_UPPER cbmr_once_scope
-              SET $cbmr_completes(~%cbmr_once_name%~ ~%cbmr_once_scope%~) = 1
-            END ~%MATCH0%~
-            REPLACE_EVALUATE ~^[ ]*Global("\([^"]+\)","\([^"]+\)",0)~ BEGIN
-              SPRINT cbmr_once_name ~%MATCH1%~
-              SPRINT cbmr_once_scope ~%MATCH2%~
-              TO_UPPER cbmr_once_name
-              TO_UPPER cbmr_once_scope
-              PATCH_IF VARIABLE_IS_SET $cbmr_completes(~%cbmr_once_name%~ ~%cbmr_once_scope%~) BEGIN
-                SET cbmr_provider = 1
-              END
-            END ~%MATCH0%~
-          END
+          LPF cbm_join_xp_block RET cbmr_block_provider = provider
+            cbmr_block_scs_setup = scs_setup cbmr_block_scs_reset = scs_reset END
         END
+        SET cbmr_provider = cbmr_provider OR cbmr_block_provider
+        SET cbmr_scs_setup = cbmr_scs_setup OR cbmr_block_scs_setup
+        SET cbmr_scs_reset = cbmr_scs_reset OR cbmr_block_scs_reset
         SET cbmr_next = cbmr_end + 3
         SET cbmr_start = INDEX_BUFFER (~^IF~ cbmr_next)
       END

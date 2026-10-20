@@ -1,0 +1,15 @@
+// EET's ToB join-XP raise (EET_NPC_TRANSITION), for joinable NPCs whose ToB
+// script has none that can run. INTOB keeps it out of SoA, where some of these
+// scripts also run. It never lowers XP.
+IF
+  Global("BD_JOINXP","LOCALS",0)
+  Global("INTOB","GLOBAL",1)
+  InParty(Myself)
+  XPLT(Myself,2500000)
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("BD_JOINXP","LOCALS",1)
+    ChangeStat(Myself,XP,2500000,SET)
+    SetInterrupt(TRUE)
+END

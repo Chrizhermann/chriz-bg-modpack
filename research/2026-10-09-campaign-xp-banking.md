@@ -21,7 +21,12 @@ native gameplay acceptance. The candidate and hash manifest are at
 `C:/tmp/campaign-xp-banking-20261009/candidate-bundle`.
 The source installation's EEex 1.2.0 APIs and native profiles have also been
 checked. Its lifetime entries are included; the 93 loader checks and 32 callback
-ABI checks using the actual installed scripts pass. No EEex upgrade is required.
+ABI checks using the actual installed scripts pass. (Correction, October 20:
+the conclusion recorded here that no EEex upgrade is required is superseded.
+The collection now targets EEex v1.3.1 on 2.7.3.0; the October 17
+actor-lifetime hook fix was checked in game on EEex 1.2.0 (October 17) and
+on EEex v1.3.1 (October 20). See
+[the player guide](../docs/campaign-xp-banking.md).)
 
 The zero-bank, between-threshold dual debit still needs the user's choice.
 Exact-threshold unbanked duals are supported because both possible debit rules

@@ -3,18 +3,19 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.12`
+**Release:** `v0.2.0-alpha.13`
 
-Development adds **460**, which makes the party AI use Defensive Stance only
-while **Use special abilities** is on, including EET's BG1-only stance block.
-It is **not in alpha.12**; collection selection is decided separately.
+Alpha.13 makes campaign XP banking (**650/651**) work on EEex 1.2.0 and v1.3.1.
+It adds optional chapter-by-chapter XP caps (**652**, experimental), EET's
+join-XP ladder for NPCs that lack it (**239**), a fix for the crash after
+Dorn's ambush (**135**) and a party-AI Defensive Stance fix (**460**).
+Collection selection is decided separately. See the
+[release notes](docs/releases/v0.2.0-alpha.13.md).
 
-Alpha.12 adds independently selectable **230**-**234**, optional base
-ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle;
-collection selection is decided separately. **196/197** now patch the Faldorn and
-Dynaheir variants present instead of requiring every one. See the
-[release notes](docs/releases/v0.2.0-alpha.12.md) and the
-[companion stat guide](docs/companion-stats.md).
+Alpha.12 added independently selectable **230**-**234**, optional base
+ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle.
+**196/197** patch the Faldorn and Dynaheir variants present instead of
+requiring every one. See the [companion stat guide](docs/companion-stats.md).
 
 Alpha.11 added independent Fade/Evandra first-recruitment XP catch-up
 (**237/238**) and replaced **430** with reader-level scroll casting. It also
@@ -52,6 +53,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 |---:|---|---|
 | 110 | `cbm_fade_ft_fix` | Complete Fade's Fighter/Thief conversion, authored build, and amulet usability |
 | 130 | `cbm_kivan_quest_fix` | Protect the BG1NPC Kivan sea-elf dialogue phase from SCS combat AI |
+| 135 | `cbm_dorn_ambush_camera_fix` | Stop Dorn's BG1 ambush from leaving the camera locked on Senjak, which crashes the game after leaving the area; BG:EE or EET |
 | 140 | `cbm_mazzy_prof_fix` | Replace Mazzy's proficiencies with Short Bow 4 / Short Sword 3-4 |
 | 160 | `cbm_skie_skill_fix` | After a Swashbuckler conversion, move unusable Move Silently points to Open Locks |
 | 170 | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
@@ -81,19 +83,21 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
 | 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
 | 238 | `cbm_evandra_recruitment_xp` | Evandra: one-time SoA recruitment XP catch-up, capped at 1.25m |
+| 239 | `cbm_eet_join_xp` | EET: add EET's SoA join-XP ladder and ToB raise where a joinable NPC's scripts lack them |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Reader-level scroll casting; half the highest active class level when no applicable caster level exists; Windows EEex |
 | 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
 | 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
-| 460 (unreleased) | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is on |
+| 460 | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is on |
 | 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
 | 611 | `cbm_story_utility_xp` | BG1-sized utility XP through SoD, native BG2 rewards from SoA; requires EET and EEex; alternative to 610 |
 | 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
 | 630 | `cbm_unidentified_appearance` | Generic artwork until identification; requires Windows EEex |
 | 640 | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI/Dragonspear UI on EE 2.7 |
 | 650 (experimental) | `cbm_campaign_xp` | Retain excess XP beyond BG1/SoD caps; unbanked duals use vanilla XP accounting; EET and Windows EEex |
-| 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650 |
+| 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650; alternative to 652 |
+| 652 (experimental) | `cbm_campaign_xp_chapters` | Chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (plus Baeloth Chapter 5+ spawn gate); requires 650; alternative to 651 |
 | 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
 
 Components `191` and `600` are reserved or deferred and are not exposed
@@ -101,7 +105,7 @@ by this release. There are no placeholder components that fail at install time.
 
 ## Collection choices
 
-**650/651** are optional, experimental and off by default. This release makes
+**650/651/652** are optional, experimental and off by default. This release makes
 no collection selection changes.
 
 **611** is the approved next CEBG default; **610** retains its smooth
@@ -212,6 +216,13 @@ the [companion stat guide](docs/companion-stats.md).
   Rewards round up to 10 XP by default. Edit `override/CBMUXPC.lua` and restart
   to adjust the anchors, multipliers or rounding. See the included
   [utility-XP guide](docs/utility-xp.md) for values, class coverage and limits.
+- Install `239` after the NPC mods, EET's NPC transitions and NPC customization
+  mods. See the [EET join-XP guide](docs/eet-join-xp.md).
+- Install `650` after EET finalization and the companion XP options you use
+  (`237`/`238`/`239`/`620`), then `651` or `652`, and restart through
+  `InfinityLoader.exe`. See the [banking guide](docs/campaign-xp-banking.md).
+- Install `135` after mods that change Dorn's ambush cutscene `CUTDN1B.BCS` or
+  Senjak's script, such as EET. See the [Dorn ambush guide](docs/dorn-ambush-camera.md).
 - Install `660` after mods that change Degrodel's dialog. It finds the helm hand-in
   by what it does and skips with a reason, changing nothing, when that is
   ambiguous. See the [Degrodel guide](docs/degrodel-fight.md).
@@ -247,6 +258,11 @@ with byte-exact uninstall restoration. The same gate, developed first in the
 Artisan's Kitpack fork, stopped the protagonist's BG1 Defensive Stance with the
 option off in a disposable EET lab; the lab set the option's variable instead of
 clicking the record-screen checkbox.
+
+Components `650`-`652`, `239`, `135` and `460` were checked in game for alpha.13
+on a disposable copy of the collection's Recommended install (2.7.3.0, EEex
+v1.3.1). The [release notes](docs/releases/v0.2.0-alpha.13.md) and the
+component guides list what was covered and what is still open.
 
 ## License
 

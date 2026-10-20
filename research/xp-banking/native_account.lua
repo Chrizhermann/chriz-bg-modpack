@@ -4,7 +4,25 @@
 local M = {}
 local MAX, U32 = 9007199254740991, 4294967295
 local phases = {BG1=1, SOD=2, SOA=3, TOB=4}
-local policies = {bg1_sod=true, bg1_sod_soa=true}
+local chapterPhases = {
+    CH1=1, CH2=2, CH3=3, CH4=4, CH5=5, CH6=6, CH7=7,
+    CH8=8, CH9=9, CH10=10, CH11=11, CH12=12, CH13=13,
+    CH14=14, CH15=15, CH16=16, CH17=17, CH18=18, CH19=19,
+    CH20=20, CH21=21, CH22=22,
+}
+local chapterCaps = {
+    CH1=16000, CH2=16000, CH3=20000, CH4=32000,
+    CH5=64000, CH6=85000, CH7=161000,
+    CH8=200000, CH9=250000, CH10=350000, CH11=420000,
+    CH12=500000, CH13=500000, CH14=1000000, CH15=2500000,
+    CH16=2900000, CH17=3250000, CH18=3500000, CH19=3500000,
+    CH20=5000000, CH21=8000000, CH22=8900000,
+}
+local policies = {bg1_sod=true, bg1_sod_soa=true, chapter_caps=true}
+local function phaseRank(policy, phase)
+    if policy=="chapter_caps" then return chapterPhases[phase] end
+    return phases[phase]
+end
 local function integer(n, maximum)
     return type(n)=="number" and n>=0 and n<=(maximum or MAX) and n%1==0
 end
@@ -21,7 +39,7 @@ local function checked(a,b)
 end
 local function valid(s)
     assert(type(s)=="table" and s.schema==2,"Unsupported native account; preserve original carrier")
-    assert(policies[s.policy] and phases[s.phase],"Invalid saved policy or campaign")
+    assert(policies[s.policy] and phaseRank(s.policy, s.phase),"Invalid saved policy or campaign")
     assert(integer(s.revision) and integer(s.floor,U32) and integer(s.overflow),"Invalid account metadata")
     assert(s.kind=="single" or s.kind=="multi" or s.kind=="dual","Invalid class accounting")
     if s.kind=="dual" then
@@ -40,7 +58,8 @@ M.Validate=valid
 function M.Ceiling(s,native)
     valid(s); assert(integer(native,U32),"Invalid native XP ceiling")
     local own
-    if s.phase=="BG1" then own=161000
+    if s.policy=="chapter_caps" then own=chapterCaps[s.phase]
+    elseif s.phase=="BG1" then own=161000
     elseif s.phase=="SOD" then own=500000
     elseif s.phase=="SOA" and s.policy=="bg1_sod_soa" then own=2950000 end
     return math.min(native,math.max(own or native,s.floor))
@@ -80,7 +99,9 @@ function M.Inspect(s,base,native,retiredThreshold)
         usable=checked(oldUsable,available)}
 end
 function M.Advance(s,phase,native)
-    valid(s); assert(phases[phase] and phases[phase]>=phases[s.phase],"Invalid campaign regression")
+    valid(s)
+    local nextRank=phaseRank(s.policy,phase)
+    assert(nextRank and nextRank>=phaseRank(s.policy,s.phase),"Invalid campaign regression")
     local nextState=copy(s)
     if phase==s.phase then return nextState end
     assert(s.revision<MAX,"Account revision exhausted")

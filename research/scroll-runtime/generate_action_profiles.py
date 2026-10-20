@@ -17,40 +17,46 @@ CALLBACK = 0x2233445566778899
 BASE = 0x150000000
 
 
+def sources():
+    return json.loads((HERE / "binder-profiles.json").read_text())
+
+
+def profile(source):
+    """One game version's recipe; needs only that version's pinned executable."""
+    symbols = Path("C:/tmp/scroll-hook-research-20261009/EEex/EEex/loader") / ("v" + source["version"]) / "bg2ee/function_names.db"
+    pe, sites = audited_sites(resolve(source["source"]), symbols)
+    plans, records = [], []
+    for index, site in enumerate(sites):
+        plan = emit(site, image_base=pe.OPTIONAL_HEADER.ImageBase,
+                    stub=BASE + index * 0x400, runtime=RUNTIME,
+                    callback=CALLBACK, observed=site.body)
+        code = plan["code"]
+        assert len(code) < 0x400
+        relocations = {}
+        for name, value in (("runtime", RUNTIME), ("callback", CALLBACK)):
+            raw = struct.pack("<Q", value)
+            assert code.count(raw) == 1
+            relocations[name] = code.index(raw)
+        assert code[-19:-16] == b"\xc7\x04\x24"
+        assert code[-12:-8] == b"\xc7\x44\x24\x04"
+        assert code[-4:] == b"\xff\x64\x24\x00"
+        relocations.update(resume_lo=len(code)-16, resume_hi=len(code)-8)
+        records.append(dict(operation=site.operation,
+                            function=site.function-pe.OPTIONAL_HEADER.ImageBase,
+                            body_size=len(site.body), sha256=hashlib.sha256(site.body).hexdigest(),
+                            site=site.address-pe.OPTIONAL_HEADER.ImageBase,
+                            original=site.original.hex(), code_offset=index*0x400,
+                            code_size=len(code), **relocations))
+        plans.append((plan, unwind_segments(pe, site, plan)))
+    packaged = bundle(BASE, plans)
+    return dict(version=source["version"], timestamp=source["timestamp"],
+                image_size=source["image_size"], sites=records,
+                payload=packaged.payload.hex(), table_offset=packaged.table_offset,
+                count=packaged.count)
+
+
 def generate():
-    profiles = []
-    for source in json.loads((HERE / "binder-profiles.json").read_text()):
-        symbols = Path("C:/tmp/scroll-hook-research-20261009/EEex/EEex/loader") / ("v" + source["version"]) / "bg2ee/function_names.db"
-        pe, sites = audited_sites(resolve(source["source"]), symbols)
-        plans, records = [], []
-        for index, site in enumerate(sites):
-            plan = emit(site, image_base=pe.OPTIONAL_HEADER.ImageBase,
-                        stub=BASE + index * 0x400, runtime=RUNTIME,
-                        callback=CALLBACK, observed=site.body)
-            code = plan["code"]
-            assert len(code) < 0x400
-            relocations = {}
-            for name, value in (("runtime", RUNTIME), ("callback", CALLBACK)):
-                raw = struct.pack("<Q", value)
-                assert code.count(raw) == 1
-                relocations[name] = code.index(raw)
-            assert code[-19:-16] == b"\xc7\x04\x24"
-            assert code[-12:-8] == b"\xc7\x44\x24\x04"
-            assert code[-4:] == b"\xff\x64\x24\x00"
-            relocations.update(resume_lo=len(code)-16, resume_hi=len(code)-8)
-            records.append(dict(operation=site.operation,
-                                function=site.function-pe.OPTIONAL_HEADER.ImageBase,
-                                body_size=len(site.body), sha256=hashlib.sha256(site.body).hexdigest(),
-                                site=site.address-pe.OPTIONAL_HEADER.ImageBase,
-                                original=site.original.hex(), code_offset=index*0x400,
-                                code_size=len(code), **relocations))
-            plans.append((plan, unwind_segments(pe, site, plan)))
-        packaged = bundle(BASE, plans)
-        profiles.append(dict(version=source["version"], timestamp=source["timestamp"],
-                             image_size=source["image_size"], sites=records,
-                             payload=packaged.payload.hex(), table_offset=packaged.table_offset,
-                             count=packaged.count))
-    return profiles
+    return [profile(source) for source in sources()]
 
 
 def header(profiles):

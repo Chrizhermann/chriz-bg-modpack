@@ -1,0 +1,223 @@
+// Component 239 (EET): EET's own join-XP catch-up for every joinable NPC whose
+// effective script lacks it. The rules come from the installed game, the way
+// EET applies them:
+// - CAMPAIGN.2DA names each campaign's party table (PDIALOG column). A death
+//   variable (DV) in the SOA or TOB table belongs to a joinable NPC there.
+// - EET's NPC transition marks the SoA override script of every joinable NPC
+//   with its party block (InPartyAllowDead(Myself) sets <DV>PartyBG2).
+// - At the ToB transition EET switches these NPCs to their ToB override
+//   scripts in AR4000 and AR4500, and a ToB start creates them in AR4500.
+// A SoA script without a one-shot protagonist ladder gets Beamdog's ladder; a
+// ToB script whose raise is missing, or comes after a block that completes
+// BD_JOINXP first, gets EET's raise on top. An existing ladder or raise of any
+// owner, a second install, and actors that already used their catch-up are left
+// alone. A ladder in a script EET also uses in SoA is that SoA ladder, not a
+// ToB catch-up (Wilson; Yoshimo's ToB-start creature). Where SCS NPC
+// customization set an actor up, it owns joining XP.
+INCLUDE ~chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa~
+
+// The joinable DVs of a party table, in upper case. WeiDU numbers every
+// non-blank 2DA line: signature, default value, column names, then the rows.
+DEFINE_PATCH_FUNCTION cbm_eet_join_xp_dvs
+  RET_ARRAY dvs
+BEGIN
+  CLEAR_ARRAY dvs
+  READ_2DA_ENTRIES_NOW cbmjt_rows 1
+  PATCH_IF cbmjt_rows < 3 BEGIN
+    PATCH_FAIL ~%SOURCE_FILE% is not a 2DA table; its joinable NPCs cannot be read.~
+  END
+  READ_2DA_ENTRY_FORMER cbmjt_rows 0 0 cbmjt_signature
+  // A blank or multi-entry default value line would shift every row.
+  PATCH_IF NOT (~%cbmjt_signature%~ STRING_EQUAL_CASE ~2DA~) OR VARIABLE_IS_SET $cbmjt_rows(~1~ ~1~) BEGIN
+    PATCH_FAIL ~%SOURCE_FILE% has an unexpected 2DA layout; its joinable NPCs cannot be read safely.~
+  END
+  FOR (cbmjt_row = 3; cbmjt_row < cbmjt_rows; ++cbmjt_row) BEGIN
+    READ_2DA_ENTRY_FORMER cbmjt_rows cbmjt_row 0 cbmjt_dv
+    TO_UPPER cbmjt_dv
+    SET $dvs(~%cbmjt_dv%~) = 1
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_eet_join_xp BEGIN
+  // 1. Each campaign's party table.
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~CAMPAIGN.2DA~ BEGIN
+    FAIL ~CAMPAIGN.2DA is missing; the joinable NPCs of SoA and ToB cannot be determined.~
+  END
+  OUTER_SPRINT cbmj_soa_table ~~
+  OUTER_SPRINT cbmj_tob_table ~~
+  COPY_EXISTING - ~CAMPAIGN.2DA~ ~.../cbmj-campaign~
+    READ_2DA_ENTRIES_NOW cbmj_campaign 1
+    PATCH_IF cbmj_campaign < 3 BEGIN
+      PATCH_FAIL ~CAMPAIGN.2DA is not a 2DA table; the joinable NPCs of SoA and ToB cannot be read.~
+    END
+    READ_2DA_ENTRY_FORMER cbmj_campaign 0 0 cbmj_signature
+    PATCH_IF NOT (~%cbmj_signature%~ STRING_EQUAL_CASE ~2DA~) OR VARIABLE_IS_SET $cbmj_campaign(~1~ ~1~) BEGIN
+      PATCH_FAIL ~CAMPAIGN.2DA has an unexpected 2DA layout; its party tables cannot be read safely.~
+    END
+    // Column names have no entry for the row names.
+    SET cbmj_column = 0
+    SET cbmj_index = 0
+    WHILE VARIABLE_IS_SET $cbmj_campaign(~2~ ~%cbmj_index%~) BEGIN
+      READ_2DA_ENTRY_FORMER cbmj_campaign 2 cbmj_index cbmj_name
+      PATCH_IF cbmj_column = 0 AND (~%cbmj_name%~ STRING_EQUAL_CASE ~PDIALOG~) BEGIN
+        SET cbmj_column = cbmj_index + 1
+      END
+      SET cbmj_index += 1
+    END
+    FOR (cbmj_row = 3; cbmj_row < cbmj_campaign; ++cbmj_row) BEGIN
+      READ_2DA_ENTRY_FORMER cbmj_campaign cbmj_row 0 cbmj_name
+      PATCH_IF cbmj_column > 0 AND VARIABLE_IS_SET $cbmj_campaign(~%cbmj_row%~ ~%cbmj_column%~) BEGIN
+        READ_2DA_ENTRY_FORMER cbmj_campaign cbmj_row cbmj_column cbmj_value
+        PATCH_IF ~%cbmj_name%~ STRING_EQUAL_CASE ~SOA~ BEGIN SPRINT cbmj_soa_table ~%cbmj_value%~ END
+        PATCH_IF ~%cbmj_name%~ STRING_EQUAL_CASE ~TOB~ BEGIN SPRINT cbmj_tob_table ~%cbmj_value%~ END
+      END
+    END
+  ACTION_IF (~%cbmj_soa_table%~ STRING_EQUAL ~~) OR (~%cbmj_tob_table%~ STRING_EQUAL ~~)
+    OR (NOT FILE_EXISTS_IN_GAME ~%cbmj_soa_table%.2DA~) OR (NOT FILE_EXISTS_IN_GAME ~%cbmj_tob_table%.2DA~) BEGIN
+    FAIL ~CAMPAIGN.2DA names no existing PDIALOG party table for SOA or TOB (found "%cbmj_soa_table%" and "%cbmj_tob_table%"); joinable NPCs cannot be determined.~
+  END
+  COPY_EXISTING - ~%cbmj_soa_table%.2DA~ ~.../cbmj-soa~
+    LPF cbm_eet_join_xp_dvs RET_ARRAY cbmj_soa_dvs = dvs END
+  COPY_EXISTING - ~%cbmj_tob_table%.2DA~ ~.../cbmj-tob~
+    LPF cbm_eet_join_xp_dvs RET_ARRAY cbmj_tob_dvs = dvs END
+
+  // 2. SoA override scripts, named by EET's party block. EET writes it to
+  // override; GLOB also covers an install whose override was moved to BIFFs.
+  ACTION_CLEAR_ARRAY cbmj_candidates
+  COPY_EXISTING_REGEXP GLOB ~^.+\.BCS$~ ~override~
+    PATCH_IF INDEX_BUFFER (~PartyBG2~) >= 0 BEGIN
+      SPRINT cbmj_script ~%SOURCE_RES%~
+      TO_UPPER cbmj_script
+      SET $cbmj_candidates(~%cbmj_script%~) = 1
+    END
+  BUT_ONLY
+  ACTION_CLEAR_ARRAY cbmj_soa_scripts
+  ACTION_CLEAR_ARRAY cbmj_soa_found
+  ACTION_PHP_EACH cbmj_candidates AS cbmj_script => cbmj_unused BEGIN
+    COPY_EXISTING - ~%cbmj_script%.BCS~ ~.../cbmj-candidate~
+      DECOMPILE_BCS_TO_BAF
+      SET cbmj_next = 0
+      SET cbmj_start = INDEX_BUFFER (~^IF~ cbmj_next)
+      WHILE cbmj_start >= 0 BEGIN
+        SET cbmj_end = INDEX_BUFFER (~^END~ cbmj_start)
+        PATCH_IF cbmj_end < cbmj_start BEGIN PATCH_FAIL ~%cbmj_script%.BCS: incomplete script block.~ END
+        READ_ASCII cbmj_start cbmj_block (cbmj_end - cbmj_start)
+        INNER_PATCH ~%cbmj_block%~ BEGIN
+          PATCH_IF INDEX_BUFFER (~^[ ]*\(InPartyAllowDead\|InParty\|I[fs]ValidForPartyDialog\(ue\)?\)(Myself)~) >= 0 BEGIN
+            REPLACE_EVALUATE ~^[ ]*SetGlobal("\([^"]+\)PartyBG2","GLOBAL",1)~ BEGIN
+              SPRINT cbmj_dv ~%MATCH1%~
+              TO_UPPER cbmj_dv
+              PATCH_IF VARIABLE_IS_SET $cbmj_soa_dvs(~%cbmj_dv%~) BEGIN
+                SPRINT $cbmj_soa_scripts(~%cbmj_script%~) ~%cbmj_dv%~
+                SET $cbmj_soa_found(~%cbmj_dv%~) = 1
+              END
+            END ~%MATCH0%~
+          END
+        END
+        SET cbmj_next = cbmj_end + 3
+        SET cbmj_start = INDEX_BUFFER (~^IF~ cbmj_next)
+      END
+  END
+
+  // 3. ToB override scripts: EET's transition switches and ToB-start creatures.
+  ACTION_CLEAR_ARRAY cbmj_tob_scripts
+  ACTION_CLEAR_ARRAY cbmj_tob_found
+  ACTION_CLEAR_ARRAY cbmj_created
+  ACTION_FOR_EACH cbmj_area IN AR4000 AR4500 BEGIN
+    ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbmj_area%.BCS~ BEGIN
+      FAIL ~%cbmj_area%.BCS, EET's ToB transition script, is missing; the ToB scripts of joinable NPCs cannot be determined.~
+    END
+    COPY_EXISTING - ~%cbmj_area%.BCS~ ~.../cbmj-area~
+      DECOMPILE_BCS_TO_BAF
+      REPLACE_EVALUATE ~ActionOverride("\([^"]+\)",ChangeAIScript("\([^"]+\)",OVERRIDE))~ BEGIN
+        SPRINT cbmj_dv ~%MATCH1%~
+        SPRINT cbmj_script ~%MATCH2%~
+        TO_UPPER cbmj_dv
+        TO_UPPER cbmj_script
+        PATCH_IF VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
+          SPRINT $cbmj_tob_scripts(~%cbmj_script%~) ~%cbmj_dv%~
+          SET $cbmj_tob_found(~%cbmj_dv%~) = 1
+        END
+      END ~%MATCH0%~
+      REPLACE_EVALUATE ~CreateCreature("\([^"]+\)"~ BEGIN
+        SPRINT cbmj_cre ~%MATCH1%~
+        TO_UPPER cbmj_cre
+        SET $cbmj_created(~%cbmj_cre%~) = 1
+      END ~%MATCH0%~
+  END
+  ACTION_PHP_EACH cbmj_created AS cbmj_cre => cbmj_unused BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%cbmj_cre%.CRE~ BEGIN
+      OUTER_SPRINT cbmj_dv ~~
+      OUTER_SPRINT cbmj_script ~~
+      COPY_EXISTING - ~%cbmj_cre%.CRE~ ~.../cbmj-cre~
+        READ_ASCII 0 cbmj_signature (8)
+        PATCH_IF BUFFER_LENGTH >= 0x2d4 AND (~%cbmj_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
+          READ_ASCII 0x280 cbmj_dv (32) NULL
+          READ_ASCII 0x248 cbmj_script (8) NULL
+          TO_UPPER cbmj_dv
+          TO_UPPER cbmj_script
+        END
+      ACTION_IF VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
+        ACTION_IF ~%cbmj_script%~ STRING_EQUAL ~~ BEGIN
+          WARN ~%cbmj_dv%: ToB-start creature %cbmj_cre%.CRE has no override script; its join XP is unchanged.~
+        END ELSE BEGIN
+          OUTER_SPRINT $cbmj_tob_scripts(~%cbmj_script%~) ~%cbmj_dv%~
+          OUTER_SET $cbmj_tob_found(~%cbmj_dv%~) = 1
+        END
+      END
+    END
+  END
+
+  // 4. Patch. ToB first: a SoA ladder added to a shared script cannot run in
+  // ToB, so the order does not change either verdict.
+  OUTER_SET cbmj_kept = 0
+  ACTION_PHP_EACH cbmj_tob_scripts AS cbmj_script => cbmj_dv BEGIN
+    ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbmj_script%.BCS~ BEGIN
+      WARN ~%cbmj_dv%: ToB script %cbmj_script%.BCS does not exist; its join XP is unchanged.~
+    END ELSE BEGIN
+      LAF cbm_join_xp_script STR_VAR script = EVAL ~%cbmj_script%~
+        RET cbmj_raise = tob_raise cbmj_ladder = tob_provider cbmj_scs = scs END
+      ACTION_IF cbmj_scs BEGIN
+        PRINT ~%cbmj_dv%: SCS NPC customization owns joining XP in %cbmj_script%.BCS; unchanged.~
+      END ELSE ACTION_IF (NOT cbmj_raise) AND ((NOT cbmj_ladder) OR VARIABLE_IS_SET $cbmj_soa_scripts(~%cbmj_script%~)) BEGIN
+        EXTEND_TOP ~%cbmj_script%.BCS~ ~chriz-bg-modpack/baf/cbm_eet_join_xp_tob.baf~
+        PRINT ~%cbmj_dv%: %cbmj_script%.BCS gets EET's ToB join-XP raise (2,500,000).~
+      END ELSE BEGIN
+        OUTER_SET cbmj_kept += 1
+      END
+    END
+  END
+  ACTION_PHP_EACH cbmj_soa_scripts AS cbmj_script => cbmj_dv BEGIN
+    LAF cbm_join_xp_script STR_VAR script = EVAL ~%cbmj_script%~ RET cbmj_provider = provider cbmj_scs = scs END
+    ACTION_IF cbmj_scs BEGIN
+      PRINT ~%cbmj_dv%: SCS NPC customization owns joining XP in %cbmj_script%.BCS; unchanged.~
+    END ELSE ACTION_IF NOT cbmj_provider BEGIN
+      EXTEND_TOP ~%cbmj_script%.BCS~ ~chriz-bg-modpack/baf/cbm_eet_join_xp_soa.baf~
+      PRINT ~%cbmj_dv%: %cbmj_script%.BCS gets EET's SoA join-XP ladder.~
+    END ELSE BEGIN
+      OUTER_SET cbmj_kept += 1
+    END
+  END
+  PRINT ~%cbmj_kept% SoA and ToB scripts of joinable NPCs already have their join-XP catch-up; unchanged.~
+
+  // 5. Party-table entries without a script EET switches or marks.
+  ACTION_FOR_EACH cbmj_phase IN SoA ToB BEGIN
+    OUTER_SPRINT cbmj_missing ~~
+    ACTION_IF ~%cbmj_phase%~ STRING_EQUAL ~SoA~ BEGIN
+      ACTION_PHP_EACH cbmj_soa_dvs AS cbmj_dv => cbmj_unused BEGIN
+        ACTION_IF NOT VARIABLE_IS_SET $cbmj_soa_found(~%cbmj_dv%~) BEGIN
+          OUTER_SPRINT cbmj_missing ~%cbmj_missing% %cbmj_dv%~
+        END
+      END
+    END ELSE BEGIN
+      ACTION_PHP_EACH cbmj_tob_dvs AS cbmj_dv => cbmj_unused BEGIN
+        ACTION_IF NOT VARIABLE_IS_SET $cbmj_tob_found(~%cbmj_dv%~) BEGIN
+          OUTER_SPRINT cbmj_missing ~%cbmj_missing% %cbmj_dv%~
+        END
+      END
+    END
+    ACTION_IF NOT (~%cbmj_missing%~ STRING_EQUAL ~~) BEGIN
+      PRINT ~%cbmj_phase% party-table entries without an EET %cbmj_phase% script, unchanged:%cbmj_missing%~
+    END
+  END
+END

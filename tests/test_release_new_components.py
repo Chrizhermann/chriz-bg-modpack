@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -15,10 +16,14 @@ from lupa.lua51 import LuaRuntime
 
 from tests import test_evandra_sorcerer as evandra
 from tests import test_baeloth_spellbook as baeloth
+from tests import test_campaign_xp_package as campaign
 from tests import test_companion_stats as stats
 from tests import test_defensive_stance_ai as stance
 from tests import test_degrodel_fight as degrodel
+from tests import test_dorn_ambush_camera_fix as dorn
 from tests import test_edwin_redwizard as edwin
+from tests import test_eet_join_xp as join_xp
+from tests import test_recruitment_xp as recruitment
 from tests import test_release_archive as release_archive
 from tests import test_unidentified_items_installer as unidentified
 from tests import test_utility_xp_installer as utility
@@ -49,7 +54,7 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
         release_archive.ReleaseArchiveAcceptanceTests.extract_release(self, game.root)
         return self.game_files(game.root)
 
-    def run_component(self, game, component: int, *, uninstall: bool = False) -> None:
+    def run_installer(self, game, component: int, *, uninstall: bool = False) -> tuple[int, str]:
         executable = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
         result = subprocess.run(
             [
@@ -61,8 +66,11 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             ],
             cwd=game.root, capture_output=True, text=True, timeout=90, check=False,
         )
-        transcript = result.stdout + result.stderr
-        self.assertEqual(0, result.returncode, transcript)
+        return result.returncode, result.stdout + result.stderr
+
+    def run_component(self, game, component: int, *, uninstall: bool = False) -> None:
+        returncode, transcript = self.run_installer(game, component, uninstall=uninstall)
+        self.assertEqual(0, returncode, transcript)
         self.assertIn(
             "SUCCESSFULLY REMOVED" if uninstall else "SUCCESSFULLY INSTALLED",
             transcript,
@@ -144,6 +152,31 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             # source from the extracted archive, never the development checkout.
             with patch.object(baeloth, "WEIDU", bundled):
                 edwin.assert_success(game)
+
+    def test_237_238_extracted_recruitment_xp_reads_the_shared_block_library(self) -> None:
+        # 237/238 include the join-XP block reader they share with 239.
+        for component in recruitment.COMPONENTS:
+            with self.subTest(component=component), tempfile.TemporaryDirectory(
+                prefix="cbm-release-recruitment-"
+            ) as raw:
+                game = recruitment.make_game(Path(raw), game_type="eet", sr=True, party_aliases=True)
+                game.before = self.extract_release(game)
+                bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+                with patch.object(recruitment, "WEIDU", bundled):
+                    recruitment.assert_installed(game, component)
+                    recruitment.assert_uninstalled(game, component)
+
+    def test_239_extracted_eet_join_xp_with_sr_and_without_sr(self) -> None:
+        for sr in (False, True):
+            with self.subTest(spell_revisions=sr), tempfile.TemporaryDirectory(
+                prefix="cbm-release-join-xp-"
+            ) as raw:
+                game = join_xp.make_game(Path(raw), sr=sr)
+                game.before = self.extract_release(game)
+                bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+                with patch.object(join_xp, "WEIDU", bundled):
+                    join_xp.assert_installed(game)
+                    join_xp.assert_uninstalled(game)
 
     def test_225_extracted_portrait_has_approved_hash_and_changes_only_portraits(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cbm-release-evandra-portrait-") as raw:
@@ -263,6 +296,21 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assert_restored(game, 640, before)
 
 
+    def test_135_extracted_dorn_fix_unlocks_camera_and_restores_scripts(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-dorn-") as raw:
+            game = dorn.DornGame(Path(raw) / "game")
+            before = self.extract_release(game)
+            cut, senjack = before[dorn.CUT_KEY], before[dorn.SENJACK_KEY]
+            self.run_component(game, 135)
+            after = self.game_files(game.root)
+            self.assertEqual({dorn.CUT_KEY, dorn.SENJACK_KEY},
+                             {name for name in after if after[name] != before.get(name)})
+            self.assertIsNone(dorn.LOCK_HEAD.search(after[dorn.CUT_KEY]))
+            self.assertEqual(dorn.without_locks(cut), after[dorn.CUT_KEY])
+            self.assertTrue(after[dorn.SENJACK_KEY].endswith(senjack.split(b"\n", 1)[1]))
+            self.assertIn(b"CBM_DornAmbushUnlock", after[dorn.SENJACK_KEY])
+            self.assert_restored(game, 135, before)
+
     def test_660_extracted_degrodel_choice_installs_and_restores_dialog(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cbm-release-degrodel-") as raw:
             game = degrodel.make_game(
@@ -292,6 +340,123 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             after = self.game_files(game.root)
             self.assertEqual(stance.expected_tree(game, before, prefix="OVERRIDE/"), after)
             self.assert_restored(game, 460, before)
+
+    # 650/651/652: campaign XP banking and its two mutually exclusive cap modes.
+    # Expected bytes come from the extracted ZIP, never the development checkout.
+    def shipped_campaign_file(self, game, name: str) -> bytes:
+        return (game.root / campaign.package.PACKAGE / name).read_bytes()
+
+    def expected_bank(self, game, before: dict[str, bytes], config: str) -> dict[str, bytes]:
+        expected = dict(before)
+        for name in campaign.PUBLICATIONS:
+            expected["OVERRIDE/" + name.upper()] = self.shipped_campaign_file(game, name)
+        expected["OVERRIDE/CBMBKCFG.LUA"] = self.shipped_campaign_file(game, config)
+        return expected
+
+    def assert_campaign_runtime_shipped(self, game) -> None:
+        # The bank loads these modules and DLLs from the mod folder at game start,
+        # so every packaged file must be in the ZIP with its reviewed bytes.
+        package_root = game.root / campaign.package.PACKAGE
+        manifest = json.loads((package_root / "package-manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(manifest["files"])
+        for name, entry in manifest["files"].items():
+            path = package_root / name
+            self.assertTrue(path.is_file(), f"release ZIP lacks {path}")
+            self.assertEqual(entry["sha256"], hashlib.sha256(path.read_bytes()).hexdigest(), name)
+        for name in campaign.PUBLICATIONS | {"cbmbksoa.lua", "cbmbkchp.lua"}:
+            self.assertTrue((package_root / name).is_file(), f"release ZIP lacks {name}")
+
+    def assert_skipped(self, game, component: int) -> None:
+        files = self.game_files(game.root)
+        returncode, transcript = self.run_installer(game, component)
+        self.assertEqual(0, returncode, transcript)
+        self.assertIn("SKIPPING:", transcript)
+        self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
+        self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{component}\b")
+        self.assertEqual(files, self.game_files(game.root))
+
+    def test_650_extracted_bank_publishes_its_runtime_and_restores_the_fixture(self) -> None:
+        for prior in (False, True):
+            with self.subTest(prior_publications=prior), tempfile.TemporaryDirectory(
+                prefix="cbm-release-bank-"
+            ) as raw:
+                game = utility.SyntheticGame(Path(raw) / "game", game="eet")
+                campaign.native_headers(game)
+                if prior:
+                    for name in campaign.PUBLICATIONS:
+                        (game.override / name).write_bytes(b"foreign prior bytes\x00\xff\r\n")
+                before = self.extract_release(game)
+                self.assert_campaign_runtime_shipped(game)
+                self.run_component(game, 650)
+                self.assertEqual(
+                    self.expected_bank(game, before, "cbmbkcfg.lua"), self.game_files(game.root)
+                )
+                self.assert_restored(game, 650, before)
+
+    def test_651_extracted_soa_cap_installs_on_650_and_excludes_652(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-bank-soa-") as raw:
+            game = utility.SyntheticGame(Path(raw) / "game", game="eet")
+            campaign.native_headers(game)
+            before = self.extract_release(game)
+            self.assert_skipped(game, 651)  # requires 650
+            self.run_component(game, 650)
+            base = self.game_files(game.root)
+            self.run_component(game, 651)
+            soa = self.expected_bank(game, before, "cbmbksoa.lua")
+            self.assertEqual(soa, self.game_files(game.root))
+            self.assert_skipped(game, 652)  # mutually exclusive with 651
+            self.assert_restored(game, 651, base)
+            self.assert_restored(game, 650, before)
+
+    def test_652_extracted_chapter_caps_gate_vanilla_bainvi_once_and_restore(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-chapter-caps-") as raw:
+            game = campaign.chapter_game(Path(raw), campaign.BAINVI_VANILLA)
+            before = self.extract_release(game)
+            self.assert_skipped(game, 652)  # requires 650
+            self.run_component(game, 650)
+            base = self.game_files(game.root)
+            self.run_component(game, 652)
+            after = self.game_files(game.root)
+            self.assertEqual(
+                self.shipped_campaign_file(game, "cbmbkchp.lua"), after["OVERRIDE/CBMBKCFG.LUA"]
+            )
+            self.assertEqual({"OVERRIDE/BAINVI.BCS", "OVERRIDE/CBMBKCFG.LUA"},
+                             {name for name in after if after[name] != base.get(name)})
+            self.assertEqual(set(base), set(after))
+            bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+            with patch.object(recruitment, "WEIDU", bundled):
+                patched = recruitment.decompile_script(game, "BAINVI")
+            self.assertEqual(1, patched.count(campaign.CHAPTER_GATE))
+            self.assertIn('StartCutScene("CUTBA01")', patched)
+            self.assertIn('Global("BA_START_SCENE","MYAREA",0)', patched)
+            self.assert_skipped(game, 651)  # mutually exclusive with 652
+            self.assert_restored(game, 652, base)
+            self.assert_restored(game, 650, before)
+
+    def test_652_extracted_unrecognised_bainvi_warns_unchanged_and_keeps_caps(self) -> None:
+        for layout, bainvi in sorted(campaign.UNRECOGNISED_BAINVI.items()):
+            with self.subTest(layout=layout), tempfile.TemporaryDirectory(
+                prefix="cbm-release-chapter-warn-"
+            ) as raw:
+                game = campaign.chapter_game(Path(raw), bainvi)
+                before = self.extract_release(game)
+                self.run_component(game, 650)
+                base = self.game_files(game.root)
+                returncode, transcript = self.run_installer(game, 652)
+                # WeiDU exits with 3 after a component installed with warnings.
+                self.assertEqual(3, returncode, transcript)
+                self.assertIn("INSTALLED WITH WARNINGS", transcript)
+                self.assertIn(campaign.NO_GATE_WARNING, transcript)
+                self.assertIn(campaign.NO_GATE_REASONS[layout], transcript)
+                self.assertRegex(game.active_log(), r"(?m)#0\s+#652\b")
+                expected = dict(base)
+                expected["OVERRIDE/CBMBKCFG.LUA"] = self.shipped_campaign_file(game, "cbmbkchp.lua")
+                # Exact equality also proves BAINVI.BCS kept its bytes.
+                self.assertEqual(expected, self.game_files(game.root))
+                self.assertEqual(before["OVERRIDE/BAINVI.BCS"],
+                                 (game.override / "bainvi.bcs").read_bytes())
+                self.assert_restored(game, 652, base)
+                self.assert_restored(game, 650, before)
 
 if __name__ == "__main__":
     unittest.main()

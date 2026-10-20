@@ -6,6 +6,15 @@
 
 @110 = ~Fade: complete Fighter/Thief conversion, proficiencies, and amulet usability~
 @130 = ~BG1NPC Kivan sea-elf quest: SCS dialogue-phase guard~
+@135 = ~Dorn's BG1 ambush: no camera lock on Senjak (prevents a crash after leaving the area)~
+@1351 = ~Dorn's ambush cutscene CUTDN1B.BCS is not in this game (for example BG2:EE without the BG1 campaign), so there is nothing to fix.~
+@1352 = ~Dorn ambush camera fix skipped: %cbm_dac_file% is not a valid compiled script (%cbm_dac_reason%). Nothing was changed.~
+@1353 = ~Dorn ambush camera fix skipped: CUTDN1B.BCS has %cbm_dac_locks% LockScroll() action(s), but only %cbm_dac_records% could be read as complete action records. Nothing was changed.~
+@1354 = ~[Dorn ambush camera fix] Removed %cbm_dac_removed% camera lock(s) from the ambush cutscene CUTDN1B.BCS.~
+@1355 = ~[Dorn ambush camera fix] CUTDN1B.BCS already has no camera lock and was left unchanged.~
+@1356 = ~[Dorn ambush camera fix] SENJACK.BCS now releases the camera once Senjak is no longer neutral. His hostility behavior is unchanged.~
+@1357 = ~[Dorn ambush camera fix] SENJACK.BCS already contains this release block and was left unchanged.~
+@1358 = ~[Dorn ambush camera fix] SENJACK.BCS is not in this game, so only the cutscene was changed.~
 @140 = ~Mazzy: replace proficiencies with Short Bow 4 / Short Sword 3-4~
 @160 = ~Skie Swashbuckler: move unusable Move Silently points to Open Locks~
 @170 = ~Xan Eldritch Knight: reconcile the EET XAN4/XAN6/TTXAN variants~
@@ -42,8 +51,10 @@
 @236 = ~Edwin Red Wizard: correct spell slots and removable amulet~
 @237 = ~Fade: first-recruitment SoA XP catch-up (new recruitment actors)~
 @238 = ~Evandra: first-recruitment SoA XP catch-up (new recruitment actors)~
+@239 = ~EET: SoA and ToB join-XP catch-up for joinable NPCs whose scripts lack it~
 @1235 = ~Baeloth's spellbook rebalance supports BG:EE (including SoD), BG2:EE and EET.~
 @1237 = ~SoA recruitment XP catch-up supports BG2:EE and EET. Install after companion script and NPC customization mods, before the NPC first appears.~
+@1239 = ~The join-XP catch-up reads EET's campaign tables and NPC transition scripts and supports EET only. Install after NPC mods and NPC customization mods.~
 
 @400 = ~Branwen Spiritual Hammer: repair magical-weapon charges~
 @410 = ~Yeslick and Keldorn Dispel Magic: hostile-only, correctly scaled dispels~
@@ -114,9 +125,14 @@ I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leav
 
 @650 = ~Campaign XP caps - keep excess XP for later (BG1/SoD; experimental)~
 @651 = ~Campaign XP caps - also cap SoA until ToB (requires 650; experimental)~
+@652 = ~Campaign XP caps - chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (requires 650; experimental)~
 @1650 = ~Campaign XP banking requires Enhanced Edition Trilogy (EET).~
 @1651 = ~Campaign XP banking requires the Windows x64 game and EEex/InfinityLoader native modules. Install EEex first; startup also verifies the reviewed native interfaces.~
 @1652 = ~Campaign XP banking requires the installed XPLEVEL.2DA progression table.~
-@1653 = ~Experimental campaign XP component installed; game testing is still pending. Install after 237/238/620 if selected, keep the mod folder, and restart through InfinityLoader. See docs/campaign-xp-banking.md. This does not repair existing saves.~
-@1654 = ~Install Campaign XP caps component 650 before its SoA option.~
+@1653 = ~Experimental campaign XP component installed; full gameplay testing is still pending. Install after 237/238/239/620 if selected, keep the mod folder, and restart through InfinityLoader. See docs/campaign-xp-banking.md. This does not repair existing saves.~
+@1654 = ~Install Campaign XP caps component 650 before its SoA or chapter-cap option.~
 @1655 = ~Experimental SoA cap option installed. The setting applies when a character first gets a banking account; it does not change saved banking settings. Uninstalling 651 restores the BG1/SoD installer setting.~
+@1656 = ~Choose one extended campaign XP cap mode: SoA cap 651 or chapter-by-chapter caps 652. Uninstall the other option before switching.~
+@1657 = ~Experimental chapter-by-chapter XP cap option installed (plus Baeloth's Chapter 5+ spawn gate when BAINVI.BCS has his entrance scene). The setting applies when a character first gets a banking account; it does not change saved banking settings. Uninstalling 652 restores the BG1/SoD installer setting.~
+@1658 = ~Chapter XP caps installed without Baeloth's Chapter 5+ gate: BAINVI.BCS is not a valid compiled script (%cbm_cxc_reason%) and was not changed. Baeloth may join before Chapter 5; banking keeps his starting XP and banks what he earns until the chapter cap passes it.~
+@1659 = ~Chapter XP caps installed without Baeloth's Chapter 5+ gate: BAINVI.BCS has no block that starts his Larswood entrance (BA_START_SCENE or CUTBA01), so another mod has probably replaced the scene. BAINVI.BCS was not changed. Baeloth may join before Chapter 5; banking keeps his starting XP and banks what he earns until the chapter cap passes it.~
