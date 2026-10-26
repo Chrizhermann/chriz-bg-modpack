@@ -68,7 +68,7 @@ jobs:
             --output "$RUNNER_TEMP/cbm-eet/lib/macros.tph" \
             https://raw.githubusercontent.com/Gibberlings3/EET/ad20ca29ae797e773fffb10c25537c1b1a674716/EET/lib/macros.tph
 
-      - name: Fetch pinned EEex v1.3.1 scripts for the campaign XP notice and record tests
+      - name: Fetch pinned EEex v1.3.1 scripts for the campaign XP tests (tests/pinned_eeex.py)
         run: |
           EEEX_COMMIT="a6d21abe44e20509f5d0259ccc6c7e7f9d12b285"
           scripts="$RUNNER_TEMP/cbm-eeex/EEex/copy/EEex_scripts"
@@ -82,6 +82,7 @@ jobs:
           fetch EEex_Action.lua 18ea2ed7974984d7da66ac315ca035574cc4faa2802f55c4f431efca2862787b
           fetch EEex_Keybinds.lua 0a0ff929beaffc8e5c1b039175600c286cc6816334052b92d648414eb5e14887
           fetch EEex_Menu.lua 13097865d63812e6b006812b21f4d874ee4a1651b2e93c6f2ba551c976732702
+          fetch EEex_Sprite.lua 60c48e00d7682be7716306fa10a868f079cb55bec77175467ec316b74354a8be
 
       - name: Run game-free regression tests
         env:

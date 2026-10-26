@@ -5,11 +5,11 @@ the native DisplayText binding was source-audited separately.
 """
 from importlib import import_module
 from pathlib import Path
-import os
 import pytest
 
+from tests.pinned_eeex import pinned_eeex_script
+
 ROOT=Path(__file__).resolve().parents[1]
-EEEX=Path(os.environ.get("CBM_EEEX_SOURCE","C:/tmp/scroll-hook-research-20261009/EEex"))/"EEex/copy/EEex_scripts"
 
 def function(source,name):
     start=source.index("function "+name+"(")
@@ -17,10 +17,8 @@ def function(source,name):
 
 @pytest.fixture(params=["lua51","luajit21"])
 def runtime(request):
-    if not (EEEX/"EEex_Action.lua").exists():
-        # CI sets CBM_EEEX_SOURCE to the pinned scripts it fetched, so there a missing file is a failure, not a skip.
-        if "CBM_EEEX_SOURCE" in os.environ:pytest.fail("CBM_EEEX_SOURCE has no EEex/copy/EEex_scripts/EEex_Action.lua")
-        pytest.skip("Pinned EEex source needed for actual listener/keyboard implementation")
+    # The actual listener/keyboard implementation; CI fetches these, so there a missing script is a failure.
+    action,keybinds=pinned_eeex_script("EEex_Action.lua"),pinned_eeex_script("EEex_Keybinds.lua")
     lua=import_module("lupa."+request.param).LuaRuntime(unpack_returned_tuples=True)
     lua.globals().N=lua.execute((ROOT/"research/xp-banking-native/bank_notice.lua").read_text())
     lua.execute('''
@@ -54,10 +52,10 @@ def runtime(request):
        Status=function(a,cap)assert(a==actor and cap==161000);return 'Usable XP: 161000; banked XP: 339000; cap: 161000'end}
       reset={NativeCap=function(a)assert(a==actor);return 161000 end}
     ''')
-    actions=(EEEX/"EEex_Action.lua").read_text()
+    actions=action.read_text()
     for name in ["EEex_Action_AddSpriteStartedActionListener","EEex_Action_LuaHook_OnAfterSpriteStartedAction"]:
         lua.execute(function(actions,name))
-    keys=(EEEX/"EEex_Keybinds.lua").read_text()
+    keys=keybinds.read_text()
     for name in ["EEex_Keybinds_Get","EEex_Keybinds_Reset","EEex_Keybinds_Update"]:
         lua.execute(function(keys,name))
     return lua

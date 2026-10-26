@@ -3,15 +3,16 @@
 Runs the ACTUAL unmodified size/write/read functions in Lua 5.2 and LuaJIT.
 EEex's serializer uses goto and therefore cannot run in stock Lua 5.1. The
 banking store/loader itself additionally gets Lua 5.1 checks. No save is read.
+EEex_Sprite.lua comes from the pinned scripts (tests/pinned_eeex.py, CBM_EEEX_SOURCE).
 """
 from importlib import import_module
 from pathlib import Path
-import os
 
 import pytest
 
+from tests.pinned_eeex import pinned_eeex_script
+
 ROOT = Path(__file__).resolve().parent
-EEEX = Path(os.environ.get("CBMI_EEEX_SOURCE", "C:/tmp/scroll-hook-research-20261009/EEex/EEex/copy/EEex_scripts/EEex_Sprite.lua"))
 
 
 def plain(value):
@@ -66,7 +67,7 @@ def wire(request):
             EEex_Sprite_Private_MarshalHandlers[name]={exporter=exporter,importer=importer}
         end
     """)
-    source = EEEX.read_text(encoding="utf-8")
+    source = pinned_eeex_script("EEex_Sprite.lua").read_text(encoding="utf-8")
     start = source.index("EEex_Sprite_Private_MarshalHandlerFieldType = {")
     end = source.index("EEex_Sprite_Private_CustomConcentrationCheckFuncName = nil",start)
     lua.execute(source[start:end])
