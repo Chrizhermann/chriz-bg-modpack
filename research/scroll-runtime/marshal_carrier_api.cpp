@@ -1,13 +1,16 @@
 #include "marshal_carrier_api.h"
 #include "eeex_save_bridge.h"
+#include "carrier_gate.hpp"
 #include <limits>
 #include <stdexcept>
-#include <thread>
 
 namespace {
 CBMS_NativeMarshalTrampoline original{};
-std::thread::id owner;
+cbm::scroll::CarrierGate gate;
 unsigned busy{};
+using Outside=cbm::scroll::CarrierGate::Outside;
+// Checked before any carrier state: see carrier_gate.hpp.
+bool admitted() noexcept {return gate.owner()&&original;}
 struct Scope {
     void* list;void** output;uint8_t version;int permanent,skip;
     void* actor{};Scope* parent{};
@@ -23,18 +26,20 @@ struct Stack {
 }
 int CBMS_ConfigureMarshalCarrier(CBMS_NativeMarshalTrampoline function) {
     if(original||!function||function==CBMS_MarshalCarrier) return 0;
-    original=function;owner=std::this_thread::get_id();return 1;
+    original=function;gate.configure();return 1;
 }
-int CBMS_MarshalCarrierIdle() {return original&&std::this_thread::get_id()==owner&&!busy ? 1:0;}
+int CBMS_MarshalCarrierIdle() {return admitted()&&!busy&&gate.quiet() ? 1:0;}
 int CBMS_DetachMarshalCarrier() {
     if(!CBMS_MarshalCarrierIdle()) return 0;
     original=nullptr;return 1;
 }
 int CBMS_ClaimMarshalActor(void* actor) {
-    if(!original) return 0;
-    if(std::this_thread::get_id()!=owner) {
-        CBMS_EEexRejectEnvelope("native actor marshal exporter entered on another thread");return -1;
+    if(!gate.owner()) {
+        // Nothing here may be touched from another thread, not even the bridge.
+        if(original) CBMS_ForeignEntry();
+        return original?-1:0;
     }
+    if(!original) return 0;
     if(!top) return 0;
     const auto address=reinterpret_cast<uintptr_t>(actor);
     // Both supported native CRE Marshal bodies pass this exact timed-effect
@@ -51,7 +56,7 @@ int CBMS_ClaimMarshalActor(void* actor) {
     return CBMS_EEexBridgeHealthy()?1:-1;
 }
 uint32_t CBMS_MarshalCarrier(void* list,void** output,uint8_t version,int permanent,int skip) noexcept(false) {
-    if(!original||std::this_thread::get_id()!=owner) throw std::logic_error("native Marshal carrier has no owner-thread configuration");
+    if(!admitted()) {Outside outside(gate);return original(list,output,version,permanent,skip);}
     Stack scope(list,output,version,permanent,skip);
     const auto size=original(list,output,version,permanent,skip);
     if(scope.value.actor) CBMS_EEexAfterEffectMarshal(scope.value.actor,size);

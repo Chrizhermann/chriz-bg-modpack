@@ -1,4 +1,4 @@
-"""Build an uninstalled scroll binding DLL against pinned shipped loader DLLs.
+"""Build the scroll binding DLL that component 430 installs, against pinned shipped loader DLLs.
 
 Creates import libraries from actual exported symbols, then links our sources.
 Never builds the upstream projects (which contain COPY_TO_GAME post-builds),
@@ -45,12 +45,14 @@ def build(directory, compiler, environment):
         run([librarian,"/nologo","/machine:x64","/def:"+str(definition),"/out:"+str(library)],directory,environment)
         libraries.append(library)
     output = directory/"CBMScroll.dll"
-    units = ["native_api.cpp","eeex_save_bridge.cpp","decode_carrier_api.cpp","decode_hook_host.cpp","marshal_carrier_api.cpp","lifecycle_carrier_api.cpp","item_carrier_api.cpp","item_hook_host.cpp","dispatch_carrier_api.cpp","dispatch_hook_host.cpp","cast_carrier_api.cpp","cast_hook_host.cpp","action_carrier_api.cpp","action_hook_host.cpp","linked177_api.cpp","linked177_host.cpp","policy_resource_hash.cpp","policy_resource_lua.cpp","eeex_lua_bindings.cpp","startup.cpp","startup_lua.cpp","dll_entry.cpp"]
-    args = [compiler,"/nologo","/std:c++20","/EHsc","/W4","/WX","/permissive-","/LD"]
+    units = ["native_api.cpp","eeex_save_bridge.cpp","decode_carrier_api.cpp","decode_hook_host.cpp","marshal_carrier_api.cpp","lifecycle_carrier_api.cpp","item_carrier_api.cpp","item_hook_host.cpp","dispatch_carrier_api.cpp","dispatch_hook_host.cpp","cast_carrier_api.cpp","cast_hook_host.cpp","linked177_api.cpp","linked177_host.cpp","policy_resource_hash.cpp","policy_resource_lua.cpp","eeex_lua_bindings.cpp","startup.cpp","startup_lua.cpp","dll_entry.cpp"]
+    # /Brepro: object files and the linked image carry content hashes instead
+    # of build times, so the same sources rebuild to identical bytes.
+    args = [compiler,"/nologo","/std:c++20","/EHsc","/W4","/WX","/permissive-","/LD","/Brepro"]
     units += ["conditional_api.cpp","conditional_host.cpp"]
     args += [str(SOURCE/name) for name in units]
     args += ["/I"+str(LOADER/part) for part in ["InfinityLoaderCommon/headers/common","LuaBindingsCore/headers/common"]]
-    args += ["/Fe"+str(output),"/link"]+[str(path) for path in libraries]
+    args += ["/Fe"+str(output),"/link","/Brepro"]+[str(path) for path in libraries]
     run(args,directory,environment)
     pe = pefile.PE(str(output))
     imported = {entry.dll.decode():[symbol.name.decode() for symbol in entry.imports if symbol.name] for entry in pe.DIRECTORY_ENTRY_IMPORT}
@@ -63,7 +65,7 @@ def build(directory, compiler, environment):
         if not required<=exports:
             raise RuntimeError(family+" is missing imported scroll binding APIs: "+str(required-exports))
     manifest = dict(artifact=str(output),sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
-        status="uninstalled trial candidate; native game acceptance not performed",imports=imported,
+        status="installed by component 430; in-game checks are recorded by DLL SHA-256 in docs/scroll-casting.md",imports=imported,
         text_hash_normalization="LF",
         sources={name:hashlib.sha256((SOURCE/name).read_bytes().replace(b"\r\n",b"\n")).hexdigest() for name in units},
         dependencies={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in dependencies})

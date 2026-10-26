@@ -8,15 +8,20 @@ from test_scroll_runtime_binding import mapped,windows
 from test_scroll_runtime_decode_host import lookup
 APPLY=C.CFUNCTYPE(C.c_int,C.c_void_p,C.c_void_p);DECODE=C.CFUNCTYPE(C.c_void_p,C.c_void_p)
 class Functions(C.Structure):_fields_=[('apply',APPLY),('decode',DECODE),('call',C.c_size_t)]
+CARRIER_SIGNATURES=[('ConfigureLinked177',[C.c_void_p,C.POINTER(Functions)],C.c_int),('Linked177Idle',[],C.c_int),('DetachLinked177',[],C.c_int),('Linked177Error',[],C.c_char_p),('Linked177Apply',[C.c_void_p,C.c_void_p],C.c_int),('TestLinked177Decode',[C.c_size_t,C.c_void_p],C.c_void_p),('CarrierIsOwned',[C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),('DestructObserved',[C.c_void_p,C.c_uint32,C.c_size_t],C.c_int)]
+HOST_SIGNATURES=[('BindLinked177',[C.c_size_t,C.POINTER(Functions),C.c_void_p,C.c_uint32],C.c_int),('TestInstallLinked177Hooks',[C.POINTER(Functions),C.c_void_p],C.c_int),('RemoveLinked177Hooks',[],C.c_int),('Linked177HookError',[],C.c_char_p),('TestLinked177Allocation',[],C.c_size_t),('TestLinked177Failure',[C.c_int],None)]
+def configure_linked(library,host=True):
+    """Native-API and opcode177 carrier (and host) signatures of a harness build."""
+    native=configure_native_api(library)
+    for name,args,out in CARRIER_SIGNATURES+(HOST_SIGNATURES if host else []):
+        f=getattr(library,'CBMS_'+name);f.argtypes=args;f.restype=out
+    return native
 @pytest.fixture(scope='module')
 def api(tmp_path_factory):
     directory=tmp_path_factory.mktemp('scroll-linked177');compiler,env,msvc=compiler_environment();assert msvc;library=directory/'linked.dll'
     run=subprocess.run([compiler,'/nologo','/std:c++20','/EHsc','/W4','/WX','/permissive-','/DCBMS_OFFLINE_HARNESS','/LD',*[str(SOURCE/n) for n in ('native_api.cpp','linked177_api.cpp','linked177_host.cpp')],f'/Fe{library}'],cwd=directory,env=env,text=True,capture_output=True)
     assert run.returncode==0,run.stdout+run.stderr
-    native=configure_native_api(C.CDLL(str(library)));dll=native[0]
-    for name,args,out in [('ConfigureLinked177',[C.c_void_p,C.POINTER(Functions)],C.c_int),('Linked177Idle',[],C.c_int),('DetachLinked177',[],C.c_int),('Linked177Error',[],C.c_char_p),('Linked177Apply',[C.c_void_p,C.c_void_p],C.c_int),('TestLinked177Decode',[C.c_size_t,C.c_void_p],C.c_void_p),('CarrierIsOwned',[C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),('DestructObserved',[C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),('BindLinked177',[C.c_size_t,C.POINTER(Functions),C.c_void_p,C.c_uint32],C.c_int),('TestInstallLinked177Hooks',[C.POINTER(Functions),C.c_void_p],C.c_int),('RemoveLinked177Hooks',[],C.c_int),('Linked177HookError',[],C.c_char_p),('TestLinked177Allocation',[],C.c_size_t),('TestLinked177Failure',[C.c_int],None)]:
-        f=getattr(dll,'CBMS_'+name);f.argtypes=args;f.restype=out
-    return native
+    return configure_linked(C.CDLL(str(library)))
 class Harness:
     def __init__(self,native):
         self.api,self.runtime,self.resolve,self.report,self.calls,self.errors=runtime_fixture(native)

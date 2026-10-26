@@ -36,6 +36,9 @@ CBMS_EXPORT int CBMS_EEexDetachQuiescent(void);
 CBMS_EXPORT const char* CBMS_EEexExportText(void* actor);
 CBMS_EXPORT int CBMS_EEexStageText(void* actor, const char* text, uint32_t length);
 CBMS_EXPORT int CBMS_EEexImportFinished(void* actor);
+/* After a finished import only: why that actor's outdated envelope was dropped
+ * for it alone (it no longer matched the actor's records), otherwise null. */
+CBMS_EXPORT const char* CBMS_EEexImportDropped(void* actor);
 CBMS_EXPORT void CBMS_EEexRejectEnvelope(const char* reason);
 /* Actual InfinityLoader Lua-provider / tolua binding registration. */
 void CBMS_EEexOpenLua(lua_State*);

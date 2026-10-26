@@ -2,18 +2,18 @@
 import ctypes as C
 import importlib.util,json,sys
 import pytest
-from test_scroll_runtime_detours import action_image,SOURCE
+from test_scroll_runtime_binding import pinned_image,SOURCE
 from test_scroll_runtime_binding import windows
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import os_unwinder
 from test_scroll_runtime_item_detours import execute
 sys.path.insert(0,str(SOURCE))
 spec=importlib.util.spec_from_file_location('dispatch_detours',SOURCE/'dispatch_detours.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 @pytest.mark.parametrize('name',list(module.SITES))
-def test_real_dispatch_entry_trampoline_and_every_instruction_unwind(action_image,name,windows,os_unwinder):
-    pe,sites,_=action_image
-    profile=json.loads((SOURCE/('dispatch-audit-'+sites['copy'].version+'.json')).read_text())
+def test_real_dispatch_entry_trampoline_and_every_instruction_unwind(pinned_image,name,windows,os_unwinder):
+    pe,version,_=pinned_image
+    profile=json.loads((SOURCE/('dispatch-audit-'+version+'.json')).read_text())
     entry=next(row['rva'] for row in profile['functions'] if row['label']==name)+pe.OPTIONAL_HEADER.ImageBase
-    original,hooked=[execute(action_image,name,value,module,entry) for value in (False,True)]
+    original,hooked=[execute(pinned_image,name,value,module,entry) for value in (False,True)]
     assert original['registers']==hooked['registers'] and original['flags']==hooked['flags']
     old,new=bytearray(original['stack']),bytearray(hooked['stack'])
     if hooked['plan']['frame']:

@@ -43,3 +43,18 @@ CBMI_API void CBMI_Destruct(void*);
 // Observational only: callers must not infer an atomic reset/save transaction
 // from this guard. No native XP or saved metadata is changed by this module.
 CBMI_API int CBMI_CanMutate(const void* sprite, uint64_t incarnation);
+// The game's own code (a fallback where the bank could not take an XP change,
+// or a change the bank passed on unowned) replaced this lifetime's XP word.
+// Same-DLL, host thread only; a new lifetime starts without it. CBMI_LuaQuery
+// reports it as its eighth value; CBMI_LuaAckReplaced(address, incarnation)
+// clears it once the bank matches.
+void CBMI_NoteReplaced(const void* sprite);
+CBMI_API int CBMI_LuaAckReplaced(void* L);
+// Whether the lifetime CBMI_Query reported as this incarnation is still the
+// actor's: 1 it is; -1 it provably ended (destroyed, or constructed again, on
+// the host thread since); 0 unknown: another thread constructed or destroyed an
+// actor at this address (or at more addresses than the bounded record holds),
+// which proves nothing ended, nor that it goes on. Another thread's event at
+// another address leaves 1. Any such event makes CBMI_Query fail for the rest of
+// the process. Same-DLL, host thread only.
+int CBMI_Lifetime(const void* sprite, uint64_t incarnation);

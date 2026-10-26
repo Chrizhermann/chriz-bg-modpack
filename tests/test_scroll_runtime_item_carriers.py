@@ -20,25 +20,29 @@ DIGEST=C.CFUNCTYPE(C.c_int,C.c_char_p,C.c_char_p,C.c_void_p,C.c_void_p)
 class Functions(C.Structure):
     _fields_=[('use',USE),('point',POINT),('fire',FIRE),('fire_point',FIRE),('effect',ROOT),('item_type',TYPE),('roots',C.c_size_t*4),('continuations',C.c_size_t*2)]
 
+SIGNATURES={
+    'ConfigureItemCarriers':([C.c_void_p,C.POINTER(Functions),C.c_void_p,C.c_uint32,DIGEST,C.c_void_p],C.c_int),
+    'ItemCarriersIdle':([],C.c_int),'DetachItemCarriers':([],C.c_int),'ItemCarrierError':([],C.c_char_p),
+    'UseItemCarrier':([C.c_void_p,C.c_void_p],C.c_uint16),'UsePointCarrier':([C.c_void_p],C.c_uint16),
+    'TestFireItemCarrier':([C.c_size_t,C.c_int,C.c_void_p,C.c_void_p,C.c_int,C.c_void_p],C.c_uint16),
+    'TestItemEffectCarrier':([C.c_size_t,C.c_void_p,C.c_int,C.c_int,C.c_void_p],C.c_void_p),
+    'DestructObserved':([C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),
+    'BindItemModule':([C.c_size_t,C.POINTER(Functions),C.c_void_p,C.c_uint32],C.c_int),
+    'ActorIsObserved':([C.c_void_p,C.c_size_t],C.c_int),
+}
+def configure_items(library):
+    """Native-API and item-carrier signatures of a harness build."""
+    native=configure_native_api(library)
+    for name,(args,out) in SIGNATURES.items():
+        fn=getattr(library,'CBMS_'+name);fn.argtypes=args;fn.restype=out
+    return native
 @pytest.fixture(scope='module')
 def item_api(tmp_path_factory):
     directory=tmp_path_factory.mktemp('scroll-item-carrier');compiler,env,msvc=compiler_environment();assert msvc
     dll=directory/'item.dll'
     result=subprocess.run([compiler,'/nologo','/std:c++20','/EHsc','/W4','/WX','/permissive-','/DCBMS_OFFLINE_HARNESS','/LD',str(SOURCE/'native_api.cpp'),str(SOURCE/'item_carrier_api.cpp'),str(SOURCE/'item_hook_host.cpp'),f'/Fe{dll}'],cwd=directory,env=env,text=True,capture_output=True)
     assert result.returncode==0,result.stdout+result.stderr
-    native=configure_native_api(C.CDLL(str(dll)));api=native[0]
-    signatures={
-        'ConfigureItemCarriers':([C.c_void_p,C.POINTER(Functions),C.c_void_p,C.c_uint32,DIGEST,C.c_void_p],C.c_int),
-        'ItemCarriersIdle':([],C.c_int),'DetachItemCarriers':([],C.c_int),'ItemCarrierError':([],C.c_char_p),
-        'UseItemCarrier':([C.c_void_p,C.c_void_p],C.c_uint16),'UsePointCarrier':([C.c_void_p],C.c_uint16),
-        'TestFireItemCarrier':([C.c_size_t,C.c_int,C.c_void_p,C.c_void_p,C.c_int,C.c_void_p],C.c_uint16),
-        'TestItemEffectCarrier':([C.c_size_t,C.c_void_p,C.c_int,C.c_int,C.c_void_p],C.c_void_p),
-        'DestructObserved':([C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),
-        'BindItemModule':([C.c_size_t,C.POINTER(Functions),C.c_void_p,C.c_uint32],C.c_int),
-    }
-    for name,(args,out) in signatures.items():
-        fn=getattr(api,'CBMS_'+name);fn.argtypes=args;fn.restype=out
-    return native
+    return configure_items(C.CDLL(str(dll)))
 
 class Harness:
     def __init__(self,native,classification='typed_cast_candidate',item_type=11,verify=True,observe=True):

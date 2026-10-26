@@ -201,7 +201,8 @@ function M.Install(options)
         "EEex_ReadU8", "EEex_ReadU16", "EEex_ReadU32", "EEex_Read32", "EEex_WriteU8", "EEex_Write64",
         "EEex_Malloc", "EEex_DisableCodeProtection", "EEex_EnableCodeProtection", "EEex_UDToPtr"}) do required(name) end
     assert(_G.CBMBank_Identity == nil and _G.CBMBank_IdentityNativeQuery == nil
-        and _G.CBMBank_IdentityConfigure == nil, "Identity namespace already owned")
+        and _G.CBMBank_IdentityNativeAckReplaced == nil and _G.CBMBank_IdentityConfigure == nil,
+        "Identity namespace already owned")
     local profile, _, game, eeex = M.ResolveProfile(options.profiles)
     local entries = {}
     for _, slot in ipairs(order) do
@@ -227,7 +228,7 @@ function M.Install(options)
         assert(type(value) == "number" and value > 0, "Missing identity DLL export: " .. name)
         return value
     end
-    local configure, query = proc("CBMI_Configure"), proc("CBMI_LuaQuery")
+    local configure, query, ackReplaced = proc("CBMI_Configure"), proc("CBMI_LuaQuery"), proc("CBMI_LuaAckReplaced")
     for _, slot in ipairs(order) do entries[slot].target = proc(exports[slot]) end
     -- Relays for entries outside EEex's reach exist before any entry is patched.
     for _, slot in ipairs(order) do
@@ -263,6 +264,7 @@ function M.Install(options)
     assert(CBMBank_IdentityConfigure(), "Identity DLL already configured or invalid host ABI")
     -- Publish the callable query before any actor can enter a replacement.
     EEex_ExposeToLua(query,"CBMBank_IdentityNativeQuery")
+    EEex_ExposeToLua(ackReplaced,"CBMBank_IdentityNativeAckReplaced")
     local changed = {}
     EEex_DisableCodeProtection()
     local ok, why = pcall(function()
@@ -290,7 +292,7 @@ function M.Install(options)
     end) end
     EEex_EnableCodeProtection()
     if not ok then
-        CBMBank_IdentityNativeQuery=nil
+        CBMBank_IdentityNativeQuery=nil;CBMBank_IdentityNativeAckReplaced=nil
         if not restored then error("Identity rollback failed; restart required: "..tostring(restoreWhy)) end
         error("Identity hook installation rolled back; restart required: " .. tostring(why))
     end
@@ -337,11 +339,18 @@ function M.AddressText(sprite)
 end
 function M.Query(sprite)
     if not M.installed or sprite == nil then return nil,"Identity hooks unavailable" end
-    local birth, reason, incarnation, owner, serializing, eligible, canMutate =
+    local birth, reason, incarnation, owner, serializing, eligible, canMutate, replaced =
         CBMBank_IdentityNativeQuery(M.AddressText(sprite))
     if not birth then return nil,"Actor lifetime unobserved or wrong native thread" end
+    -- nativeReplaced: a native fallback replaced this lifetime's XP word since
+    -- the bank last matched it (see AckReplaced).
     return {birthReason=birth, reason=reason, incarnation=incarnation,
         ownerToken=owner ~= "" and owner or nil, serializing=serializing,
-        eligible=eligible, canMutate=canMutate}
+        eligible=eligible, canMutate=canMutate, nativeReplaced=replaced == true}
+end
+-- Clears that note for this lifetime once the account matches the stored word.
+function M.AckReplaced(sprite, incarnation)
+    if not M.installed or sprite == nil then return false end
+    return CBMBank_IdentityNativeAckReplaced(M.AddressText(sprite), tostring(incarnation)) == true
 end
 return M

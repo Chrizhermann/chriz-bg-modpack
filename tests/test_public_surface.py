@@ -207,7 +207,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.13.md",
+                "docs/releases/v0.2.0-alpha.14.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

@@ -4,7 +4,7 @@ import json
 import struct
 from pathlib import Path
 import capstone
-from dual_proficiency_probe import load,EXES,SOURCE
+from dual_proficiency_probe import load,EXES,SOURCE,keep_or_write
 ROOT=Path(__file__).parent
 FUNCTIONS=['CScreenCreateChar::IsThiefSkillPlusMinusButtonClickable',
  'CScreenCreateChar::OnThiefSkillPlusMinusButtonClick','CGameSprite::GetSkillName',
@@ -39,8 +39,8 @@ def inventory():
    lines.append('\n'+name);report['functions'].append({'name':name,'rva':start-base,'size':len(body),'sha256':hashlib.sha256(body).hexdigest()})
    for ins in md.disasm(body,start):
     target=by_address.get(ins.operands[0].imm) if ins.mnemonic in ('call','jmp') and ins.operands[0].type==capstone.CS_OP_IMM else None
-    lines.append(f'{ins.address-base:08x} {ins.mnemonic:8s} {ins.op_str}'+(' ; '+target if target else ''))
-  (ROOT/f'dual-old-skill-limits-{version}.txt').write_text('\n'.join(lines)+'\n');reports.append(report)
- (ROOT/'dual-old-skill-limits.json').write_text(json.dumps(reports,indent=2)+'\n')
+    lines.append(f'{ins.address-base:08x} {ins.mnemonic:8s} {ins.op_str}'.rstrip()+(' ; '+target if target else ''))
+  keep_or_write(ROOT/f'dual-old-skill-limits-{version}.txt','\n'.join(lines)+'\n');reports.append(report)
+ keep_or_write(ROOT/'dual-old-skill-limits.json',json.dumps(reports,indent=2)+'\n')
  return reports
 if __name__=='__main__':print(json.dumps([{ 'version':r['version'],'functions':len(r['functions'])} for r in inventory()]))

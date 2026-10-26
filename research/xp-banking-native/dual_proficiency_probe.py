@@ -41,6 +41,15 @@ FUNCTIONS = ['CRuleTables::GetProficiencySlots', 'CAIObjectType::GetActiveInacti
              'CRuleTables::RollHitPoints@class','CGameSprite::SetSkillValue',
              'CAIObjectType::IsUsableSubClass','CRuleTables::GetNextLevelSubClass','CDerivedStats::SetLevel']
 
+def keep_or_write(path, text):
+    # Everything the build's probes generate is written as the repository keeps it
+    # (LF) and only when its text changed: regenerating an unchanged result or
+    # native input leaves the file untouched, so a build rewrites nothing it did
+    # not change (and the build record refuses an input the build rewrote).
+    data = text.encode()
+    if not path.is_file() or path.read_bytes().replace(b'\r\n', b'\n') != data:
+        path.write_bytes(data)
+
 def fnv(data):
     n = 14695981039346656037
     for b in data:
@@ -93,8 +102,8 @@ def generate():
         lines.append('    }},')
         manifests.append(dict(version=version, exe_sha256=SHAS[version], functions=spans))
     lines.append('};')
-    (ROOT/'dual_native_proficiency_builds.inc').write_text('\n'.join(lines)+'\n')
-    (ROOT/'dual-proficiency-signatures.json').write_text(json.dumps(manifests,indent=2)+'\n')
+    keep_or_write(ROOT/'dual_native_proficiency_builds.inc', '\n'.join(lines)+'\n')
+    keep_or_write(ROOT/'dual-proficiency-signatures.json', json.dumps(manifests,indent=2)+'\n')
 
 def cstring(uc, at):
     text=bytearray()
@@ -566,7 +575,7 @@ def run(dll_path):
                 complete_retired_progression=False)
     report['source_sha256']={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in
         ['dual_native_proficiency.h','dual_native_proficiency.cpp','dual_native_proficiency_builds.inc','dual_proficiency_probe.py']}
-    (ROOT/'dual-proficiency-check-results.json').write_text(json.dumps(report,indent=2)+'\n')
+    keep_or_write(ROOT/'dual-proficiency-check-results.json', json.dumps(report,indent=2)+'\n')
     print(json.dumps({k:v for k,v in report.items() if k!='builds'}))
 
 if __name__=='__main__':

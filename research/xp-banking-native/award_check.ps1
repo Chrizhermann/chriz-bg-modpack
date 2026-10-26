@@ -27,4 +27,7 @@ try {
     if($code -ne 0){throw "MSVC award build failed: $output"}
     & $exe
     if($LASTEXITCODE -ne 0){throw 'Award native bridge tests failed.'}
+    # Another thread's lifetime event leaves every identity unknown for the rest
+    # of its process: each of those cases runs in a process of its own.
+    foreach($case in 0..8){& $exe foreign $case;if($LASTEXITCODE -ne 0){throw "Award native foreign case $case failed."}}
 }finally{Pop-Location}

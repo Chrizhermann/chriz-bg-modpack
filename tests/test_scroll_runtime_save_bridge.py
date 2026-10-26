@@ -3,12 +3,14 @@
 No game PE is loaded, no engine function is called, and no file is marshalled.
 """
 import ctypes as C
+import importlib
 import subprocess
 
 import pytest
 
 from test_scroll_runtime_native import SOURCE, compiler_environment, configure_native_api
-from test_scroll_runtime_actor_archive import native_list, allocated, runtime_fixture
+from test_scroll_runtime_actor_archive import (native_list, allocated, runtime_fixture, linked_list, native_effect,
+                                               read_scroll, selected, decode_envelope, encode_envelope, ROW)
 
 
 @pytest.fixture(scope="module")
@@ -34,7 +36,9 @@ def bridge(tmp_path_factory):
         "AfterActorUUID": ([C.c_void_p, C.c_uint64], None),
         "ExportText": ([C.c_void_p], C.c_char_p),
         "StageText": ([C.c_void_p, C.c_char_p, C.c_uint32], C.c_int),
-        "ImportFinished": ([C.c_void_p], C.c_int),
+        "ImportFinished": ([C.c_void_p], C.c_int), "ImportDropped": ([C.c_void_p], C.c_char_p),
+        "RejectEnvelope": ([C.c_char_p], None),
+        "EffectDestroyed": ([C.c_void_p], None), "ActorDestroyed": ([C.c_void_p], None),
         "CancelledActorIO": ([C.c_void_p], C.c_int), "DetachQuiescent": ([], C.c_int),
     }
     for name, (arguments, result) in signatures.items():
@@ -280,3 +284,235 @@ def test_compiled_eeex_lifecycle_preserves_owner_copy_and_cleans_after_fault(bri
         ('effect',0x3000),('effect',0x2000),('effect',0x3000),('effect',0x4000),('actor',0x1000)]
     assert errors==[] and api.CBMS_DetachLifecycleCarriers()==1
     assert api.CBMS_EEexDetachQuiescent()==1 and api.CBMS_Destroy(runtime)==1
+
+
+# EEex's marshal plumbing for one process, around the shipped actor adapter.
+HOST = '''
+    handlers, listeners = {}, {}
+    function EEex_GetUDAux(sprite) return sprite.aux end
+    function EEex_Sprite_AddMarshalHandlers(name, export, import)
+        handlers[name] = {exporter = export, importer = import}
+    end
+    function EEex_Sprite_AddLoadedListener(f) listeners[#listeners + 1] = f end
+    function EEex_Sprite_LuaHook_OnAfterEffectListUnmarshalled(sprite)
+        for _, f in ipairs(listeners) do f(sprite) end
+    end
+    name_strings = {}
+    function Infinity_FetchString(strref) return name_strings[strref] or "" end
+    -- As loaded listeners see a sprite: display name not set yet, creature name string set.
+    function make_sprite(address, low, high, name, script)
+        name_strings[address] = name
+        return {address = address, aux = {},
+            m_sName = {m_pchData = {get = function() return "" end}},
+            m_baseStats = {m_name = address},
+            m_scriptName = {get = function() return script end},
+            m_pLocalVariables = {find = function(_, key)
+                assert(key == "EEEX_UUID")
+                return {m_intValue = low, m_dWValue = high}
+            end}}
+    end
+'''
+DROPPED = ("[CBM scroll] Dropped outdated scroll data for {} only: {}. Its effects keep their levels; "
+           "spells they cast later use the normal level.")
+
+
+class Actor:
+    def __init__(self, address, uuid, name, script):
+        self.address, self.uuid, self.name, self.script = address, uuid, name, script
+
+
+class Game:
+    """One game process: a fresh runtime attached to the compiled bridge and the
+    shipped actor adapter in real Lua. Stand-ins replace EEex's marshal calls and
+    the tolua bindings (eeex_lua_bindings.cpp needs the loader SDK); they call
+    the same bridge entries those bindings call."""
+
+    def __init__(self, bridge):
+        # The resolver and reporter callbacks must outlive the runtime.
+        self.api, self.runtime, *self.callbacks, self.calls, self.errors = runtime_fixture(bridge)
+        assert self.api.CBMS_EEexAttachForTest(self.runtime) == 1
+        api, self.printed, self.objects = self.api, [], []
+        self.lua = importlib.import_module("lupa.lua51").LuaRuntime(unpack_returned_tuples=True)
+        self.lua.execute(HOST)
+
+        def export(sprite):
+            text = api.CBMS_EEexExportText(int(sprite.address))
+            return text.decode() if text is not None else (None, api.CBMS_EEexBridgeError().decode())
+
+        def stage(sprite, payload):
+            data = payload.encode()
+            return bool(api.CBMS_EEexStageText(int(sprite.address), data, len(data))), api.CBMS_EEexBridgeError().decode()
+
+        def finished(sprite):
+            dropped = api.CBMS_EEexImportDropped(int(sprite.address))
+            return bool(api.CBMS_EEexImportFinished(int(sprite.address))), None if dropped is None else dropped.decode()
+
+        def actor_uuid(sprite, low, high):
+            api.CBMS_EEexAfterActorUUID(int(sprite.address), (int(high) << 32) | (int(low) & 0xFFFFFFFF))
+            return bool(api.CBMS_EEexBridgeHealthy())
+
+        names = self.lua.globals()
+        names.CBMS_NativeExport, names.CBMS_NativeStage, names.CBMS_NativeImportFinished = export, stage, finished
+        names.CBMS_NativeHealthy = lambda: bool(api.CBMS_EEexBridgeHealthy())
+        names.CBMS_NativeActorUUID = actor_uuid
+        names.CBMS_NativeRejectEnvelope = lambda reason: api.CBMS_EEexRejectEnvelope(reason.encode())
+        names.print = self.printed.append
+        self.lua.execute((SOURCE / "CBMS_ScrollMarshal.lua").read_text())
+        self.handler = names.handlers.CBM_SCROLL_CONTEXT
+
+    def load(self, actor, records, envelope, copies=1):
+        """EEex's actor load: native decode of every record, the marshal importer
+        for its X-BIV block, then the after-unmarshal hook (UUID, loaded listeners)."""
+        api, names = self.api, self.lua.globals()
+        sprite = names.make_sprite(actor.address, actor.uuid & 0xFFFFFFFF, actor.uuid >> 32, actor.name, actor.script)
+        api.CBMS_EEexBeginEffectUnmarshal(actor.address, 1)
+        saved = allocated(b"".join(records) + b"X-BIV1.0" + bytes(256))
+        effects = [allocated(b"EFF V2.0" + wire) for wire in records]
+        for i, effect in enumerate(effects):
+            api.CBMS_EEexEffectDecoded(actor.address, C.addressof(effect), C.addressof(saved) + i * ROW)
+        for _ in range(copies if envelope is not None else 0):
+            self.handler.importer(sprite, self.lua.table_from(envelope))
+        names.EEex_Sprite_LuaHook_OnAfterEffectListUnmarshalled(sprite)
+        loaded = {"actor": actor, "sprite": sprite, "effects": effects}
+        self.objects.append(loaded)
+        return loaded
+
+    def save(self, loaded):
+        """EEex's actor save: native prepare, the marshal exporter, validate.
+        Returns the records and the envelope EEex writes to the X-BIV block."""
+        api, address = self.api, loaded["actor"].address
+        linked, nodes = linked_list(loaded["effects"])
+        output = C.c_void_p()
+        api.CBMS_EEexBeforeEffectMarshal(address, C.addressof(linked), C.byref(output), 0)
+        envelope = self.handler.exporter(loaded["sprite"])
+        records = [bytes(effect)[8:] for effect in loaded["effects"]]
+        written = allocated(b"".join(records) + b"X-BIV1.0" + bytes(256))
+        output.value = C.addressof(written)
+        api.CBMS_EEexAfterEffectMarshal(address, len(written))
+        return records, None if envelope is None else dict(envelope.items())
+
+    def read_scroll(self, loaded, count=1):
+        effects = [native_effect(0, 500 + len(loaded["effects"]) + i) for i in range(count)]
+        read_scroll(self.api, self.runtime, loaded["actor"].address, effects)
+        loaded["effects"].extend(effects)
+        return effects
+
+    def levels(self, loaded):
+        return [selected(self.api, self.runtime, effect) for effect in loaded["effects"]]
+
+    def healthy(self):
+        return self.api.CBMS_EEexBridgeHealthy() == 1 and self.api.CBMS_EEexBridgeError() == b"" and self.errors == []
+
+    def close(self):
+        """Ends every object's lifetime, as the engine does, then detaches."""
+        for loaded in self.objects:
+            for effect in loaded["effects"]:
+                self.api.CBMS_EEexEffectDestroyed(C.addressof(effect))
+            self.api.CBMS_EEexActorDestroyed(loaded["actor"].address)
+        assert self.api.CBMS_EEexDetachQuiescent() == 1 and self.api.CBMS_Destroy(self.runtime) == 1
+
+
+def outdated_save(bridge, imoen, xan):
+    """A healthy save, reloaded by a process whose overrides went off: both
+    envelopes are kept unparsed, only Imoen's records change, and it saves."""
+    game = Game(bridge)
+    first, second = game.load(imoen, [], None), game.load(xan, [], None)
+    game.read_scroll(first, 2)
+    game.read_scroll(second)
+    healthy = {imoen: game.save(first), xan: game.save(second)}
+    assert all(envelope for _, envelope in healthy.values()) and game.healthy()
+    game.close()
+    game = Game(bridge)
+    game.api.CBMS_DisableOverrides(game.runtime)  # a carrier fault, for example
+    first, second = game.load(imoen, *healthy[imoen]), game.load(xan, *healthy[xan])
+    first["effects"].append(native_effect(0, 600))  # a potion, say
+    stale = {imoen: game.save(first), xan: game.save(second)}
+    game.close()
+    assert stale[imoen][1] == healthy[imoen][1] and stale[xan] == healthy[xan]
+    assert len(stale[imoen][0]) == len(healthy[imoen][0]) + 1
+    return stale
+
+
+def test_outdated_envelope_drops_for_one_actor_through_the_shipped_adapter(bridge):
+    imoen, xan = Actor(0x1000, 0x100000011, "Imoen", "IMOEN2"), Actor(0x2000, 0x100000022, "Xan", "XAN")
+    stale = outdated_save(bridge, imoen, xan)
+    # A fresh healthy process: Imoen's envelope is dropped and logged, Xan keeps
+    # his saved scroll levels, and nothing is turned off.
+    game = Game(bridge)
+    first, second = game.load(imoen, *stale[imoen]), game.load(xan, *stale[xan])
+    assert game.healthy() and game.api.CBMS_OverridesDisabled(game.runtime) == 0
+    assert game.printed == [DROPPED.format("Imoen (IMOEN2, UUID 100000011)", "saved effect record count mismatch (saved 2, loaded 3)")]
+    assert game.levels(first) == [(0, 90)] * 3 and game.levels(second) == [(1, 12)]
+    assert {call[0] for call in game.calls} == {xan.address}
+    # Its next save writes nothing stale: no envelope at all for Imoen...
+    assert game.save(first)[1] is None
+    # ...then a new scroll uses her level and is saved on its own.
+    fresh = game.read_scroll(first)
+    assert selected(game.api, game.runtime, fresh[0]) == (1, 12) and game.calls[-1][0] == imoen.address
+    resaved = {imoen: game.save(first), xan: game.save(second)}
+    rows = decode_envelope(resaved[imoen][1]["payload"].encode())
+    assert [wire for wire, _ in rows] == resaved[imoen][0]
+    assert [context is not None for _, context in rows] == [False] * 3 + [True]
+    xan_rows = decode_envelope(resaved[xan][1]["payload"].encode())
+    assert [wire for wire, _ in xan_rows] == stale[xan][0] and all(context for _, context in xan_rows)
+    assert game.healthy() and len(game.printed) == 1
+    game.close()
+    # Fresh processes: the save written after the drop drops nothing, and the
+    # outdated save still drops the same way each time it is loaded.
+    for _ in range(2):
+        game = Game(bridge)
+        first, second = game.load(imoen, *resaved[imoen]), game.load(xan, *resaved[xan])
+        assert game.printed == [] and game.healthy()
+        assert game.levels(first) == [(0, 90)] * 3 + [(1, 12)] and game.levels(second) == [(1, 12)]
+        game.close()
+        game = Game(bridge)
+        first, second = game.load(imoen, *stale[imoen]), game.load(xan, *stale[xan])
+        assert game.printed == [DROPPED.format("Imoen (IMOEN2, UUID 100000011)", "saved effect record count mismatch (saved 2, loaded 3)")]
+        assert game.healthy() and game.levels(second) == [(1, 12)]
+        game.close()
+
+
+BRIDGE_DAMAGE = {
+    "hex": "invalid effect envelope hex",
+    "version": "unknown/malformed effect envelope; retain original actor data",
+    "origins": "conflicting saved scroll origin definitions",
+    "scalar": "saved effect scalar mismatch",
+    "ancestry": "invalid saved effect ancestry",
+    "duplicate": "duplicate scroll actor envelope; cancel this load",
+    "schema": "unknown scroll actor envelope schema; retained unchanged",
+    "fields": "unknown scroll actor envelope fields; retained unchanged",
+}
+
+
+@pytest.mark.parametrize("damage", sorted(BRIDGE_DAMAGE))
+def test_damaged_envelope_still_turns_430_off_through_the_shipped_adapter(bridge, damage):
+    imoen = Actor(0x1000, 0x100000011, "Imoen", "IMOEN2")
+    game = Game(bridge)
+    first = game.load(imoen, [], None)
+    game.read_scroll(first, 2)
+    records, envelope = game.save(first)
+    game.close()
+    payload = envelope["payload"].encode()
+    rows = decode_envelope(payload)
+    if damage == "scalar":
+        rows[0][1][6:8] = [1, 13]
+    if damage == "ancestry":
+        rows[0][1][1] = 0
+    if damage == "origins":
+        rows[1][1][3] += 1
+    payload = {"hex": payload[:-2] + b"ZZ", "version": b"CBMSFX02:" + payload[9:]}.get(damage, encode_envelope(rows))
+    damaged = dict(envelope, payload=payload.decode())
+    if damage == "schema":
+        damaged["schema"] = 2
+    if damage == "fields":
+        damaged["future"] = 1
+    # The records changed too: damage is never taken for an outdated envelope.
+    game = Game(bridge)
+    first = game.load(imoen, records + [bytes(native_effect(0, 600))[8:]], damaged,
+                      copies=2 if damage == "duplicate" else 1)
+    assert game.api.CBMS_EEexBridgeHealthy() == 0
+    assert game.api.CBMS_EEexBridgeError() == BRIDGE_DAMAGE[damage].encode()
+    assert game.printed == [] and game.api.CBMS_EEexImportDropped(imoen.address) is None
+    # Kept unchanged for a later version that can read it, never dropped.
+    assert game.save(first)[1] == damaged
+    game.close()

@@ -3,8 +3,11 @@
 #pragma once
 #include "scroll_context.hpp"
 #include <span>
+#include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <map>
+#include <string>
 
 namespace cbm::scroll {
 using EffectWire = std::array<std::byte, 0x108>;
@@ -81,17 +84,22 @@ public:
         std::copy(wire.begin(), wire.end(), row.wire.begin());
         decoded_.push_back(std::move(row));
     }
-    void restore(const SavedEffectArchive& saved) {
+    // Returns nothing once ownership is restored. A well-formed envelope that
+    // no longer describes these decoded records (count or bytes) is stale: the
+    // records changed after it was written, as when a process with overrides
+    // off kept it unparsed and saved it again. Then nothing is restored and the
+    // reason is returned; only this actor loses that saved ancestry, its
+    // records keep their saved levels. Anything else that cannot be trusted
+    // (schema, ancestry, scalars, origins, lifetimes) throws, as before.
+    std::optional<std::string> restore(const SavedEffectArchive& saved) {
         if (committed_) throw std::logic_error("effect archive imported twice");
         // Caller keeps unknown schemas in actor-owned storage; this refuses
         // without destroying, normalizing or silently dropping that envelope.
         if (saved.schema != 1) throw std::logic_error("unsupported effect archive schema; retain actor metadata");
-        if (saved.rows.size() != decoded_.size()) throw std::logic_error("saved effect record count mismatch");
+        // Checked on its own first: malformed or internally inconsistent data
+        // refuses here. A well-formed mismatch below is outdated, damaged or not.
         std::map<std::uint64_t, SavedEffectContext> definitions;
-        for (std::size_t i = 0; i < saved.rows.size(); ++i) {
-            if (registry_.context(decoded_[i].effect)) throw std::logic_error("decoded effect acquired ancestry before import");
-            const auto& row = saved.rows[i];
-            if (row.wire != decoded_[i].wire) throw std::logic_error("saved effect record identity mismatch");
+        for (const auto& row : saved.rows) {
             if (!row.context) continue;
             const auto& value = *row.context;
             if (!value.origin_key || !value.reader_uuid || !value.item.bytes[0] || value.depth > 64 ||
@@ -106,6 +114,20 @@ public:
             if (!inserted && (it->second.reader_uuid != value.reader_uuid || it->second.item != value.item ||
                                it->second.ability != value.ability))
                 throw std::logic_error("conflicting saved scroll origin definitions");
+        }
+        for (const auto& row : decoded_)
+            if (registry_.context(row.effect)) throw std::logic_error("decoded effect acquired ancestry before import");
+        if (saved.rows.size() != decoded_.size())
+            return "saved effect record count mismatch (saved " + std::to_string(saved.rows.size()) +
+                   ", loaded " + std::to_string(decoded_.size()) + ")";
+        for (std::size_t i = 0; i < saved.rows.size(); ++i) {
+            const auto& wire = saved.rows[i].wire;
+            const auto first = std::mismatch(wire.begin(), wire.end(), decoded_[i].wire.begin()).first;
+            if (first == wire.end()) continue;
+            char where[96];
+            std::snprintf(where, sizeof where, " (record %zu of %zu, byte 0x%zX)", i + 1, saved.rows.size(),
+                          static_cast<std::size_t>(first - wire.begin()));
+            return std::string("saved effect record identity mismatch") + where;
         }
         std::map<std::uint64_t, std::shared_ptr<const Origin>> origins;
         for (const auto& [key, value] : definitions)
@@ -122,6 +144,7 @@ public:
         // changes. No provider callbacks occur during this commit.
         for (auto& [effect, context] : staged) registry_.restore_effect(effect, std::move(context));
         committed_ = true;
+        return std::nullopt;
     }
 };
 } // namespace cbm::scroll

@@ -1,21 +1,25 @@
 #include "item_carrier_api.h"
 #include "policy_table.hpp"
 #include "item_binding.hpp"
+#include "carrier_gate.hpp"
 #include <array>
 #include <cstring>
 #include <memory>
-#include <thread>
 #include <vector>
 #include <intrin.h>
 namespace {
 CBMS_Runtime* runtime{};
 CBMS_ItemFunctions native{};
 std::unique_ptr<cbm::scroll::PolicyTable> policy;
-std::thread::id owner;
+cbm::scroll::CarrierGate gate;
 std::array<char,256> fault{};
 unsigned busy{};
 int (*admission)(void){};
+using Outside=cbm::scroll::CarrierGate::Outside;
+// Checked before any carrier state: see carrier_gate.hpp.
+bool admitted() noexcept {return gate.owner()&&runtime;}
 void fail(const char* message) noexcept {
+    CBMS_DisableOverrides(runtime);
     if(fault[0]) return;
     if(!message) message="unknown native item carrier failure";
     const auto n=(std::min)(std::strlen(message),fault.size()-1);
@@ -38,10 +42,9 @@ Invocation* current{};
 struct Invocation {
     unsigned kind;void* reader;void* item;int ability;Invocation* parent;
     UseState owned;UseState* state;
+    // Admitted callers only (admitted()).
     Invocation(unsigned k,void* r,void* i=nullptr,int a=0,uintptr_t caller=0)
         :kind(k),reader(r),item(i),ability(a),parent(current),state(&owned) {
-        if(!runtime || owner!=std::this_thread::get_id())
-            throw std::logic_error("native item carrier called without owner-thread configuration");
         // A real native extra-target loop, not arbitrary nested/reentrant use.
         if(k>=2 && parent && parent->kind==k-2 && parent->reader==r &&
            caller==native.continuation_returns[k-2]) state=parent->state;
@@ -85,10 +88,13 @@ void attach_root(uintptr_t caller,void* item,int ability,int index,void* reader,
     });
 }
 uint16_t fire(uintptr_t caller,unsigned kind,void* reader,void* item,int ability,void* target) {
+    const auto original=kind==2?native.fire:native.fire_point;
+    if(!admitted()){Outside outside(gate);return original(reader,item,ability,target);}
     Invocation invocation(kind,reader,item,ability,caller);
-    return (kind==2?native.fire:native.fire_point)(reader,item,ability,target);
+    return original(reader,item,ability,target);
 }
 void* root(uintptr_t caller,void* item,int ability,int index,void* reader) {
+    if(!admitted()){Outside outside(gate);return native.effect(item,ability,index,reader);}
     // Original native code retains sole ownership of allocation, effect bytes,
     // targets and charge handling. Null/early returns are forwarded unchanged.
     void* result=native.effect(item,ability,index,reader);
@@ -119,19 +125,25 @@ int CBMS_ConfigureItemCarriers(CBMS_Runtime* value,const CBMS_ItemFunctions* fun
             const std::string n(name),e(extension);
             return digest(n.c_str(),e.c_str(),result.data(),user)==1?std::optional(result):std::nullopt;
         });
-        native=f;policy=std::move(table);owner=std::this_thread::get_id();runtime=value;return 1;
+        native=f;policy=std::move(table);gate.configure();runtime=value;return 1;
     } catch(const std::exception& error) {fail(error.what());return 0;}
     catch(...) {fail("unexpected item carrier configuration failure");return 0;}
 }
-int CBMS_ItemCarriersIdle() {return runtime && owner==std::this_thread::get_id() && !busy && !current?1:0;}
+int CBMS_ItemCarriersIdle() {return admitted() && !busy && !current && gate.quiet()?1:0;}
 int CBMS_DetachItemCarriers() {
     if(!CBMS_ItemCarriersIdle()) return 0;
     policy.reset();native={};runtime=nullptr;return 1;
 }
 const char* CBMS_ItemCarrierError() {return fault.data();}
 void CBMS_ItemAdmission(int (*allowed)(void)){admission=allowed;}
-uint16_t CBMS_UseItemCarrier(void* reader,void* target) noexcept(false) {Invocation scope(0,reader);return native.use(reader,target);}
-uint16_t CBMS_UsePointCarrier(void* reader) noexcept(false) {Invocation scope(1,reader);return native.use_point(reader);}
+uint16_t CBMS_UseItemCarrier(void* reader,void* target) noexcept(false) {
+    if(!admitted()){Outside outside(gate);return native.use(reader,target);}
+    Invocation scope(0,reader);return native.use(reader,target);
+}
+uint16_t CBMS_UsePointCarrier(void* reader) noexcept(false) {
+    if(!admitted()){Outside outside(gate);return native.use_point(reader);}
+    Invocation scope(1,reader);return native.use_point(reader);
+}
 uint16_t CBMS_FireItemCarrier(void* reader,void* item,int ability,void* target) noexcept(false) {return fire(reinterpret_cast<uintptr_t>(_ReturnAddress()),2,reader,item,ability,target);}
 uint16_t CBMS_FireItemPointCarrier(void* reader,void* item,int ability,void* target) noexcept(false) {return fire(reinterpret_cast<uintptr_t>(_ReturnAddress()),3,reader,item,ability,target);}
 void* CBMS_ItemEffectCarrier(void* item,int ability,int index,void* reader) noexcept(false) {return root(reinterpret_cast<uintptr_t>(_ReturnAddress()),item,ability,index,reader);}

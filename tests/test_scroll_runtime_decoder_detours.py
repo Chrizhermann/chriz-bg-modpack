@@ -7,8 +7,8 @@ import pytest
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_64, UC_HOOK_CODE
 from unicorn import x86_const as X
 
-from test_scroll_runtime_detours import action_image, SOURCE
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import pinned_image,SOURCE
+from test_scroll_runtime_binding import os_unwinder
 from test_scroll_runtime_binding import windows
 
 spec = importlib.util.spec_from_file_location("scroll_decoder_detours", SOURCE / "decode_detours.py")
@@ -62,14 +62,14 @@ def execute(image, hooked):
     return dict(calls=calls,effect=bytes(machine.mem_read(target+8,264)),points=points,plan=plan)
 
 
-def test_original_vs_trampoline_actual_native_decoder(action_image):
-    original,hooked=execute(action_image,False),execute(action_image,True)
+def test_original_vs_trampoline_actual_native_decoder(pinned_image):
+    original,hooked=execute(pinned_image,False),execute(pinned_image,True)
     assert original["calls"]==hooked["calls"] and original["effect"]==hooked["effect"]
     assert [p["offset"] for p in hooked["points"]]==[0,3,7]
 
 
-def test_os_unwinds_each_decoder_trampoline_instruction(action_image,windows,os_unwinder):
-    trace=execute(action_image,True)
+def test_os_unwinds_each_decoder_trampoline_instruction(pinned_image,windows,os_unwinder):
+    trace=execute(pinned_image,True)
     cave,stack=0x50000000,0x20000000
     allocated=[]
     try:

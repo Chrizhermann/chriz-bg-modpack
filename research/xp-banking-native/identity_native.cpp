@@ -19,10 +19,38 @@ namespace {
 CBMI_Config config{};
 bool configured = false;
 std::thread::id host_thread;
-struct Lifetime { CBMI_Reason birth; uint64_t incarnation; std::array<char, 33> token; };
+struct Lifetime { CBMI_Reason birth; uint64_t incarnation; std::array<char, 33> token; bool replaced = false; };
 std::unordered_map<const void*, Lifetime> actors;
 uint64_t next_incarnation = 0;
+// Another thread's lifetime event: every identity is unavailable from then on,
+// for the rest of the process (a restart restores banking). Its address is
+// recorded first, lock-free and bounded: slots fill in order and are never
+// cleared, and with all of them taken every address counts as recorded. An
+// event at an address leaves whatever lifetime was there unknown; one
+// elsewhere proves nothing about it.
 std::atomic<bool> foreign_lifetime_seen{false};
+constexpr size_t foreign_slots = 64;
+std::array<std::atomic<uintptr_t>, foreign_slots> foreign_addresses{};
+std::atomic<bool> foreign_addresses_full{false};
+void note_foreign(const void* sprite) {
+    const auto address = reinterpret_cast<uintptr_t>(sprite);
+    if (!address) return; // No actor there; CBMI_Lifetime never reads one.
+    for (auto& slot : foreign_addresses) {
+        uintptr_t seen = 0;
+        if (slot.compare_exchange_strong(seen, address) || seen == address) return;
+    }
+    foreign_addresses_full = true;
+}
+bool foreign_at(const void* sprite) {
+    if (foreign_addresses_full) return true;
+    const auto address = reinterpret_cast<uintptr_t>(sprite);
+    for (const auto& slot : foreign_addresses) {
+        const auto seen = slot.load();
+        if (seen == address) return true;
+        if (seen == 0) return false; // Later slots fill only after this one.
+    }
+    return foreign_addresses_full;
+}
 // No allocation in scope entry/exit. RAII restores the prior scope on C++
 // unwinding; a process-fatal SEH fault is not claimed to be recoverable.
 struct Scope {
@@ -110,15 +138,19 @@ void CBMI_Construct(void* sprite) {
                 if (copy_reason(life.birth) || token(life.token)) actors.emplace(sprite, life);
             }
         } catch (...) { actors.erase(sprite); } // No guessed identity on allocation failure.
-    } else foreign_lifetime_seen = true; // Never race the main-thread registry.
+    } else { // Never race the host's registry (main-thread-audit-2.7.3.txt finds no resolved path here).
+        note_foreign(sprite); foreign_lifetime_seen = true; // Both before the object changes.
+    }
     original<void(*)(void*)>(CBMI_CONSTRUCT)(sprite);
 }
 void CBMI_Destruct(void* sprite) {
     if (on_host()) actors.erase(sprite);
-    else foreign_lifetime_seen = true;
+    else { note_foreign(sprite); foreign_lifetime_seen = true; }
     original<void(*)(void*)>(CBMI_DESTRUCT)(sprite);
 }
 int CBMI_Query(const void* sprite, CBMI_View* out) {
+    // After another thread's lifetime event no identity is trusted again in this
+    // process: banking stays off until the game restarts.
     if (!on_host() || foreign_lifetime_seen || !sprite || !out) return 0;
     const auto it = actors.find(sprite);
     if (it == actors.end()) return 0;
@@ -143,8 +175,34 @@ int CBMI_CanMutate(const void* sprite, uint64_t incarnation) {
     return 1;
 }
 
+void CBMI_NoteReplaced(const void* sprite) {
+    if (!on_host()) return; // The registry is the main thread's.
+    const auto it = actors.find(sprite);
+    if (it != actors.end()) it->second.replaced = true;
+}
+int CBMI_Lifetime(const void* sprite, uint64_t incarnation) {
+    if (!on_host() || !sprite) return 0;
+    // Only this thread changes the registry, and only in Construct and Destruct:
+    // an entry gone or newer proves that lifetime ended. Another thread's event
+    // at this address may have ended it too, unseen, so then only the proof
+    // counts; one at another address proves nothing about this one. An event
+    // racing this very read is one on an object the game itself is using here.
+    const auto it = actors.find(sprite);
+    if (it == actors.end() || it->second.incarnation != incarnation) return -1;
+    return foreign_at(sprite) ? 0 : 1;
+}
+
+namespace {
+using ToString = const char*(*)(void*, int, size_t*);
+bool lua_unsigned(void* L, int index, int base, uint64_t* out) {
+    size_t count = 0;
+    const char* text = reinterpret_cast<ToString>(config.lua_tolstring)(L, index, &count);
+    if (!text || count == 0 || count > 20) return false;
+    const auto parsed = std::from_chars(text, text + count, *out, base);
+    return parsed.ec == std::errc{} && parsed.ptr == text + count;
+}
+}
 int CBMI_LuaQuery(void* L) {
-    using ToString = const char*(*)(void*, int, size_t*);
     using PushString = const char*(*)(void*, const char*);
     using PushBool = void(*)(void*, int);
     if (!on_host()) return 0;
@@ -166,5 +224,16 @@ int CBMI_LuaQuery(void* L) {
     push(L, generation); push(L, view.owner_token);
     boolean(L, view.serializing); boolean(L, view.eligible);
     boolean(L, CBMI_CanMutate(reinterpret_cast<const void*>(address), view.incarnation));
-    return 7;
+    boolean(L, actors.at(reinterpret_cast<const void*>(address)).replaced);
+    return 8;
+}
+int CBMI_LuaAckReplaced(void* L) {
+    if (!on_host() || foreign_lifetime_seen) return 0;
+    uint64_t address = 0, incarnation = 0;
+    if (!lua_unsigned(L, 1, 16, &address) || !lua_unsigned(L, 2, 10, &incarnation)) return 0;
+    const auto it = actors.find(reinterpret_cast<const void*>(static_cast<uintptr_t>(address)));
+    const bool cleared = it != actors.end() && it->second.incarnation == incarnation;
+    if (cleared) it->second.replaced = false;
+    reinterpret_cast<void(*)(void*, int)>(config.lua_pushboolean)(L, cleared);
+    return 1;
 }

@@ -8,7 +8,7 @@ from unicorn import Uc,UC_ARCH_X86,UC_MODE_64,UC_HOOK_CODE
 from unicorn import x86_const as X
 from test_scroll_runtime_native import SOURCE
 from test_scroll_runtime_binding import windows
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import os_unwinder
 
 spec=importlib.util.spec_from_file_location('life_detours',SOURCE/'lifecycle_detours.py')
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)

@@ -4,15 +4,14 @@ No game/display engine is launched. These tests establish callback behavior,
 not visual acceptance or support for alternative UI mods.
 """
 from importlib import import_module
-import os
 from pathlib import Path
 
 import pytest
 
+from tests.pinned_eeex import pinned_eeex_script
+
 
 ROOT = Path(__file__).resolve().parents[1]
-EEEX = Path(os.environ.get("CBM_EEEX_SOURCE", "C:/tmp/scroll-hook-research-20261009/EEex"))
-MENU_SOURCE = EEEX / "EEex/copy/EEex_scripts/EEex_Menu.lua"
 
 
 def function(source, name):
@@ -97,7 +96,7 @@ def ui(request):
         end
         buildMenu()
     ''')
-    source = MENU_SOURCE.read_text(encoding="utf-8")
+    source = pinned_eeex_script("EEex_Menu.lua").read_text(encoding="utf-8")
     for name in (
         "EEex_Menu_Find", "EEex_Menu_GetItemFunction", "EEex_Menu_SetItemFunction",
         "EEex_Menu_GetItemVariant", "EEex_Menu_AddBeforeMainFileLoadedListener",

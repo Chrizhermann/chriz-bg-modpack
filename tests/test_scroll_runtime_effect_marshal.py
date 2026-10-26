@@ -4,7 +4,7 @@ import struct
 import sys
 
 import pytest
-from test_scroll_runtime_detours import action_image, SOURCE
+from test_scroll_runtime_binding import pinned_image,SOURCE
 
 spec = importlib.util.spec_from_file_location("effect_marshal_native", SOURCE / "effect_marshal_native.py")
 native = importlib.util.module_from_spec(spec)
@@ -14,8 +14,8 @@ spec.loader.exec_module(native)
 
 @pytest.mark.parametrize("timings", [[], [2], [9, 2, 0, 9, 4], [4, 9, 2, 9, 0]])
 @pytest.mark.parametrize("permanent_only,skip_equipped", [(False, False), (False, True), (True, False), (True, True)])
-def test_native_v1_serialized_ordinal_is_after_real_filters(action_image, timings, permanent_only, skip_equipped):
-    pe, _, names = action_image
+def test_native_v1_serialized_ordinal_is_after_real_filters(pinned_image, timings, permanent_only, skip_equipped):
+    pe, _, names = pinned_image
     records = []
     for timing in timings:
         # Repeated timing9 records are intentionally byte-identical: fingerprints

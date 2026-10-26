@@ -158,11 +158,11 @@
   "instruction_checks": 68,
   "scope": "Compiled HP/proficiency observation thunks versus actual native boundaries; no native HP/RNG/UI acceptance",
   "source_sha256": {
-    "dual_hp_check.ps1": "7e0a4c772fbc527bd94a5dc2ce30f66e4a5342a29bb7cd9e8168bb4968859432",
+    "dual_hp_check.ps1": "301ea6e141d9117b041382c994a71da0d6480ea94b00766123b87adaf8b24773",
     "dual_hp_observer.cpp": "39af03dfb909c61c0c604f53e79084fd52cefc6ff30e5a31ffb6d61448ab7b39",
     "dual_hp_observer.h": "668946d17b5d1069270984f49af0573b5150e2a992163e99e0a1319a37fda8ba",
     "dual_hp_observer_test.cpp": "610cd8ae06875b2cdb3203f44c5e4ab2b5a3eae037f46e18e264abf0253a22c6",
-    "dual_hp_probe.py": "6a11de953690d38f7b1e324d724cb48cb4a5e253233ec0538343ce7e5990e488",
+    "dual_hp_probe.py": "47d85378cda861b456b6060eb1ea3c4ae701c68af885e37c9fd798ef02c87837",
     "dual_hp_replacement.lua": "2cd1cae1158a5c791f08beb2428a916d2150fbeb86c6263786d2b4639d6f3bef",
     "dual_hp_replacement_check.py": "75ca4bb214dc56431d10ee2cdd7d251758fbec45e18f6412b276bc2f4ed4612f",
     "dual_hp_thunks.asm": "8f8967794d4f5667bf9d2a0b457eb73f6558e243272f6c6fafaebcec44391e98",

@@ -5,9 +5,9 @@ import importlib.util,struct
 import pytest
 from unicorn import Uc,UC_ARCH_X86,UC_MODE_64,UC_HOOK_CODE
 from unicorn import x86_const as X
-from test_scroll_runtime_detours import action_image,SOURCE
+from test_scroll_runtime_binding import pinned_image,SOURCE
 from test_scroll_runtime_binding import windows
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import os_unwinder
 
 spec=importlib.util.spec_from_file_location('item_detours',SOURCE/'item_detours.py')
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -38,8 +38,8 @@ def execute(image,name,hooked,definitions=module,address=None):
 
 
 @pytest.mark.parametrize('name',list(module.SITES))
-def test_item_entry_trampoline_preserves_native_state_and_all_instruction_unwind(action_image,name,windows,os_unwinder):
-    original,hooked=execute(action_image,name,False),execute(action_image,name,True)
+def test_item_entry_trampoline_preserves_native_state_and_all_instruction_unwind(pinned_image,name,windows,os_unwinder):
+    original,hooked=execute(pinned_image,name,False),execute(pinned_image,name,True)
     assert original['registers']==hooked['registers'] and original['flags']==hooked['flags']
     old,new=bytearray(original['stack']),bytearray(hooked['stack'])
     if hooked['plan']['frame']:

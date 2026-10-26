@@ -2,6 +2,7 @@
 #pragma once
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cstdint>
 #include <limits>
 #include <memory>
@@ -14,6 +15,11 @@
 
 namespace cbm::scroll {
 using Address = std::uintptr_t;
+// Process-wide and permanent: a hooked native entry ran on a thread other than
+// the engine thread that configured it (carrier_gate.hpp). That call touched no
+// carrier state, so whatever it did is unrecorded; every registry treats this
+// latch as its own disabled state.
+inline std::atomic<bool> foreign_entry{false};
 enum class Kind { Actor, Effect, FireMessage, Action };
 enum class Selector { EffectFire, Fire, FirePoint, Force, ForcePoint, Spell, SpellPoint };
 enum class SpellType { Arcane, Divine, Unresolved, PreserveNative };
@@ -111,6 +117,7 @@ class Registry {
     std::vector<Frame> frames_;
     const std::thread::id owner_{std::this_thread::get_id()};
     std::uint64_t next_{1}; // never reset on load; old handles cannot become live
+    std::atomic<bool> disabled_{false};
     static constexpr unsigned max_depth = 64;
 
     void thread_check() const {
@@ -127,7 +134,12 @@ class Registry {
             throw std::logic_error("stale scroll carrier/reader handle");
         return found->second;
     }
-    void set(Handle destination, std::optional<Context> value) { entry(destination).context = std::move(value); }
+    // Every acquisition and propagation stores through here: once disabled,
+    // nothing becomes owned.
+    void set(Handle destination, std::optional<Context> value) {
+        auto& target = entry(destination);
+        target.context = disabled() ? std::nullopt : std::move(value);
+    }
     Frame& frame(std::uint64_t token, Address spell) {
         thread_check();
         if (frames_.empty() || frames_.back().token != token || frames_.back().request.spell_instance != spell)
@@ -139,6 +151,13 @@ public:
     Registry(const Registry&) = delete;
     Registry& operator=(const Registry&) = delete;
     bool on_owner_thread() const noexcept { return owner_ == std::this_thread::get_id(); }
+    // The one latched disabled state for every override. Afterwards no carrier
+    // reads as owned, no context is stored or propagated, and every selection
+    // and child keeps its native level. Lifetimes, frames, captures and their
+    // cleanup keep working, and contexts stored earlier stay counted until
+    // their carriers end. Any thread may latch it: only this atomic changes.
+    void disable() noexcept { disabled_.store(true); }
+    bool disabled() const noexcept { return disabled_.load() || foreign_entry.load(); }
     Handle born(Kind kind, Address address) {
         thread_check();
         if (!address) throw std::invalid_argument("null scroll carrier");
@@ -158,7 +177,11 @@ public:
         entry(handle);
         entries_.erase({handle.kind, handle.address});
     }
-    std::optional<Context> context(Handle handle) { return entry(handle).context; }
+    std::optional<Context> context(Handle handle) {
+        const auto& found = entry(handle); // a stale handle stays an error
+        if (disabled()) return std::nullopt;
+        return found.context;
+    }
     void actor_uuid(Handle reader, std::uint64_t uuid) {
         if (reader.kind != Kind::Actor || !uuid) throw std::invalid_argument("invalid original-reader UUID");
         auto& actor = entry(reader);
@@ -280,7 +303,8 @@ public:
         std::optional<unsigned> select(Selector selector, Address spell, Resolve&& resolve) {
             auto& current = registry_->frame(token_, spell);
             if (current.request.selector != selector) throw std::logic_error("wrong native scroll selector");
-            if (!current.context) return {};
+            // A frame entered before the latch still keeps its native level.
+            if (!current.context || registry_->disabled()) return {};
             if (!current.selected) {
                 if (!current.context->origin->reader.address)
                     throw std::logic_error("original scroll reader UUID is pending load binding");
@@ -298,14 +322,16 @@ public:
                 after.level = level;
                 after.selected = true;
             }
-            return registry_->frame(token_, spell).level;
+            // The provider may have run into a failure that latched meanwhile.
+            const auto level = registry_->frame(token_, spell).level;
+            return registry_->disabled() ? std::nullopt : level;
         }
         // Called only after CSpell::GetAbilityEffect in this matching CSpell
         // invocation. Return the sole native field the adapter may change.
         std::optional<unsigned> child(Handle effect, Address spell) {
             if (effect.kind != Kind::Effect) throw std::invalid_argument("spell child is not an effect");
             auto& current = registry_->frame(token_, spell);
-            auto value = current.context;
+            auto value = registry_->disabled() ? std::nullopt : current.context;
             if (value) {
                 if (!current.selected) throw std::logic_error("scroll child before ability selection");
                 if (value->depth >= max_depth) throw std::overflow_error("scroll spell depth exceeded");
@@ -334,6 +360,7 @@ public:
         thread_check();
         if (!request.spell_instance) throw std::invalid_argument("null CSpell instance");
         const auto token = next_token();
+        if (disabled()) value.reset(); // a capture taken before the latch
         frames_.push_back({token, request, std::move(value), {}});
         return Scope(*this, token, request.spell_instance);
     }

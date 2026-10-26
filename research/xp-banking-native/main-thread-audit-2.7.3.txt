@@ -1,0 +1,473 @@
+Main-thread audit, BG2:EE 2.7.3.0 (static; produced by main_thread_audit.py)
+inputs:
+  exe    Baldur.exe                     7202696 bytes  sha256 B51093A49140B2B8A7C046B4652BB8E535BE24EBBC12B1D735E0B94217A14D57  PE timestamp 1780012861
+  names  bg2ee/function_names.db         867847 bytes  sha256 C5E957B9F63B1A945CCC837B827BAD37F209F99412D791D4A749503FC6C25823
+  eeex   v2.7.3.0/EEex.dll              1302528 bytes  sha256 62E110A27BC1AE0530AFC276BB5ADF41609D133AB499BAE3456F046DEDEF0E35  PE timestamp 1790553205
+  patterns loader/InfinityLoader.db       74238 bytes  sha256 B613AEE7E2035960CF1C5A377029EBC318903430AE8901174415C61815400B6D
+  patterns pattern_dbs/v2.7.3.0.db          776 bytes  sha256 CA1731E1B6088BF8562B9DFA5557BADBA639E47E637135135EBFA041FD49DC8D
+tools: python 3.11.9, pefile 2024.8.26, capstone 5.0.7
+  [ok]   input Baldur.exe is the pinned 2.7.3.0 build
+  [ok]   input function_names.db is EEex v1.3.1's v2.7.3.0 names DB
+  [ok]   input EEex.dll is EEex v1.3.1's v2.7.3.0 build
+decoded: 12478 .pdata functions, 3435 leaf functions (fixed point after 2 rounds), 1359416 instructions, 13790 data slots holding code addresses, 16078 names
+
+A. Thread and work creation in Baldur.exe
+  imported thread/work-creation APIs: KERNEL32.dll!CreateThread
+  [ok]   A1 the only thread/work-creation import is KERNEL32.dll!CreateThread (no thread pool, QueueUserWorkItem, timer queue, RegisterWait, CreateRemoteThread, APC, timeSetEvent or _Thrd_*)
+  imported DLLs: GDI32.dll, IMM32.dll, IPHLPAPI.DLL, KERNEL32.dll, OLEAUT32.dll, OPENGL32.dll, OpenAL32.dll,
+      SHELL32.dll, Secur32.dll, USER32.dll, VERSION.dll, WINMM.dll, WS2_32.dll, ole32.dll
+  [ok]   A1 no std::thread, std::async, _Thrd_* or Concurrency function in the names DB and no MSVCP/ConcRT import
+  names of thread/work-creation APIs as strings (outside the import table):
+    CreateThreadpoolTimer at 0x1405d2c00, used by initialize_pointers
+    CreateThreadpoolWait at 0x1405d2c68, used by initialize_pointers
+    CreateThreadpoolWork at 0x1405d2e50, used by initialize_pointers
+    SetThreadpoolTimer at 0x1405d2c18, used by initialize_pointers
+    SetThreadpoolWait at 0x1405d2c80, used by initialize_pointers
+    SubmitThreadpoolWork at 0x1405d2e68, used by initialize_pointers
+  initialize_pointers stores 40 GetProcAddress results; the only ones any code reads (byte scan of all code included): InitOnceExecuteOnce (by __crtInitOnceExecuteOnce), InitializeCriticalSectionEx (by __crtInitializeCriticalSectionEx), LCMapStringEx (by __crtLCMapStringEx)
+    CreateThreadpoolTimer: result stored at 0x1434b7608, read by nothing
+    CreateThreadpoolWait: result stored at 0x1434b7628, read by nothing
+    CreateThreadpoolWork: result stored at 0x1434b76d0, read by nothing
+    SetThreadpoolTimer: result stored at 0x1434b7610, read by nothing
+    SetThreadpoolWait: result stored at 0x1434b7630, read by nothing
+    SubmitThreadpoolWork: result stored at 0x1434b76d8, read by nothing
+  [ok]   A2 thread-pool names are used only by the C++ runtime's initialize_pointers, and no code reads the function pointers it stores for them
+  KERNEL32.dll!CreateThread: 5 call sites, 0 other references
+    0x140022eb6 in talk_base::Thread::Start -> start routine talk_base::Thread::PreRun   [140022e93: lea r8, [rip + 0xb6]]
+    0x1400932e3 in talk_base::SignalThread::Start -> start routine talk_base::Thread::PreRun   [1400932bc: lea r8, [rip - 0x70373]]
+    0x140519985 in _beginthreadex -> start routine thread_start<unsigned_int_(__cdecl*)(void_*___ptr64)>   [140519970: lea r8, [rip - 0x183]]
+    0x14056771d in DoReportCrashGUI -> start routine DoGenerateCrashDump   [140567707: lea r8, [rip - 0x31e]]
+    0x14056789c in ReportCrash -> start routine DoReportCrashGUI   [140567877: lea r8, [rip - 0x1ce]]
+  [ok]   A3 every CreateThread call site has a resolved start routine; the import is used nowhere else
+  _beginthreadex (static C runtime, starts through CreateThread above): 2 call sites, address taken 0 times
+    0x14046ca5e in SDL_SYS_CreateThread -> start routine RunThreadViaBeginThreadEx   [14046ca44: lea r8, [rip - 0x5b]]
+    0x14053833a in vp8_decoder_create_threads -> start routine FUN_140537ee0   [14053832f: lea r8, [rip - 0x456]]
+  [ok]   A4 every _beginthreadex call site has a resolved start routine; its address is never taken
+  SDL_CreateThread (SDL_SYS_CreateThread -> _beginthreadex -> RunThreadViaBeginThreadEx -> SDL_RunThread -> fn): 4 call sites, other references: exported
+    0x14045327b in SDL_TimerInit -> start routine SDL_TimerThread   [140453274: lea rcx, [rip + 0x155]]
+    0x140458336 in open_audio_device -> start routine SDL_RunAudio   [14045832f: lea rcx, [rip - 0xa96]]
+    0x1404710b2 in SDL_SYS_JoystickInit -> start routine SDL_JoystickThread   [1404710ab: lea rcx, [rip - 0x512]]
+    0x1404b6287 in SDL_XINPUT_HapticOpenFromUserIndex -> start routine SDL_RunXInputHaptic   [1404b6280: lea rcx, [rip - 0x2f7]]
+  [ok]   A5 every SDL_CreateThread call site has a resolved thread function; its address is never taken (it is exported, see E for the DLLs)
+  waveOutOpen/waveInOpen (a callback function runs on a WINMM thread): 4 call sites
+    0x14046fb5a waveInOpen in PrepWaveFormat -> callback none   [14046fb06: xor r9d, r9d]
+    0x14046fb62 waveOutOpen in PrepWaveFormat -> callback none   [14046fb06: xor r9d, r9d]
+    0x14046fecb waveInOpen in WINMM_OpenDevice -> callback CaptureSound   [14046fec4: lea r9, [rip - 0x5eb]]
+    0x14046feda waveOutOpen in WINMM_OpenDevice -> callback FillSound   [14046fed3: lea r9, [rip - 0x44a]]
+  [ok]   A6 every waveOutOpen/waveInOpen call site passes a resolved callback function or none
+  SDL subsystems (they decide which SDL threads start):
+    SDL_Init called from SDL_main+0x14 with flags 0x31   [14013715f: mov ecx, 0x31]
+    SDL_InitSubSystem called from SDL_VideoInit+0x22 with flags 0x4000   [14044f65d: mov ecx, 0x4000]
+    SDL_InitSubSystem called from SDL_OpenAudio+0x21 with flags ?   [14045735e: lea ecx, [rax + 0x10]] (the caller is only exported, not referenced by the exe's code)
+    SDL_InitSubSystem called from SDL_JoystickInit+0x1f with flags 0x4000   [14045a02a: mov ecx, 0x4000]
+    SDL_InitSubSystem jumped to from SDL_Init (flags passed through)
+  [ok]   A7 SDL_Init is called only with immediate flags without JOYSTICK/HAPTIC/GAMECONTROLLER (0x3200)
+    SDL_AddTimer: referenced by exported
+    SDL_OpenAudio: referenced by exported
+    SDL_OpenAudioDevice: referenced by exported
+    SDL_GameControllerOpen: referenced by exported
+    SDL_HapticOpen: referenced by jump from SDL_HapticOpenFromMouse+0x26, exported
+    SDL_HapticOpenFromJoystick: referenced by exported
+    SDL_HapticOpenFromMouse: referenced by exported
+  [ok]   A7 no decoded code or data slot of the exe uses SDL_AddTimer, SDL_OpenAudio(Device), SDL_GameControllerOpen or SDL_HapticOpen*: only exports and functions that are themselves only exported refer to them
+  creators and their direct callers:
+    DoReportCrashGUI <- address loaded in ReportCrash+0x37
+    ReportCrash <- call from WinMain$filt$0+0x12
+    SDL_SYS_CreateThread <- call from SDL_CreateThread+0x10b
+    SDL_SYS_JoystickInit <- call from SDL_JoystickInit+0x32
+    SDL_TimerInit <- call from SDL_InitSubSystem+0xa2, call from SDL_AddTimer+0x3e
+    SDL_XINPUT_HapticOpenFromUserIndex <- jump from SDL_XINPUT_HapticOpen+0x7,
+      jump from SDL_XINPUT_HapticOpenFromJoystick+0x56
+    WINMM_OpenDevice <- address loaded in WINMM_Init+0xa
+    _beginthreadex <- call from SDL_SYS_CreateThread+0x5e, call from vp8_decoder_create_threads+0x35a
+    open_audio_device <- call from SDL_OpenAudio+0x71, call from SDL_OpenAudioDevice+0x14
+    talk_base::SignalThread::Start <- call from cricket::TurnPort::PrepareAddress+0x1f8,
+      call from cricket::UDPPort::SendStunBindingRequest+0x194,
+      call from talk_base::PhysicalSocket::Connect+0x21c
+    talk_base::Thread::Start <- call from XmppHandler::Init+0x143
+    vp8_decoder_create_threads <- call from vp8_create_decoder_instances+0x86
+
+B. Forward: what each non-main start routine reaches through resolved edges (direct calls, jumps, switches, fall-through)
+  [ok]   B every start routine found in A is analysed below
+  DoGenerateCrashDump
+    started by: KERNEL32.dll!CreateThread via DoReportCrashGUI
+    reaches 174 functions; 15 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+  [ok]   B DoGenerateCrashDump: reaches none of the 11 targets through resolved edges
+  [ok]   B DoGenerateCrashDump: reaches no game-named function through resolved edges
+  DoReportCrashGUI
+    started by: KERNEL32.dll!CreateThread via ReportCrash
+    reaches 171 functions; 14 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+  [ok]   B DoReportCrashGUI: reaches none of the 11 targets through resolved edges
+  [ok]   B DoReportCrashGUI: reaches no game-named function through resolved edges
+  FUN_140537ee0
+    started by: _beginthreadex via vp8_decoder_create_threads
+    reaches 93 functions; 12 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+  [ok]   B FUN_140537ee0: reaches none of the 11 targets through resolved edges
+  [ok]   B FUN_140537ee0: reaches no game-named function through resolved edges
+  SDL_JoystickThread
+    started by: SDL_CreateThread via SDL_SYS_JoystickInit
+    reaches 187 functions; 15 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+    named like game code but folded (not counted): 0x14018fc00 CGameAreaNotes::Uninitialize = mov dword ptr [rcx], 0 ; ret (SDL_AtomicUnlock body)
+  [ok]   B SDL_JoystickThread: reaches none of the 11 targets through resolved edges
+  [ok]   B SDL_JoystickThread: reaches no game-named function through resolved edges
+  SDL_RunAudio
+    started by: SDL_CreateThread via open_audio_device
+    reaches 180 functions; 22 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+    named like game code but folded (not counted): 0x14018fc00 CGameAreaNotes::Uninitialize = mov dword ptr [rcx], 0 ; ret (SDL_AtomicUnlock body)
+  [ok]   B SDL_RunAudio: reaches none of the 11 targets through resolved edges
+  [ok]   B SDL_RunAudio: reaches no game-named function through resolved edges
+  SDL_RunXInputHaptic
+    started by: SDL_CreateThread via SDL_XINPUT_HapticOpenFromUserIndex
+    reaches 166 functions; 16 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+    named like game code but folded (not counted): 0x14018fc00 CGameAreaNotes::Uninitialize = mov dword ptr [rcx], 0 ; ret (SDL_AtomicUnlock body)
+  [ok]   B SDL_RunXInputHaptic: reaches none of the 11 targets through resolved edges
+  [ok]   B SDL_RunXInputHaptic: reaches no game-named function through resolved edges
+  SDL_TimerThread
+    started by: SDL_CreateThread via SDL_TimerInit
+    reaches 168 functions; 16 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+    named like game code but folded (not counted): 0x14018fc00 CGameAreaNotes::Uninitialize = mov dword ptr [rcx], 0 ; ret (SDL_AtomicUnlock body)
+  [ok]   B SDL_TimerThread: reaches none of the 11 targets through resolved edges
+  [ok]   B SDL_TimerThread: reaches no game-named function through resolved edges
+  talk_base::Thread::PreRun
+    started by: KERNEL32.dll!CreateThread via talk_base::SignalThread::Start,
+      KERNEL32.dll!CreateThread via talk_base::Thread::Start
+    reaches 416 functions; 103 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+  [ok]   B talk_base::Thread::PreRun: reaches none of the 11 targets through resolved edges
+  [ok]   B talk_base::Thread::PreRun: reaches no game-named function through resolved edges
+  C runtime and SDL thread trampolines (RunThreadViaBeginThreadEx, thread_start<unsigned_int_(__cdecl*)(void_*___ptr64)>)
+    started by: KERNEL32.dll!CreateThread via _beginthreadex, _beginthreadex via SDL_SYS_CreateThread
+    reaches 171 functions; 21 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+    named like game code but folded (not counted): 0x14018fc00 CGameAreaNotes::Uninitialize = mov dword ptr [rcx], 0 ; ret (SDL_AtomicUnlock body)
+  [ok]   B C runtime and SDL thread trampolines: reaches none of the 11 targets through resolved edges
+  [ok]   B C runtime and SDL thread trampolines: reaches no game-named function through resolved edges
+  WINMM audio callbacks (CaptureSound, FillSound)
+    started by: waveInOpen via WINMM_OpenDevice, waveOutOpen via WINMM_OpenDevice
+    reaches 2 functions; 0 indirect calls/jumps in them stay unresolved; game-named functions reached: 0
+  [ok]   B WINMM audio callbacks: reaches none of the 11 targets through resolved edges
+  [ok]   B WINMM audio callbacks: reaches no game-named function through resolved edges
+  libjingle and its glue (talk_base, cricket, buzz, sigslot, Xmpp*, DPProviderJingle, DPPeerJingle), all together (this covers virtual dispatch to any named libjingle or glue function; the lobby is not covered, see F1):
+    1693 named functions reach 2918 functions; 2306 indirect calls/jumps in them stay unresolved; 76 of the reached functions are glue (game code that drives the lobby: Xmpp*, DPProviderJingle, DPPeerJingle)
+  [ok]   B libjingle/glue: reaches none of the 11 targets through resolved edges
+    other engine-named functions among them: 128 (DPWrapper 5, Lua API 69, SDL/WIN 53, folded 1)
+    DPWrapper functions: DPWrapper::CreateConnectEvent, DPWrapper::CreateDisconnectEvent,
+      DPWrapper::CreatePacketEvent, DPWrapper::CreatePacketEvent, DPWrapper::NetworkLog
+  [ok]   B libjingle/glue: no game-logic function is reachable through resolved edges
+    non-libjingle classes implementing MessageHandler::OnMessage: XmppPump, XmppThread; receiving sigslot signals: XmppHandler, XmppPump, XmppSocket
+  [ok]   B libjingle's MessageHandler::OnMessage and sigslot signals dispatch into no game class except its glue (which is part of the set above)
+    glue functions that use the engine's Lua state, and who calls them:
+      DPProviderJingle::AddRoom (lua_createtable, lua_getglobal, lua_gettable, lua_len, lua_pushnumber, lua_pushstring, lua_settable, lua_settop, lua_tonumberx) <- call from XmppHandler::Pump+0x620
+      DPProviderJingle::Connect (lua_getglobal, lua_gettable, lua_pushnumber, lua_pushstring, lua_settop, lua_tolstring, lua_type) <- data slot 0x1405c1f60
+      DPProviderJingle::Listen (lua_getfield, lua_getglobal, lua_gettable, lua_pushnumber, lua_settop, lua_tolstring) <- data slot 0x1405c1f70
+      DPProviderJingle::OnNicknameCollision (lua_getfield, lua_getglobal, lua_gettable, lua_pushnumber, lua_settop, lua_tolstring) <- call from XmppHandler::OnMucLeft+0x1ad
+      DPProviderJingle::Pump (lua_callk, lua_getglobal, lua_pushnumber) <- data slot 0x1405c1f78
+      DPProviderJingle::RequestSessionDetails (lua_getglobal, lua_gettable, lua_pushnumber, lua_pushstring, lua_settop, lua_tolstring) <- data slot 0x1405c1f88
+      XmppHandler::Pump (lua_callk, lua_getfield, lua_getglobal, lua_gettable, lua_pushnumber, lua_pushstring, lua_settable, lua_settop, lua_tonumberx, lua_type) <- call from DPProviderJingle::Close+0x38,
+      call from DPProviderJingle::Pump+0x1f
+    DPWrapper::PumpEvents (pumps the network providers) <- call from CNetwork::ThreadLoop+0x17,
+      call from DPWrapper::OnClientConnectionComplete+0x22c, call from DPWrapper::Open+0x51
+
+C. Reverse: callers of each target in the resolved graph, and a chain from the main loop
+  [ok]   C target addresses carry the expected names in the names DB
+  [ok]   C all CGameSprite constructors (0x1401a3480, 0x140341860) and destructors (0x1401a4630, 0x140343cc0) are targets
+  EEex's CGameSprite construct/destruct hook sites (EEex_Sprite_Patch.lua), located with the loader's patterns from: loader/InfinityLoader.db, pattern_dbs/v2.7.3.0.db
+    Hook-CGameSprite::Construct1()-FirstCall (loader/InfinityLoader.db): pattern found once in the image at 0x1401a34a2; hook site 0x1401a34aa = CGameSprite::CGameSprite+0x2a: call 0x140154160
+  [ok]   C EEex hook Hook-CGameSprite::Construct1()-FirstCall is a call inside 0x1401a3480 CGameSprite::CGameSprite
+    Hook-CGameSprite::Construct2()-FirstCall (loader/InfinityLoader.db): pattern found once in the image at 0x140341886; hook site 0x1403418a5 = CGameSprite::CGameSprite+0x45: call 0x140154160
+  [ok]   C EEex hook Hook-CGameSprite::Construct2()-FirstCall is a call inside 0x140341860 CGameSprite::CGameSprite
+    Hook-CGameSprite::Destruct()-FirstCall (loader/InfinityLoader.db): pattern found once in the image at 0x140343d24; hook site 0x140343d30 = CGameSprite::~CGameSprite+0x70: call 0x140407930
+  [ok]   C EEex hook Hook-CGameSprite::Destruct()-FirstCall is a call inside 0x140343cc0 CGameSprite::~CGameSprite
+  virtual calls used by the chains (matched by slot; the vtable is the one the class constructor installs):
+    0x14041cbe5 call qword ptr [r10 + 0xe8] in CChitin::Update -> CBaldurChitin vtable 0x14058dd00 + 0xe8 = CBaldurChitin::AsynchronousUpdate (vtable loaded by CBaldurChitin::CBaldurChitin, CBaldurChitin::~CBaldurChitin)
+  [ok]   C virtual call at 0x14041cbe5 resolves to CBaldurChitin::AsynchronousUpdate
+    0x140419b40 call qword ptr [rax + 0x1a0] in CChitin::AsynchronousUpdate -> CScreenWorld vtable 0x1405a7b78 + 0x1a0 = CScreenWorld::TimerAsynchronousUpdate (vtable loaded by CScreenWorld::CScreenWorld, CScreenWorld::`scalar_deleting_destructor')
+  [ok]   C virtual call at 0x140419b40 resolves to CScreenWorld::TimerAsynchronousUpdate
+    0x140178cce call qword ptr [rax + 0x18] in CGameArea::AIUpdate -> CGameSprite vtable 0x140598b68 + 0x18 = CGameSprite::AIUpdate (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+  [ok]   C virtual call at 0x140178cce resolves to CGameSprite::AIUpdate
+    0x1403451f3 call qword ptr [rax + 0x110] in CGameSprite::AIUpdate -> CGameSprite vtable 0x140598b68 + 0x110 = CGameSprite::ProcessAI (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+  [ok]   C virtual call at 0x1403451f3 resolves to CGameSprite::ProcessAI
+    0x14039281c call qword ptr [rax + 0x100] in CGameSprite::DoAction -> CGameSprite vtable 0x140598b68 + 0x100 = CGameSprite::ExecuteAction (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+  [ok]   C virtual call at 0x14039281c resolves to CGameSprite::ExecuteAction
+    0x1401e5008 call qword ptr [rax + 0x18] in CGameEffectList::HandleList -> CGameEffectXP vtable 0x140593ce0 + 0x18 = CGameEffect::ResolveEffect (vtable loaded by CGameEffectXP::CGameEffectXP, CGameEffectXP::Copy)
+  [ok]   C virtual call at 0x1401e5008 resolves to CGameEffect::ResolveEffect
+    0x1401e867b jmp qword ptr [rax + 0x10] in CGameEffect::ResolveEffect -> CGameEffectXP vtable 0x140593ce0 + 0x10 = CGameEffectXP::ApplyEffect (vtable loaded by CGameEffectXP::CGameEffectXP, CGameEffectXP::Copy)
+  [ok]   C virtual call at 0x1401e867b resolves to CGameEffectXP::ApplyEffect
+    0x1401e867b jmp qword ptr [rax + 0x10] in CGameEffect::ResolveEffect -> CGameEffectPolymorph vtable 0x140594838 + 0x10 = CGameEffectPolymorph::ApplyEffect (vtable loaded by CGameEffectPolymorph::CGameEffectPolymorph, CGameEffectPolymorph::Copy)
+  [ok]   C virtual call at 0x1401e867b resolves to CGameEffectPolymorph::ApplyEffect
+    0x14017ce4e call qword ptr [rax] in CGameArea::CheckRestEncounter -> CGameSprite vtable 0x140598b68 + 0x0 = CGameSprite::`scalar_deleting_destructor' (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+      receiver: qword ptr [rsp + 0x68], loaded at 0x14017ce3c, holds the CGameSprite built at 0x14017c932, 0x14017cdbc
+  [ok]   C virtual call at 0x14017ce4e resolves to CGameSprite::`scalar_deleting_destructor'
+  [ok]   C the process entry reaches CChitin::Update by direct calls (the main loop)
+    WinMainCRTStartup > __scrt_common_main_seh > WinMain > SDL_main > CChitin::WinMain > CChitin::Update
+  0x1403727d0 CGameSprite::SetAtOffset
+    referenced by: call from CGameAIBase::ExecuteAction+0x36e3
+    it and its callers in the resolved graph, transitively up to the roots: 3 functions; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 2 of the 3 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::SetAtOffset: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::SetAtOffset: reached from the main loop CChitin::Update
+    chain:
+      CChitin::Update
+      > CBaldurChitin::AsynchronousUpdate   (virtual +0xe8 at 0x14041cbe5)
+      > CChitin::AsynchronousUpdate   (call at 0x140131eef)
+      > CScreenWorld::TimerAsynchronousUpdate   (virtual +0x1a0 at 0x140419b40)
+      > CScreenWorld::AsynchronousUpdate   (jmp at 0x1402fcbb5)
+      > CGameArea::AIUpdate   (call at 0x1402ec6e2)
+      > CGameSprite::AIUpdate   (virtual +0x18 at 0x140178cce)
+      > CGameSprite::ProcessAI   (virtual +0x110 at 0x1403451f3)
+      > CGameSprite::DoAction   (call at 0x1403ab5e8)
+      > CGameSprite::ExecuteAction   (virtual +0x100 at 0x14039281c)
+      > CGameAIBase::ExecuteAction   (call at 0x140398762)
+      > CGameSprite::SetAtOffset   (call at 0x140160b93)
+  0x1401cb370 CGameEffectXP::ApplyEffect
+    referenced by: data slot 0x140593cf0
+      slot 0x140593cf0 = vtable 0x140593ce0 + 0x10 (vtable loaded by CGameEffectXP::CGameEffectXP, CGameEffectXP::Copy)
+    it and its callers in the resolved graph, transitively up to the roots: 1 function; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 1 of the 1 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameEffectXP::ApplyEffect: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameEffectXP::ApplyEffect: reached from the main loop CChitin::Update
+    chain:
+      CChitin::Update
+      > CBaldurChitin::AsynchronousUpdate   (virtual +0xe8 at 0x14041cbe5)
+      > CChitin::AsynchronousUpdate   (call at 0x140131eef)
+      > CScreenWorld::TimerAsynchronousUpdate   (virtual +0x1a0 at 0x140419b40)
+      > CScreenWorld::AsynchronousUpdate   (jmp at 0x1402fcbb5)
+      > CGameArea::AIUpdate   (call at 0x1402ec6e2)
+      > CGameSprite::AIUpdate   (virtual +0x18 at 0x140178cce)
+      > CGameSprite::ProcessEffectList   (call at 0x14034487a)
+      > CGameEffectList::HandleList   (call at 0x1403ac572)
+      > CGameEffect::ResolveEffect   (virtual +0x18 at 0x1401e5008)
+      > CGameEffectXP::ApplyEffect   (virtual +0x10 at 0x1401e867b)
+  0x1401e4f90 CGameEffectList::HandleList
+    referenced by: call from CGameSprite::ProcessEffectList+0xba2,
+      call from CGameSprite::ProcessEffectList+0xbbc
+    it and its callers in the resolved graph, transitively up to the roots: 711 functions; roots (functions nothing calls directly) by how they are referenced: Lua binding (luaopen_BaldurLUA) 79, Lua binding (uiLoadFunctions) 23, data slot (vtable or function table) 155; 267 of the 711 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameEffectList::HandleList: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameEffectList::HandleList: reached from the main loop CChitin::Update
+    chain: the first 9 steps of the chain printed for 0x1401cb370 CGameEffectXP::ApplyEffect
+  0x1403ab9d0 CGameSprite::ProcessEffectList
+    referenced by: call from CItem::Unequip+0x19e, call from CInfGame::SwapItemPersonal+0x1389,
+      call from CInfGame::SwapItemPersonalInventory+0x98f, call from CScreenCharacter::MakeDualClass+0x943,
+      call from CScreenCharacter::OnErrorButtonClick+0x1fa, call from CScreenCreateChar::AcceptCharacter+0x133,
+      call from CScreenCreateChar::CompleteCharacterAbilities+0xc1,
+      call from CScreenCreateChar::CompleteCharacterAbilities+0x276,
+      call from CScreenCreateChar::CompleteCharacterClass+0x11a,
+      call from CScreenCreateChar::CompleteCharacterInitialise+0x119,
+      call from CScreenCreateChar::CompleteCharacterSkills+0x322, call from CScreenCreateChar::LevelUp+0x16a,
+      call from CScreenCreateChar::MakeDualClass+0x953, call from CScreenCreateChar::ResetLevelUpPanel+0x10d,
+      call from CScreenCreateChar::ResetLevelUpPanel+0x3dd,
+      call from CScreenCreateChar::ResetLevelUpPanel+0x1aeb,
+      call from CScreenCreateChar::ResetLevelUpPanel+0x1bd8,
+      call from CScreenCreateChar::ResetProficienciesPanel+0x2e8,
+      call from CScreenCreateChar::ResetProficienciesPanel+0x585, call from CScreenInventory::SwapWithSlot+0xa53,
+      call from CScreenStore::OnBuyDrinkButtonClick+0x224, call from CScreenStore::OnBuySpellButtonClick+0x52f,
+      call from CScreenWorld::Cheat_GiveAllSpells+0xf7, call from CGameSprite::AIUpdate+0x8a,
+      call from CGameSprite::AIUpdate+0x111, call from CGameSprite::CompressTime+0x904,
+      call from CGameSprite::GetRatingWithItem+0x4d9, call from CGameSprite::SetAtOffset+0x655,
+      call from CGameSprite::UnequipAll+0x1ee, call from CGameSprite::Unmarshal+0xcb5,
+      call from CGameSprite::AddEffect+0x26e, call from CGameSprite::CheckReputation+0x3c2,
+      call from CGameSprite::ProcessAI+0x161b, call from CGameSprite::ProcessAI+0x18c3,
+      call from CGameSprite::SetActiveProficiency+0x168, call from CGameSprite::SetInactiveProficiency+0x16b,
+      call from CGameSprite::SwapAllActiveInactiveProficiencies+0x203, call from CGameSprite::CheckForDead+0xe5
+    it and its callers in the resolved graph, transitively up to the roots: 710 functions; roots (functions nothing calls directly) by how they are referenced: Lua binding (luaopen_BaldurLUA) 79, Lua binding (uiLoadFunctions) 23, data slot (vtable or function table) 155; 267 of the 710 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::ProcessEffectList: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::ProcessEffectList: reached from the main loop CChitin::Update
+    chain: the first 8 steps of the chain printed for 0x1401cb370 CGameEffectXP::ApplyEffect
+  0x14015d4b0 CGameAIBase::ExecuteAction
+    referenced by: call from CGameSprite::ExecuteAction+0x2772, data slot 0x14058f840, data slot 0x14058f9e0,
+      data slot 0x140590ec8, data slot 0x1405915e8, data slot 0x140599d20, data slot 0x140599ea8
+      slot 0x14058f840 = vtable 0x14058f740 + 0x100 (vtable loaded by CGameAIBase::CGameAIBase, CGameAIBase::~CGameAIBase)
+      slot 0x14058f9e0 = vtable 0x14058f8e0 + 0x100 (vtable loaded by CGameAIArea::CGameAIArea, CGameAIGame::CGameAIGame)
+      slot 0x140590ec8 = vtable 0x140590dc8 + 0x100 (vtable loaded by CGameContainer::CGameContainer, CGameContainer::`scalar_deleting_destructor')
+      slot 0x1405915e8 = vtable 0x1405914e8 + 0x100 (vtable loaded by CGameDoor::CGameDoor, CGameDoor::`scalar_deleting_destructor')
+      slot 0x140599d20 = vtable 0x140599c20 + 0x100 (vtable loaded by CGameTiledObject::CGameTiledObject, CGameTiledObject::`scalar_deleting_destructor')
+      slot 0x140599ea8 = vtable 0x140599da8 + 0x100 (vtable loaded by CGameTrigger::CGameTrigger, CGameTrigger::`scalar_deleting_destructor')
+    it and its callers in the resolved graph, transitively up to the roots: 2 functions; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 2 of the 2 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameAIBase::ExecuteAction: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameAIBase::ExecuteAction: reached from the main loop CChitin::Update
+    chain: the first 11 steps of the chain printed for 0x1403727d0 CGameSprite::SetAtOffset
+  0x1403447f0 CGameSprite::AIUpdate
+    referenced by: data slot 0x140598b80
+      slot 0x140598b80 = vtable 0x140598b68 + 0x18 (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+    it and its callers in the resolved graph, transitively up to the roots: 1 function; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 1 of the 1 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::AIUpdate: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::AIUpdate: reached from the main loop CChitin::Update
+    chain: the first 7 steps of the chain printed for 0x1403727d0 CGameSprite::SetAtOffset
+  0x1401782a0 CGameArea::AIUpdate
+    referenced by: call from CScreenWorld::AsynchronousUpdate+0xe02
+    it and its callers in the resolved graph, transitively up to the roots: 10 functions; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 8; 8 of the 10 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameArea::AIUpdate: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameArea::AIUpdate: reached from the main loop CChitin::Update
+    chain: the first 6 steps of the chain printed for 0x1403727d0 CGameSprite::SetAtOffset
+  0x1401a3480 CGameSprite::CGameSprite
+    referenced by: call from CGameEffectPolymorph::ApplyEffect+0x18c,
+      call from CGameSprite::GetStatBreakdown+0x303e, call from CGameSprite::GetStatBreakdown+0x32d2
+    it and its callers in the resolved graph, transitively up to the roots: 334 functions; roots (functions nothing calls directly) by how they are referenced: Lua binding (luaopen_BaldurLUA) 61, Lua binding (uiLoadFunctions) 17, data slot (vtable or function table) 48; 130 of the 334 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::CGameSprite: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::CGameSprite: reached from the main loop CChitin::Update
+    chain:
+      CChitin::Update
+      > CBaldurChitin::AsynchronousUpdate   (virtual +0xe8 at 0x14041cbe5)
+      > CChitin::AsynchronousUpdate   (call at 0x140131eef)
+      > CScreenWorld::TimerAsynchronousUpdate   (virtual +0x1a0 at 0x140419b40)
+      > CScreenWorld::AsynchronousUpdate   (jmp at 0x1402fcbb5)
+      > CGameArea::AIUpdate   (call at 0x1402ec6e2)
+      > CGameSprite::AIUpdate   (virtual +0x18 at 0x140178cce)
+      > CGameSprite::ProcessEffectList   (call at 0x14034487a)
+      > CGameEffectList::HandleList   (call at 0x1403ac572)
+      > CGameEffect::ResolveEffect   (virtual +0x18 at 0x1401e5008)
+      > CGameEffectPolymorph::ApplyEffect   (virtual +0x10 at 0x1401e867b)
+      > CGameSprite::CGameSprite   (call at 0x1401bbccc)
+  0x140341860 CGameSprite::CGameSprite
+    referenced by: call from CBaldurMessage::OnDemandCharacterSlotReply+0xf8,
+      call from CBaldurMessage::OnObjectAdd+0x43a, call from CBaldurMessage::OnUpdateCharacterSlotReply+0x3aa,
+      call from CGameAIBase::CreateCreature+0x59e, call from CGameAIBase::CreateCreatureObject+0x3b6,
+      call from CGameAIBase::CreateCreatureObject+0xc7b, call from CGameArea::CheckRestEncounter+0x9d2,
+      call from CGameArea::CheckRestEncounter+0xe5c, call from CGameArea::Unmarshal+0xbc8,
+      call from CGameArea::Unmarshal+0xd11, call from CGameContainer::AddEffect+0xaab,
+      call from CGameDoor::AddEffect+0xa38, call from CGameEffectFamiliarBlock::ApplyEffect+0x198,
+      call from CGameEffectFindFamiliar::ApplyEffect+0x23d, call from CGameEffectRandomSummon::ApplyEffect+0x75c,
+      call from CGameEffectReplaceSelf::ApplyEffect+0x62f, call from CGameEffectSummon::ApplyEffect+0x399,
+      call from CGameEffectRandomSummon::ApplyEffectNoSprite+0x57c, call from CGameSpawning::Spawn+0x611,
+      call from CGameSpawning::Spawn+0xa78, call from CGameTrigger::AddEffect+0x984,
+      call from CImportGame::GetCharacterAtIndex+0xbf, call from CImportGame::GetNPCAtIndex+0xc5,
+      call from CLUACheats::CreateCreature+0x29d, call from CLUAConsole::CreateCreature+0x2ca,
+      call from CInfGame::CharacterImport+0x1dd, call from CInfGame::LoadArea+0xc23,
+      call from CInfGame::Unmarshal+0x801, call from CInfGame::Unmarshal+0x87c,
+      call from CInfGame::Unmarshal+0xd29, call from CInfGame::Unmarshal+0xfac,
+      call from CInfGame::UpdatePartyToExpansionPack+0x1987, call from CScreenCreateChar::AcceptCharacter+0x363,
+      call from CScreenCreateChar::StartCreateChar+0x168, call from CScreenCreateParty::ImportFrom2DA+0x213,
+      call from CSpawn::ExecuteSpawn+0x3c5, call from CGameSprite::Copy+0xd0,
+      call from CGameSprite::ChangeAnimation+0x1d1
+    it and its callers in the resolved graph, transitively up to the roots: 313 functions; roots (functions nothing calls directly) by how they are referenced: Lua binding (luaopen_BaldurLUA) 51, Lua binding (uiLoadFunctions) 8, data slot (vtable or function table) 48; 110 of the 313 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::CGameSprite: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::CGameSprite: reached from the main loop CChitin::Update
+    chain:
+      CChitin::Update
+      > CBaldurChitin::AsynchronousUpdate   (virtual +0xe8 at 0x14041cbe5)
+      > CChitin::AsynchronousUpdate   (call at 0x140131eef)
+      > CScreenWorld::TimerAsynchronousUpdate   (virtual +0x1a0 at 0x140419b40)
+      > CScreenWorld::AsynchronousUpdate   (jmp at 0x1402fcbb5)
+      > CInfGame::RestPartyPrivate   (call at 0x1402ed840)
+      > CGameArea::CheckRestEncounter   (call at 0x1402883d4)
+      > CGameSprite::CGameSprite   (call at 0x14017c932)
+  0x140343cc0 CGameSprite::~CGameSprite
+    referenced by: call from CGameSprite::`scalar_deleting_destructor'+0xf
+    it and its callers in the resolved graph, transitively up to the roots: 2 functions; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 1 of the 2 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::~CGameSprite: no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::~CGameSprite: reached from the main loop CChitin::Update
+    chain:
+      CChitin::Update
+      > CBaldurChitin::AsynchronousUpdate   (virtual +0xe8 at 0x14041cbe5)
+      > CChitin::AsynchronousUpdate   (call at 0x140131eef)
+      > CScreenWorld::TimerAsynchronousUpdate   (virtual +0x1a0 at 0x140419b40)
+      > CScreenWorld::AsynchronousUpdate   (jmp at 0x1402fcbb5)
+      > CInfGame::RestPartyPrivate   (call at 0x1402ed840)
+      > CGameArea::CheckRestEncounter   (call at 0x1402883d4)
+      > CGameSprite::`scalar_deleting_destructor'   (virtual +0x0 at 0x14017ce4e)
+      > CGameSprite::~CGameSprite   (call at 0x1401a463f)
+  0x1401a4630 CGameSprite::`scalar_deleting_destructor'
+    referenced by: data slot 0x140598b68
+      slot 0x140598b68 = vtable 0x140598b68 + 0x0 (vtable loaded by CGameSprite::CGameSprite, CGameSprite::~CGameSprite)
+    it and its callers in the resolved graph, transitively up to the roots: 1 function; roots (functions nothing calls directly) by how they are referenced: data slot (vtable or function table) 1; 1 of the 1 can also be entered through a function pointer (data slot or loaded address)
+  [ok]   C CGameSprite::`scalar_deleting_destructor': no start routine, thread-body function or libjingle/glue function among its callers in the resolved graph
+  [ok]   C CGameSprite::`scalar_deleting_destructor': reached from the main loop CChitin::Update
+    chain: the first 8 steps of the chain printed for 0x140343cc0 CGameSprite::~CGameSprite
+  byte scan of all code for calls, jumps and address loads of the targets and all their callers in the resolved graph (713 functions): 1813 hits, 0 of them outside the decoded instructions
+  [ok]   C no code outside the decoded instructions calls, jumps to or loads the address of a target or of any of its callers in the resolved graph
+  XP field writes in CGameSprite::SetAtOffset (stat 44 branch):
+    0x140372d4d add dword ptr [rcx + 0x570], r8d
+    0x140372d59 mov dword ptr [rcx + 0x570], r8d
+
+D. SearchThreadMain and CNetwork::ThreadLoop (names suggest threads)
+  0x14024d5e0 SearchThreadMain <- call from CChitin::Update+0xef
+  [ok]   D SearchThreadMain is only called directly, its address is never taken, so it is no thread start routine
+  [ok]   D SearchThreadMain is called directly from CChitin::Update
+  0x14040d290 CNetwork::ThreadLoop <- call from CBaldurMessage::HandleBlockingMessages+0x32,
+      call from CBaldurMessage::NonBlockingWaitForSignal+0x54,
+      call from CBaldurMessage::OnCloseSessionStartPoll+0x112,
+      call from CBaldurMessage::PollSpecificMessageType+0x32, call from CBaldurMessage::WaitForSignal+0xb7,
+      call from CInfGame::LeaveAreaNameMultiplayer+0x1b95, call from CScreenMultiPlayer::Logout+0xac,
+      call from CScreenMultiPlayer::OnModifyCharacterDelete+0x10a,
+      call from CScreenMultiPlayer::UpdateModifyCharacterPanel+0x184,
+      call from CScreenWorld::AsynchronousUpdate+0x661, call from CScreenWorld::AsynchronousUpdate+0x6b3,
+      call from CScreenWorldMap::EnterArea+0x20d4, call from CChitin::Update+0x18f
+  [ok]   D CNetwork::ThreadLoop is only called directly, its address is never taken, so it is no thread start routine
+  [ok]   D CNetwork::ThreadLoop is called directly from CChitin::Update
+
+E. EEex.dll and the loader binaries
+  [ok]   E EEex.dll imports no thread/work-creation API except CreateThread, and no ConcRT/OpenMP runtime
+  references to the CreateThread import (byte scan of all code): 0x1800c06a7 call [rip]
+  [ok]   E EEex.dll calls CreateThread at exactly one place
+  call at 0x1800c06a7 in function 0x1800c0680..0x1800c06b4; start routine 0x1800033c0 = 'jmp 0x1800028d0'; thread body 0x1800028d0
+  references to 0x1800c0680: 0x1800c3877 lea; data slots: none
+  registration in 0x1800c2790..0x1800cdcf3: 0x1800c3877 lea r8, [rip - 0x31fe]; 0x1800c387e mov rcx, rbx; 0x1800c3881 lea rdx, [rip + 0x575e0]; 0x1800c3888 call qword ptr [rip + 0x199b2]
+    = tolua_function(L, "OpenDebugWindow", 0x1800c0680)
+  [ok]   E the function that calls CreateThread is reached only through the Lua binding OpenDebugWindow
+  debug-window thread body: 241 call targets in 240 code ranges (38 without .pdata, swept as 0x200-byte windows), sweep complete; 108 imports used; 86 indirect calls decoded at 80 distinct sites (overlapping windows decode 6 twice)
+    Lua and synchronisation imports it uses: AcquireSRWLockExclusive, ReleaseSRWLockExclusive,
+      SharedState::LuaState, SleepConditionVariableSRW, WakeAllConditionVariable, _Mtx_lock, _Mtx_unlock,
+      lua_getglobal, lua_gettop, lua_pcallk, lua_pushstring, lua_rawget, lua_remove, lua_settop, lua_tolstring
+    the window title 'EEex Debug Window' is loaded at 0x180002ae1
+  [ok]   E the CreateThread start routine is the EEex debug window
+  binaries checked for SDL thread, timer and audio function names (ASCII or UTF-16, whole names):
+    v2.7.3.0/EEex.dll                 1302528 bytes  sha256 62E110A27BC1AE0530AFC276BB5ADF41609D133AB499BAE3456F046DEDEF0E35
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): KERNEL32.dll!CreateThread; SDL thread/timer/audio names: none
+  [ok]   E v2.7.3.0/EEex.dll binds no SDL thread, timer or audio function by name
+    loader/InfinityLoader.exe           42496 bytes  sha256 8BF93903266E5BD23D87A6B1A2EA5B70D62436E456C86D0B3314AB4376E96B31
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E loader/InfinityLoader.exe binds no SDL thread, timer or audio function by name
+  [ok]   E loader/InfinityLoader.exe imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    loader/InfinityLoaderDLL.dll       604672 bytes  sha256 CF464444352E7279CC41CE5515728343F4703722023C10FC0D35EF80768363D1
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E loader/InfinityLoaderDLL.dll binds no SDL thread, timer or audio function by name
+  [ok]   E loader/InfinityLoaderDLL.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    loader/InfinityLoaderCommon.dll    123392 bytes  sha256 682213188C7F775E261772D955BB721B5FC4610B044B631C96BCE85163886892
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E loader/InfinityLoaderCommon.dll binds no SDL thread, timer or audio function by name
+  [ok]   E loader/InfinityLoaderCommon.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    loader/InfinityLoaderUtil.dll       60416 bytes  sha256 CC46B50941B9F91430BD8D7F69B62C95D8E4F51CF8C81F2F4A8D3332F507F37A
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E loader/InfinityLoaderUtil.dll binds no SDL thread, timer or audio function by name
+  [ok]   E loader/InfinityLoaderUtil.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    loader/LuaBindingsCore.dll         265728 bytes  sha256 0E5C0CE6E319B82BCB4EA4E95CB7D2A3C89273998D98F14F9B2440918A53009F
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E loader/LuaBindingsCore.dll binds no SDL thread, timer or audio function by name
+  [ok]   E loader/LuaBindingsCore.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    Lua52/LuaProvider.dll              295424 bytes  sha256 AE434B8ED136236B4900ED8498EEF7AF3A8DF7399DA8F6D0B5582F0305789CF3
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E Lua52/LuaProvider.dll binds no SDL thread, timer or audio function by name
+  [ok]   E Lua52/LuaProvider.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+    v2.7.3.0/LuaBindings.dll          6474240 bytes  sha256 0A09A17D1692359AC09D98E18A73C1FBD7C8D256661ADB39CCDFD61C76559EEF
+      thread/work-creation imports (and ConcRT/OpenMP DLLs): none; SDL thread/timer/audio names: none
+  [ok]   E v2.7.3.0/LuaBindings.dll binds no SDL thread, timer or audio function by name
+  [ok]   E v2.7.3.0/LuaBindings.dll imports no thread/work-creation API and no ConcRT/OpenMP runtime
+  thread-like engine function names in EEex.dll: SearchThreadMain (utf-16 at 0x180114a88), CNetwork::ThreadLoop (utf-16 at 0x180115d10) (both are plain main-thread calls, see D)
+
+RESULT: INCONCLUSIVE (97 checks, 0 failed; no resolved path from another thread to a target; 11 routes stay unresolved)
+  unresolved: DoGenerateCrashDump: 15 indirect calls/jumps
+  unresolved: DoReportCrashGUI: 14 indirect calls/jumps
+  unresolved: FUN_140537ee0: 12 indirect calls/jumps
+  unresolved: SDL_JoystickThread: 15 indirect calls/jumps
+  unresolved: SDL_RunAudio: 22 indirect calls/jumps
+  unresolved: SDL_RunXInputHaptic: 16 indirect calls/jumps
+  unresolved: SDL_TimerThread: 16 indirect calls/jumps
+  unresolved: talk_base::Thread::PreRun: 103 indirect calls/jumps
+  unresolved: C runtime and SDL thread trampolines: 21 indirect calls/jumps
+  unresolved: libjingle/glue: 2306 indirect calls/jumps
+  unresolved: EEex debug-window thread: 80 indirect call sites
+
+F. Remaining uncertainties (as found by the analysis; this script does not check them)
+  1. Beamdog internet lobby, not covered. DPProviderJingle::OnNicknameCollision, called from
+     XmppHandler::OnMucLeft, reads the engine's Lua state without a lock, possibly on the XMPP network thread
+     (likely, not proven). It makes no Lua calls, but a Lua __index handler or garbage-collector finalizer
+     could in theory run Lua code there. This is an existing engine race, only in the lobby. The lobby code
+     (libjingle and its glue) has no resolved path to the targets, but its indirect calls/jumps stay
+     unresolved (see RESULT), so this audit does not cover it.
+  2. Debug-window thread. It uses the shared Lua state with locks. Whether it hands its Lua calls to the main
+     thread is not proven, and its 80 indirect call sites are unresolved (see RESULT). It only matters if
+     someone opens the window.
+  3. Code outside the exe and EEex. OS, GPU driver, OpenAL, Steam and COM threads were not analysed. No way
+     for them to call into game code was found: OpenAL is used without callbacks, and the Steam update runs
+     from the main loop.
+  4. No runtime check. This is static analysis only; the game was not run. A lab could confirm it by logging
+     the thread ID inside the hook and at EEex start.
+  5. Unresolved indirect routes. B follows only resolved edges from each thread; the indirect calls/jumps
+     counted there are not followed, so a route through them to a target is not excluded. RESULT lists each
+     such route with its count.

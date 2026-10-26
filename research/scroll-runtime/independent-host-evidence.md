@@ -1,8 +1,9 @@
-# Independent native persistence host â€” October 9, 2026
+# Independent native persistence host — October 9, 2026
 
 Historical persistence-host milestone. The subsequent complete startup and component430
 install path are documented in [component430-status.md](component430-status.md).
-The independent DLL remains uninstalled in any real game and native acceptance is pending.
+Since alpha.11 this DLL, `CBMScroll.dll`, is what component 430 installs; the
+[scroll casting guide](../../docs/scroll-casting.md) records its in-game checks by DLL SHA-256.
 `CBMS_EEexConfigureCurrent()` intentionally refuses bypassing the verified early startup
 transaction; `CBMS_StartCurrent` is the implemented entry point. No EEex.dll fork is needed.
 

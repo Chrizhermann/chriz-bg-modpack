@@ -6,10 +6,12 @@ $vswhere='C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe'
 $installation=& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
 if(!$installation){throw 'MSVC x64 compiler required'}
 $vcvars=Join-Path $installation 'VC/Auxiliary/Build/vcvars64.bat'
+# MSVC names anonymous namespaces after the compiled path: mapping this folder
+# (/pathmap needs /experimental:deterministic) lays the DLL out the same in every build folder.
 $batch=@"
 @call "$vcvars" >nul
 @if errorlevel 1 exit /b 1
-cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$PSScriptRoot/dual_skill_rows.cpp" "$PSScriptRoot/dual_skill_rows_lua.cpp" /Fe"$build/dual_skill_rows.dll" /Fo"$build/" /link /MAP:"$build/dual_skill_rows.map"
+cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$PSScriptRoot/dual_skill_rows.cpp" "$PSScriptRoot/dual_skill_rows_lua.cpp" "$PSScriptRoot/cbm_build_inputs.cpp" /experimental:deterministic /pathmap:"$PSScriptRoot"=research\xp-banking-native /DCBM_BUILD_INPUTS=%CBM_BUILD_INPUTS% /DCBM_BUILD_ID=%CBM_BUILD_ID% /Fe"$build/dual_skill_rows.dll" /Fo"$build/" /link /MAP:"$build/dual_skill_rows.map"
 @exit /b %errorlevel%
 "@
 $batchPath=Join-Path $build 'build.cmd'

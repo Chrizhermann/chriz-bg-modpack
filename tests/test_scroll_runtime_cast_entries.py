@@ -2,15 +2,15 @@
 import ctypes as C
 import sys
 import pytest
-from test_scroll_runtime_detours import action_image,SOURCE
+from test_scroll_runtime_binding import pinned_image,SOURCE
 from test_scroll_runtime_binding import windows
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import os_unwinder
 from test_scroll_runtime_item_detours import execute
 sys.path.insert(0,str(SOURCE))
 import cast_entry_detours as recipes
 @pytest.mark.parametrize('name',list(recipes.SITES))
-def test_native_cast_entry_prefix_and_every_instruction_windows_unwind(action_image,name,windows,os_unwinder):
-    original,hooked=[execute(action_image,name,value,recipes) for value in (False,True)]
+def test_native_cast_entry_prefix_and_every_instruction_windows_unwind(pinned_image,name,windows,os_unwinder):
+    original,hooked=[execute(pinned_image,name,value,recipes) for value in (False,True)]
     assert original['registers']==hooked['registers'] and original['flags']==hooked['flags']
     old,new=bytearray(original['stack']),bytearray(hooked['stack'])
     if hooked['plan']['frame']:

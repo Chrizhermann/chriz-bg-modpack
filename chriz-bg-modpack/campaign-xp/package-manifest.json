@@ -1,7 +1,15 @@
 {
-  "schema": 1,
+  "schema": 3,
   "status": "experimental-unreleased",
   "nativePlaytestRequired": true,
+  "toolchain": {
+    "cl": "Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64",
+    "link": "Microsoft (R) Incremental Linker Version 14.44.35228.0",
+    "ml64": "Microsoft (R) Macro Assembler (x64) Version 14.44.35228.0",
+    "VCToolsVersion": "14.44.35207",
+    "WindowsSDKVersion": "10.0.26100.0",
+    "UCRTVersion": "10.0.26100.0"
+  },
   "files": {
     "bank_recruitment_patch.tpa": {
       "source": "research/xp-banking-native/bank_recruitment_patch.tpa",
@@ -13,31 +21,183 @@
     },
     "native/cbmbank_identity.dll": {
       "kind": "native",
-      "sha256": "da782299243d446b43f31d8bf9cc3c18ed259b2777e0be14e54aca7ba593152b"
+      "build": {
+        "script": "research/xp-banking-native/reset_check.ps1",
+        "compiles": [
+          "research/xp-banking-native/identity_native.cpp",
+          "research/xp-banking-native/reset_native.cpp",
+          "research/xp-banking-native/party_native.cpp",
+          "research/xp-banking-native/award_native.cpp",
+          "research/xp-banking-native/writer_native.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp"
+        ],
+        "inputs": {
+          "research/xp-banking-native/award_native.cpp": "ea09e1d98e83a5d77bb75fa96b77eb176d7de49b80473814982f7290c8ee7717",
+          "research/xp-banking-native/award_native.h": "2d7818d8a8449d45b7154fb818cffacbaff0b31b5021c046583c45140197f81a",
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/identity_native.cpp": "a2744bccac0bdd582cc77befa8418a6ee48b57889ac3e87b4022ec5e12f352d2",
+          "research/xp-banking-native/identity_native.h": "d8c9dc785b57d63358fea9f08cdd0c25475562b5a7e5cb5783e8a4ae41633e08",
+          "research/xp-banking-native/party_native.cpp": "82c4d9aaa971d3b10fabdbf7888dd7d28e8ca36e7c1426b9b3f3a43715c6313d",
+          "research/xp-banking-native/party_native.h": "a27a55ec7c15110cb39a4d3750f61c4da901edfdbb6859fdf5601c608c8ca6a0",
+          "research/xp-banking-native/reset_check.ps1": "a560f7ef54dbe4e9fc958eddc052e474f4c9ccaa0555c8203523df45eff09e9a",
+          "research/xp-banking-native/reset_native.cpp": "d1cadc2785421e3b1dbb78e30ee9bb5989074d8f633571d2b13df85591389919",
+          "research/xp-banking-native/reset_native.h": "c194a92df089393e02a986b8bd4f5376a0ffac81892245be1a92dd7214062cc3",
+          "research/xp-banking-native/writer_native.cpp": "9f9e4b53b055d9cdd35660f5d3f61745ba169f5ea429a53c96a631044a0a3a67",
+          "research/xp-banking-native/writer_native.h": "79b37c35d732980125c10279da7b956ca19540a28a580d645dfcd7bda0413358"
+        },
+        "digest": "ff1cc0faebab9acd09187827245ff841e9115d743c6543c682d0c4bb539b681d",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "35e9cf4f2489a1fb39e2c15b792142ff94bc1f6bcdbde9f456eea4f611c5829a"
+      },
+      "sha256": "0b6c154e28f37f7ab8677a4efbec58241a976ef38b6826262608e1212d3efcfc"
     },
     "native/dual_hp_observer.dll": {
       "kind": "native",
-      "sha256": "f4dd9b00da401bee9e704a6171fad51d9c9e30dd8d15cc5d759d1df657ce6a50"
+      "build": {
+        "script": "research/xp-banking-native/dual_hp_check.ps1",
+        "compiles": [
+          "research/xp-banking-native/dual_hp_observer.cpp",
+          "research/xp-banking-native/dual_choice_observer.cpp",
+          "research/xp-banking-native/dual_manual_session.cpp",
+          "research/xp-banking-native/dual_manual_lua.cpp",
+          "research/xp-banking-native/dual_combined_preview.cpp",
+          "research/xp-banking-native/dual_entry.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp",
+          "research/xp-banking-native/dual_hp_thunks.asm",
+          "research/xp-banking-native/dual_choice_thunks.asm"
+        ],
+        "inputs": {
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/dual_choice_observer.cpp": "e972b9107be0ef0a984e8833d1f278dc2fd1a1b757c19afe047d92176a300d5c",
+          "research/xp-banking-native/dual_choice_observer.h": "6acd3534493d1145566e432f1e73e15a08974478b8c4a871cca85b949a14ca05",
+          "research/xp-banking-native/dual_choice_thunks.asm": "1f96eebcf226cc28d5d916f5b16c8dea3290022a9649bc945ba9ec09815afe56",
+          "research/xp-banking-native/dual_combined_preview.cpp": "7bdb1b224f4daa44472226d5d72372757cf6a3822b94d1b1b2b5b274117a58e3",
+          "research/xp-banking-native/dual_combined_preview.h": "d62072dff22ac1ddf52298dbe8aa063c1ca6efae4cd8a7b77cb0c82535b34dce",
+          "research/xp-banking-native/dual_entry.cpp": "ca8192a06250ddce045ae4d9933aab459f0c2a328fe67f5a323b4ae649452b36",
+          "research/xp-banking-native/dual_entry.h": "a7add8d7270e0fd9b494901757d9bff87c2ab63f61830c793a709bf5e10b235a",
+          "research/xp-banking-native/dual_hp_check.ps1": "301ea6e141d9117b041382c994a71da0d6480ea94b00766123b87adaf8b24773",
+          "research/xp-banking-native/dual_hp_observer.cpp": "39af03dfb909c61c0c604f53e79084fd52cefc6ff30e5a31ffb6d61448ab7b39",
+          "research/xp-banking-native/dual_hp_observer.h": "668946d17b5d1069270984f49af0573b5150e2a992163e99e0a1319a37fda8ba",
+          "research/xp-banking-native/dual_hp_thunks.asm": "8f8967794d4f5667bf9d2a0b457eb73f6558e243272f6c6fafaebcec44391e98",
+          "research/xp-banking-native/dual_manual_lua.cpp": "c9febf1ba46cfeab5dd99bda212ee71de770714548a7b6eb8d7953fcfb02a87a",
+          "research/xp-banking-native/dual_manual_session.cpp": "c9f7ab8eb7a108d1320a0eb6497e7989c3a6c313d700155fc02b18f4ca236d93",
+          "research/xp-banking-native/dual_manual_session.h": "4d54591911bb3049423c63ac014f0231c8628284b12a62fe4b2842dc41ed8e83",
+          "research/xp-banking-native/dual_native_proficiency.h": "2d7776202c31b43d8c3136ddc0f08371380b8bd3ef9600b63bd2d5a0afaab724",
+          "research/xp-banking-native/identity_native.h": "d8c9dc785b57d63358fea9f08cdd0c25475562b5a7e5cb5783e8a4ae41633e08"
+        },
+        "digest": "71bcf1005907d224c4a0a68c4b981754e554ab0389e4f76dbbfa69a964bc45cb",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "0a40424c7e4e8bf49febbff133ffc6227838649e1bb3ac1a674eda5f09358495"
+      },
+      "sha256": "9f13b0fbd1fa3e52b7bdd5eea326c450909f3a9b7c7a555d15c5b9c1b61ddfa1"
     },
     "native/dual_native_proficiency.dll": {
       "kind": "native",
-      "sha256": "5b685c7a11305dc8cf09fe1f419f465fbf3c288ec49ac1b984782422296ea62d"
+      "build": {
+        "script": "research/xp-banking-native/dual_native_check.ps1",
+        "compiles": [
+          "research/xp-banking-native/dual_native_proficiency.cpp",
+          "research/xp-banking-native/dual_rules_lua.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp"
+        ],
+        "inputs": {
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/dual_native_check.ps1": "632206605737567b3a083173fe06493fa3196c6cf3943005c93e6141e94833be",
+          "research/xp-banking-native/dual_native_proficiency.cpp": "617895bf814aa31087d63736138361e89d5f13238b8845e5a32fcf2903d25509",
+          "research/xp-banking-native/dual_native_proficiency.h": "2d7776202c31b43d8c3136ddc0f08371380b8bd3ef9600b63bd2d5a0afaab724",
+          "research/xp-banking-native/dual_native_proficiency_builds.inc": "738db80d8c29955c75f9d91a222357b79d4a2f0d8804768f5dc1d26168c8098c",
+          "research/xp-banking-native/dual_rules_lua.cpp": "61dd208c06279d30c202e64b0fa3cb49ccc2f6b904b95e95d17fca558146d115"
+        },
+        "digest": "74e467f08908fabf0e5441d9ff23afc5e32e1c92ea22dcb006d43339d2b6dce0",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "c6640aec88a67e6d4b20a8461ef9b277941640cb6d7b0bce63503111de579a1d"
+      },
+      "sha256": "379ba7711b662032732efdc49ee82a3a9005644f7bc465d51b14be7447f13680"
     },
     "native/dual_old_hla.dll": {
       "kind": "native",
-      "sha256": "8825af81c7af9607a29569fa6b28e945786049cc0bc3fb7e04d1b327fea27271"
+      "build": {
+        "script": "research/xp-banking-native/dual_old_hla.ps1",
+        "compiles": [
+          "research/xp-banking-native/dual_old_hla.cpp",
+          "research/xp-banking-native/dual_old_hla_lua.cpp",
+          "research/xp-banking-native/dual_old_hla_delivery.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp"
+        ],
+        "inputs": {
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/dual_choice_observer.h": "6acd3534493d1145566e432f1e73e15a08974478b8c4a871cca85b949a14ca05",
+          "research/xp-banking-native/dual_hp_observer.h": "668946d17b5d1069270984f49af0573b5150e2a992163e99e0a1319a37fda8ba",
+          "research/xp-banking-native/dual_manual_session.h": "4d54591911bb3049423c63ac014f0231c8628284b12a62fe4b2842dc41ed8e83",
+          "research/xp-banking-native/dual_old_hla.cpp": "9cda76b45a07b2067b1be5bbdfea3b42498406f5971c89cacf561af220aac41d",
+          "research/xp-banking-native/dual_old_hla.h": "d43c9026294e98a168d2f2a5d3ea8e00662d3a4852aa927852558840e960db36",
+          "research/xp-banking-native/dual_old_hla.ps1": "45edc2724546ab377e7b6da2444d8e9c9ec61a95b1b774cb2bf9dae56d5688fb",
+          "research/xp-banking-native/dual_old_hla_delivery.cpp": "17e997b7280a9454e5041475ab4d32f3417588b502bb5095554e09cb96c7672d",
+          "research/xp-banking-native/dual_old_hla_lua.cpp": "ba3c028ed0110d1e18269366b12689af5878b499bca0b9484b8d4450597c5ba0",
+          "research/xp-banking-native/identity_native.h": "d8c9dc785b57d63358fea9f08cdd0c25475562b5a7e5cb5783e8a4ae41633e08"
+        },
+        "digest": "43524a7edf642f8410ee16344c124a6307980b4a4b77238422f955ba85f89d79",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "e67d366a9f17d955e5c4861d79ba12ceda945f408fee3dacdecdb7000c9b85fc"
+      },
+      "sha256": "145e6e7fd7c2bb2170f2f30291a26869af01109e86718b7c21727b6611d8d8e5"
     },
     "native/dual_prof_commit.dll": {
       "kind": "native",
-      "sha256": "a1c36432cc9e1bc1b40b839dab0c01678ff9d75a81386f798a8f1edddb9da3ce"
+      "build": {
+        "script": "research/xp-banking-native/dual_prof_commit.ps1",
+        "compiles": [
+          "research/xp-banking-native/dual_prof_commit.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp"
+        ],
+        "inputs": {
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/dual_choice_observer.h": "6acd3534493d1145566e432f1e73e15a08974478b8c4a871cca85b949a14ca05",
+          "research/xp-banking-native/dual_hp_observer.h": "668946d17b5d1069270984f49af0573b5150e2a992163e99e0a1319a37fda8ba",
+          "research/xp-banking-native/dual_manual_session.h": "4d54591911bb3049423c63ac014f0231c8628284b12a62fe4b2842dc41ed8e83",
+          "research/xp-banking-native/dual_prof_commit.cpp": "3a8136eb51063ff1f6a829b319b513706fe0c4c9a697a4a2d8aae961c51c48e0",
+          "research/xp-banking-native/dual_prof_commit.h": "9aba45ca42761fe1df0a0f199818269a0e22922461b9f1d96591af8902da7694",
+          "research/xp-banking-native/dual_prof_commit.ps1": "4d2ddcc9762cc6315e0d26866e158da1acc52e113332ed1ca813a85b0e99502d",
+          "research/xp-banking-native/identity_native.h": "d8c9dc785b57d63358fea9f08cdd0c25475562b5a7e5cb5783e8a4ae41633e08"
+        },
+        "digest": "fbb8cbc69ce844acdd742fbd72b9fa23cce6071ae4f9982dfc86dd04ed664317",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "e6a22bc94c438047d38011a2989ed59f3d5642516baa56b6cbb2634eba6034f5"
+      },
+      "sha256": "ac548694ee0aa99172fb3f232b4d254b08f13780b3a7ec446128bdad5b690362"
     },
     "native/dual_skill_rows.dll": {
       "kind": "native",
-      "sha256": "ab61692fbee5d3bd5560b76299944dccee99b2208eca8deea0feb1e5c969f2a6"
+      "build": {
+        "script": "research/xp-banking-native/dual_skill_rows_check.ps1",
+        "compiles": [
+          "research/xp-banking-native/dual_skill_rows.cpp",
+          "research/xp-banking-native/dual_skill_rows_lua.cpp",
+          "research/xp-banking-native/cbm_build_inputs.cpp"
+        ],
+        "inputs": {
+          "research/xp-banking-native/bank_build.ps1": "e0ea7a22d3903201bebfc04d7568572cca2dd37d49f99b6df874c26256624405",
+          "research/xp-banking-native/cbm_build_inputs.cpp": "926b8a55389071ca62c86add2dcc54aac1d6aab0ad82d7b513792124dad6911f",
+          "research/xp-banking-native/dual_skill_rows.cpp": "42b403a2be09b26f939b4bd91565a82f2b5923310ac55ec7d663fea72a2fb7bd",
+          "research/xp-banking-native/dual_skill_rows.h": "f373273b0061be9ed98e319820d0a8853c8cf0bc96296d009d7e8268ea90e5e3",
+          "research/xp-banking-native/dual_skill_rows_builds.inc": "6cdfbd68af8f30ec037fe940ce1beafaa09113a7e6ee4d7faf2948c4127fb003",
+          "research/xp-banking-native/dual_skill_rows_check.ps1": "aecad99f69135c78b7b88e66e20e1b9ddd61705a554c3cbc9d6f5ab1a495edfc",
+          "research/xp-banking-native/dual_skill_rows_lua.cpp": "fc740a06458ec35104779b2a045682cb76019e48f67de2ce8ec1bd0f2317e2d9"
+        },
+        "digest": "7f0e7ce431c81d4bbd7ea6b613263ea09bd26827c04d1183f269b39b0fd39799",
+        "id": "1eb872ae82583aa1482a5202f4a065ec",
+        "normalizedSha256": "e9867b24e4d973757cf1604695783f6437a79198e26e1a042189d25af7874365"
+      },
+      "sha256": "9fd7afee461c70ef9ffcfe3ba7b1bdbc0636e4fb22d8b93c50fa68617f32772a"
     },
     "runtime/xp-banking-native/award_hooks.lua": {
       "source": "research/xp-banking-native/award_hooks.lua",
-      "sha256": "c5900488f43041498f4d55ad854e1b1c173f96e37c987e64f4494478ca66f6ce"
+      "sha256": "c40f20551c267aae04c9dc363f5157424ce837c4b8004241eb7a4d6416e17f77"
     },
     "runtime/xp-banking-native/award_profiles.lua": {
       "source": "research/xp-banking-native/award_profiles.lua",
@@ -45,7 +205,7 @@
     },
     "runtime/xp-banking-native/bank_bootstrap.lua": {
       "source": "research/xp-banking-native/bank_bootstrap.lua",
-      "sha256": "0e88dae4dc9d30e8021597bbb84959873d876dc9da9b637afb86526ed91bb299"
+      "sha256": "bc51f270b7e392115e4bea3a56213801d77759bb9db82483d122f6b8f360b42b"
     },
     "runtime/xp-banking-native/bank_compat.lua": {
       "source": "research/xp-banking-native/bank_compat.lua",
@@ -53,7 +213,7 @@
     },
     "runtime/xp-banking-native/bank_notice.lua": {
       "source": "research/xp-banking-native/bank_notice.lua",
-      "sha256": "aa17ad9485dfe3d3e8018c9bfb8f767645d651f9d2ac8923a5649dce33868a36"
+      "sha256": "ce33af0d389ca867c5186727325c81a8560e3fde9888f048da19113005ff7bfe"
     },
     "runtime/xp-banking-native/bank_record.lua": {
       "source": "research/xp-banking-native/bank_record.lua",
@@ -61,7 +221,7 @@
     },
     "runtime/xp-banking-native/bank_runtime.lua": {
       "source": "research/xp-banking-native/bank_runtime.lua",
-      "sha256": "3e28bc9c0ace2adec8c9b88e0658edb592590ce1057e97eacd6dfcd591c3c20e"
+      "sha256": "db073b23481b5200f9092d22499c9f12bf906dab88aac6f92a9134f94e24dc2e"
     },
     "runtime/xp-banking-native/callback_abi.lua": {
       "source": "research/xp-banking-native/callback_abi.lua",
@@ -145,7 +305,7 @@
     },
     "runtime/xp-banking-native/dual_reward_receipts.lua": {
       "source": "research/xp-banking-native/dual_reward_receipts.lua",
-      "sha256": "5f9a202d2a6b74145b534bcd011d030c51ee463b62562ddfa46543458ec5d184"
+      "sha256": "be363f3beb6d4e32c32292fa6410d1097bbdfafe5fc0577ba380d8c7bf33b9f2"
     },
     "runtime/xp-banking-native/dual_rules_bridge.lua": {
       "source": "research/xp-banking-native/dual_rules_bridge.lua",
@@ -157,7 +317,7 @@
     },
     "runtime/xp-banking-native/identity_hooks.lua": {
       "source": "research/xp-banking-native/identity_hooks.lua",
-      "sha256": "1232e6773f0650b59800f288659208e8df3c6755df4b3088b75d627581c019fe"
+      "sha256": "4c7a5fa5740c24d9276097ad6e51d253d883aa47123d1f17ec1f2a691cd294b3"
     },
     "runtime/xp-banking-native/identity_profiles.lua": {
       "source": "research/xp-banking-native/identity_profiles.lua",
@@ -193,7 +353,7 @@
     },
     "runtime/xp-banking/cbmbank_store.lua": {
       "source": "research/xp-banking/cbmbank_store.lua",
-      "sha256": "9c6020f5a147dcdf95793273a578bc8b69bded959ac44efc1e48ddb426753a90"
+      "sha256": "dd58b8ce3366ac4cb5be674896324c5d754b17b066af96234c187ae9d1a55b8f"
     },
     "runtime/xp-banking/native_account.lua": {
       "source": "research/xp-banking/native_account.lua",

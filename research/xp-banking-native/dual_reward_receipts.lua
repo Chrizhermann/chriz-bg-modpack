@@ -37,7 +37,7 @@ local function encodeEffect(e,ordinal)
     for _,field in ipairs(signedFields) do parts[#parts+1]=word(signedBits(e[field],field)) end
     for _,field in ipairs(resrefFields) do
         local s=resref(e[field]);parts[#parts+1]=string.format("%02x",#s)
-        for i=1,#s do parts[#parts+1]=string.format("%02x",s:byte(i)) end
+        for i=1,#s do parts[#parts+1]=string.format("%02x",string.byte(s,i)) end
     end
     return table.concat(parts)
 end
@@ -112,7 +112,7 @@ end
 local function captureBoundary(sprite,context,isPreview)
     assert(type(context)=="table","Dual receipt context required")
     local owner=scalarText(context.ownerKey,"save owner")
-    assert(#owner==32 and owner:match("^[0-9a-f]+$"),"Invalid save owner")
+    assert(#owner==32 and string.match(owner,"^[0-9a-f]+$"),"Invalid save owner")
     local incarnation=scalarText(context.incarnation,"native incarnation")
     local revision=integer(context.revision,0,9007199254740991,"ledger revision")
     local oldClass=integer(context.oldClass,1,255,"old class")

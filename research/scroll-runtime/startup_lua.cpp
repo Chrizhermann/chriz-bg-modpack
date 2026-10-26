@@ -51,8 +51,10 @@ int start(lua_State* L) {
     lua_pushboolean(L,ok);lua_pushstring(L,ok?"":CBMS_StartupError());return 2;
 }
 int status(lua_State* L){const auto ok=CBMS_StartupHealthy();lua_pushboolean(L,ok);lua_pushstring(L,CBMS_StartupError());return 2;}
+int retained(lua_State* L){lua_pushboolean(L,CBMS_StartupRetained());return 1;}
 }
 void CBMS_OpenStartup(lua_State* L) {
     lua_pushcclosure(L,start,0);lua_setglobal(L,"CBMS_NativeStart");
     lua_pushcclosure(L,status,0);lua_setglobal(L,"CBMS_NativeStatus");
+    lua_pushcclosure(L,retained,0);lua_setglobal(L,"CBMS_NativeRetained");
 }

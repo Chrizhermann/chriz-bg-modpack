@@ -1,15 +1,17 @@
 #include "dispatch_carrier_api.h"
 #include "dispatch_binding.hpp"
+#include "carrier_gate.hpp"
 #include <algorithm>
 #include <array>
 #include <cstring>
 #include <stdexcept>
-#include <thread>
 #include <intrin.h>
 namespace {
-CBMS_Runtime* runtime{};CBMS_DispatchFunctions native{};std::thread::id owner;unsigned busy{};
+CBMS_Runtime* runtime{};CBMS_DispatchFunctions native{};cbm::scroll::CarrierGate gate;unsigned busy{};
 std::array<char,256> fault{};
+using Outside=cbm::scroll::CarrierGate::Outside;
 void fail(const char* value) noexcept {
+    CBMS_DisableOverrides(runtime); // e.g. a witness fault: queued casts keep native levels too
     if(fault[0])return;
     if(!value)value="unknown native scroll dispatch failure";
     const auto n=(std::min)(std::strlen(value),fault.size()-1);std::memcpy(fault.data(),value,n);fault[n]=0;
@@ -20,14 +22,19 @@ template<class F> void safely(F&& body) noexcept {
     try {body();}catch(const std::exception& error){fail(error.what());}catch(...){fail("unexpected dispatch carrier failure");}
 }
 template<class T> T read(void* object,std::size_t offset) {T result;std::memcpy(&result,static_cast<unsigned char*>(object)+offset,sizeof result);return result;}
+// Checked before any carrier state: see carrier_gate.hpp.
+bool admitted() noexcept {return gate.owner()&&runtime;}
 struct Guard {
-    Guard(){if(!runtime||owner!=std::this_thread::get_id())throw std::logic_error("dispatch carrier lacks owner-thread configuration");++busy;}
+    Guard(){++busy;}
     ~Guard(){--busy;}
 };
 struct Apply;
 Apply* applying{};
 struct Apply {
     Guard guard;Apply* parent{applying};void* effect;void* target;unsigned opcode,mode{},special{};bool owned{};
+    // Owned mode0 only: the action this exact invocation constructed inside its
+    // CMessageInsertAction (message+10h) at the audited constructor call.
+    void* pending{};
     Apply(void* e,void* t,unsigned op):effect(e),target(t),opcode(op) {
         // Every call masks its parent, including unrelated reentrant effects.
         applying=this;
@@ -49,25 +56,42 @@ struct Running {
     explicit Running(void* value):message(value){running=this;}
     ~Running(){running=parent;}
 };
+// CAIAction lifetimes are not observed: 2.7.3.0 inlines most of their
+// construction, copies and destruction. Ownership instead travels inside the
+// action's own value (action_witness.hpp). This hook only identifies the one
+// message action an owned mode0 dispatcher builds.
 void* action_default(uintptr_t caller,void* action) {
+    if(!admitted()){Outside outside(gate);return native.action_default(action);}
     Guard guard;
     void* result=native.action_default(action);
-    // All default-constructed actions require lifetime observation so later
-    // assignment/copy callbacks cannot inherit stale metadata on address reuse.
-    if(result==action&&result)check(CBMS_Construct(runtime,3,reinterpret_cast<uintptr_t>(action)));
-    else fail("native default action constructor did not return its destination");
+    if(result!=action||!result)fail("native default action constructor did not return its destination");
     safely([&]{
         if(!applying||!applying->owned||applying->mode!=0)return;
         const auto index=applying->opcode==146?0u:1u;
         if(caller!=native.action_default_returns[index])return;
-        check(CBMS_Dispatch(runtime,reinterpret_cast<uintptr_t>(applying->effect),applying->opcode,0,applying->special,3,reinterpret_cast<uintptr_t>(action)));
+        if(applying->pending)throw std::logic_error("owned mode0 dispatcher constructed its message action twice");
+        applying->pending=action;
     });
     return result;
 }
 int16_t add_message(uintptr_t caller,void* handler,void* message,int force) {
+    if(!admitted()){Outside outside(gate);return native.add_message(handler,message,force);}
     Guard guard;
     safely([&]{
-        if(!message||!applying||!applying->owned||applying->opcode!=146||applying->mode!=1||caller!=native.fire_add_return)return;
+        if(!message||!applying||!applying->owned)return;
+        if(applying->mode==0) {
+            // EEex's mode0 route calls AddMessage from its own cave, after its
+            // SpellNoDec swap, so the identity is the constructed message itself.
+            if(!applying->pending||static_cast<unsigned char*>(applying->pending)-0x10!=message)return;
+            applying->pending=nullptr;
+            if(read<uintptr_t>(message,0)!=native.insert_vtable)throw std::logic_error("owned mode0 dispatcher queued another message class");
+            const auto field=reinterpret_cast<uintptr_t>(message)+0x10+0x80;
+            // 0: overrides were disabled meanwhile; the action stays native.
+            if(const auto stamped=CBMS_StampActionWitness(runtime,reinterpret_cast<uintptr_t>(applying->effect),applying->opcode,0,
+                applying->special,field,*reinterpret_cast<const uintptr_t*>(native.empty_string));stamped<0)check(stamped);
+            return;
+        }
+        if(applying->opcode!=146||applying->mode!=1||caller!=native.fire_add_return)return;
         if(read<uintptr_t>(message,0)!=native.fire_vtable)throw std::logic_error("native FireSpell message producer returned another message class");
         if(!check(CBMS_Construct(runtime,2,reinterpret_cast<uintptr_t>(message))))return;
         check(CBMS_Dispatch(runtime,reinterpret_cast<uintptr_t>(applying->effect),146,1,applying->special,2,reinterpret_cast<uintptr_t>(message)));
@@ -88,24 +112,34 @@ int CBMS_ConfigureDispatchCarriers(CBMS_Runtime* value,const CBMS_DispatchFuncti
     const auto& f=*functions;
     if(!f.apply146||!f.apply148||!f.action_default||!f.add_message||!f.fire_run||!f.fire_destroy||
        !f.action_default_returns[0]||!f.action_default_returns[1]||!f.fire_add_return||!f.fire_run_return||
-       !f.effect_fire_return||!f.point_fire_return||!f.fire_vtable||
+       !f.effect_fire_return||!f.point_fire_return||!f.fire_vtable||!f.insert_vtable||!f.empty_string||
        f.apply146==CBMS_Apply146Carrier||f.apply148==CBMS_Apply148Carrier||f.action_default==CBMS_ActionDefaultCarrier||
        f.add_message==CBMS_AddMessageCarrier||f.fire_run==CBMS_FireMessageRunCarrier||f.fire_destroy==CBMS_FireMessageDestroyCarrier)return 0;
-    native=f;runtime=value;owner=std::this_thread::get_id();fault.fill(0);return 1;
+    native=f;runtime=value;gate.configure();fault.fill(0);return 1;
 }
-int CBMS_DispatchCarriersIdle(){return runtime&&owner==std::this_thread::get_id()&&!busy&&!applying&&!running?1:0;}
+int CBMS_DispatchCarriersIdle(){return admitted()&&!busy&&!applying&&!running&&gate.quiet()?1:0;}
 int CBMS_DetachDispatchCarriers(){if(!CBMS_DispatchCarriersIdle())return 0;runtime=nullptr;native={};return 1;}
 const char* CBMS_DispatchCarrierError(){return fault.data();}
-int CBMS_Apply146Carrier(void* effect,void* target) noexcept(false){Apply scope(effect,target,146);return native.apply146(effect,target);}
-int CBMS_Apply148Carrier(void* effect,void* target) noexcept(false){Apply scope(effect,target,148);return native.apply148(effect,target);}
+int CBMS_Apply146Carrier(void* effect,void* target) noexcept(false){
+    if(!admitted()){Outside outside(gate);return native.apply146(effect,target);}
+    Apply scope(effect,target,146);return native.apply146(effect,target);
+}
+int CBMS_Apply148Carrier(void* effect,void* target) noexcept(false){
+    if(!admitted()){Outside outside(gate);return native.apply148(effect,target);}
+    Apply scope(effect,target,148);return native.apply148(effect,target);
+}
 void* CBMS_ActionDefaultCarrier(void* action) noexcept(false){return action_default(reinterpret_cast<uintptr_t>(_ReturnAddress()),action);}
 int16_t CBMS_AddMessageCarrier(void* handler,void* message,int force) noexcept(false){return add_message(reinterpret_cast<uintptr_t>(_ReturnAddress()),handler,message,force);}
-void CBMS_FireMessageRunCarrier(void* message) noexcept(false){Running scope(message);native.fire_run(message);}
+void CBMS_FireMessageRunCarrier(void* message) noexcept(false){
+    if(!admitted()){Outside outside(gate);native.fire_run(message);return;}
+    Running scope(message);native.fire_run(message);
+}
 void* CBMS_FireMessageDestroyCarrier(void* message,uint32_t flags) noexcept(false){
+    if(!admitted()){Outside outside(gate);return native.fire_destroy(message,flags);}
     Guard guard;check(CBMS_DestructObserved(runtime,2,reinterpret_cast<uintptr_t>(message)));return native.fire_destroy(message,flags);
 }
 int CBMS_DispatchOwnerAt(uint32_t selector,uintptr_t caller,void* receiver,uint32_t* kind,uintptr_t* carrier) {
-    if(!runtime||owner!=std::this_thread::get_id()||fault[0]||!kind||!carrier)return 0;
+    if(!admitted()||fault[0]||!kind||!carrier)return 0;
     void* source{};uint32_t type=1;
     if(selector==0&&applying&&applying->owned&&applying->opcode==146&&applying->mode==2&&
        caller==native.effect_fire_return&&receiver==applying->effect)source=applying->effect;

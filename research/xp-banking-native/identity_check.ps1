@@ -29,9 +29,13 @@ try {
     $compileExit = $LASTEXITCODE
     [System.IO.File]::WriteAllText((Join-Path $build 'msvc-build.log'),$output)
     if ($compileExit -ne 0) { throw "MSVC failed: $output" }
-    foreach($name in @('Configure','Query','LuaQuery','Copy','Marshal','CharacterExport','CharacterImport','Construct','Destruct','CanMutate')) {
+    foreach($name in @('Configure','Query','LuaQuery','LuaAckReplaced','Copy','Marshal','CharacterExport','CharacterImport','Construct','Destruct','CanMutate')) {
         if ($output -notmatch "\bCBMI_$name\b") { throw "Missing C ABI export CBMI_$name" }
     }
     & $exe
     if ($LASTEXITCODE -ne 0) { throw 'Identity native shim assertions failed.' }
+    # Another thread's lifetime event leaves every identity unknown for the rest of
+    # its process: that case runs in a process of its own.
+    & $exe foreign 0
+    if ($LASTEXITCODE -ne 0) { throw 'Identity native foreign case failed.' }
 } finally { Pop-Location }

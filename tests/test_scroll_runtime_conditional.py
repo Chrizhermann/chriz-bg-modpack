@@ -58,26 +58,36 @@ extern "C" CBMS_EXPORT void TestUpdate(void*s,void*t,int elapsed){CBMS_Repeating
         cwd=build, env=environment, text=True, capture_output=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    api, resolver, reporter = configure_native_api(C.CDLL(str(library)))
-    ptr, addr, u32 = C.c_void_p, C.c_size_t, C.c_uint32
-    signatures = {
-        "TestConfigure": ([ptr, C.POINTER(Functions)], C.c_int),
-        "TestDetach": ([], C.c_int), "TestIdle": ([], C.c_int),
-        "TestError": ([], C.c_char_p),
-        "TestBefore": ([u32, C.POINTER(addr)], None),
-        "TestOwner": ([u32, addr, ptr, C.POINTER(addr)], C.c_int),
-        "TestUpdate": ([ptr, ptr, C.c_int], None),
-        "CBMS_TestRepeatingDecode": ([addr, ptr], ptr),
-        "CBMS_CarrierIsOwned": ([ptr, u32, addr], C.c_int),
-        "CBMS_EffectCopied": ([ptr, addr, addr], C.c_int),
-        "CBMS_DestructObserved": ([ptr, u32, addr], C.c_int),
-        "CBMS_BindConditional": ([addr, C.POINTER(Functions), ptr, u32], C.c_int),
-        "CBMS_TestInstallConditional": ([C.POINTER(Functions), ptr], C.c_int),
-        "CBMS_TestConditionalAllocation": ([C.c_int], addr),
-        "CBMS_RemoveConditionalHooks": ([], C.c_int),
-        "CBMS_ConditionalHookError": ([], C.c_char_p),
-    }
-    for name, (arguments, returns) in signatures.items():
+    return configure_conditional(C.CDLL(str(library)))
+
+
+_ptr, _addr, _u32 = C.c_void_p, C.c_size_t, C.c_uint32
+CARRIER_SIGNATURES = {
+    "TestConfigure": ([_ptr, C.POINTER(Functions)], C.c_int),
+    "TestDetach": ([], C.c_int), "TestIdle": ([], C.c_int),
+    "TestError": ([], C.c_char_p),
+    "TestBefore": ([_u32, C.POINTER(_addr)], None),
+    "TestOwner": ([_u32, _addr, _ptr, C.POINTER(_addr)], C.c_int),
+    "TestUpdate": ([_ptr, _ptr, C.c_int], None),
+    "CBMS_TestRepeatingDecode": ([_addr, _ptr], _ptr),
+    "CBMS_CarrierIsOwned": ([_ptr, _u32, _addr], C.c_int),
+    "CBMS_EffectCopied": ([_ptr, _addr, _addr], C.c_int),
+    "CBMS_DestructObserved": ([_ptr, _u32, _addr], C.c_int),
+}
+HOST_SIGNATURES = {
+    "CBMS_BindConditional": ([_addr, C.POINTER(Functions), _ptr, _u32], C.c_int),
+    "CBMS_TestInstallConditional": ([C.POINTER(Functions), _ptr], C.c_int),
+    "CBMS_TestConditionalAllocation": ([C.c_int], _addr),
+    "CBMS_RemoveConditionalHooks": ([], C.c_int),
+    "CBMS_ConditionalHookError": ([], C.c_char_p),
+}
+
+
+def configure_conditional(library, host=True):
+    """Native-API and conditional wrapper (and host) signatures of a harness build
+    whose callbacks.cpp exports the Test* entrances above."""
+    api, resolver, reporter = configure_native_api(library)
+    for name, (arguments, returns) in {**CARRIER_SIGNATURES, **(HOST_SIGNATURES if host else {})}.items():
         fn = getattr(api, name)
         fn.argtypes, fn.restype = arguments, returns
     return api, resolver, reporter

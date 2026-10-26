@@ -64,7 +64,7 @@
 @1432 = ~The scroll runtime package is incomplete: CBMScroll.dll or CBMSPolicy.exe is missing. Use a complete modpack package.~
 @1433 = ~The installed scroll inventory could not be built safely. Read the policy builder's diagnostic above; no runtime was installed.~
 @1434 = ~Some scroll abilities retain native behavior because their installed spell graph needs review. The builder lists each resource and reason; the complete report is CBMScroll/CBMSPOL1.json.~
-@1435 = ~Reader-level scroll casting installed. Genuine fixed protection scrolls and manual learning retain their normal behavior. Install this component after spell/item changes; reinstall it if those resources change. Native game acceptance remains pending.~
+@1435 = ~Reader-level scroll casting installed. Genuine fixed protection scrolls and manual learning retain their normal behavior. Install this component after spell/item changes; reinstall it if those resources change. It was checked in a lab game on BG2:EE 2.7.3.0 with EEex v1.3.1; see docs/scroll-casting.md.~
 @440 = ~Ascension Improved Slayer Transformation: repair EE Fixpack subspell links~
 @450 = ~SCS shapechange spells: repair the EE Fixpack interaction~
 @460 = ~Party AI Defensive Stance: obey the "Use special abilities" option~
