@@ -10,13 +10,52 @@ import os
 from pathlib import Path
 import struct
 
+import subprocess
+
+import pefile
 import pytest
 
-from test_scroll_runtime_native import native_scroll_build
+from test_scroll_runtime_native import compiler_environment, native_scroll_build
 
 ROOT = Path(__file__).resolve().parents[1]
-PROFILES = json.loads((ROOT / "research/scroll-runtime/binder-profiles.json").read_text())
+SOURCE = ROOT / "research/scroll-runtime"
+PROFILES = json.loads((SOURCE / "binder-profiles.json").read_text())
+SYMBOLS = Path("C:/tmp/scroll-hook-research-20261009/EEex/EEex/loader")
 pytestmark = pytest.mark.skipif(os.name != "nt", reason="audited mapped-image binder is Windows x64 only")
+
+
+@pytest.fixture(params=PROFILES, ids=lambda value: value["version"])
+def pinned_image(request):
+    """A pinned, unbundled local executable as (pefile image, version, names by address)."""
+    profile = request.param
+    executable = Path(os.path.expandvars(profile["source"]))
+    if not executable.is_file():
+        pytest.skip("offline native proof requires the unbundled pinned executable")
+    raw = executable.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == profile["sha256"], "unreviewed offline executable"
+    symbols = SYMBOLS / f"v{profile['version']}/bg2ee/function_names.db"
+    names = {int(at, 16): name for line in symbols.read_text().splitlines()
+             for at, _, name in [line.partition("\t")] if at.startswith("0x")}
+    return pefile.PE(data=raw), profile["version"], names
+
+
+@pytest.fixture(scope="session")
+def os_unwinder(tmp_path_factory):
+    """Windows' own RtlVirtualUnwind over inert copied code, records and stacks."""
+    build = tmp_path_factory.mktemp("scroll-unwind-probe")
+    compiler, environment, msvc = compiler_environment()
+    assert msvc
+    target = build / "scroll_unwind_probe.dll"
+    command = [compiler, "/nologo", "/std:c++20", "/EHsc", "/W4", "/WX", "/LD",
+               str(SOURCE / "unwind_probe.cpp"), f"/Fe{target}"]
+    result = subprocess.run(command, cwd=build, env=environment, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    library = ctypes.CDLL(str(target))
+    callback = library.ScrollTestUnwind
+    callback.argtypes = [ctypes.c_size_t, ctypes.c_size_t, ctypes.c_void_p,
+                         ctypes.POINTER(ctypes.c_uint64), ctypes.POINTER(ctypes.c_uint64)]
+    callback.restype = ctypes.c_uint32
+    return callback
 
 
 class FunctionTable(ctypes.Structure):

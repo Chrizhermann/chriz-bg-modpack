@@ -25,7 +25,9 @@ function M.Install(options)
         assert(type(options.runtime[name])=="function","Missing accounting callback: "..name)
     end
     for _,name in ipairs({"CBMBank_Award","CBMBank_BeforeAward","CBMBank_CompleteAward","CBMBank_UncertainAward",
-        "CBMBank_AwardConfigure","CBMBank_AwardNativeQuery"}) do assert(_G[name]==nil,"Award namespace already owned: "..name) end
+        "CBMBank_AwardConfigure","CBMBank_AwardNativeQuery","CBMBank_AwardNativeFallbacks"}) do
+        assert(_G[name]==nil,"Award namespace already owned: "..name)
+    end
     local base=EEex_GetImageBase()
     assert(EEex_ReadU16(base)==0x5A4D,"Invalid game module")
     local pe=base+EEex_ReadU32(base+0x3C)
@@ -45,6 +47,7 @@ function M.Install(options)
         local n=EEex_GetProcAddressInternal(module,name);assert(n and n~=0,"Missing award export: "..name);return n
     end
     local configure,target,query=proc("CBMA_Configure"),proc("CBMA_ApplyEffect"),proc("CBMA_LuaQuery")
+    local fallbacks=proc("CBMA_LuaFallbacks")
     local original=EEex_JITNear(EEex_FlattenTable({EEex_StoreBytesAssembly(at,span),{"jmp ",at+span,"#ENDL"}}))
     local before=EEex_JITNear(M.CallbackAssembly("CBMBank_BeforeAward","_cbma_before",true,callbacks))
     local complete=EEex_JITNear(M.CallbackAssembly("CBMBank_CompleteAward","_cbma_complete",false,callbacks))
@@ -57,6 +60,7 @@ function M.Install(options)
         "#ENDL mov eax, 1 #ENDL add rsp, 32 #ENDL pop rbx #ENDL ret #ENDL"})
     M.attempted=true;assert(CBMBank_AwardConfigure(),"Award native configuration refused")
     EEex_ExposeToLua(query,"CBMBank_AwardNativeQuery")
+    EEex_ExposeToLua(fallbacks,"CBMBank_AwardNativeFallbacks")
     CBMBank_BeforeAward=options.runtime.BeforeAward
     CBMBank_CompleteAward=options.runtime.CompleteAward
     CBMBank_UncertainAward=options.runtime.UncertainAward
@@ -68,7 +72,8 @@ function M.Install(options)
     EEex_EnableCodeProtection()
     if not ok then
         if restored then
-            CBMBank_AwardNativeQuery=nil;CBMBank_BeforeAward=nil;CBMBank_CompleteAward=nil;CBMBank_UncertainAward=nil
+            CBMBank_AwardNativeQuery=nil;CBMBank_AwardNativeFallbacks=nil
+            CBMBank_BeforeAward=nil;CBMBank_CompleteAward=nil;CBMBank_UncertainAward=nil
         end
         assert(restored,"Award rollback failed; restart required: "..tostring(restoreWhy))
         error("Award entry installation rolled back; restart required: "..tostring(why))
@@ -82,5 +87,20 @@ function M.Query(sprite,effect)
     if not stage then return nil,"No matching native actor/effect award" end
     return {stage=stage,incarnation=incarnation,preBase=tonumber(preBase),amount=tonumber(amount),
         applied=tonumber(applied),remainder=tonumber(remainder),nativeResult=tonumber(result),postBase=tonumber(postBase)}
+end
+-- XP changes the bank could not take that ran the game's own code instead
+-- (award and writer bridges, the writer's including stat44 setter writes),
+-- process-wide, with each bridge's last reason, then the changes that wrote
+-- nothing because their actor's lifetime ended during preparation (status 11),
+-- then the setter writes kept unwritten because another thread's lifetime event
+-- at their actor's address left it unknown (status 12) and their list.
+function M.Fallbacks()
+    if not M.installed then return nil,"Award binding unavailable" end
+    local total,award,writer,ended,kept,keptList=CBMBank_AwardNativeFallbacks()
+    total,award,writer,ended,kept=tonumber(total),tonumber(award),tonumber(writer),tonumber(ended),tonumber(kept)
+    if not total or not award or not writer or not ended or not kept or type(keptList)~="string" then
+        return nil,"Native XP fallback count unavailable"
+    end
+    return total,award,writer,ended,kept,keptList
 end
 return M

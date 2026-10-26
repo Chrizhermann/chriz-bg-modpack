@@ -26,6 +26,11 @@ behavior. Instead, it attaches action ancestry immediately after the exact
 default constructor of the message's inline CAIAction. The temporary stack
 action has a distinct constructor call and is not attributed.
 
+October 23: that constructor call now only identifies the message's action.
+Ownership is attached when EEex's route queues the message, as a witness that
+the action carries by value ([action-witness-evidence.md](action-witness-evidence.md)).
+No action lifetime is registered.
+
 Pinned 2.7.3.0 native return PCs:
 
 | Boundary | Return PC |
@@ -92,8 +97,11 @@ python -m pytest tests/test_scroll_runtime_dispatch_detours.py -q
 python -m pytest tests/test_scroll_runtime_dispatch_host.py tests/test_scroll_runtime_dispatch_binding.py tests/test_scroll_runtime_dispatch_carriers.py tests/test_scroll_runtime_independent_dll.py -q
 ```
 
-The default-constructor hook requires the pending action-copy/destruction host
-to cover its observed lifetimes. Seven native cast entries and their selector/
+The default-constructor hook was planned with an action-copy/destruction host
+covering its observed lifetimes. That host shipped in alpha.11 to alpha.13 and
+was removed on October 23: the engine destroys most actions inline, where no
+hook observes them ([action-witness-evidence.md](action-witness-evidence.md)).
+Seven native cast entries and their selector/
 child hooks, linked177, the complete loader initializer and dispatch/load/save
 barriers remain integration work. No callback group is installed automatically
 by DLL binding initialization.

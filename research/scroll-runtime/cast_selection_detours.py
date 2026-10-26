@@ -8,7 +8,7 @@ memory. This avoids pretending a branch into an active native frame is a return.
 """
 import struct
 import capstone
-from action_detours import unwind_record
+from unwind_records import unwind_record
 
 NAMES=("CGameEffect::FireSpell","CGameAIBase::FireSpell","CGameAIBase::FireSpellPoint",
        "CGameAIBase::ForceSpell","CGameAIBase::ForceSpellPoint","CGameSprite::Spell","CGameSprite::SpellPoint")

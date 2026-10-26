@@ -45,7 +45,7 @@ end
 function R.CurrentPhase(saved,policy)
     local game=EngineGlobals.g_pBaldurChitin.m_pObjectGame
     local campaign=string.upper(game.m_sCurrentCampaign.m_pchData:get())
-    local activePolicy=policy or (type(saved)=="string" and saved:match("^CH%d+$") and "chapter_caps") or R.choice
+    local activePolicy=policy or (type(saved)=="string" and string.match(saved,"^CH%d+$") and "chapter_caps") or R.choice
     local phase,reason
     if activePolicy=="chapter_caps" then
         phase,reason=R.policy.ChapterPhase(campaign,EEex_GameState_GetGlobalInt("ENDOFBG1"),
@@ -86,7 +86,21 @@ end
 local function validateOwned(payload)
     R.account.Validate(payload)
     assert(type(payload.ownerKey)=="string" and #payload.ownerKey==32
-        and payload.ownerKey:match("^[0-9a-f]+$"),"Invalid saved bank owner")
+        and string.match(payload.ownerKey,"^[0-9a-f]+$"),"Invalid saved bank owner")
+end
+-- A native fallback ran the game's own code for an XP change the bank could not
+-- take. Where that code replaced the native word (a SET, a percentage, or an
+-- addition past either end of the word), retained overflow is XP the game no
+-- longer has: the account takes the stored word. Any other fallback kept base
+-- plus overflow exact. An unresolved journal keeps its account as evidence.
+local function settled(state,identity)
+    if not identity.nativeReplaced or type(state)~="table" or state.schema~=2 or state.excluded
+        or state.pendingAward or state.pendingWrite or state.pendingDual
+        or not (type(state.overflow)=="number" and state.overflow>0) then return state end
+    local n=detached(state)
+    assert(n.revision<9007199254740991,"Account revision exhausted")
+    n.overflow,n.revision=0,n.revision+1
+    return n
 end
 local function stageNotices(state,view,released,previousPhase)
     local chapterMode=state.policy=="chapter_caps"
@@ -246,9 +260,15 @@ function R.Export(sprite)
         if state.schema~=2 then return {schema=2,excluded=true,carrier=detached(state)} end
         return {schema=2,excluded=true}
     end
-    -- No adoption, phase advancement, revision, identity or XP mutation here.
-    -- In particular, unknown newer schemas survive an ordinary save/export.
+    -- No adoption, phase advancement, revision, identity or XP mutation of the
+    -- live account here. Unknown newer schemas survive an ordinary save/export.
     local exported=detached(state)
+    if identity.nativeReplaced and state.schema==2 then
+        -- The saved account takes the stored word, as the next cap check does;
+        -- an unresolved journal instead records that it was replaced after it.
+        local pending=exported.pendingAward or exported.pendingWrite or exported.pendingDual
+        if pending then pending.laterNativeReplace=true else exported=settled(exported,identity) end
+    end
     if identity.reason=="chr_export" and state.schema==2 and not state.initializing
         and not state.pendingDual and not state.pendingAward and not state.pendingWrite and not state.chrPending
         and not state.pendingManualProgression and not (state.old and state.old.pendingHLADelivery) then
@@ -256,7 +276,7 @@ function R.Export(sprite)
             validateOwned(state)
             local info=R.ClassInfo(sprite)
             assert(info.kind==state.kind,"CHR export class/account mismatch")
-            local view=R.account.Inspect(state,sprite.m_baseStats.m_xp,
+            local view=R.account.Inspect(exported,sprite.m_baseStats.m_xp,
                 CBMBank_Reset.NativeCap(sprite),R.RetiredThreshold(info))
             return {schema=1,base=sprite.m_baseStats.m_xp,usable=view.usable,
                 sourceOwner=state.ownerKey}
@@ -284,7 +304,7 @@ function R.ReconcileCHR(sprite)
         and not state.pendingManualProgression and not (state.old and state.old.pendingHLADelivery),
         "CHR contains an incomplete native transaction")
     assert(type(pending.newOwner)=="string" and #pending.newOwner==32
-        and pending.newOwner:match("^[0-9a-f]+$") and pending.sourceOwner==state.ownerKey
+        and string.match(pending.newOwner,"^[0-9a-f]+$") and pending.sourceOwner==state.ownerKey
         and receipt.sourceOwner==state.ownerKey,"CHR owner association is inconsistent")
     assert(uint(receipt.base) and uint(receipt.usable) and sprite.m_baseStats.m_xp==receipt.base,
         "Native CHR import changed XP; separate entitlement reconciliation required")
@@ -397,8 +417,38 @@ function R.CompleteAward(sprite,effect)
     aux[R.key]=detached(committed)
     return true
 end
+-- Native code asks to withdraw the journal of a preparation that no store
+-- followed (what it saw changed during BeforeAward/BeforeWrite) and then retries
+-- the change from a fresh boundary. Only that exact, unchanged prepared journal
+-- is removed; any other state errors, and native code keeps it as uncertain.
+local function assertWithdrawable(state,account,pending,identity)
+    assert(identity.canMutate and not identity.serializing,"Cannot withdraw an XP journal during serialization/copy")
+    assert(pending and pending.stage=="prepared" and pending.incarnation==identity.incarnation
+        and pending.ownerKey==state.ownerKey and pending.revision==account.revision
+        and pending.preOverflow==account.overflow,"No unchanged prepared XP journal to withdraw")
+end
+local function withdrawAward(sprite,effect,identity)
+    local boundary=awardBoundary(sprite,effect,"withdrawing",identity)
+    assert(boundary.nativeResult==0 and boundary.postBase==boundary.preBase,"The native XP award already ran")
+    local aux=EEex_GetUDAux(sprite)
+    local state=aux[R.key]
+    assertBound(aux,identity,state)
+    local pending=state.pendingAward
+    assertWithdrawable(state,state.initializing and seedAccount(state,sprite) or state,pending,identity)
+    for _,key in ipairs({"preBase","amount","applied","remainder"}) do
+        assert(pending[key]==boundary[key],"XP award boundary differs from its prepared journal")
+    end
+    local withdrawn=detached(state)
+    withdrawn.pendingAward=nil
+    aux[R.key]=detached(withdrawn)
+    return true
+end
 function R.UncertainAward(sprite,effect)
     local identity=identityOf(sprite)
+    assert(type(CBMBank_Award)=="table" and type(CBMBank_Award.Query)=="function",
+        "Native XP award binding is unavailable")
+    local current=CBMBank_Award.Query(sprite,effect)
+    if current and current.stage=="withdrawing" then return withdrawAward(sprite,effect,identity) end
     local boundary=awardBoundary(sprite,effect,"uncertain",identity)
     local aux=EEex_GetUDAux(sprite)
     local state=aux[R.key]
@@ -458,8 +508,12 @@ function R.BeforeWrite(sprite)
         preBase=boundary.preBase,rawValue=boundary.rawValue,mode=boundary.mode,
         origin=boundary.origin,source=boundary.source,effectMode=boundary.effectMode,
         plannedBase=target,after=after}
-    aux[R.key]=detached(prepared)
+    local journal=detached(prepared)
+    -- Plan before publishing the journal. A refused plan or any error here makes
+    -- native code run the original write instead, which must not leave a journal
+    -- behind that refuses this actor's every later award and write.
     assert(CBMBank_Writer.Plan(sprite,target),"Native XP setter refused its prepared plan")
+    aux[R.key]=journal
     return 1
 end
 function R.CompleteWrite(sprite)
@@ -490,8 +544,29 @@ function R.CompleteWrite(sprite)
     end
     return true
 end
+local function withdrawWrite(sprite,identity)
+    local boundary=writeBoundary(sprite,"withdrawing",identity)
+    assert(boundary.postBase==boundary.preBase and (boundary.source~="opcode104" or boundary.nativeResult==0),
+        "The native XP setter already stored")
+    local aux=EEex_GetUDAux(sprite)
+    local state=aux[R.key]
+    assertBound(aux,identity,state)
+    local pending=state.pendingWrite
+    assertWithdrawable(state,state.initializing and seedAccount(state,sprite) or state,pending,identity)
+    for _,key in ipairs({"preBase","rawValue","mode","origin","source","effectMode","plannedBase"}) do
+        assert(pending[key]==boundary[key],"XP setter differs from its prepared journal")
+    end
+    local withdrawn=detached(state)
+    withdrawn.pendingWrite=nil
+    aux[R.key]=detached(withdrawn)
+    return true
+end
 function R.UncertainWrite(sprite)
     local identity=identityOf(sprite)
+    assert(type(CBMBank_Writer)=="table" and type(CBMBank_Writer.Query)=="function",
+        "Native XP setter binding is unavailable")
+    local current=CBMBank_Writer.Query(sprite)
+    if current and current.stage=="withdrawing" then return withdrawWrite(sprite,identity) end
     local boundary=writeBoundary(sprite,"uncertain",identity)
     local aux=EEex_GetUDAux(sprite)
     local state=aux[R.key]
@@ -518,7 +593,14 @@ function R.OwnedSet(sprite,target,origin)
     local before=R.ActiveTotal(sprite)
     local expected=origin==2 and math.max(before,target) or target
     if origin==2 and before>=target then return true end
-    assert(CBMBank_Writer.ApplyOwnedSet(sprite,target,origin),"Native owned XP setter failed")
+    local banked,_,status=CBMBank_Writer.ApplyOwnedSet(sprite,target,origin)
+    -- A refused owned SET is the game's own SET (counted for the fallback
+    -- notice). Its caller still learns that the bank did not take it; a
+    -- recruitment catch-up retried later finds its target already reached.
+    assert(banked,status==11 and "Owned XP setter wrote nothing: the actor's lifetime ended while the bank prepared it (status 11)"
+        or status==12 and "Owned XP setter wrote nothing: another thread created or destroyed a character at its address; the write is kept, not applied (status 12)"
+        or status and ("Owned XP setter ran the game's own write without the bank (status "..status..")")
+        or "Native owned XP setter was not invoked")
     local actual=R.ActiveTotal(sprite) -- also rejects any unresolved native journal
     local state=EEex_GetUDAux(sprite)[R.key]
     if state and not state.excluded then
@@ -684,6 +766,20 @@ function R.Snapshot(sprite,nativeCap)
     end
     assertBound(aux,identity,state)
     assert(not state.pendingAward and not state.pendingWrite,"Incomplete native XP award/setter needs reconciliation")
+    if identity.nativeReplaced and not state.pendingDual then
+        -- Published only where the bank may change, never during a save; the
+        -- note is cleared only once the account matches the stored word.
+        local matched=settled(state,identity)
+        if identity.canMutate and not identity.serializing then
+            if matched~=state then
+                aux[R.key]=matched
+                R.Report(string.format("An XP change ran without the bank and replaced a character's native XP; the %.0f XP the bank held above the 32-bit native word was dropped to match it.",
+                    state.overflow))
+            end
+            CBMBank_Identity.AckReplaced(sprite,identity.incarnation)
+        end
+        state=matched
+    end
     local info=R.ClassInfo(sprite)
     local initializing=false
     if state.initializing then
@@ -758,6 +854,7 @@ function R.RecordView(sprite,nativeCap)
         or state.pendingWrite or state.pendingManualProgression then return nil end
     validateOwned(state)
     if state.old and state.old.pendingHLADelivery then return nil end
+    state=settled(state,identity) -- As the next cap check publishes it.
     local info=R.ClassInfo(sprite)
     assert(info.kind==state.kind,"Native class/account mismatch")
     if info.kind=="dual" then

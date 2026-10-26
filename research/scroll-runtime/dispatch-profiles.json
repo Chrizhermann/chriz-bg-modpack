@@ -87,7 +87,62 @@
         "rva": 1738830,
         "original": "e80dc40500"
       }
-    ]
+    ],
+    "strings": [
+      {
+        "name": "CString copy",
+        "rva": 4181248,
+        "size": 112,
+        "sha256": "81d1d82a0d3294e9dfedcf46ff3da07c01ca6fbeda236cc9913fde17c1b43ec4"
+      },
+      {
+        "name": "CString assign",
+        "rva": 4181552,
+        "size": 160,
+        "sha256": "93b967ecbdc0d8792d299dc06c5ff8226e5e739e562f160e386caf2e145813dc"
+      },
+      {
+        "name": "CString destroy",
+        "rva": 4181504,
+        "size": 48,
+        "sha256": "d41bb6c02133045c3dda7b0beddb6a89e36b4074030d72c6fef1220719fc17d4"
+      },
+      {
+        "name": "CString assign_copy",
+        "rva": 4183504,
+        "size": 160,
+        "sha256": "bc0a812cabadec6048d52245c11935d227205fd818365a870ae1531000d303ab"
+      },
+      {
+        "name": "CString copy_before_write",
+        "rva": 4183984,
+        "size": 112,
+        "sha256": "4b4f1aa4191870840bfbaf7484685e5d5dc6f0ca62c647f2c97e6e686e67c73f"
+      },
+      {
+        "name": "CString get_buffer",
+        "rva": 4184640,
+        "size": 160,
+        "sha256": "68f9bb1a5fc9674ad00cb87e5347afe1bb1af34f9de94c6576f078ffa42c23d0"
+      },
+      {
+        "name": "CString concat_in_place",
+        "rva": 4183776,
+        "size": 208,
+        "sha256": "2d998b437f1a7807a8e45d389a4982678402247176656976ee8728d2eae7786d"
+      }
+    ],
+    "insert_vtable": 5827336,
+    "insert_slots": [
+      1142496,
+      1144720,
+      1145728,
+      1448432,
+      2136864,
+      2201872,
+      2174448
+    ],
+    "empty_string": 6667024
   },
   {
     "version": "2.7.3.0",
@@ -177,6 +232,61 @@
         "rva": 1739358,
         "original": "e85dc40500"
       }
-    ]
+    ],
+    "strings": [
+      {
+        "name": "CString copy",
+        "rva": 4183616,
+        "size": 112,
+        "sha256": "6379c8e3e9e7785e8543d29e073d65d0987156c4e2f4aff97e3143499a774bf4"
+      },
+      {
+        "name": "CString assign",
+        "rva": 4183920,
+        "size": 160,
+        "sha256": "bb023d554912e9adf9b4b8fae5bf2e8763d31de7dc011ce256262832b9d6d690"
+      },
+      {
+        "name": "CString destroy",
+        "rva": 4183872,
+        "size": 48,
+        "sha256": "ba9e46957e815bec67fb3c14ed7b41ba01ffb8de17e36fe0376cf3264ed3e683"
+      },
+      {
+        "name": "CString assign_copy",
+        "rva": 4185872,
+        "size": 160,
+        "sha256": "c2abcbdfc0258135a9f0875175d6f060e7a66eaf8f1787735a0f9a206d360af7"
+      },
+      {
+        "name": "CString copy_before_write",
+        "rva": 4186352,
+        "size": 112,
+        "sha256": "b3b3ccf123d67be1a5deb507032127911802de850b7b70bcd470573906feea59"
+      },
+      {
+        "name": "CString get_buffer",
+        "rva": 4187008,
+        "size": 160,
+        "sha256": "7f8820c4dc9a9e483ec2206286b7a70077e5cf06bfc05c4d219b6d7601bbae50"
+      },
+      {
+        "name": "CString concat_in_place",
+        "rva": 4186144,
+        "size": 208,
+        "sha256": "8b8a3f4021ba69b9851263284612c861cc12d4103ee5d97b550e3ce0634f5740"
+      }
+    ],
+    "insert_vtable": 5831488,
+    "insert_slots": [
+      1142528,
+      1144752,
+      1145760,
+      1448960,
+      2137472,
+      2202480,
+      2175056
+    ],
+    "empty_string": 6671120
   }
 ]

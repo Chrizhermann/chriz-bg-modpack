@@ -24,6 +24,7 @@ def main():
         (package/name).write_bytes((SOURCE/name).read_bytes().replace(b"\r\n",b"\n"))
     manifest['source_headers']={p.name:hashlib.sha256(p.read_bytes().replace(b"\r\n",b"\n")).hexdigest() for ext in ['*.h','*.hpp'] for p in sorted(SOURCE.glob(ext))}
     manifest['package']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(package.iterdir()) if p.is_file() and p.suffix in ('.dll','.lua')}
-    (package/'native-build.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    # LF like the repository copy, so a rebuild leaves the committed record unchanged.
+    (package/'native-build.json').write_text(json.dumps(manifest,indent=2)+'\n',newline='\n')
     print(json.dumps({'dll_sha256':manifest['sha256'],'package':str(package)},indent=2))
 if __name__=='__main__':main()

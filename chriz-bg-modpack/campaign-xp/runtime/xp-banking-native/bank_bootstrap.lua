@@ -2,13 +2,13 @@
 -- writes or native calls. This is an offline candidate assembly, not a claim of
 -- completed native playtest acceptance or an installable released component.
 local M={experimental=true,usable=false}
-local ownedGlobals={"CBMBank_Identity","CBMBank_IdentityNativeQuery","CBMBank_IdentityConfigure",
+local ownedGlobals={"CBMBank_Identity","CBMBank_IdentityNativeQuery","CBMBank_IdentityNativeAckReplaced","CBMBank_IdentityConfigure",
     "CBMBank_Reset","CBMBank_PrepareDual","CBMBank_CompleteDual","CBMBank_UncertainDual",
     "CBMBank_ResetConfigure","CBMBank_ResetNativeQuery","CBMBank_ResetNativeCap",
     "CBMBank_CaptureDualPreview","CBMBank_ResetNativePreviewQuery",
     "CBMBank_OnPartyReady","CBMBank_PartyConfigure","CBMBank_BeforeNativeClamp","CBMBank_Research",
     "CBMBank_Award","CBMBank_BeforeAward","CBMBank_CompleteAward","CBMBank_UncertainAward",
-    "CBMBank_AwardConfigure","CBMBank_AwardNativeQuery",
+    "CBMBank_AwardConfigure","CBMBank_AwardNativeQuery","CBMBank_AwardNativeFallbacks",
     "CBMBank_Writer","CBMBank_BeforeWrite","CBMBank_CompleteWrite","CBMBank_UncertainWrite",
     "CBMBank_WriterConfigure","CBMBank_WriterNativeQuery","CBMBank_WriterNativePlan","CBMBank_WriterNativeOwnedSet",
     "CBMBank_ActiveXP","CBMBank_ImoenXPSet","CBMBank_Catchup","CBMBank_Status"}
@@ -142,7 +142,7 @@ function M.Install(options)
     local loaded=function(sprite)
         if active then local ok,why=pcall(runtime.OnLoaded,sprite);if not ok then runtime.Report(why) end end
     end
-    local destroyed=function() if active then runtime.ResetResourceCache() end end
+    local destroyed=function() if active then runtime.ResetResourceCache();notices.ResetGame() end end
     local function removeOwn(list,fn)
         for i=#list,1,-1 do if list[i]==fn then table.remove(list,i) end end
     end
@@ -158,7 +158,7 @@ function M.Install(options)
         cap.Install({researchOnly=true,snapshot=runtime.Snapshot,report=runtime.Report,callbacks=callbacks})
         progression.Install(dual,{runtime=runtime,wire=wire,account=account,rewardReceipts=rewardReceipts,
             identityDLLPath=options.dllPath,callbacks=callbacks})
-        notices.Install{researchOnly=true,runtime=runtime,reset=reset}
+        notices.Install{researchOnly=true,runtime=runtime,reset=reset,fallbacks=award.Fallbacks}
         record.Install{runtime=runtime,reset=reset}
         -- EEex_JITAt discards assembler errors, so a hook EEex could not write
         -- leaves its site unchanged without failing. Every remembered site is

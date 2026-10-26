@@ -6,6 +6,8 @@ $installation=& 'C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswher
 if (!$installation) { throw 'MSVC x64 tools are required.' }
 $vcvars=Join-Path $installation 'VC/Auxiliary/Build/vcvars64.bat'
 New-Item -ItemType Directory -Force -Path $build | Out-Null
+# MSVC names anonymous namespaces after the compiled path: mapping this folder
+# (/pathmap needs /experimental:deterministic) lays the DLL out the same in every build folder.
 $batch=@"
 @call "$vcvars" >nul
 @if errorlevel 1 exit /b 1
@@ -13,7 +15,7 @@ ml64 /nologo /c /Fo"$build/dual_hp_thunks.obj" "$sourceDir/dual_hp_thunks.asm"
 @if errorlevel 1 exit /b 1
 ml64 /nologo /c /Fo"$build/dual_choice_thunks.obj" "$sourceDir/dual_choice_thunks.asm"
 @if errorlevel 1 exit /b 1
-cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$sourceDir/dual_hp_observer.cpp" "$sourceDir/dual_choice_observer.cpp" "$sourceDir/dual_manual_session.cpp" "$sourceDir/dual_manual_lua.cpp" "$sourceDir/dual_combined_preview.cpp" "$sourceDir/dual_entry.cpp" "$build/dual_hp_thunks.obj" "$build/dual_choice_thunks.obj" /Fe"$build/dual_hp_observer.dll" /Fo"$build/" /link /EXPORT:CBMDH_ManualCallThunk /EXPORT:CBMDH_ContributionThunk /EXPORT:CBMDC_ActiveThunk /EXPORT:CBMDC_InactiveThunk
+cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$sourceDir/dual_hp_observer.cpp" "$sourceDir/dual_choice_observer.cpp" "$sourceDir/dual_manual_session.cpp" "$sourceDir/dual_manual_lua.cpp" "$sourceDir/dual_combined_preview.cpp" "$sourceDir/dual_entry.cpp" "$sourceDir/cbm_build_inputs.cpp" "$build/dual_hp_thunks.obj" "$build/dual_choice_thunks.obj" /experimental:deterministic /pathmap:"$sourceDir"=research\xp-banking-native /DCBM_BUILD_INPUTS=%CBM_BUILD_INPUTS% /DCBM_BUILD_ID=%CBM_BUILD_ID% /Fe"$build/dual_hp_observer.dll" /Fo"$build/" /link /EXPORT:CBMDH_ManualCallThunk /EXPORT:CBMDH_ContributionThunk /EXPORT:CBMDC_ActiveThunk /EXPORT:CBMDC_InactiveThunk
 @if errorlevel 1 exit /b 1
 cl /nologo /std:c++17 /EHs /W4 /WX /O2 "$sourceDir/dual_hp_observer_test.cpp" "$sourceDir/dual_hp_observer.cpp" /Fe"$build/dual_hp_observer_test.exe" /Fo"$build/"
 @if errorlevel 1 exit /b 1

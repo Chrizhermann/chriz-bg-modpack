@@ -43,6 +43,25 @@ Identical rows remain distinct by their proven emitted ordinal. All allocation
 and validation precede ownership commit. No native padding or gameplay fields
 store metadata.
 
+An envelope is first checked on its own: schema, ancestry fields, each applied
+level against its own row's +C0 and one definition per origin. Malformed or
+internally inconsistent data there, unknown data, a duplicate envelope or a
+decoded effect that gained ancestry before the import still refuses and
+disables every override. A well-formed envelope whose rows then differ from the
+actor's decoded records, in count or bytes, is outdated: the records changed
+after it was written, as when a process with overrides off kept it unparsed and
+saved it again. The comparison cannot tell that from damage that keeps the
+envelope well formed, such as one changed byte in an unowned row; both are
+handled as outdated. Then nothing is restored for that actor alone and
+`CBMS_FinishEffectImport` returns 2 with the reason (count, or the first
+differing record and byte). The loaded listener logs that actor and reason and
+drops the retained table, so the next save writes only what this load owns for
+that actor. That does not cover actors in areas not loaded since, or envelopes
+a process with overrides off kept unparsed: those are written again unchanged.
+That actor's effects keep their saved levels; only spells they cast later use
+the native level. A refused finish is final: the import stays pending until its
+owner cancels it.
+
 The `CBMSFX01:` ASCII codec preserves uint64 reader/origin identities without
 passing them through Lua numbers. `CBMS_ScrollMarshal.lua` retains the original
 actor table before parsing, keeps unknown schema/fields unchanged, and avoids

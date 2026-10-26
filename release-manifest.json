@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.13",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.13",
+  "version": "v0.2.0-alpha.14",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.14",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -154,7 +154,7 @@
     "docs/legacy-ui-strings.md",
     "docs/npc-builds.md",
     "docs/recruitment-xp.md",
-    "docs/releases/v0.2.0-alpha.13.md",
+    "docs/releases/v0.2.0-alpha.14.md",
     "docs/scroll-casting.md",
     "docs/story-utility-xp.md",
     "docs/unidentified-items.md",

@@ -15,11 +15,12 @@ char original_actor, copied_actor, nested_actor, imported_actor;
 int lifetime_calls = 0, destructions = 0, checks = 0;
 CBMI_Reason expected = CBMI_SAVE;
 std::vector<std::string> pushed;
-std::string argument;
+std::string argument, second_argument;
 void check_impl(bool value, int line) { ++checks; if (!value) throw std::runtime_error("identity assertion " + std::to_string(checks) + " failed at line " + std::to_string(line)); }
 #define check(value) check_impl((value), __LINE__)
 CBMI_View view(void* actor) { CBMI_View result{}; check(CBMI_Query(actor, &result) == 1); return result; }
-void fake_construct(void* actor) { ++lifetime_calls; CBMI_View v{}; check(CBMI_Query(actor, &v) == 1); }
+bool foreign_seen = false; // Then no identity is available, on any thread.
+void fake_construct(void* actor) { ++lifetime_calls; CBMI_View v{}; check(CBMI_Query(actor, &v) == (foreign_seen ? 0 : 1)); }
 void fake_destruct(void*) { ++destructions; }
 uintptr_t fake_marshal(void* actor, void* a, void* b, void* c, unsigned char d) {
     check(a == reinterpret_cast<void*>(0x11112222));
@@ -66,17 +67,24 @@ int fake_import(void* game, void* name, void* version, unsigned char flag) {
     check(view(&imported_actor).birth == CBMI_CHR_IMPORT);
     return -123456;
 }
-const char* read_string(void*, int index, size_t* length) { check(index == 1); *length = argument.size(); return argument.c_str(); }
+const char* read_string(void*, int index, size_t* length) {
+    check(index == 1 || index == 2);
+    const auto& value = index == 1 ? argument : second_argument;
+    *length = value.size(); return value.c_str();
+}
 const char* push_string(void*, const char* value) { pushed.emplace_back(value); return value; }
 void push_bool(void*, int value) { pushed.emplace_back(value ? "true" : "false"); }
 }
-int run() {
+void configure() {
     CBMI_Config cfg{1, {reinterpret_cast<uintptr_t>(fake_copy), reinterpret_cast<uintptr_t>(fake_marshal),
         reinterpret_cast<uintptr_t>(fake_export), reinterpret_cast<uintptr_t>(fake_import),
         reinterpret_cast<uintptr_t>(fake_construct), reinterpret_cast<uintptr_t>(fake_destruct)},
         reinterpret_cast<uintptr_t>(read_string), reinterpret_cast<uintptr_t>(push_string),
         reinterpret_cast<uintptr_t>(push_bool), reinterpret_cast<uintptr_t>(&strip), reinterpret_cast<uintptr_t>(&preview)};
     check(!CBMI_Configure(nullptr)); check(CBMI_Configure(&cfg)); check(!CBMI_Configure(&cfg));
+}
+int run() {
+    configure();
     CBMI_View missing{}; check(!CBMI_Query(&original_actor,&missing));
     CBMI_Construct(&original_actor); CBMI_Construct(&imported_actor);
     auto first = view(&original_actor);
@@ -109,16 +117,80 @@ int run() {
     check(view(&original_actor).incarnation != first.incarnation);
     check(std::strcmp(view(&original_actor).owner_token,first.owner_token) != 0);
     char hex[32]; std::snprintf(hex,sizeof(hex),"%llx",static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(&original_actor)));
-    argument=hex; check(CBMI_LuaQuery(nullptr) == 7 && pushed.size() == 7);
-    check(pushed[0] == "world" && pushed[1] == "world" && pushed[5] == "true" && pushed[6] == "true");
+    argument=hex; check(CBMI_LuaQuery(nullptr) == 8 && pushed.size() == 8);
+    check(pushed[0] == "world" && pushed[1] == "world" && pushed[5] == "true" && pushed[6] == "true" && pushed[7] == "false");
     for (const char* bad : {"", "-1", "0x1111", "123x", "fffffffffffffffff"}) { argument=bad; check(CBMI_LuaQuery(nullptr) == 0); }
+    // A fallback that replaced the XP word is noted per lifetime, on the host
+    // thread only, and cleared only for the lifetime that saw it.
+    const auto replaced = [&] { argument=hex; pushed.clear(); check(CBMI_LuaQuery(nullptr) == 8); return pushed[7] == "true"; };
+    const auto ack = [&](uint64_t incarnation) {
+        argument=hex; second_argument=std::to_string(incarnation); pushed.clear();
+        check(CBMI_LuaAckReplaced(nullptr) == 1 && pushed.size() == 1); return pushed[0] == "true";
+    };
+    std::thread foreign_note([] { CBMI_NoteReplaced(&original_actor); }); foreign_note.join(); check(!replaced());
+    CBMI_NoteReplaced(&missing); CBMI_NoteReplaced(&original_actor); check(replaced());
+    const auto lifetime = view(&original_actor).incarnation;
+    check(!ack(lifetime + 1) && replaced() && ack(lifetime) && !replaced());
+    CBMI_NoteReplaced(&original_actor); CBMI_Destruct(&original_actor); CBMI_Construct(&original_actor);
+    check(!replaced() && !ack(lifetime));
+    second_argument="12x"; check(CBMI_LuaAckReplaced(nullptr) == 0);
     int foreign_result=1;
     std::thread t([&] { foreign_result=CBMI_Query(&original_actor,&missing); }); t.join(); check(!foreign_result);
-    check(destructions == 1 && lifetime_calls >= 10);
+    // A lifetime is proven to go on, proven ended (destroyed, or constructed
+    // again), or, after another thread's lifetime event at its address, unknown.
+    // Any such event leaves every identity unavailable for good; it proves no
+    // lifetime ended, and one elsewhere leaves this lifetime going on.
+    const auto now = view(&original_actor).incarnation;
+    check(CBMI_Lifetime(&original_actor, now) == 1 && CBMI_Lifetime(&original_actor, lifetime) == -1);
+    std::thread foreign_query([&] { foreign_result=CBMI_Lifetime(&original_actor, now); }); foreign_query.join();
+    check(foreign_result == 0 && CBMI_Lifetime(&original_actor, now) == 1); // The registry is the host's.
+    const auto imported = view(&imported_actor).incarnation;
+    CBMI_Destruct(&imported_actor); check(CBMI_Lifetime(&imported_actor, imported) == -1);
+    CBMI_Construct(&imported_actor); const auto again = view(&imported_actor).incarnation;
+    check(CBMI_Lifetime(&imported_actor, imported) == -1 && CBMI_Lifetime(&imported_actor, again) == 1);
+    char unrelated = 0; foreign_seen = true;
+    std::thread foreign_event([&] { CBMI_Construct(&unrelated); }); foreign_event.join();
+    check(!CBMI_Query(&original_actor, &missing) && !CBMI_CanMutate(&original_actor, now));
+    check(CBMI_Lifetime(&original_actor, now) == 1 && CBMI_Lifetime(&original_actor, lifetime) == -1);
+    check(CBMI_Lifetime(&imported_actor, again) == 1);
+    CBMI_Destruct(&imported_actor); check(CBMI_Lifetime(&imported_actor, again) == -1);
+    CBMI_Construct(&imported_actor); check(CBMI_Lifetime(&imported_actor, again) == -1 && !CBMI_Query(&imported_actor, &missing));
+    // At its own address another thread's event leaves the lifetime unknown.
+    std::thread foreign_destruct([] { CBMI_Destruct(&original_actor); }); foreign_destruct.join();
+    check(CBMI_Lifetime(&original_actor, now) == 0 && CBMI_Lifetime(&original_actor, lifetime) == -1);
+    CBMI_Construct(&original_actor); check(CBMI_Lifetime(&original_actor, now) == -1); // The host's proof still counts.
+    check(destructions == 5 && lifetime_calls >= 15);
     std::printf("{\"native_shim_assertions\":%d,\"actual_game_execution\":false}\n",checks);
     return 0;
 }
-int main() {
-    try { return run(); }
+// Another thread destroying an actor (no resolved path in 2.7.3.0, see
+// main-thread-audit-2.7.3.txt) leaves the registry as it was, so that actor's
+// entry stays: its lifetime must read as unknown, never as going on. An actor
+// elsewhere reads as going on, until more addresses saw such events than the
+// bounded record holds: then every lifetime is unknown. The event is sticky for
+// the process, so this runs in its own.
+int foreign_destruct() {
+    configure();
+    CBMI_Construct(&original_actor); CBMI_Construct(&imported_actor);
+    const auto now = view(&original_actor).incarnation, other = view(&imported_actor).incarnation;
+    check(CBMI_Lifetime(&original_actor, now) == 1 && CBMI_CanMutate(&original_actor, now));
+    foreign_seen = true;
+    std::thread t([] { CBMI_Destruct(&original_actor); }); t.join();
+    CBMI_View missing{};
+    check(destructions == 1 && !CBMI_Query(&original_actor, &missing) && !CBMI_CanMutate(&original_actor, now));
+    check(CBMI_Lifetime(&original_actor, now) == 0 && CBMI_Lifetime(&imported_actor, other) == 1);
+    static char elsewhere[64];
+    std::thread many([] { for (auto& at : elsewhere) CBMI_Construct(&at); }); many.join(); // 64 more: one too many.
+    check(CBMI_Lifetime(&imported_actor, other) == 0 && CBMI_Lifetime(&original_actor, now) == 0);
+    CBMI_Destruct(&imported_actor); check(CBMI_Lifetime(&imported_actor, other) == -1); // The host's proof still counts.
+    std::printf("{\"identity_foreign_case\":0,\"native_shim_assertions\":%d,\"actual_game_execution\":false}\n",checks);
+    return 0;
+}
+int main(int argc, char** argv) {
+    try {
+        if (argc == 3 && std::string(argv[1]) == "foreign" && std::string(argv[2]) == "0") return foreign_destruct();
+        if (argc != 1) { std::fprintf(stderr,"usage: identity_native_test [foreign 0]\n"); return 2; }
+        return run();
+    }
     catch (const std::exception& e) { std::fprintf(stderr,"%s\n",e.what()); return 1; }
 }

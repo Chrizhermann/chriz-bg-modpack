@@ -67,7 +67,7 @@ function M.WireSnapshot(input)
             if not wireInteger(value) then return nil, "Number cannot round-trip exactly through marshal." end
             bytes = bytes + 9
         elseif kind == "string" then
-            if #value > MAX_STRING or value:find("\0", 1, true) then
+            if #value > MAX_STRING or string.find(value, "\0", 1, true) then
                 return nil, "String exceeds marshal bounds or contains NUL."
             end
             bytes = bytes + #value + 2

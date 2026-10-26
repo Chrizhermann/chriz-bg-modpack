@@ -21,6 +21,9 @@ typedef struct CBMS_DispatchFunctions {
     CBMS_MessageDestroyOriginal fire_destroy;
     uintptr_t action_default_returns[2],fire_add_return,fire_run_return;
     uintptr_t effect_fire_return,point_fire_return,fire_vtable;
+    /* CMessageInsertAction vtable and the engine global holding the shared
+     * empty CString, both certified with the producer bodies. */
+    uintptr_t insert_vtable,empty_string;
 } CBMS_DispatchFunctions;
 CBMS_EXPORT int CBMS_BindDispatchModule(uintptr_t game,CBMS_DispatchFunctions*,char* diagnostic,uint32_t capacity);
 CBMS_EXPORT int CBMS_ConfigureDispatchCarriers(CBMS_Runtime*,const CBMS_DispatchFunctions*);
@@ -35,8 +38,8 @@ CBMS_EXPORT void CBMS_FireMessageRunCarrier(void*) CBMS_DISPATCH_THROWS;
 CBMS_EXPORT void* CBMS_FireMessageDestroyCarrier(void*,uint32_t) CBMS_DISPATCH_THROWS;
 /* Native cast-entry units only: strict audited producer/run return PC and
  * receiver match; 0 leaves an independent/masking cast, 1 supplies ownership.
- * Selectors0/1/2 only. Action casts are supplied by actual current-action
- * registration at their own native entry, not guessed from this stack. */
+ * Selectors0/1/2 only. Action casts (3-6) read the witness carried by the
+ * receiver's current action itself (action_witness.hpp), never this stack. */
 CBMS_EXPORT int CBMS_DispatchOwnerAt(uint32_t selector,uintptr_t caller,void* receiver,uint32_t* kind,uintptr_t* carrier);
 #ifdef CBMS_OFFLINE_HARNESS
 CBMS_EXPORT void* CBMS_TestActionDefaultCarrier(uintptr_t,void*) CBMS_DISPATCH_THROWS;

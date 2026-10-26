@@ -6,6 +6,8 @@ from generate_decode_profiles import EXES,EEEX,signature
 from dispatch_native_audit import audit
 from dispatch_detours import SITES
 ROOT=Path(__file__).resolve().parent
+# Engine CString bodies the value-carried action witness relies on.
+STRINGS=('copy','assign','destroy','assign_copy','copy_before_write','get_buffer','concat_in_place')
 def main():
     profiles=[]
     for version,path,digest,_ in EXES:
@@ -30,15 +32,19 @@ def main():
             ctor_returns=evidence['message_action_constructor_returns'],fire_add_return=add146[0].address+5-base,
             fire_run_return=returns[0],effect_fire_return=returns[1],point_fire_return=returns[2],
             fire_vtable=evidence['fire_message_vtable_rva'],vtable_slots=evidence['fire_message_vtable_slots'],
-            eeex_routes=[dict(rva=i.address-base,original=bytes(i.bytes).hex()) for i in owned]))
+            eeex_routes=[dict(rva=i.address-base,original=bytes(i.bytes).hex()) for i in owned],
+            strings=[evidence['string_functions'][k]['signature'] for k in STRINGS],
+            insert_vtable=evidence['insert_message_vtable_rva'],insert_slots=evidence['insert_message_vtable_slots'],
+            empty_string=evidence['empty_sentinel_global']))
     (ROOT/'dispatch-profiles.json').write_text(json.dumps(profiles,indent=2)+'\n')
     lines=['// Generated from audited bodies; existing EEex mode0 routes remain owned by EEex.','#pragma once','namespace cbm::scroll::binding {',
-           'struct DispatchProfile { unsigned timestamp,entries[6]; DecodeSignature spans[8]; unsigned ctors[2],add_return,run_return,effect_return,point_return,vtable,slots[7],routes[2]; };',
+           'struct DispatchProfile { unsigned timestamp,entries[6]; DecodeSignature spans[8]; unsigned ctors[2],add_return,run_return,effect_return,point_return,vtable,slots[7],routes[2]; DecodeSignature strings[7]; unsigned insert_vtable,insert_slots[7],empty_string; };',
            'inline constexpr DispatchProfile dispatch_profiles[] = {']
     for p in profiles:
         def numbers(values):return ','.join(hex(v) for v in values)
         spans=','.join('{0x%x,0x%x,{%s}}'%(s['rva'],s['size'],','.join('0x'+s['sha256'][i:i+2] for i in range(0,64,2))) for s in p['spans'])
-        lines.append('{%d,{%s},{%s},{%s},%s,{%s},{%s}},'%(p['timestamp'],numbers(p['entries']),spans,numbers(p['ctor_returns']),numbers(p[k] for k in ['fire_add_return','fire_run_return','effect_fire_return','point_fire_return','fire_vtable']),numbers(p['vtable_slots']),numbers(x['rva'] for x in p['eeex_routes'])))
+        strings=','.join('{0x%x,0x%x,{%s}}'%(s['rva'],s['size'],','.join('0x'+s['sha256'][i:i+2] for i in range(0,64,2))) for s in p['strings'])
+        lines.append('{%d,{%s},{%s},{%s},%s,{%s},{%s},{%s},%s,{%s},%s},'%(p['timestamp'],numbers(p['entries']),spans,numbers(p['ctor_returns']),numbers(p[k] for k in ['fire_add_return','fire_run_return','effect_fire_return','point_fire_return','fire_vtable']),numbers(p['vtable_slots']),numbers(x['rva'] for x in p['eeex_routes']),strings,hex(p['insert_vtable']),numbers(p['insert_slots']),hex(p['empty_string'])))
     (ROOT/'dispatch_profiles.hpp').write_text('\n'.join(lines+['};','}'])+'\n')
     lines=['// Generated from the tested dispatch_detours.py recipes.','#pragma once',
            'struct CBMS_DispatchHookCode { unsigned char prefix[24]; unsigned prefix_size; unsigned char unwind[32]; unsigned unwind_size; bool frame; };',

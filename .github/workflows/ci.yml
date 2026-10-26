@@ -30,6 +30,9 @@ jobs:
       - name: Install test dependencies
         run: python3 -m pip install -r tests/requirements.txt
 
+      - name: Check the campaign XP package against its sources and native build record
+        run: python3 tools/sync_campaign_xp.py --check
+
       - name: Install WeiDU
         run: |
           WEIDU_VERSION="249.00"
@@ -65,6 +68,21 @@ jobs:
             --output "$RUNNER_TEMP/cbm-eet/lib/macros.tph" \
             https://raw.githubusercontent.com/Gibberlings3/EET/ad20ca29ae797e773fffb10c25537c1b1a674716/EET/lib/macros.tph
 
+      - name: Fetch pinned EEex v1.3.1 scripts for the campaign XP notice and record tests
+        run: |
+          EEEX_COMMIT="a6d21abe44e20509f5d0259ccc6c7e7f9d12b285"
+          scripts="$RUNNER_TEMP/cbm-eeex/EEex/copy/EEex_scripts"
+          mkdir -p "$scripts"
+          fetch() {
+            curl --fail --location --proto '=https' --tlsv1.2 \
+              --output "$scripts/$1" \
+              "https://raw.githubusercontent.com/Bubb13/EEex/${EEEX_COMMIT}/EEex/copy/EEex_scripts/$1"
+            echo "$2  $scripts/$1" | sha256sum --check --strict
+          }
+          fetch EEex_Action.lua 18ea2ed7974984d7da66ac315ca035574cc4faa2802f55c4f431efca2862787b
+          fetch EEex_Keybinds.lua 0a0ff929beaffc8e5c1b039175600c286cc6816334052b92d648414eb5e14887
+          fetch EEex_Menu.lua 13097865d63812e6b006812b21f4d874ee4a1651b2e93c6f2ba551c976732702
+
       - name: Run game-free regression tests
         env:
           WEIDU_BIN: /usr/local/bin/weidu
@@ -76,21 +94,8 @@ jobs:
         env:
           WEIDU_BIN: /usr/local/bin/weidu
           WEIDU: /usr/local/bin/weidu
-        run: >-
-          python3 -m pytest tests/test_utility_xp.py
-          tests/test_story_utility_xp.py
-          tests/test_companion_classes_installer.py
-          tests/test_evandra_sorcerer.py
-          tests/test_baeloth_spellbook.py
-          tests/test_edwin_redwizard.py
-          tests/test_recruitment_xp.py
-          tests/test_campaign_xp_package.py
-          tests/test_campaign_xp_native_runtime.py
-          tests/test_scroll_runtime_resources.py
-          tests/test_legacy_ui_strings.py
-          tests/test_imoen_spellhold_xp.py
-          tests/test_imoen_spellhold_xp_installer.py
-          tests/test_unidentified_items.py -q
+          CBM_EEEX_SOURCE: ${{ runner.temp }}/cbm-eeex
+        run: python3 -m tools.ci_pytest -q
 
       - name: Build the production archive reproducibly
         run: |

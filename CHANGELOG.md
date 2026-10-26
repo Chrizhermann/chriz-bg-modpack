@@ -1,5 +1,123 @@
 # Changelog
 
+## v0.2.0-alpha.14 - 2026-10-26
+
+Alpha.14 fixes two problems. Scrolls at the reader's level (**430**) now stay on
+for the whole session. With campaign XP banking (**650**), a character's script
+variables no longer go missing from saves after the bank could not take one of
+that character's XP changes. Both write technical information to the loader log
+only (`InfinityLoader.log` in the game folder), with one exception for 430,
+described below. Collection selection is decided separately.
+
+- **430: scrolls keep the reader's level for the whole session.** Alpha.11 to
+  alpha.13 tracked the game's actions by memory address, but the game destroys
+  most actions without the one destructor they watched. After a load, a new
+  game, an NPC joining or opening a container, they showed "copied action
+  construction overlaps an existing lifetime" or "scroll carrier born twice
+  without destruction" in an EEex message box, and scrolls cast at their normal
+  level until the game was restarted. A queued scroll cast now carries its
+  reader in the game's own copy of the action, so no action is tracked by
+  address. Checked in a lab game on BG2:EE 2.7.3.0 with EET, Spell Revisions and
+  EEex v1.3.1; see the [scroll casting guide](docs/scroll-casting.md).
+- **430: nothing in the game, except one box in one rare case.** When 430 turns
+  itself off, at startup or later, scrolls cast at their normal level and saves
+  stay usable. The loader log gets this line, with the technical cause on the
+  next line: "Scrolls at the reader's level (Modpack 430) are turned off for this
+  session, so scrolls cast at their normal level. Your saves stay usable." A
+  problem found during play is logged the next time any creature starts an
+  action. Before, an EEex message box showed it, and alpha.13 waited for a script
+  event such as a creature shouting, which in a quiet scene could take minutes.
+  The one box: if 430 fails to start and cannot take all of its changes back out
+  of the running game, loading or saving a game in that session is not safe.
+  Then the cause line in the loader log says so, and one message box appears
+  while the game starts, before the main menu: "chriz-bg-modpack: scrolls at the
+  reader's level could not start cleanly. Please quit and restart the game
+  before you load or save a game." Saves already on disk are not affected. This
+  case was never seen in a game; the offline tests force it.
+- **430: saves made while it was off load cleanly.** A save made while 430 was
+  turned off, or not installed, no longer turns it off when loaded. Such a save
+  keeps each creature's earlier scroll data unchanged, and once the game has
+  saved that creature again the data no longer matches its effects. 430 now
+  drops that data for that creature only and names the creature in the loader
+  log; its effects keep their levels, and spells they cast later use their
+  normal level. Before, the message box showed "saved effect record count
+  mismatch" or "saved effect record identity mismatch", and every scroll cast
+  used its normal level until the game was restarted. Scroll data that is
+  malformed, internally inconsistent or of an unknown version still turns 430
+  off; damage that leaves it well formed looks outdated and is dropped the same
+  way.
+- **430: safer after a problem.** Once its runtime reports a problem, every
+  later scroll cast uses its normal level until the game is restarted, also a
+  cast queued before the problem; that one could still use the reader's level
+  before. A game call on an unexpected thread is now passed to the game
+  unchanged and reported the same way; before, it could crash the game. Loading
+  430's startup script a second time now turns 430 off for that session, and the
+  loader log says so; before, only the second load was refused, and 430 stayed
+  on. One game process can queue 1,048,576 scroll casts at the reader's level,
+  far more than a long session uses; later ones use their normal level, and the
+  loader log says so. Its loader-log lines now start with `[CBM scroll]` instead
+  of `[CBM scroll trial]`.
+- **650: script variables survive saving and loading again**
+  ([chriz-bg-collection#19](https://github.com/Chrizhermann/chriz-bg-collection/issues/19)).
+  Up to alpha.13, an XP change through the XP effect (opcode 104) that the bank
+  could not take was reported to the game as failed. The game then retried it on
+  every pass and stopped processing that character's later effects, so script
+  variables set behind it were missing from saves and after loading. Now no such
+  change holds up the character's other effects. Checked in lab games on BG2:EE
+  2.7.3.0 with EET and EEex v1.3.1, also with the release candidate's package;
+  see the banking guide's [Lab checks](docs/campaign-xp-banking.md#lab-checks).
+- **650: rare cases accepted for this release.** In these cases an XP change is
+  not banked the normal way. Nothing about them is shown in the game; the loader
+  log counts them once per loaded game. Details are in
+  [Remaining limits](docs/campaign-xp-banking.md#remaining-limits).
+  - If the bank fails or refuses an XP change, the game applies it the usual
+    way, as without 650. The cap still applies while the character's bank
+    account is in order; if the account itself is at fault, that character's XP
+    is not capped.
+  - While a save is written, or while another XP change of the same character is
+    in progress, the change waits and is processed at that character's next
+    effect update.
+  - If the character's XP or the change itself changed while the bank prepared
+    it, the bank tries once more, then applies it the usual way. At most 64 such
+    retries wait at a time; with all 64 waiting, a further one is applied the
+    usual way at once. No change waits for good.
+  - Only if the bank cannot withdraw what it had already recorded does the change
+    end without XP. Its amount stays in the bank's unresolved journal and is not
+    added twice. That character then gets XP the usual way and is not capped,
+    also after saving and loading, until resolving such journals is
+    implemented.
+  - If the bank sees that the character was removed or replaced while it
+    prepared a change, nothing is written; when it cannot tell, the change is
+    not dropped.
+  - If a character is created or destroyed outside the game's main thread,
+    banking switches off for the rest of the session, and later XP changes are
+    applied the usual way. A change in progress for a character at that moment
+    writes nothing there, and a script `ChangeStat` change is kept unapplied for
+    the session and listed in the loader log. Saves made after that keep every
+    character with a bank account out of banking, also after a restart, so their
+    XP is not capped; `CBMBank_Status()` says so. A static check of the game's
+    threads found no way for this to happen, but it cannot rule one out.
+  - A script `ChangeStat` XP change the bank refuses is no longer dropped: the
+    game applies it the usual way, and the next cap check caps it again. A
+    refused change that sets XP to a value no longer leaves an unresolved journal
+    behind.
+  - An account can hold more XP than the game's per-character limit of
+    4,294,967,295. When the game replaces the stored XP the usual way, the
+    account is corrected to what the game stored, at the next cap check and in
+    saves.
+- **650: startup problems go to the loader log only.** A startup failure is no
+  longer shown in the game's message log. The loader log keeps the reason, and
+  `CBMBank_Status()` in the cheat console shows it.
+- Build records: 650's package now records how each of its native DLLs was
+  built. Each build compiles a frozen copy of the sources in a folder of its own,
+  so the DLL does not depend on that folder, and each DLL carries the digest of
+  its inputs and its build's identifier. A build records a DLL once, after its
+  checks, and only if it can tie the DLL to itself. The package check fails when
+  a source, header or build script changed since, or a DLL carries other inputs.
+  `CBMScroll.dll` (430) rebuilds byte for byte from its sources, but only from
+  the same folder path: the compiler derives some internal names from where the
+  source files are. Its build record now says that component 430 installs it.
+
 ## v0.2.0-alpha.13 - 2026-10-20
 
 - Add **460**: the party AI uses Defensive Stance only while **Use special

@@ -12,13 +12,16 @@ $reset=Join-Path $sourceDir 'reset_native.cpp'
 $party=Join-Path $sourceDir 'party_native.cpp'
 $award=Join-Path $sourceDir 'award_native.cpp'
 $writer=Join-Path $sourceDir 'writer_native.cpp'
+$marker=Join-Path $sourceDir 'cbm_build_inputs.cpp'
 $test=Join-Path $sourceDir 'reset_native_test.cpp'
 $dll=Join-Path $build 'cbmbank_identity.dll'
 $exe=Join-Path $build 'reset_native_test.exe'
+# MSVC names anonymous namespaces after the compiled path: mapping this folder
+# (/pathmap needs /experimental:deterministic) lays the DLL out the same in every build folder.
 $batch=@"
 @call "$vcvars" >nul
 @if errorlevel 1 exit /b 1
-cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$identity" "$reset" "$party" "$award" "$writer" /Fe"$dll"
+cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$identity" "$reset" "$party" "$award" "$writer" "$marker" /experimental:deterministic /pathmap:"$sourceDir"=research\xp-banking-native /DCBM_BUILD_INPUTS=%CBM_BUILD_INPUTS% /DCBM_BUILD_ID=%CBM_BUILD_ID% /Fe"$dll"
 @if errorlevel 1 exit /b 1
 cl /nologo /std:c++17 /EHs /W4 /WX /O2 "$identity" "$reset" "$party" "$test" /Fe"$exe"
 @exit /b %errorlevel%

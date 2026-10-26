@@ -28,7 +28,13 @@ def runtime(request):
         function EEex_GameState_GetGlobalInt(key) return key=='ENDOFBG1' and ending or intoB end
         function EEex_GetUDAux(actor) return actor.aux end
         function EEex_Sprite_GetCharacterIndex(actor) return actor.party and 0 or -1 end
-        CBMBank_Identity={Query=function(actor) return actor.identity end}
+        CBMBank_Identity={Query=function(actor) return actor.identity end,
+            -- As CBMI_LuaAckReplaced: clears the note only for the lifetime that saw it.
+            AckReplaced=function(actor,incarnation)
+                local cleared=actor.identity.incarnation==incarnation
+                if cleared then actor.identity.nativeReplaced=false;actor.acks=(actor.acks or 0)+1 end
+                return cleared
+            end}
         levels={FIGHTER={['7']=64000,['10']=500000,['11']=750000},THIEF={['7']=40000}}
         function EEex_Resource_Load2DA(name)
             assert(name=='XPLEVEL')
@@ -634,6 +640,59 @@ def test_incomplete_award_survives_reload_without_guess_or_replay(runtime):
     ''')
 
 
+def test_withdrawn_journal_leaves_the_account_as_before_its_preparation(runtime):
+    # Native code withdraws the journal of a preparation no store followed (what
+    # it saw changed during the callback) and retries from a fresh boundary.
+    runtime.execute('''
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=600000
+        local e=award(a,100);assert(R.BeforeAward(a,e)==1 and a.aux.CBMBank.pendingAward)
+        local revision,overflow=a.aux.CBMBank.revision,a.aux.CBMBank.overflow
+        e.boundary.stage='withdrawing'
+        assert(R.UncertainAward(a,e)==true and a.aux.CBMBank.pendingAward==nil)
+        assert(a.aux.CBMBank.revision==revision and a.aux.CBMBank.overflow==overflow)
+        e=award(a,100);assert(R.BeforeAward(a,e)==1 and finishAward(a,e) and R.ActiveTotal(a)==600100)
+        assert(writeXP(a,700000,0)==1 and a.aux.CBMBank.pendingWrite)
+        a.writeBoundary.stage='withdrawing'
+        assert(R.UncertainWrite(a)==true and a.aux.CBMBank.pendingWrite==nil and a.aux.CBMBank.lastWrite==nil)
+        assert(writeXP(a,700000,0)==1 and finishWrite(a) and R.ActiveTotal(a)==700000)
+        phase='SOA';ending=0 -- an account still waiting for its campaign flags
+        local c=actor(1000);R.Adopt(c);assert(c.aux.CBMBank.initializing)
+        local g=award(c,100);assert(R.BeforeAward(c,g)==1);g.boundary.stage='withdrawing'
+        assert(R.UncertainAward(c,g)==true and c.aux.CBMBank.pendingAward==nil and c.aux.CBMBank.initializing)
+    ''')
+
+
+def test_only_the_exact_prepared_journal_is_withdrawn(runtime):
+    runtime.execute('''
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=600000
+        local e=award(a,100);assert(R.BeforeAward(a,e)==1);e.boundary.stage='withdrawing'
+        local function kept(change,undo)
+            change();assert(not pcall(R.UncertainAward,a,e) and a.aux.CBMBank.pendingAward.stage=='prepared');undo()
+        end
+        kept(function()e.boundary.nativeResult=1 end,function()e.boundary.nativeResult=0 end) -- the leaf ran
+        kept(function()e.boundary.postBase=600100 end,function()e.boundary.postBase=600000 end)
+        kept(function()e.boundary.amount=101;e.boundary.applied=101 end,
+            function()e.boundary.amount=100;e.boundary.applied=100 end)
+        kept(function()a.aux.CBMBank.revision=a.aux.CBMBank.revision+1 end,
+            function()a.aux.CBMBank.revision=a.aux.CBMBank.revision-1 end)
+        kept(function()a.identity.serializing=true end,function()a.identity.serializing=false end)
+        kept(function()a.identity.canMutate=false end,function()a.identity.canMutate=true end)
+        kept(function()a.identity.incarnation='2' end,function()a.identity.incarnation='1' end)
+        a.aux.CBMBank.pendingAward.stage='uncertain' -- an earlier uncertain journal is never withdrawn
+        assert(not pcall(R.UncertainAward,a,e) and a.aux.CBMBank.pendingAward.stage=='uncertain')
+        a.aux.CBMBank.pendingAward.stage='prepared'
+        e.boundary.stage='uncertain';R.UncertainAward(a,e) -- not withdrawn: marked as before
+        assert(a.aux.CBMBank.pendingAward.stage=='uncertain' and not pcall(R.Snapshot,a,8000000))
+        local b=actor(1000);R.Adopt(b);b.m_baseStats.m_xp=600000
+        assert(writeXP(b,700000,0)==1);b.writeBoundary.stage='withdrawing'
+        b.writeBoundary.postBase=700000 -- the store happened
+        assert(not pcall(R.UncertainWrite,b) and b.aux.CBMBank.pendingWrite)
+        b.writeBoundary.postBase=600000;b.writeBoundary.plannedBase=700001
+        assert(not pcall(R.UncertainWrite,b) and b.aux.CBMBank.pendingWrite)
+        b.writeBoundary.plannedBase=700000;assert(R.UncertainWrite(b)==true and b.aux.CBMBank.pendingWrite==nil)
+    ''')
+
+
 def test_award_completion_requires_same_native_split_revision_and_lifetime(runtime):
     runtime.execute('''
         local a=actor(1000);R.Adopt(a);local e=award(a,100)
@@ -725,6 +784,233 @@ def test_uncertain_writer_retains_exact_before_and_after_for_reload(runtime):
         local b=actor(750000);b.identity.incarnation='2';R.Import(b,saved)
         assert(not pcall(R.Snapshot,b,8000000))
         assert(b.m_baseStats.m_xp==750000 and b.aux.CBMBank.pendingWrite.stage=='uncertain')
+    ''')
+
+
+def test_refused_writer_plan_leaves_no_journal_behind_the_native_fallback(runtime):
+    # CEBG #19: any error in BeforeWrite makes native code run the original
+    # opcode-104 write. A journal published before the plan would then refuse
+    # this actor's every later award and write as an unreconciled transaction.
+    runtime.execute('''
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=600000
+        local plan,order=CBMBank_Writer.Plan,{}
+        local function observe(s) order[#order+1]=s.aux.CBMBank.pendingWrite==nil and 'unjournaled' or 'journaled' end
+        CBMBank_Writer.Plan=function(s) observe(s);return false end
+        local ok,why=pcall(writeXP,a,750000,0)
+        assert(not ok and tostring(why):find('refused its prepared plan'))
+        assert(order[1]=='unjournaled' and a.aux.CBMBank.pendingWrite==nil)
+        CBMBank_Writer.Plan=function(s) observe(s);error('native plan unavailable') end
+        assert(not pcall(writeXP,a,750000,0) and a.aux.CBMBank.pendingWrite==nil)
+        a.m_baseStats.m_xp=750000 -- the original SET ran unbanked instead
+        CBMBank_Writer.Plan=function(s,target) observe(s);return plan(s,target) end
+        assert(writeXP(a,800000,0)==1 and order[3]=='unjournaled')
+        assert(a.aux.CBMBank.pendingWrite.plannedBase==800000 and finishWrite(a))
+        assert(R.ActiveTotal(a)==800000 and a.aux.CBMBank.pendingWrite==nil)
+        local e=award(a,100);assert(R.BeforeAward(a,e)==1 and finishAward(a,e))
+        assert(R.ActiveTotal(a)==800100)
+    ''')
+
+
+def test_refused_setter_write_is_recapped_at_the_next_cap_check(runtime):
+    # A refused stat44 setter write is the game's own store and banks nothing.
+    # Base XP is the one authoritative copy, so the next cap check (the native
+    # stat check deriving XP from base, then GetXPCap) restores the cap and
+    # re-derives the bank; no journal is left and the next banked change works.
+    runtime.execute('''
+        local a=actor(150000);R.OnLoaded(a)
+        local function check() -- the native stat check derives from base XP
+            a.m_derivedStats.m_nXP=a.m_baseStats.m_xp;cap.BeforeNativeClamp(a,8000000)
+            return a.m_derivedStats.m_nXP,R.Snapshot(a,8000000)
+        end
+        local errors=#cap.errors
+        local derived,view=check();assert(derived==150000 and view.activeBank==0)
+        a.m_baseStats.m_xp=a.m_baseStats.m_xp+50000 -- ADD over the cap
+        derived,view=check();assert(derived==161000 and view.activeUsable==161000 and view.activeBank==39000)
+        a.m_baseStats.m_xp=100000 -- SET below it: nothing stays banked
+        derived,view=check();assert(derived==100000 and view.activeBank==0)
+        a.m_baseStats.m_xp=400000 -- SET above it
+        derived,view=check();assert(derived==161000 and view.activeBank==239000)
+        a.m_baseStats.m_xp=a.m_baseStats.m_xp-300000 -- a loss
+        derived,view=check();assert(derived==100000 and view.activeBank==0)
+        assert(#cap.errors==errors and a.aux.CBMBank.pendingWrite==nil and a.aux.CBMBank.pendingAward==nil)
+        local e=award(a,100000);assert(R.BeforeAward(a,e)==1 and finishAward(a,e))
+        derived,view=check();assert(derived==161000 and view.activeBank==39000)
+        assert(writeXP(a,250000,0)==1 and finishWrite(a))
+        derived,view=check();assert(derived==161000 and view.activeBank==89000 and #cap.errors==errors)
+    ''')
+
+
+def test_refused_owned_set_reports_the_game_write_and_catchup_finishes_once(runtime):
+    runtime.execute('''
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=600000
+        local banked=CBMBank_Writer.ApplyOwnedSet
+        -- The bridge refused it: the game's own SET ran (status 5), nothing banked.
+        CBMBank_Writer.ApplyOwnedSet=function(s,target) s.m_baseStats.m_xp=target;return false,65535,5 end
+        local ok,why=pcall(R.OwnedSet,a,750000,2)
+        assert(not ok and tostring(why):find('own write without the bank (status 5)',1,true))
+        assert(a.m_baseStats.m_xp==750000 and a.aux.CBMBank.pendingWrite==nil)
+        -- The catch-up's next attempt finds its target reached and writes nothing again.
+        CBMBank_Writer.ApplyOwnedSet=function() error('must not write again') end
+        assert(R.OwnedSet(a,750000,2) and R.ActiveTotal(a)==750000)
+        CBMBank_Writer.ApplyOwnedSet=function() return false end
+        ok,why=pcall(R.OwnedSet,a,800000,1)
+        assert(not ok and tostring(why):find('was not invoked',1,true))
+        -- The actor's lifetime ended while the bank prepared it: nothing was written.
+        CBMBank_Writer.ApplyOwnedSet=function() return false,65535,11 end
+        ok,why=pcall(R.OwnedSet,a,800000,1)
+        assert(not ok and tostring(why):find('wrote nothing',1,true) and not tostring(why):find('own write',1,true))
+        assert(a.m_baseStats.m_xp==750000)
+        -- Another thread's lifetime event at its address: kept, never written (12).
+        CBMBank_Writer.ApplyOwnedSet=function() return false,65535,12 end
+        ok,why=pcall(R.OwnedSet,a,800000,1)
+        assert(not ok and tostring(why):find('the write is kept, not applied (status 12)',1,true)
+            and not tostring(why):find('own write',1,true))
+        assert(a.m_baseStats.m_xp==750000)
+        CBMBank_Writer.ApplyOwnedSet=banked
+        assert(R.OwnedSet(a,800000,1) and R.ActiveTotal(a)==800000)
+    ''')
+
+
+def overflowed(runtime):
+    # 4,295,167,200 XP: the word is full and the bank holds 199,905 above it,
+    # as a banked award past the word leaves it.
+    runtime.execute('''
+        a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=4294967200
+        local e=award(a,200000);assert(R.BeforeAward(a,e)==1 and finishAward(a,e))
+        local view=R.Snapshot(a,8000000)
+        assert(view.total==4295167200 and a.aux.CBMBank.overflow==199905 and a.m_baseStats.m_xp==4294967295)
+    ''')
+
+
+def test_refused_set_takes_the_stored_word_at_export_reload_and_next_banking_point(runtime):
+    # Codex: a refused SET to 100,000 left base 100,000 but an active total of
+    # 299,905, which survived export/import. The game's own SET replaced the word;
+    # native code noted it (CBMI_NoteReplaced) and the account now matches it.
+    overflowed(runtime)
+    runtime.execute('''
+        a.m_baseStats.m_xp=100000;a.identity.nativeReplaced=true -- the game's own SET (status 5)
+        local revision=a.aux.CBMBank.revision
+        -- Saved before any banking point: the save already matches the stored word,
+        -- and the save itself changes nothing live.
+        local saved=R.Export(a)
+        assert(saved.overflow==0 and saved.revision==revision+1)
+        assert(a.aux.CBMBank.overflow==199905 and a.aux.CBMBank.revision==revision and a.identity.nativeReplaced)
+        local b=actor(100000);b.identity.incarnation='2';R.Import(b,saved)
+        local view=R.Snapshot(b,8000000)
+        assert(view.total==100000 and view.activeOverflow==0 and view.activeBank==0)
+        -- The record screen shows what the next cap check publishes, without publishing it.
+        assert(R.RecordView(a,8000000).bank==0 and a.aux.CBMBank.overflow==199905 and a.acks==nil)
+        -- The next safe banking point publishes it once and clears the note.
+        view=R.Snapshot(a,8000000)
+        assert(view.total==100000 and view.activeOverflow==0 and view.activeUsable==100000)
+        assert(a.aux.CBMBank.overflow==0 and a.aux.CBMBank.revision==revision+1)
+        assert(a.acks==1 and not a.identity.nativeReplaced)
+        assert(R.lastError:find('199905 XP the bank held above the 32-bit native word',1,true))
+        R.Snapshot(a,8000000);assert(a.aux.CBMBank.revision==revision+1 and a.acks==1)
+        local again=R.Export(a);local c=actor(100000);c.identity.incarnation='3';R.Import(c,again)
+        assert(R.Snapshot(c,8000000).total==100000 and again.revision==revision+1)
+        -- Later changes bank normally from the matched account.
+        local e=award(a,100);assert(R.BeforeAward(a,e)==1 and finishAward(a,e) and R.ActiveTotal(a)==100100)
+        assert(writeXP(a,200000,1)==1 and finishWrite(a) and R.ActiveTotal(a)==300100)
+    ''')
+
+
+@pytest.mark.parametrize("change,stored,replaced", [
+    # ADD past the word: SetAtOffset's `add dword ptr [rcx+0x570], r8d` wraps.
+    ("add", (4294967295 + 200000) % 4294967296, True),
+    # A loss the word covers: the store subtracts from the word; overflow stays XP.
+    ("loss", 4294967295 - 1000, False),
+    # opcode-104 percentage: the low 32 bits of base*percent, divided by 100.
+    ("percent", ((4294967295 * 50) & 0xffffffff) // 100, True),
+])
+def test_unbanked_store_neither_double_counts_nor_keeps_stale_overflow(runtime, change, stored, replaced):
+    # What the game's own store produced is the native word (writer_native_test
+    # runs the unpatched SetAtOffset window for the same values). Native code
+    # notes a replaced word; any other store kept base plus overflow exact.
+    overflowed(runtime)
+    runtime.globals().stored = stored
+    runtime.globals().replaced = replaced
+    runtime.globals().change = change
+    runtime.execute('''
+        if change=='percent' then
+            a.writeBoundary={stage='preparing',incarnation=a.identity.incarnation,preBase=4294967295,
+                rawValue=50,mode=2,source='opcode104',effectMode=2,origin='unclassified'}
+            assert(not pcall(R.BeforeWrite,a)) -- refused: the bank has no percentage of overflow
+        end
+        a.m_baseStats.m_xp=stored;a.identity.nativeReplaced=replaced
+        local shown=R.RecordView(a,8000000).bank -- The record screen, before the cap check.
+        local view=R.Snapshot(a,8000000)
+        assert(shown==view.activeBank and R.RecordView(a,8000000).bank==shown)
+        if replaced then
+            assert(view.total==stored and view.activeOverflow==0 and a.aux.CBMBank.overflow==0)
+        else
+            -- The bank's own result for a 1,000 XP loss: 4,295,167,200 - 1,000.
+            assert(view.total==4295166200 and view.activeOverflow==199905)
+        end
+        local b=actor(stored);b.identity.incarnation='2';R.Import(b,R.Export(a))
+        assert(R.Snapshot(b,8000000).total==view.total)
+    ''')
+
+
+def test_unresolved_journal_keeps_its_account_and_records_the_later_replacement(runtime):
+    # An account with an uncertain journal is already held for reconciliation;
+    # it is not settled around that journal. The save records that the word was
+    # replaced after it, and the note stays until a matched account exists.
+    runtime.execute('''
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=4294967295;a.aux.CBMBank.overflow=199905
+        local e=award(a,100);assert(R.BeforeAward(a,e)==1)
+        e.boundary.stage='uncertain';e.boundary.nativeResult=1;R.UncertainAward(a,e)
+        a.m_baseStats.m_xp=100000;a.identity.nativeReplaced=true
+        local saved=R.Export(a)
+        assert(saved.overflow==199905 and saved.pendingAward.laterNativeReplace==true)
+        assert(a.aux.CBMBank.pendingAward.laterNativeReplace==nil)
+        local ok,why=pcall(R.Snapshot,a,8000000)
+        assert(not ok and tostring(why):find('reconciliation') and a.identity.nativeReplaced and a.acks==nil)
+        assert(a.aux.CBMBank.overflow==199905 and R.RecordView(a,8000000)==nil)
+        local b=actor(100000);b.identity.incarnation='2';R.Import(b,saved)
+        assert(b.aux.CBMBank.pendingAward.laterNativeReplace==true and not pcall(R.Snapshot,b,8000000))
+    ''')
+
+
+def test_replaced_word_during_save_is_projected_not_published(runtime):
+    # A cap check while the game saves may not change the bank: it reports the
+    # matched account but publishes nothing and keeps the note for later.
+    overflowed(runtime)
+    runtime.execute('''
+        a.m_baseStats.m_xp=100000;a.identity.nativeReplaced=true
+        a.identity.serializing=true;a.identity.canMutate=false
+        local revision=a.aux.CBMBank.revision
+        local view=R.Snapshot(a,8000000)
+        assert(view.total==100000 and view.activeOverflow==0)
+        assert(a.aux.CBMBank.overflow==199905 and a.aux.CBMBank.revision==revision and a.acks==nil)
+        a.identity.serializing=false;a.identity.canMutate=true
+        assert(R.Snapshot(a,8000000).total==100000 and a.aux.CBMBank.overflow==0 and a.acks==1)
+    ''')
+
+
+def test_replaced_word_settles_an_account_still_waiting_for_its_campaign(runtime):
+    runtime.execute('''
+        phase='SOA';ending=0
+        local a=actor(1000);R.Adopt(a);a.m_baseStats.m_xp=4294967200
+        local e=award(a,200000);assert(R.BeforeAward(a,e)==1 and finishAward(a,e))
+        assert(a.aux.CBMBank.initializing and a.aux.CBMBank.overflow==199905 and a.aux.CBMBank.revision==1)
+        a.m_baseStats.m_xp=100000;a.identity.nativeReplaced=true
+        local view=R.Snapshot(a,8000000)
+        assert(view.initializing and view.total==100000 and a.aux.CBMBank.initializing)
+        assert(a.aux.CBMBank.overflow==0 and a.aux.CBMBank.revision==2 and a.aux.CBMBank.baseAtAdoption==1000)
+        phase='BG1';ending=0
+        view=R.Snapshot(a,8000000)
+        assert(view.total==100000 and a.aux.CBMBank.floor==1000 and a.aux.CBMBank.overflow==0)
+    ''')
+
+
+def test_chr_export_receipt_uses_the_matched_account(runtime):
+    overflowed(runtime)
+    runtime.execute('''
+        a.m_baseStats.m_xp=100000;a.identity.nativeReplaced=true;a.identity.reason='chr_export'
+        local saved=R.Export(a)
+        -- Stale overflow would have shown 161,000 usable (100,000 + 199,905, capped).
+        assert(saved.overflow==0 and saved.chrTransfer.usable==100000 and saved.chrTransfer.base==100000)
     ''')
 
 

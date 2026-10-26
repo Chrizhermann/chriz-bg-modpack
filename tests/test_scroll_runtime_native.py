@@ -12,7 +12,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "research" / "scroll-runtime"
 CASES = (
-    "policy", "modes", "queued_readers", "actions", "reflection_177", "root177", "nested",
+    "policy", "modes", "queued_readers", "actions", "witness_guards", "witness_cycles", "witness_capacity",
+    "disabled_latch", "foreign_latch", "reflection_177", "root177", "nested",
     "reuse", "unwind", "guards", "depth_reset", "route_guards", "thread", "native_provider", "reporter", "effect_archive",
 )
 
@@ -84,6 +85,93 @@ class NativeStats(ctypes.Structure):
                 ("active", ctypes.c_uint32 * 3), ("arcane_state", ctypes.c_uint32),
                 ("arcane_level", ctypes.c_uint32), ("divine_state", ctypes.c_uint32),
                 ("divine_level", ctypes.c_uint32)]
+
+
+# Witness reference baseline, read from the shipped header so tests cannot drift.
+WITNESS_BASELINE = int(next(line for line in (SOURCE / "action_witness.hpp").read_text().splitlines()
+                            if "std::int32_t baseline =" in line).split("=")[1].strip(" ;"), 16)
+ACTION_STRINGS = (0x60, 0x68, 0x80)
+
+
+class EngineStrings:
+    """Offline stand-in for the engine CString ABI the dispatch binder certifies
+    (refs at data-0Ch): copies share a block whose refs >= 0, replacement and
+    destruction decrement it and free at zero. Native-code proof of the same
+    semantics: test_scroll_runtime_action_witness_native.py."""
+
+    def __init__(self):
+        self.blocks, self.freed = [], []
+        self.empty = self.block(-1)  # shared locked sentinel, as in the engine
+        self.empty_global = ctypes.c_size_t(self.empty)
+
+    def block(self, refs, text=b""):
+        raw = ctypes.create_string_buffer(12 + len(text) + 1)
+        ctypes.c_int32.from_buffer(raw, 0).value = refs
+        ctypes.c_int32.from_buffer(raw, 4).value = len(text)
+        ctypes.c_int32.from_buffer(raw, 8).value = len(text)
+        ctypes.memmove(ctypes.addressof(raw) + 12, text, len(text))
+        self.blocks.append(raw)
+        return ctypes.addressof(raw) + 12
+
+    @staticmethod
+    def pointer(field):
+        return ctypes.c_size_t.from_address(field).value
+
+    @staticmethod
+    def refs(data):
+        return ctypes.c_int32.from_address(data - 12).value
+
+    def share(self, destination, source):
+        data = self.pointer(source)
+        if self.refs(data) < 0:
+            data = self.empty  # AssignCopy of an empty locked block yields the sentinel
+        else:
+            ctypes.c_int32.from_address(data - 12).value += 1
+        ctypes.c_size_t.from_address(destination).value = data
+
+    def put(self, field, data):
+        """Assign an existing engine block (e.g. script text) into a field."""
+        self.release(field)
+        ctypes.c_int32.from_address(data - 12).value += 1
+        ctypes.c_size_t.from_address(field).value = data
+
+    def release(self, field):
+        data = self.pointer(field)
+        ctypes.c_size_t.from_address(field).value = self.empty
+        if data == self.empty:
+            return
+        refs = ctypes.c_int32.from_address(data - 12)
+        refs.value -= 1
+        if refs.value <= 0:
+            self.freed.append(data)
+
+    def assign(self, destination, source):
+        if self.pointer(destination) != self.pointer(source):
+            self.release(destination)
+            self.share(destination, source)
+
+    # CAIAction value semantics on its three action-level CStrings.
+    def construct(self, action):
+        ctypes.memset(action, 0, 0x88)
+        for offset in ACTION_STRINGS:
+            ctypes.c_size_t.from_address(action + offset).value = self.empty
+        return action
+
+    def copy_action(self, destination, source):
+        ctypes.memmove(destination, source, 0x88)
+        for offset in ACTION_STRINGS:
+            self.share(destination + offset, source + offset)
+
+    def assign_action(self, destination, source):
+        for offset in range(0, 0x88, 8):
+            if offset not in ACTION_STRINGS:
+                ctypes.memmove(destination + offset, source + offset, 8)
+        for offset in ACTION_STRINGS:
+            self.assign(destination + offset, source + offset)
+
+    def destroy_action(self, action):
+        for offset in ACTION_STRINGS:
+            self.release(action + offset)
 
 
 def test_resolved_native_helper_retains_ancestry_without_borrowing_level(native_api):
@@ -163,19 +251,26 @@ def configure_native_api(library):
         "BeginEffectImport": ([ptr, address], ctypes.c_int),
         "ObserveEffectDecoded": ([ptr, address, address, ptr], ctypes.c_int),
         "StageEffectImportText": ([ptr, address, ctypes.c_char_p, u32], ctypes.c_int),
-        "FinishEffectImport": ([ptr, address], ctypes.c_int),
+        "FinishEffectImport": ([ptr, address, ctypes.c_char_p, u32], ctypes.c_int),
         "AbortEffectExport": ([ptr, address], ctypes.c_int),
         "AbortEffectImport": ([ptr, address], ctypes.c_int),
         "ItemBegin": ([ptr, address, ctypes.c_char_p, u32, u32, ctypes.POINTER(u64)], ctypes.c_int),
         "ItemChild": ([ptr, u64, address, u32], ctypes.c_int), "ItemEnd": ([ptr, u64], ctypes.c_int),
         "Copy": ([ptr, u32, address, address], ctypes.c_int),
         "Dispatch": ([ptr, address, u32, u32, u32, u32, address], ctypes.c_int),
+        "StampActionWitness": ([ptr, address, u32, u32, u32, address, address], ctypes.c_int),
+        "ActionWitnessCarrier": ([ptr, address, ctypes.POINTER(address)], ctypes.c_int),
+        "SweepActionWitnesses": ([ptr], ctypes.c_int),
+        "CarrierIsOwned": ([ptr, u32, address], ctypes.c_int),
+        "DestructObserved": ([ptr, u32, address], ctypes.c_int),
         "BeginCast": ([ptr, u32, address, u32, address, ctypes.c_char_p, u32,
                        ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.POINTER(u64)], ctypes.c_int),
         "Select": ([ptr, u64, u32, address, ctypes.POINTER(u32)], ctypes.c_int),
         "SpellChild": ([ptr, u64, address, address, ctypes.POINTER(u32)], ctypes.c_int),
         "Linked177": ([ptr, address, address, ctypes.POINTER(u32)], ctypes.c_int),
         "EndCast": ([ptr, u64], ctypes.c_int), "Quiescent": ([ptr], ctypes.c_int),
+        "DisableOverrides": ([ptr], None), "OverridesDisabled": ([ptr], ctypes.c_int),
+        "ForeignEntry": ([], None), "ForeignEntrySeen": ([], ctypes.c_int),
     }
     for name, (arguments, result) in signatures.items():
         function = getattr(library, "CBMS_" + name)
@@ -216,10 +311,20 @@ def test_exported_native_callback_lifecycle(native_api, opcode, mode, special, s
         assert api.CBMS_ItemChild(runtime, use, 0x2000, 17) == 1
         assert api.CBMS_ItemEnd(runtime, use) == 1
         carrier = 0x2000
-        if kind != 1:
+        strings, field = EngineStrings(), ctypes.c_size_t()
+        if kind == 2:
             carrier = 0x3000
             assert api.CBMS_Construct(runtime, kind, carrier) == 1
             assert api.CBMS_Dispatch(runtime, 0x2000, opcode, mode, special, kind, carrier) == 1
+            assert api.CBMS_Destruct(runtime, 1, 0x2000) == 1
+        elif kind == 3:
+            field.value = strings.empty
+            assert api.CBMS_StampActionWitness(runtime, 0x2000, opcode, mode, special,
+                                               ctypes.addressof(field), strings.empty) == 1
+            witness = ctypes.c_size_t()
+            assert api.CBMS_ActionWitnessCarrier(runtime, field.value, ctypes.byref(witness)) == 1
+            carrier = witness.value
+            assert strings.refs(carrier) == WITNESS_BASELINE + 1
             assert api.CBMS_Destruct(runtime, 1, 0x2000) == 1
         frame = ctypes.c_uint64()
         # Engine source/target now identify reflection; original reader is 0x1000.
@@ -235,8 +340,16 @@ def test_exported_native_callback_lifecycle(native_api, opcode, mode, special, s
         assert level.value == 6
         assert api.CBMS_EndCast(runtime, frame) == 1
         assert api.CBMS_Quiescent(runtime) == 0
+        if kind == 3:
+            # The engine's last holder goes away; nothing observes it but the
+            # witness count, which the next sweep reclaims.
+            strings.release(ctypes.addressof(field))
+            assert api.CBMS_Quiescent(runtime) == 0  # effects still own context
+            assert api.CBMS_SweepActionWitnesses(runtime) == 0
+            assert carrier not in strings.freed
         for object_kind, pointer in [(kind, carrier), (1, 0x5000), (1, 0x5100)]:
-            assert api.CBMS_Destruct(runtime, object_kind, pointer) == 1
+            if object_kind != 3:
+                assert api.CBMS_Destruct(runtime, object_kind, pointer) == 1
         assert api.CBMS_Quiescent(runtime) == 1
         assert errors == []
     finally:
@@ -274,7 +387,9 @@ def test_exported_errors_do_not_replace_levels_or_drop_pending_casts(native_api)
     assert api.CBMS_Select(runtime, frame, 0, 0xD000, ctypes.byref(level)) == -1
     assert level.value == 99
     assert "capability" in errors[-1]
-    assert api.CBMS_SpellChild(runtime, frame, 0xD000, 0x2100, ctypes.byref(level)) == -1
+    assert api.CBMS_OverridesDisabled(runtime) == 1
+    # The latched fault leaves the child at its native level.
+    assert api.CBMS_SpellChild(runtime, frame, 0xD000, 0x2100, ctypes.byref(level)) == 0
     assert level.value == 99
     assert api.CBMS_Destroy(runtime) == -1
     # Unrelated nested cast masks the owned outer frame even at same pointer.
@@ -286,6 +401,67 @@ def test_exported_errors_do_not_replace_levels_or_drop_pending_casts(native_api)
     assert api.CBMS_EndCast(runtime, mask) == 1
     assert api.CBMS_EndCast(runtime, frame) == 1
     assert api.CBMS_Destruct(runtime, 1, 0x2000) == 1
+    assert api.CBMS_Destroy(runtime) == 1
+
+
+def test_reported_error_disables_overrides_queued_before_it(native_api):
+    api, resolver_type, reporter_type = native_api
+    errors, queried = [], []
+
+    @resolver_type
+    def resolve(_reader, _generation, _spell, _type, output, _):
+        queried.append(1)
+        output.contents.count = 1
+        output.contents.level[0] = 18
+        output.contents.active[0] = 1
+        output.contents.arcane_state = 1
+        output.contents.arcane_level = 18
+        return 1
+
+    @reporter_type
+    def report(message, _):
+        errors.append(message.decode("utf-8"))
+
+    runtime = api.CBMS_Create(resolve, report, None)
+    assert runtime and api.CBMS_OverridesDisabled(runtime) == 0
+    strings, field, later = EngineStrings(), ctypes.c_size_t(), ctypes.c_size_t()
+    field.value = later.value = strings.empty
+    for object_kind, pointer in [(0, 0x1000), (1, 0x2000), (1, 0x2100), (1, 0x2200)]:
+        assert api.CBMS_Construct(runtime, object_kind, pointer) == 1
+    use = ctypes.c_uint64()
+    assert api.CBMS_ItemBegin(runtime, 0x1000, b"SCROLL", 0, 0, ctypes.byref(use)) == 1
+    assert api.CBMS_ItemChild(runtime, use, 0x2000, 0) == 1
+    # A: an owned 146 mode0 queues its action with a witness.
+    assert api.CBMS_StampActionWitness(runtime, 0x2000, 146, 0, 0, ctypes.addressof(field), strings.empty) == 1
+    witness = ctypes.c_size_t()
+    assert api.CBMS_ActionWitnessCarrier(runtime, field.value, ctypes.byref(witness)) == 1
+    # B: any reported error latches the disabled state.
+    assert api.CBMS_Construct(runtime, 99, 0x3000) == -1
+    assert len(errors) == 1 and api.CBMS_OverridesDisabled(runtime) == 1
+    # A now casts at its native level, even through a carrier resolved before B.
+    assert api.CBMS_ActionWitnessCarrier(runtime, field.value, ctypes.byref(witness)) == 0
+    frame, level = ctypes.c_uint64(), ctypes.c_uint32(99)
+    assert api.CBMS_BeginCast(runtime, 3, witness.value, 3, 0xD000, b"SPELL", 0,
+                              1, 2, 3, 4, ctypes.byref(frame)) == 1
+    assert api.CBMS_Select(runtime, frame, 3, 0xD000, ctypes.byref(level)) == 0
+    assert level.value == 99 and not queried
+    assert api.CBMS_SpellChild(runtime, frame, 0xD000, 0x2100, ctypes.byref(level)) == 0
+    assert level.value == 99 and api.CBMS_CarrierIsOwned(runtime, 1, 0x2100) == 0
+    assert api.CBMS_EndCast(runtime, frame) == 1
+    # No new ownership starts: item children stay plain, stamps leave the field.
+    assert api.CBMS_ItemChild(runtime, use, 0x2200, 1) == 1
+    assert api.CBMS_CarrierIsOwned(runtime, 1, 0x2200) == 0
+    assert api.CBMS_StampActionWitness(runtime, 0x2000, 146, 0, 0, ctypes.addressof(later), strings.empty) == 0
+    assert later.value == strings.empty
+    assert api.CBMS_ItemEnd(runtime, use) == 1
+    # Cleanup and witness storage keep working.
+    strings.release(ctypes.addressof(field))
+    assert api.CBMS_SweepActionWitnesses(runtime) == 0
+    assert witness.value not in strings.freed
+    for pointer in (0x2000, 0x2100, 0x2200):
+        assert api.CBMS_Destruct(runtime, 1, pointer) == 1
+    assert api.CBMS_Quiescent(runtime) == 1
+    assert len(errors) == 1 and api.CBMS_ForeignEntrySeen() == 0
     assert api.CBMS_Destroy(runtime) == 1
 
 
@@ -368,9 +544,11 @@ def test_provider_cannot_destroy_or_recursively_resolve_its_current_frame(native
     assert api.CBMS_BeginCast(runtime, 1, 0x2000, 0, 0xD000, b"SPELL", 0,
                               1, 2, 3, 4, ctypes.byref(frame)) == 1
     level = ctypes.c_uint32(99)
-    assert api.CBMS_Select(runtime, frame, 0, 0xD000, ctypes.byref(level)) == 1
-    assert level.value == 18 and outcomes == [-1, -1]
-    assert len(errors) == 2
+    # Both inner calls fail, and an error disables every override, the one
+    # being selected included: the outer cast keeps its native level.
+    assert api.CBMS_Select(runtime, frame, 0, 0xD000, ctypes.byref(level)) == 0
+    assert level.value == 99 and outcomes == [-1, -1]
+    assert len(errors) == 2 and api.CBMS_OverridesDisabled(runtime) == 1
     assert api.CBMS_EndCast(runtime, frame) == 1
     assert api.CBMS_Destruct(runtime, 1, 0x2000) == 1
     assert api.CBMS_Destroy(runtime) == 1

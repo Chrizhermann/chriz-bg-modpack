@@ -4,8 +4,8 @@ import importlib.util
 import struct
 
 from test_scroll_runtime_effect_marshal import native
-from test_scroll_runtime_detours import action_image,SOURCE
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import pinned_image,SOURCE
+from test_scroll_runtime_binding import os_unwinder
 from test_scroll_runtime_binding import windows
 
 spec=importlib.util.spec_from_file_location("marshal_detours",SOURCE/"marshal_detours.py")
@@ -22,14 +22,14 @@ def trace(image):
     return native.marshal(pe,names,records),native.marshal(pe,names,records,trampoline=plan["trampoline"]),plan
 
 
-def test_native_original_and_trampoline_return_same_filtered_records(action_image):
-    original,hooked,_=trace(action_image)
+def test_native_original_and_trampoline_return_same_filtered_records(pinned_image):
+    original,hooked,_=trace(pinned_image)
     assert {k:v for k,v in original.items() if k!="points"}=={k:v for k,v in hooked.items() if k!="points"}
     assert [p["offset"] for p in hooked["points"]]==[0,2,3,4,6,8,10,17,24,32]
 
 
-def test_windows_unwinds_every_marshal_trampoline_instruction(action_image,windows,os_unwinder):
-    _,hooked,plan=trace(action_image)
+def test_windows_unwinds_every_marshal_trampoline_instruction(pinned_image,windows,os_unwinder):
+    _,hooked,plan=trace(pinned_image)
     cave,stack=0x50000000,0x20000000
     pages=[]
     try:

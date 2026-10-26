@@ -25,6 +25,9 @@ def test_native_package_matches_current_sources_and_distributable_files():
     for name,expected in manifest['package'].items():
         assert hashlib.sha256((PACKAGE/name).read_bytes()).hexdigest()==expected,name
     assert manifest['sha256']==manifest['package']['CBMScroll.dll']
+    # The record says where this DLL's in-game checks are; the guide must name it.
+    assert manifest['status'].startswith('installed by component 430;')
+    assert manifest['sha256'] in (ROOT/'docs/scroll-casting.md').read_text(encoding='utf-8')
 
 
 def test_native_package_record_names_no_build_machine_folders():

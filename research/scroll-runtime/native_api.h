@@ -57,12 +57,16 @@ CBMS_EXPORT int CBMS_BindLifecycleModulesChained(uintptr_t game,uintptr_t eeex,C
 CBMS_EXPORT int CBMS_BindModule(uintptr_t module, CBMS_NativeFunctions* functions, char* diagnostic, uint32_t capacity);
 CBMS_EXPORT int CBMS_BindCurrent(CBMS_NativeFunctions* functions, char* diagnostic, uint32_t capacity);
 
-/* Kind: 0 actor, 1 effect, 2 FireSpell message, 3 action.
+/* Kind: 0 actor, 1 effect, 2 FireSpell message, 3 action witness. Kinds 0-2
+ * are keyed by engine object address; kind 3 by the private CString block an
+ * owned action carries by value (action_witness.hpp), never by an action
+ * address, so the address lifetime calls refuse it.
  * Selector: 0 EffectFire, 1 Fire, 2 FirePoint, 3 Force, 4 ForcePoint,
  *           5 Spell, 6 SpellPoint. Spell type: 0 arcane, 1 divine, 2 unresolved,
  *           3 resolved installed native-only helper (retain ancestry).
- * All callbacks belong to one engine thread. Errors return -1 and latch a
- * diagnostic; the host must not silently treat that as successful fallback.
+ * All callbacks belong to one engine thread. Errors return -1, latch a
+ * diagnostic and disable every later override (CBMS_OverridesDisabled); the
+ * host must not silently treat that as successful fallback.
  * Selector/child callbacks return 0 leave native level or 1 replacement in
  * output. A root177 may inherit ancestry but return0 before any level selection.
  * Other successful callbacks return 1. The native provider reads audited
@@ -75,7 +79,10 @@ CBMS_EXPORT CBMS_Runtime* CBMS_Create(CBMS_Resolve resolve, CBMS_Report report, 
 /* Uses the implemented native reader provider. Function pointers must be
  * resolved against the reviewed x64 engine by the host; no address guessing. */
 CBMS_EXPORT CBMS_Runtime* CBMS_CreateNative(const CBMS_NativeFunctions* functions, CBMS_Report report, void* user);
-/* Refuses destruction while contexts remain; no silent loss of pending casts. */
+/* Refuses destruction while contexts or engine-referenced action witnesses
+ * remain, or a retired witness fails its full audit; no silent loss of pending
+ * casts. Witness blocks are never freed, not even then: an engine string the
+ * evidence missed cannot reach freed memory. */
 CBMS_EXPORT int CBMS_Destroy(CBMS_Runtime* runtime);
 CBMS_EXPORT const char* CBMS_LastError(CBMS_Runtime* runtime);
 CBMS_EXPORT int CBMS_Construct(CBMS_Runtime*, uint32_t kind, uintptr_t object);
@@ -99,7 +106,12 @@ CBMS_EXPORT int CBMS_ValidateEffectExport(CBMS_Runtime*, uintptr_t actor, const 
 CBMS_EXPORT int CBMS_BeginEffectImport(CBMS_Runtime*, uintptr_t actor);
 CBMS_EXPORT int CBMS_ObserveEffectDecoded(CBMS_Runtime*, uintptr_t actor, uintptr_t effect, const void* raw_record);
 CBMS_EXPORT int CBMS_StageEffectImportText(CBMS_Runtime*, uintptr_t actor, const char* text, uint32_t length);
-CBMS_EXPORT int CBMS_FinishEffectImport(CBMS_Runtime*, uintptr_t actor);
+/* Returns 1 restored (or no envelope staged), with `dropped` empty. Returns 2
+ * when a well-formed envelope no longer matches this actor's decoded records
+ * (count or bytes): it is dropped for this actor only, nothing is restored or
+ * disabled and `dropped` holds the reason. Malformed, unknown or conflicting
+ * data still errors and disables every override. */
+CBMS_EXPORT int CBMS_FinishEffectImport(CBMS_Runtime*, uintptr_t actor, char* dropped, uint32_t capacity);
 /* Rollback only after the host has cancelled that native save/load operation.
  * Import abort never clears already-restored ownership. Unknown/raw actor
  * envelope storage remains host-owned and must be retained separately. */
@@ -112,11 +124,20 @@ CBMS_EXPORT int CBMS_ItemChild(CBMS_Runtime*, uint64_t use, uintptr_t effect, ui
 CBMS_EXPORT int CBMS_ItemRootObserved(CBMS_Runtime*,uint64_t use,uintptr_t effect,uint32_t index);
 CBMS_EXPORT int CBMS_ItemEnd(CBMS_Runtime*, uint64_t use);
 CBMS_EXPORT int CBMS_Copy(CBMS_Runtime*, uint32_t kind, uintptr_t source, uintptr_t destination);
-/* Concrete CAIAction lifecycle edges: completed native copy/assignment and
- * destructor entry. Existing unowned actions may be observed on first use;
- * a copied construction must not silently replace a registered lifetime. */
-CBMS_EXPORT int CBMS_ActionCopied(CBMS_Runtime*, uintptr_t source, uintptr_t destination, uint32_t construction);
-CBMS_EXPORT int CBMS_ActionBeforeDestroy(CBMS_Runtime*, uintptr_t action);
+/* Value-carried CAIAction ownership. Stamp runs once for an owned queued
+ * (mode0) dispatcher with the address of its CMessageInsertAction action's
+ * m_source (+80h) CString field and the engine's current empty-string
+ * sentinel; that field must still hold the sentinel native construction wrote.
+ * Returns 1 stamped, 0 with the field untouched once overrides are disabled. */
+CBMS_EXPORT int CBMS_StampActionWitness(CBMS_Runtime*, uintptr_t effect, uint32_t opcode, uint32_t mode, uint32_t special, uintptr_t field, uintptr_t empty);
+/* `value` is the m_source CString pointer read from an action. Returns 1 with
+ * the kind-3 carrier key for a live witness whose ownership is current, 0 for
+ * any other value, -1 for a corrupted witness. Never dereferences foreign values. */
+CBMS_EXPORT int CBMS_ActionWitnessCarrier(CBMS_Runtime*, uintptr_t value, uintptr_t* carrier);
+/* Retires witnesses no engine string references and audits the next batch of
+ * retired ones; returns how many are still referenced. Retired blocks are
+ * never freed or reused. */
+CBMS_EXPORT int CBMS_SweepActionWitnesses(CBMS_Runtime*);
 CBMS_EXPORT int CBMS_EffectCopied(CBMS_Runtime*,uintptr_t source,uintptr_t destination);
 CBMS_EXPORT int CBMS_DestructObserved(CBMS_Runtime*,uint32_t kind,uintptr_t object);
 CBMS_EXPORT int CBMS_Dispatch(CBMS_Runtime*, uintptr_t effect, uint32_t opcode, uint32_t mode, uint32_t special, uint32_t carrier_kind, uintptr_t carrier);
@@ -137,6 +158,24 @@ CBMS_EXPORT int CBMS_Linked177Observed(CBMS_Runtime*,uintptr_t parent,uintptr_t 
 CBMS_EXPORT int CBMS_EndCast(CBMS_Runtime*, uint64_t frame);
 /* Local lifetime check only; does NOT prove safe uninstall/save persistence. */
 CBMS_EXPORT int CBMS_Quiescent(CBMS_Runtime*);
+/* One latched disabled state for every override (Registry::disable): any
+ * reported error sets it, as do CBMS_DisableOverrides (carrier faults) and
+ * CBMS_ForeignEntry. Afterwards no carrier becomes owned, ownership no longer
+ * propagates or reaches saves, no witness is stamped and every selection,
+ * child and linked level stays native, also for casts queued or captured
+ * earlier. Destruction, cast and capture release and witness retirement and
+ * audits keep working. Both touch only atomics; any thread. */
+CBMS_EXPORT void CBMS_DisableOverrides(CBMS_Runtime*);
+CBMS_EXPORT int CBMS_OverridesDisabled(CBMS_Runtime*);
+/* A hooked native entry ran on a thread other than the engine thread that
+ * configured it, and was forwarded unrecorded (carrier_gate.hpp). Process-wide
+ * and permanent; it disables every runtime. Any thread; atomic only. */
+CBMS_EXPORT void CBMS_ForeignEntry(void);
+CBMS_EXPORT int CBMS_ForeignEntrySeen(void);
+#ifdef CBMS_OFFLINE_HARNESS
+/* Lowers the lifetime witness allowance (ActionWitnesses::limit) for tests. */
+CBMS_EXPORT int CBMS_TestLimitActionWitnesses(CBMS_Runtime*, uint32_t total);
+#endif
 #ifdef __cplusplus
 }
 #endif

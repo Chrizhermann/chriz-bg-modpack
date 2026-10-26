@@ -1,0 +1,34 @@
+# pytest files both CI workflows run, through: python -m tools.ci_pytest [extra pytest arguments]
+# One repository-relative path per line, sorted, no duplicates. Every tests/test_campaign_xp_*.py
+# belongs here (tests/test_ci_pytest_selection.py enforces it).
+tests/test_baeloth_spellbook.py
+tests/test_campaign_xp_absent_handler.py
+tests/test_campaign_xp_banking_cap.py
+tests/test_campaign_xp_banking_dual.py
+tests/test_campaign_xp_banking_policy.py
+tests/test_campaign_xp_banking_store.py
+tests/test_campaign_xp_callback_lifetime.py
+tests/test_campaign_xp_native_runtime.py
+tests/test_campaign_xp_notices.py
+tests/test_campaign_xp_old_hla_receipts.py
+tests/test_campaign_xp_package.py
+tests/test_campaign_xp_probe_results.py
+tests/test_campaign_xp_record_ui.py
+tests/test_campaign_xp_record_view.py
+tests/test_campaign_xp_recruitment_compat.py
+tests/test_campaign_xp_relay_forms.py
+tests/test_campaign_xp_retired_picker.py
+tests/test_campaign_xp_retired_rows.py
+tests/test_campaign_xp_thread_audit.py
+tests/test_ci_pytest_selection.py
+tests/test_companion_classes_installer.py
+tests/test_edwin_redwizard.py
+tests/test_evandra_sorcerer.py
+tests/test_imoen_spellhold_xp.py
+tests/test_imoen_spellhold_xp_installer.py
+tests/test_legacy_ui_strings.py
+tests/test_recruitment_xp.py
+tests/test_scroll_runtime_resources.py
+tests/test_story_utility_xp.py
+tests/test_unidentified_items.py
+tests/test_utility_xp.py

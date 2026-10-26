@@ -6,9 +6,9 @@ import importlib.util,struct,sys
 import pytest
 from unicorn import Uc,UC_ARCH_X86,UC_MODE_64,UC_HOOK_CODE
 from unicorn import x86_const as X
-from test_scroll_runtime_detours import action_image,SOURCE
+from test_scroll_runtime_binding import pinned_image,SOURCE
 from test_scroll_runtime_binding import windows
-from test_scroll_runtime_unwind import os_unwinder
+from test_scroll_runtime_binding import os_unwinder
 from test_scroll_runtime_item_detours import REGS
 sys.path.insert(0,str(SOURCE))
 import cast_selection_detours as bridge
@@ -72,12 +72,12 @@ def execute(image,path,replacement):
 
 @pytest.mark.parametrize('path',range(7))
 @pytest.mark.parametrize('replacement',[0,12])
-def test_native_selector_call_bridge_preserves_getter_return_and_selects_policy_header(action_image,path,replacement):
-    execute(action_image,path,replacement)
+def test_native_selector_call_bridge_preserves_getter_return_and_selects_policy_header(pinned_image,path,replacement):
+    execute(pinned_image,path,replacement)
 
 @pytest.mark.parametrize('path',range(7))
-def test_every_selector_bridge_instruction_has_valid_windows_unwind(action_image,path,windows,os_unwinder):
-    plan,points,origin,rsp,site=execute(action_image,path,0);cave,stack=0x50000000,0x20000000;allocations=[]
+def test_every_selector_bridge_instruction_has_valid_windows_unwind(pinned_image,path,windows,os_unwinder):
+    plan,points,origin,rsp,site=execute(pinned_image,path,0);cave,stack=0x50000000,0x20000000;allocations=[]
     try:
         for at in (cave,stack):assert windows.VirtualAlloc(at,0x10000,0x3000,4)==at;allocations.append(at)
         C.memmove(cave,plan['code'],len(plan['code']))

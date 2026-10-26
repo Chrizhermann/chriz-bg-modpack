@@ -11,10 +11,12 @@ if (!$installation) { throw 'MSVC x64 compiler is required; no validation skippe
 $vcvars=Join-Path $installation 'VC/Auxiliary/Build/vcvars64.bat'
 New-Item -ItemType Directory -Force -Path $build | Out-Null
 $dll=Join-Path $build 'dual_native_proficiency.dll'
+# MSVC names anonymous namespaces after the compiled path: mapping this folder
+# (/pathmap needs /experimental:deterministic) lays the DLL out the same in every build folder.
 $batch=@"
 @call "$vcvars" >nul
 @if errorlevel 1 exit /b 1
-cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$sourceDir/dual_native_proficiency.cpp" "$sourceDir/dual_rules_lua.cpp" /Fe"$dll" /Fo"$build/" /link /MAP:"$build/dual_native_proficiency.map"
+cl /nologo /std:c++17 /EHs /W4 /WX /O2 /LD "$sourceDir/dual_native_proficiency.cpp" "$sourceDir/dual_rules_lua.cpp" "$sourceDir/cbm_build_inputs.cpp" /experimental:deterministic /pathmap:"$sourceDir"=research\xp-banking-native /DCBM_BUILD_INPUTS=%CBM_BUILD_INPUTS% /DCBM_BUILD_ID=%CBM_BUILD_ID% /Fe"$dll" /Fo"$build/" /link /MAP:"$build/dual_native_proficiency.map"
 @if errorlevel 1 exit /b 1
 dumpbin /nologo /exports "$dll"
 @if errorlevel 1 exit /b 1

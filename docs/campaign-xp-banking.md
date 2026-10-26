@@ -96,7 +96,7 @@ triple-class accounting is unchanged.
 
 ## Remaining limits
 
-This candidate remains experimental. Live gameplay acceptance of level-up,
+Campaign XP banking remains experimental. Live gameplay acceptance of level-up,
 Cancel/Continue and reactivation is still pending. Offline checks cover the
 accounting, actual hook instructions, saved data and installer behavior; the lab
 checks below cover startup, capping, banking and save/load on two installs. They
@@ -118,16 +118,174 @@ entries itself and restores the original memory protection. Before banking
 starts, it checks that every hook it installs, in the game or in `EEex.dll`, was
 written. XP refused under alpha.11/12 is not restored.
 
+Up to alpha.13, an XP change through the XP effect (opcode 104) that the bank
+could not take was reported to the game as failed. The game then stopped
+processing that character's later effects and tried the XP effect again on
+every pass. Script variables set behind it (opcode 187 locals) were therefore
+missing from a save and did not come back when it was loaded
+([chriz-bg-collection#19](https://github.com/Chrizhermann/chriz-bg-collection/issues/19)).
+Now no XP change the bank cannot take stops the rest of the effects:
+
+- **Applied the usual way:** if the bank fails or refuses (an error in its Lua
+  code, a character without a bank identity, an earlier XP change of that
+  character still unresolved, or a change outside the game's main thread), the
+  game applies the XP change as it would without 650. The cap still applies
+  while that character's account is in order, because the bank is computed from
+  the game's own XP. If the account itself is the fault (no identity, or an
+  unresolved earlier change, also one kept in a save), its cap check fails too,
+  and that character's XP is not capped. The loader log says once per loaded
+  game how many XP changes were applied the usual way and why the last one
+  could not be banked; nothing about it is shown in the game. On October 23,
+  2026 Christopher accepted the wording on the condition that it does not
+  appear inside the game; on October 25, 2026 he confirmed that technical
+  information goes to the loader log only.
+- **Processed a moment later:** while the game is saving, or while another XP
+  change of the same character is still in progress, the change waits without
+  holding up other effects and is processed at that character's next effect
+  update. If the character's XP or the effect changed while the bank prepared
+  the change, the bank withdraws what it had recorded and tries once more with
+  the new values; if they change again, the game applies the change the usual
+  way. The bank remembers such a retry for up to 64 changes at a time and
+  forgets a change once it is done or its character is gone; while all 64 are
+  still waiting, a further changed preparation is applied the usual way at
+  once. No change waits for good: a save or a change in progress always ends
+  first, and a script `ChangeStat` made during another change of that character
+  is applied right after it.
+- **Finished without XP:** only if what the bank recorded cannot be withdrawn
+  (it no longer matches exactly, or the bank lost track of characters
+  meanwhile, see below), the effect ends without adding XP. Its amount stays in
+  the bank's unresolved journal, as for an interrupted change, and is not added
+  twice.
+- **Nothing written:** if the bank can tell that the character itself was
+  removed or replaced while it prepared the change (it saw that character's
+  destruction or a new character at its place), nothing is written to whatever
+  now holds its place, and the bank keeps no record of it. The loader log
+  counts such changes once per loaded game (status 11); there is no notice in
+  the game.
+- **Lost track of characters:** if a character is created or destroyed outside
+  the game's main thread (see the thread audit below), the bank no longer
+  trusts any character's identity and banks nothing for the rest of the
+  session: later XP changes are applied the usual way. Restarting the game
+  restores banking for a new game and for saves made before the bank lost
+  track. Saves made after that keep every character with a bank account out of
+  banking, even after a restart: they get XP the usual way, their XP is not
+  capped, and `CBMBank_Status()` says that banking is not assigned to them.
+  Such a save could not confirm whose account is whose, so it keeps the
+  accounts set aside with their data, and nothing brings them back into banking
+  yet. A change in progress when the bank lost track is no proof that its
+  character was removed, and nothing of it is dropped. If it happened at
+  another character's place, the change is handled like one whose values
+  changed (tried once more, applied the usual way, or finished without XP as
+  above). If it happened at this character's place, the bank cannot tell
+  whether that place still holds the same character, so it writes nothing
+  there: an effect whose record cannot be withdrawn ends without XP, one
+  without a record waits and is applied the usual way at the next pass, and a
+  script `ChangeStat` is kept unapplied. The loader log lists the kept changes
+  once per loaded game (status 12); there is no notice in the game. A kept
+  change is held in memory for the session only: closing the game loses it, and
+  only the log keeps what it was.
+
+Destroying or recreating a character inside the bank's callbacks is
+prohibited. The game's code that called them (effect processing, and the stat
+update after a script `ChangeStat`) keeps using the character and the effect
+after the callback returns, which nothing in the bank can make safe; the
+nothing-written case only keeps the bank from writing into the wrong
+character. A static test (`tests/test_campaign_xp_callback_lifetime.py`)
+enforces the prohibition for the shipped Lua: it follows, by name, every
+function of the bank that the XP, cap check, party and dual-class callbacks can
+reach, and fails on any call that leaves the bank other than reviewed reads and
+records (the bank's own native queries, EEex's data and table lookups, the
+game's XP cap table, Lua string and table functions), on any call it cannot
+resolve, including a function value handed to `pcall`, `xpcall` (both of its
+functions), `table.sort` or `gsub`. Because it trusts names, a parser of the
+whole package (reachable or not) also fails on code that changes what a name
+means: rebinding a reviewed name, a function the walk follows or a module
+field it follows; binding a callback global anywhere but its hook; writing a
+field under a computed key into anything that may be one of the bank's module
+tables, however the code passed it on; calling an engine method (a CString's
+`get`, a 2DA's `getAtLabels`, a stat's `GetAtOffset`) on a value that is not
+the engine's, or a Lua string method at all; and using metatables, raw writes,
+`debug`, `_ENV` or code loading the test cannot read. It trusts the reviewed
+game and EEex functions to run no script, action or other Lua, does not model
+metatables of game objects (EEex's field reads), does not follow global names
+written by computed names (only the bank's own install and uninstall code does
+that, for its own names), and does not see what other modules or native code
+put into a table they hand over (only the configured fields, by their names,
+are taken to hold the bank's modules). The retry, the finish without XP and
+the nothing-written case are therefore safeguards; the bank's offline tests
+force each one.
+
+An XP change leaves an unresolved journal only where the bank cannot tell what
+was stored: an error, an unexpected result or a failed completion after the
+game's own XP code ran, or a prepared change that cannot be withdrawn (finished
+without XP: its amount is neither added nor banked, and the journal keeps it).
+Resolving such a journal is not implemented yet. Until it is, that character
+gets every later XP change the usual way and its XP is not capped, also after
+saving and loading, because the journal is saved with the account; the cap
+check reports it in the loader log. Nothing replays a kept amount by itself.
+A script `ChangeStat` kept unapplied because its character's place changed on
+another thread (Lost track of characters, above) is in no account: the bank
+cannot tell which character it now belongs to, so it is held natively for the
+session and listed in the loader log.
+
+Script `ChangeStat` changes to XP do not use the XP effect and cannot hold up
+other effects. One the bank refuses is no longer dropped: the game's own code
+applies it the usual way, and it is counted in the same loader-log line.
+Because the bank is computed from the game's own XP, the next cap check caps it
+again and re-derives the bank, while the account is in order.
+
+The game stores at most 4,294,967,295 XP per character; an account can hold
+more. A change the game applies the usual way that replaces the stored value (a
+`SET`, a percentage, or an addition past either end of that range) makes the
+XP the account held above it obsolete. The bank judges this by the change the
+game actually runs, also one the bank passes on without banking, and also when
+the effect changed while the bank prepared it, whether the game runs it then or
+when it is tried once more (an award that became a `SET` counts as a `SET`).
+The next cap check then sets the account to what the game stored, drops that XP
+and logs the amount; a save made before it already holds the corrected account.
+Any other change the game
+applies the usual way keeps the stored value plus that XP exact, so nothing is
+counted twice. An account with an unresolved journal keeps it unchanged; the
+saved journal notes that a later change replaced the stored value.
+
+In 2.7.3.0, script actions and effects run in the game's main loop
+(`CChitin::Update`, then the world screen's update, area and character AI, and
+effect processing). The game's other threads are the multiplayer network
+client, SDL's timer, audio, controller and rumble threads, movie decoding and
+crash reporting. `SearchThreadMain` and `CNetwork::ThreadLoop` run inside the
+main loop despite their names. EEex's only thread is its optional debug window
+(`EEex.OpenDebugWindow`), which nothing in this stack opens.
+`research/xp-banking-native/main_thread_audit.py` checks this statically
+against the pinned game executable and EEex v1.3.1's binaries;
+`main-thread-audit-2.7.3.txt` beside it is its output. It lists every thread the
+game or EEex starts and finds no resolved path from any of them to the XP code,
+the effect and AI paths into it, or the character constructors and destructor
+where EEex hooks them: a path along direct calls and jumps, switch targets, and
+the virtual calls it matches in the main loop. It fails if such a path appears.
+It does not prove that no other thread gets there. The indirect calls and jumps
+on those threads stay unresolved, so a route through them is not excluded; its
+result is therefore INCONCLUSIVE and lists each such route with its count (for
+example 103 in the lobby thread's `talk_base::Thread::PreRun` and 2,306 in the
+lobby code as a whole). The Beamdog internet lobby, which reads the engine's
+Lua state without calling Lua, possibly on its network thread, is not covered.
+The debug window's indirect call sites are not followed either, the audit is
+static only, and threads of Windows, drivers, OpenAL and Steam are not
+analysed. An XP change on another thread is applied by the game's own code
+exactly as without 650, counted in the same loader-log line but not corrected
+as above, because the bank's records belong to the main thread. A character
+created or destroyed on another thread switches banking off for the session
+(see Lost track of characters above).
+
 If banking cannot start, XP is neither capped nor banked, and Imoen's Spellhold
 XP (620) and the 237/238 recruitment catch-up behave as they did before 650 was
-installed. The reason is written to the loader log and shown in the game's
-message log once per loaded game, at the first action taken there.
-`CBMBank_Status()` repeats it.
+installed. The reason is written to the loader log. The game shows no such
+technical notice unasked (see above); `CBMBank_Status()`, run in the cheat
+console, shows the reason.
 
 The saved account retains its chosen cap policy. Changing installer selections
 is not a migration of an existing account. Existing-save repair, arbitrary
 external respecs/direct XP memory writes and automatic release before uninstall
-are outside this candidate. Removing 650 or EEex does not cash out an old-class
+are not supported. Removing 650 or EEex does not cash out an old-class
 bank; do not remove them from a run whose bank you need to keep using.
 
 ## Lab checks
@@ -146,7 +304,8 @@ EEex 1.2.0, EET with Spell Revisions), with saves copied from a real run:
 - **Startup failure** (forced with an invalid cap policy): banking did not
   start and XP stayed uncapped and unbanked. The reason appeared once in the
   message log right after loading, not again on later actions, and
-  `CBMBank_Status()` repeated it.
+  `CBMBank_Status()` repeated it. That message-log line has since been
+  removed; the loader log and `CBMBank_Status()` keep the reason.
 
 Not covered there: manual level-up, a multiclass sharing the cap, the dual-class
 level-up pages, the record screen and a campaign transition that releases XP.
@@ -182,6 +341,22 @@ checked against the first phase of its own cap policy.
 Chapters were set directly and XP was given from the console, not through
 story progression. Manual level-up, multiclass characters and the record
 screen were not covered.
+
+October 26, on the same copy as on October 20, with the alpha.14 release
+candidate's package (650, 651 and 430):
+
+- **Banking:** a party award in an SoA save kept the main character's usable XP
+  at 2,950,000 and banked that character's share; the two others, below the
+  cap, got theirs.
+- **Script variables
+  ([#19](https://github.com/Chrizhermann/chriz-bg-collection/issues/19)):** with
+  the bank forced to refuse every XP effect, a party award was applied the usual
+  way, and the main character's usable XP stayed at the cap. The loader log got
+  one line counting the three changes; nothing appeared in the game. Two script
+  variables set on the main character right after that award were there at
+  once, and a save made while the refusal was still forced kept both, loaded in
+  the same and in a new game process. With the refusal lifted, the next awards
+  were banked again.
 
 ## Short check for later
 

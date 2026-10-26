@@ -25,7 +25,14 @@ int stage_text(lua_State* L) {
     if (!valid) CBMS_EEexRejectEnvelope("actor envelope binding requires CGameSprite and bounded string");
     lua_pushboolean(L, status); lua_pushstring(L, CBMS_EEexBridgeError()); return 2;
 }
-int finished(lua_State* L) { lua_pushboolean(L, CBMS_EEexImportFinished(actor(L))); return 1; }
+int finished(lua_State* L) {
+    auto* sprite = actor(L);
+    lua_pushboolean(L, CBMS_EEexImportFinished(sprite));
+    // Second result: why this actor's outdated envelope was dropped, or nil.
+    if (const char* dropped = CBMS_EEexImportDropped(sprite)) lua_pushstring(L, dropped);
+    else lua_pushnil(L);
+    return 2;
+}
 int healthy(lua_State* L) { lua_pushboolean(L, CBMS_EEexBridgeHealthy()); return 1; }
 int actor_uuid(lua_State* L) {
     auto* sprite = actor(L);

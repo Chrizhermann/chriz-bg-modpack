@@ -6,6 +6,7 @@
 #include "decode_binding.hpp"
 #include "marshal_binding.hpp"
 #include "lifecycle_binding.hpp"
+#include "action_witness.hpp"
 #include <cstring>
 
 using namespace cbm::scroll;
@@ -29,9 +30,13 @@ struct CBMS_Runtime {
     struct EffectLoad { EffectImport importer; std::optional<SavedEffectArchive> archive; std::size_t next{}; bool failed{}; };
     std::unordered_map<Address, EffectSave> effect_exports;
     std::unordered_map<Address, std::unique_ptr<EffectLoad>> effect_imports;
+    ActionWitnesses witnesses;
     explicit CBMS_Runtime(CBMS_Resolve r, CBMS_Report p, void* u) : resolve(r), report(p), user(u) {}
     ~CBMS_Runtime() { while (!casts.empty()) casts.pop_back(); }
     void failure(const char* message) noexcept {
+        // Every reported error disables every later override, including those
+        // whose ownership was queued or captured before it.
+        registry.disable();
         // A reporter may call a failing API itself. Preserve the first error
         // and never recursively report the reporter's own failures.
         if (reporting) return;
@@ -59,10 +64,22 @@ struct CBMS_Runtime {
         if (serial == UINT64_MAX) throw std::overflow_error("native scroll token exhausted");
         return serial++;
     }
+    std::size_t sweep_witnesses() {
+        return witnesses.sweep([&](Address key) {
+            if (auto handle = registry.find(Kind::Action, key)) registry.destroyed(*handle);
+        });
+    }
 };
 static Kind kind(uint32_t value) {
     if (value > 3) throw std::invalid_argument("invalid native scroll object kind");
     return static_cast<Kind>(value);
+}
+// Engine-address lifetimes. CAIAction ownership is carried by value; an action
+// address registration could never observe its inline end and would go stale.
+static Kind address_kind(uint32_t value) {
+    const auto result = kind(value);
+    if (result == Kind::Action) throw std::invalid_argument("CAIAction ownership is value-carried; actions have no address lifetime");
+    return result;
 }
 static Selector selector(uint32_t value) {
     if (value > 6) throw std::invalid_argument("invalid native scroll selector");
@@ -80,8 +97,9 @@ static ResRef resref(const char* value) {
 template<class F> static int guarded(CBMS_Runtime* runtime, F&& callback) noexcept {
     if (!runtime) return -1;
     // Do not race the error buffer or call an engine-thread reporter from a
-    // foreign thread. LastError exposes this violation without touching state.
-    if (!runtime->registry.on_owner_thread()) return -1;
+    // foreign thread. LastError exposes this violation; only the process-wide
+    // latch changes, and it disables every later override.
+    if (!runtime->registry.on_owner_thread()) { foreign_entry.store(true); return -1; }
     try { runtime->registry.frame_count(); return callback(); }
     catch (const std::exception& error) { runtime->failure(error.what()); }
     catch (...) { runtime->failure("unknown native scroll error"); }
@@ -194,9 +212,10 @@ int CBMS_Destroy(CBMS_Runtime* runtime) {
     const auto result = guarded(runtime, [&] {
         if (runtime->reporting)
             throw std::logic_error("cannot destroy native scroll runtime inside its reporter");
-        if (!runtime->uses.empty() || !runtime->casts.empty() || !runtime->captured.empty() || runtime->registry.owned_carriers() ||
-            !runtime->effect_exports.empty() || !runtime->effect_imports.empty())
+        if (!runtime->uses.empty() || !runtime->casts.empty() || !runtime->captured.empty() || runtime->sweep_witnesses() ||
+            runtime->registry.owned_carriers() || !runtime->effect_exports.empty() || !runtime->effect_imports.empty())
             throw std::logic_error("cannot destroy native scroll runtime with pending contexts");
+        runtime->witnesses.audit(); // every retired block, not one batch
         return 1;
     });
     if (result == 1) delete runtime;
@@ -208,10 +227,10 @@ const char* CBMS_LastError(CBMS_Runtime* runtime) {
     return runtime->error.data();
 }
 int CBMS_Construct(CBMS_Runtime* runtime, uint32_t type, uintptr_t object) {
-    return guarded(runtime, [&] { runtime->registry.born(kind(type), object); return 1; });
+    return guarded(runtime, [&] { runtime->registry.born(address_kind(type), object); return 1; });
 }
 int CBMS_Destruct(CBMS_Runtime* runtime, uint32_t type, uintptr_t object) {
-    return guarded(runtime, [&] { runtime->registry.destroyed(runtime->get(kind(type), object)); return 1; });
+    return guarded(runtime, [&] { runtime->registry.destroyed(runtime->get(address_kind(type), object)); return 1; });
 }
 int CBMS_ActorUUID(CBMS_Runtime* runtime, uintptr_t reader, uint64_t uuid) {
     return guarded(runtime, [&] { runtime->registry.actor_uuid(runtime->get(Kind::Actor, reader), uuid); return 1; });
@@ -321,13 +340,23 @@ int CBMS_StageEffectImportText(CBMS_Runtime* runtime, uintptr_t actor, const cha
         return 1;
     });
 }
-int CBMS_FinishEffectImport(CBMS_Runtime* runtime, uintptr_t actor) {
+int CBMS_FinishEffectImport(CBMS_Runtime* runtime, uintptr_t actor, char* dropped, uint32_t capacity) {
     return guarded(runtime, [&] {
+        if (!dropped || capacity < 2) throw std::invalid_argument("effect import needs a drop reason buffer");
         auto& load = *runtime->effect_imports.at(actor);
         if (load.failed) throw std::logic_error("cannot finish rejected actor effect envelope");
-        if (load.archive) load.importer.restore(*load.archive);
+        // A refused restore is final: only cancellation follows, never a retry
+        // that could read differently once overrides are off.
+        load.failed = true;
+        std::optional<std::string> stale;
+        if (load.archive) stale = load.importer.restore(*load.archive);
         runtime->effect_imports.erase(actor);
-        return 1;
+        dropped[0] = '\0';
+        if (!stale) return 1;
+        // Only this actor's outdated envelope goes; nothing is disabled.
+        const auto n = (std::min)(stale->size(), static_cast<std::size_t>(capacity - 1));
+        std::memcpy(dropped, stale->data(), n); dropped[n] = '\0';
+        return 2;
     });
 }
 int CBMS_AbortEffectExport(CBMS_Runtime* runtime, uintptr_t actor) {
@@ -366,27 +395,36 @@ int CBMS_ItemEnd(CBMS_Runtime* runtime, uint64_t use) {
     return guarded(runtime, [&] { if (!runtime->uses.erase(use)) throw std::logic_error("unknown item-use scope"); return 1; });
 }
 int CBMS_Copy(CBMS_Runtime* runtime, uint32_t type, uintptr_t source, uintptr_t destination) {
-    return guarded(runtime, [&] { runtime->registry.copy(runtime->get(kind(type), source), runtime->get(kind(type), destination)); return 1; });
+    return guarded(runtime, [&] { runtime->registry.copy(runtime->get(address_kind(type), source), runtime->get(address_kind(type), destination)); return 1; });
 }
-int CBMS_ActionCopied(CBMS_Runtime* runtime, uintptr_t source, uintptr_t destination, uint32_t construction) {
+int CBMS_StampActionWitness(CBMS_Runtime* runtime, uintptr_t effect, uint32_t opcode, uint32_t mode, uint32_t special, uintptr_t field, uintptr_t empty) {
     return guarded(runtime, [&] {
-        if (!source || !destination || construction > 1) throw std::invalid_argument("invalid native action copy event");
-        auto from = runtime->registry.find(Kind::Action, source);
-        auto to = runtime->registry.find(Kind::Action, destination);
-        if (construction && (to || source == destination))
-            throw std::logic_error("copied action construction overlaps an existing lifetime");
-        if (!from) from = runtime->registry.born(Kind::Action, source);
-        if (!to) to = source == destination ? from : std::optional<Handle>(runtime->registry.born(Kind::Action, destination));
-        runtime->registry.copy(*from, *to);
+        if (runtime->registry.disabled()) return 0; // the field keeps the native sentinel
+        const auto path = route(opcode, mode, special);
+        if (path.direct || path.carrier != Kind::Action) throw std::invalid_argument("action witness needs a queued action route");
+        const auto source = runtime->get(Kind::Effect, effect);
+        if (!runtime->registry.context(source)) throw std::logic_error("unowned dispatcher cannot stamp an action witness");
+        runtime->sweep_witnesses();
+        runtime->witnesses.stamp(field, empty, [&](Address key) {
+            const auto carrier = runtime->registry.born(Kind::Action, key);
+            try { runtime->registry.dispatch(source, carrier, path.selector); }
+            catch (...) { runtime->registry.destroyed(carrier); throw; }
+        });
         return 1;
     });
 }
-int CBMS_ActionBeforeDestroy(CBMS_Runtime* runtime, uintptr_t action) {
+int CBMS_ActionWitnessCarrier(CBMS_Runtime* runtime, uintptr_t value, uintptr_t* carrier) {
     return guarded(runtime, [&] {
-        if (!action) throw std::invalid_argument("null native action destruction event");
-        if (auto handle = runtime->registry.find(Kind::Action, action)) runtime->registry.destroyed(*handle);
+        if (!carrier) throw std::invalid_argument("null action witness output");
+        if (!runtime->witnesses.contains(value)) return 0;
+        const auto found = runtime->registry.find(Kind::Action, value);
+        if (!found || !runtime->registry.context(*found)) return 0;
+        *carrier = value;
         return 1;
     });
+}
+int CBMS_SweepActionWitnesses(CBMS_Runtime* runtime) {
+    return guarded(runtime, [&] { return static_cast<int>(runtime->sweep_witnesses()); });
 }
 int CBMS_EffectCopied(CBMS_Runtime* runtime,uintptr_t source,uintptr_t destination) {
     return guarded(runtime,[&] {
@@ -400,15 +438,15 @@ int CBMS_EffectCopied(CBMS_Runtime* runtime,uintptr_t source,uintptr_t destinati
 int CBMS_DestructObserved(CBMS_Runtime* runtime,uint32_t type,uintptr_t object) {
     return guarded(runtime,[&] {
         if(!object) throw std::invalid_argument("null native destruction event");
-        if(auto handle=runtime->registry.find(kind(type),object)) runtime->registry.destroyed(*handle);
+        if(auto handle=runtime->registry.find(address_kind(type),object)) runtime->registry.destroyed(*handle);
         return 1;
     });
 }
 int CBMS_Dispatch(CBMS_Runtime* runtime, uintptr_t effect, uint32_t opcode, uint32_t mode, uint32_t special, uint32_t carrier_kind, uintptr_t carrier) {
     return guarded(runtime, [&] {
         auto path = route(opcode, mode, special);
-        if (path.direct || path.carrier != kind(carrier_kind)) throw std::invalid_argument("queued route mismatch");
-        runtime->registry.dispatch(runtime->get(Kind::Effect, effect), runtime->get(kind(carrier_kind), carrier), path.selector);
+        if (path.direct || path.carrier != address_kind(carrier_kind)) throw std::invalid_argument("queued route mismatch");
+        runtime->registry.dispatch(runtime->get(Kind::Effect, effect), runtime->get(address_kind(carrier_kind), carrier), path.selector);
         return 1;
     });
 }
@@ -439,7 +477,8 @@ int CBMS_ContinueCastOwner(CBMS_Runtime* runtime,uint64_t parent,uint32_t path,u
         if(found==runtime->captured.end()||!((found->second.selector==Selector::Spell&&route==Selector::Fire)||
             (found->second.selector==Selector::SpellPoint&&route==Selector::FirePoint)))
             throw std::logic_error("unsupported native extra-target cast continuation");
-        auto value=found->second.context;if(value)value->pending_selector.reset();const auto id=runtime->token();const bool owned=value.has_value();
+        auto value=runtime->registry.disabled()?std::nullopt:found->second.context;
+        if(value)value->pending_selector.reset();const auto id=runtime->token();const bool owned=value.has_value();
         runtime->captured.emplace(id,CBMS_Runtime::Captured{route,std::move(value)});*capture=id;return owned?1:0;
     });
 }
@@ -533,5 +572,15 @@ int CBMS_EndCast(CBMS_Runtime* runtime, uint64_t frame) {
 }
 int CBMS_Quiescent(CBMS_Runtime* runtime) {
     return guarded(runtime, [&] { return runtime->uses.empty() && runtime->casts.empty() && runtime->captured.empty() &&
-        !runtime->registry.owned_carriers() && runtime->effect_exports.empty() && runtime->effect_imports.empty() ? 1 : 0; });
+        !runtime->sweep_witnesses() && !runtime->registry.owned_carriers() && runtime->effect_exports.empty() &&
+        runtime->effect_imports.empty() ? 1 : 0; });
 }
+void CBMS_DisableOverrides(CBMS_Runtime* runtime) { if (runtime) runtime->registry.disable(); }
+int CBMS_OverridesDisabled(CBMS_Runtime* runtime) { return !runtime || runtime->registry.disabled() ? 1 : 0; }
+void CBMS_ForeignEntry() { foreign_entry.store(true); }
+int CBMS_ForeignEntrySeen() { return foreign_entry.load() ? 1 : 0; }
+#ifdef CBMS_OFFLINE_HARNESS
+int CBMS_TestLimitActionWitnesses(CBMS_Runtime* runtime, uint32_t total) {
+    return guarded(runtime, [&] { runtime->witnesses.limit(total); return 1; });
+}
+#endif

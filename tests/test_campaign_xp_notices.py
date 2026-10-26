@@ -17,7 +17,10 @@ def function(source,name):
 
 @pytest.fixture(params=["lua51","luajit21"])
 def runtime(request):
-    if not (EEEX/"EEex_Action.lua").exists():pytest.skip("Pinned EEex source needed for actual listener/keyboard implementation")
+    if not (EEEX/"EEex_Action.lua").exists():
+        # CI sets CBM_EEEX_SOURCE to the pinned scripts it fetched, so there a missing file is a failure, not a skip.
+        if "CBM_EEEX_SOURCE" in os.environ:pytest.fail("CBM_EEEX_SOURCE has no EEex/copy/EEex_scripts/EEex_Action.lua")
+        pytest.skip("Pinned EEex source needed for actual listener/keyboard implementation")
     lua=import_module("lupa."+request.param).LuaRuntime(unpack_returned_tuples=True)
     lua.globals().N=lua.execute((ROOT/"research/xp-banking-native/bank_notice.lua").read_text())
     lua.execute('''
@@ -138,4 +141,139 @@ def test_unowned_or_unreadable_notice_data_stays_out_of_accounting(runtime):
       actor.unowned=false;pendingError=true
       EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
       assert(#displayed==0 and #actor.queue==2 and actor.xp==500000 and #reported==1)
+    ''')
+
+def test_only_the_banks_notices_and_the_status_request_display_anything():
+    # Christopher (2026-10-25): no technical notices in the game. The fallback,
+    # ended-lifetime and kept-write counts go to the loader log only; the module
+    # shows the bank's own notices and the status the player asks for.
+    source=(ROOT/"research/xp-banking-native/bank_notice.lua").read_text()
+    rest=source
+    for name in ("M.Flush","M.Status","M.Install"):
+        rest=rest.replace(function(source,name),"")
+    assert "Infinity_DisplayString" not in rest
+    install=function(source,"M.Install")
+    assert install.count("Infinity_DisplayString")==1 and 'type(Infinity_DisplayString)=="function"' in install
+
+def test_native_fallback_is_logged_once_per_loaded_game_and_never_shown(runtime):
+    # CEBG #19: a refused opcode-104 change runs the game's own effect. The
+    # count is process-wide; each loaded game logs its first one only, and the
+    # game shows nothing of it.
+    runtime.execute('''
+      fallbacks={total=0,award=0,writer=0}
+      local provider=function()return fallbacks.total,fallbacks.award,fallbacks.writer end
+      EEex_Action_AddSpriteStartedActionListener(function()actionContinuations=actionContinuations+1 end)
+      N.Install{researchOnly=true,runtime=R,reset=reset,fallbacks=provider};actor.unowned=true
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==0 and actionContinuations==1)
+      fallbacks.total=2;fallbacks.award=5
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and actionContinuations==2)
+      assert(#reported==1 and reported[1]:find('2 XP changes in this game (2 since launch)',1,true)
+       and reported[1]:find('award: the bank refused it',1,true))
+      -- The count includes ChangeStat setter writes, which are not effects.
+      assert(reported[1]:find("ran the game's own code without the bank",1,true))
+      fallbacks.total=3;fallbacks.writer=4
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==1 and actionContinuations==3)
+      N.ResetGame() -- the next loaded game counts from here
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==1)
+      fallbacks.total=4
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==2 and reported[2]:find('1 XP change in this game (4 since launch)',1,true))
+      assert(reported[2]:find('write: an earlier XP change awaits reconciliation',1,true)and actor.xp==500000)
+      assert(N.Remove()and #EEex_Action_Private_SpriteStartedActionListeners==1)
+    ''')
+
+def test_native_fallback_reasons_name_every_setter_outcome(runtime):
+    # A refused stat44 setter write (script ChangeStat) is the game's own write,
+    # counted with the writer bridge; the log line names each new reason.
+    runtime.execute('''
+      fallbacks={total=0,award=0,writer=0}
+      local provider=function()return fallbacks.total,fallbacks.award,fallbacks.writer end
+      N.Install{researchOnly=true,runtime=R,reset=reset,fallbacks=provider};actor.unowned=true
+      local reasons={[7]='it did not finish normally and its journal awaits reconciliation',
+       [8]='it changed while the bank prepared it',[9]='the game was saving',
+       [10]='another XP change of that character was in progress'}
+      for status=7,10 do
+       N.ResetGame();fallbacks.total=fallbacks.total+1;fallbacks.writer=status
+       EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+       assert(reported[#reported]:find('write: '..reasons[status],1,true))
+      end
+      assert(#displayed==0 and #reported==4)
+      assert(N.Remove())
+    ''')
+
+def test_ended_lifetime_changes_get_their_own_line_and_no_notice(runtime):
+    # Status 11: the actor's lifetime ended while the bank prepared the change,
+    # so nothing ran and nothing was written. That is no fallback: one log line
+    # of its own per loaded game, and nothing in the game.
+    runtime.execute('''
+      counts={total=0,award=0,writer=0,ended=0}
+      local provider=function()return counts.total,counts.award,counts.writer,counts.ended end
+      N.Install{researchOnly=true,runtime=R,reset=reset,fallbacks=provider};actor.unowned=true
+      counts.ended=1;EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==1)
+      assert(reported[1]:find('1 XP change in this game (1 since launch) wrote nothing',1,true)
+       and reported[1]:find('lifetime ended while the bank prepared it (status 11)',1,true))
+      counts.ended=3;EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor);assert(#reported==1)
+      counts.total=1;counts.writer=5;EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==2 and reported[2]:find("ran the game's own code without the bank",1,true))
+      N.ResetGame();counts.ended=5;EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==3 and reported[3]:find('2 XP changes in this game (5 since launch) wrote nothing',1,true)
+       and reported[3]:find('prepared them',1,true))
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor);assert(#reported==3)
+      counts.ended='broken';local ok=N.FlushFallbacks() -- a malformed count disables the lines quietly
+      assert(not ok and #reported==4 and reported[4]:find('ended-lifetime count unavailable',1,true))
+      assert(N.Remove())
+    ''')
+
+def test_kept_setter_writes_get_their_own_line_and_no_notice(runtime):
+    # Status 12: another thread created or destroyed a character at the address
+    # of the character a setter write was meant for, so the bank kept the write
+    # unapplied rather than write into what may be another character. That is
+    # no fallback: one log line of its own per loaded game that lists what was
+    # kept, and nothing in the game.
+    runtime.execute('''
+      counts={total=0,award=0,writer=0,ended=0,kept=0,list=''}
+      local provider=function()return counts.total,counts.award,counts.writer,counts.ended,counts.kept,counts.list end
+      N.Install{researchOnly=true,runtime=R,reset=reset,fallbacks=provider};actor.unowned=true
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor);assert(#displayed==0 and #reported==0)
+      counts.kept=1;counts.list='add 1000';EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==1)
+      assert(reported[1]:find('1 XP setter write in this game (1 since launch: add 1000) was kept and not applied',1,true)
+       and reported[1]:find('at the address of the character it was meant for',1,true)
+       and reported[1]:find('(status 12)',1,true)and reported[1]:find('until the game restarts',1,true))
+      counts.kept=2;counts.list='add 1000, set 54321';EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#reported==1)
+      -- A fallback in the same game still gets its own line.
+      counts.total=1;counts.award=3;EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==2 and reported[2]:find("ran the game's own code without the bank",1,true))
+      N.ResetGame();counts.kept=4;counts.list='add 1000, set 54321, set 1, add 2'
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(#displayed==0 and #reported==3 and reported[3]:find(
+       '2 XP setter writes in this game (4 since launch: add 1000, set 54321, set 1, add 2) were kept',1,true)
+       and reported[3]:find('at the addresses of the characters they were meant for',1,true))
+      EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor);assert(#reported==3)
+      counts.kept='broken';local ok=N.FlushFallbacks() -- a malformed count disables the lines quietly
+      assert(not ok and #reported==4 and reported[4]:find('kept-write count unavailable',1,true))
+      assert(N.Remove())
+    ''')
+
+def test_native_fallback_line_needs_no_display_and_broken_count_disables_quietly(runtime):
+    runtime.execute('''
+      local total,calls=1,0
+      local provider=function()calls=calls+1;if total==nil then error('count unavailable')end return total,5,0 end
+      N.Install{researchOnly=true,runtime=R,reset=reset,fallbacks=provider};actor.unowned=true
+      displayError=true -- nothing is displayed, so a failing display changes nothing
+      local ok,n=N.FlushFallbacks();assert(ok and n==1 and #displayed==0 and #reported==1)
+      local seen=calls;ok,n=N.FlushFallbacks()
+      assert(ok and n==0 and calls==seen and #reported==1) -- logged once; nothing more to read in this game
+      total=nil;N.ResetGame() -- a broken count disables these lines, never actions
+      assert(#reported==2 and reported[2]:find('count unavailable',1,true))
+      seen=calls;ok=N.FlushFallbacks();EEex_Action_LuaHook_OnAfterSpriteStartedAction(actor)
+      assert(ok and calls==seen and #displayed==0 and #reported==2)
+      assert(N.Remove()and not pcall(N.Install,{researchOnly=true,runtime=R,reset=reset,fallbacks=7}))
+      assert(not N.installed and CBMBank_Status==nil and #EEex_Action_Private_SpriteStartedActionListeners==0)
     ''')

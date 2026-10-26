@@ -17,7 +17,8 @@ def host(request):
     lua=import_module("lupa."+request.param).LuaRuntime(unpack_returned_tuples=True)
     lua.globals().research=str(ROOT.parent).replace("\\","/")
     lua.execute(r'''
-        memory={}; original={}; labels={}; writes=0; patches=0; exposed=0
+        memory={}; original={}; labels={}; writes=0; patches=0; exposed=0; nativeFallbacks=0
+        nativeEnded=0; nativeKept=0; nativeKeptList=''; nativeReplaced=false; acks={}
         protected=true; log={}; nextJIT=0x141000000; heap=0x800000; procs={}
         images={}; protections={}; granules={}; flushes={}; protects=0; lifetimeAt={}
         local base,eeex=0x140000000,0x7ff000000000
@@ -219,8 +220,15 @@ def host(request):
         function EEex_ExposeToLua(_,name)
             exposed=exposed+1
             if failExpose==exposed then error('injected expose failure') end
-            _G[name]=function()
-                return 'world','world','1',string.rep('a',32),false,true,true
+            _G[name]=function(...)
+                -- CBMA_LuaFallbacks pushes its total, last reasons, ended and kept
+                -- counts and the kept list as text.
+                if name=='CBMBank_AwardNativeFallbacks' then
+                    return tostring(nativeFallbacks),'5','0',tostring(nativeEnded),tostring(nativeKept),nativeKeptList
+                end
+                -- CBMI_LuaAckReplaced clears the queried lifetime's replaced-word note.
+                if name=='CBMBank_IdentityNativeAckReplaced' then acks[#acks+1]={...};nativeReplaced=false;return true end
+                return 'world','world','1',string.rep('a',32),false,true,true,nativeReplaced
             end
         end
         function EEex_HookReplaceFunctionMaintainOriginal(at,span,label,target)
@@ -315,6 +323,65 @@ def test_actual_bootstrap_inert_then_connects_real_modules(host):
         local other={pointer=0x654321,aux={},m_baseStats=a.m_baseStats,m_startTypeAI={m_Class=2}}
         handler.importer(other,saved)
         assert(bank.runtime.Snapshot(other,8000000).activeBank==439000)
+        -- Native opcode-104 fallbacks reach the notice module through the actual
+        -- wiring: one loader-log line per loaded game, counted again after the game
+        -- is destroyed, and nothing shown in the game. Each game's line reaches the
+        -- log through the runtime's repeat filter.
+        assert(bank.notices.fallbacks==bank.award.Fallbacks)
+        local printed={};print=function(text)printed[#printed+1]=tostring(text)end
+        local function count(lines,text) local n=0;for _,line in ipairs(lines) do if line:find(text,1,true) then n=n+1 end end;return n end
+        local function logged() return count(printed,'without the bank') end
+        EEex_Action_Private_SpriteStartedActionListeners[1](a);assert(logged()==0)
+        local shown=#log -- What the first action showed: only the bank's own notices for a.
+        for _,line in ipairs(log) do assert(not line:find('loader log',1,true),line) end
+        nativeFallbacks=1;EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        EEex_Action_Private_SpriteStartedActionListeners[1](a);assert(logged()==1 and #log==shown)
+        EEex_GameState_DestroyedListeners[1]();EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        assert(logged()==1 and #log==shown)
+        nativeFallbacks=2;EEex_Action_Private_SpriteStartedActionListeners[1](a);assert(logged()==2 and #log==shown)
+        assert(count(printed,"ran the game's own code without the bank")==2)
+        -- A change whose lifetime ended during preparation wrote nothing: its own
+        -- line, once per game, and nothing in the game.
+        nativeEnded=1;EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        assert(count(printed,'wrote nothing')==1 and logged()==2 and #log==shown)
+        -- A setter write kept unwritten (status 12): its own line, once per game,
+        -- listing it, and nothing in the game.
+        nativeKept=1;nativeKeptList='add 1000';EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        EEex_Action_Private_SpriteStartedActionListeners[1](a)
+        assert(count(printed,'(1 since launch: add 1000) was kept and not applied')==1 and logged()==2 and #log==shown)
+        -- The native pushes the kept count and list too: without either, the counts
+        -- are unavailable, not those of a source that keeps nothing.
+        for _,broken in ipairs({{nil,'add 1000'},{'x','add 1000'},{1,nil},{1,7}}) do
+            nativeKept,nativeKeptList=broken[1],broken[2]
+            local total,why=bank.award.Fallbacks()
+            assert(total==nil and why=='Native XP fallback count unavailable')
+        end
+        nativeKept,nativeKeptList=1,'add 1000'
+    ''')
+
+
+def test_actual_bootstrap_settles_a_replaced_word_through_the_identity_note(host):
+    # The identity query's 8th value reaches the runtime. The next cap check
+    # publishes the stored word and acknowledges the note for that address and
+    # lifetime; a save before it already writes the matched account.
+    host.execute('''
+        local bank=bootstrap()
+        local a={pointer=0x123456,aux={},m_baseStats={m_xp=1000,m_flags=0,m_level1=1},
+            m_startTypeAI={m_Class=2},m_derivedStats={m_nXP=1000}}
+        EEex_Sprite_LoadedListeners[1](a)
+        local s=a.aux.CBMBank;a.m_baseStats.m_xp=4294967295;s.overflow=199905 -- as a banked award past the word leaves it
+        local printed={};print=function(text)printed[#printed+1]=tostring(text)end
+        nativeReplaced=true;a.m_baseStats.m_xp=100000 -- the game's own SET after a refusal
+        local saved=EEex_Sprite_Private_MarshalHandlers.CBMBank.exporter(a)
+        assert(saved.overflow==0 and saved.revision==s.revision+1)
+        assert(a.aux.CBMBank==s and s.overflow==199905 and #acks==0)
+        a.m_derivedStats.m_nXP=100000;CBMBank_BeforeNativeClamp(a,8000000)
+        assert(a.aux.CBMBank.overflow==0 and a.aux.CBMBank.revision==s.revision+1)
+        assert(#acks==1 and acks[1][1]=='123456' and acks[1][2]=='1' and not nativeReplaced)
+        local found=0
+        for _,line in ipairs(printed) do if line:find('199905 XP the bank held above',1,true) then found=found+1 end end
+        assert(found==1 and bank.runtime.Snapshot(a,8000000).total==100000 and #acks==1)
     ''')
 
 
@@ -322,8 +389,8 @@ def test_actual_bootstrap_inert_then_connects_real_modules(host):
 # award (7), cap (8) and progression (9+) follow. The two EEex.dll entries are
 # ours: VirtualProtect calls 1-2 seal their relays, 3-6 surround their writes.
 @pytest.mark.parametrize("failure",["failPatch=1","failPatch=4","failPatch=5","failPatch=6","failPatch=7","failPatch=8",
-                                     "failPartyWrite=true","failLoaded=true","failExpose=1","failExpose=3","failExpose=4",
-                                     "failExpose=7","failAddress=writerAt+7","failAddress=removeAt+2","failAddress=previewAt+3",
+                                     "failPartyWrite=true","failLoaded=true","failExpose=1","failExpose=2","failExpose=4",
+                                     "failExpose=5","failExpose=8","failAddress=writerAt+7","failAddress=removeAt+2","failAddress=previewAt+3",
                                      "failAddress=manualAt","failAddress=hlaAt","failAddress=entryAt","failMenuListener=true",
                                      "failNoticeListener=true","failAddress=lifetimeAt.construct+2","failAddress=lifetimeAt.destruct",
                                      "failProtect=1","failProtect=4","failProtect=6"])

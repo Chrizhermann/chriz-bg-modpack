@@ -3,14 +3,22 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.13`
+**Release:** `v0.2.0-alpha.14`
 
-Alpha.13 makes campaign XP banking (**650/651**) work on EEex 1.2.0 and v1.3.1.
-It adds optional chapter-by-chapter XP caps (**652**, experimental), EET's
+Alpha.14 keeps reader-level scroll casting (**430**) on for the whole session;
+alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or
+an opened container. With campaign XP banking (**650**), a character's script
+variables no longer go missing from saves after the bank could not take one of
+that character's XP changes. Both write technical information to the loader log
+only, except one 430 message box in a case never seen in a game. Collection
+selection is decided separately. See the
+[release notes](docs/releases/v0.2.0-alpha.14.md).
+
+Alpha.13 made campaign XP banking (**650/651**) work on EEex 1.2.0 and v1.3.1.
+It added optional chapter-by-chapter XP caps (**652**, experimental), EET's
 join-XP ladder for NPCs that lack it (**239**), a fix for the crash after
-Dorn's ambush (**135**) and a party-AI Defensive Stance fix (**460**).
-Collection selection is decided separately. See the
-[release notes](docs/releases/v0.2.0-alpha.13.md).
+Dorn's ambush (**135**) and a party-AI Defensive Stance fix (**460**). See the
+[banking guide](docs/campaign-xp-banking.md).
 
 Alpha.12 added independently selectable **230**-**234**, optional base
 ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle.
@@ -261,8 +269,12 @@ clicking the record-screen checkbox.
 
 Components `650`-`652`, `239`, `135` and `460` were checked in game for alpha.13
 on a disposable copy of the collection's Recommended install (2.7.3.0, EEex
-v1.3.1). The [release notes](docs/releases/v0.2.0-alpha.13.md) and the
-component guides list what was covered and what is still open.
+v1.3.1). The component guides list what was covered and what is still open.
+
+For alpha.14, `430` and `650` were checked in game on disposable lab installs
+(2.7.3.0, EEex v1.3.1), also together from the release candidate's package. The
+[release notes](docs/releases/v0.2.0-alpha.14.md) list what was covered and
+what is still open.
 
 ## License
 

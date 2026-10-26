@@ -28,7 +28,9 @@ def lua(request):
         function CBMS_NativeHealthy() return health end
         function CBMS_NativeStage(sprite, text) staged=text; return health, "refused" end
         function CBMS_NativeExport(sprite) return exported, "export failed" end
-        function CBMS_NativeImportFinished(sprite) return finished end
+        function CBMS_NativeImportFinished(sprite) return finished, dropped end
+        printed = {}
+        function print(text) printed[#printed+1] = text end
         function CBMS_NativeActorUUID(sprite, low, high)
             uuidLow, uuidHigh=low,high; finished=true; return true
         end
@@ -55,6 +57,47 @@ def test_known_envelope_waits_for_native_commit(lua):
         assert(actor.aux.CBMS_ScrollMarshal.raw == nil)
         local out=handler.exporter(actor)
         assert(out.schema==1 and out.payload==exported and #rejects==0)
+    ''')
+
+
+def loaded_actor(display, strref, script, low, high):
+    """Fields as a loaded listener sees them: the display name is usually still empty."""
+    return ('{m_sName={m_pchData={get=function() return "%s" end}},m_baseStats={m_name=%d},'
+            'm_scriptName={get=function() return "%s" end},'
+            'm_pLocalVariables={find=function(_,k) assert(k=="EEEX_UUID") return {m_intValue=%d,m_dWValue=%d} end}}'
+            % (display, strref, script, low, high))
+
+
+@pytest.mark.parametrize("name,shown", [
+    (loaded_actor("", 268, "O#XAN", 0xAC, 0), "Xan (O#XAN, UUID AC)"),  # an NPC: its creature name string
+    (loaded_actor("", 0xFFFFFFFF, "None", 0x3F, 0), "actor UUID 3F"),  # a protagonist: no name string yet
+    (loaded_actor("Imoen", 16453, "IMOEN2", -1, 1), "Imoen (IMOEN2, UUID 1FFFFFFFF)"),
+    ('{}', "an actor"),
+])
+def test_outdated_envelope_drop_is_logged_and_not_saved_again(lua, name, shown):
+    lua.execute('function Infinity_FetchString(strref) return ({[268]="Xan",[16453]="Imoen"})[strref] or "" end')
+    lua.execute(f'for k,v in pairs({name}) do actor[k]=v end')
+    lua.execute('''
+        envelope={schema=1,payload="CBMSFX01:123456789ABCDEF0"}
+        handler.importer(actor,envelope)
+        finished, dropped = true, "saved effect record count mismatch (saved 72, loaded 83)"
+        listeners[1](actor)
+        assert(actor.aux.CBMS_ScrollMarshal.raw == nil and health and #rejects==0)
+        exported=""
+        assert(handler.exporter(actor)==nil) -- nothing stale is written again
+    ''')
+    assert list(lua.eval('printed').values()) == [
+        f"[CBM scroll] Dropped outdated scroll data for {shown} only: saved effect record count mismatch "
+        "(saved 72, loaded 83). Its effects keep their levels; spells they cast later use the normal level."]
+
+
+def test_refused_import_logs_no_drop_and_keeps_envelope(lua):
+    lua.execute('''
+        envelope={schema=1,payload="CBMSFX01:123456789ABCDEF0"}
+        handler.importer(actor,envelope)
+        finished, dropped = false, nil
+        listeners[1](actor)
+        assert(actor.aux.CBMS_ScrollMarshal.raw == envelope and #printed==0)
     ''')
 
 

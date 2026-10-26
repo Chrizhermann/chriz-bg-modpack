@@ -9,7 +9,7 @@ from pathlib import Path
 import pefile
 from unicorn import Uc,UC_ARCH_X86,UC_MODE_64,UC_HOOK_CODE
 from unicorn.x86_const import *
-from dual_proficiency_probe import load,EXES,SOURCE,fnv,cstring
+from dual_proficiency_probe import load,EXES,SOURCE,fnv,cstring,keep_or_write
 from dual_old_skill_limits import inventory
 ROOT=Path(__file__).parent
 FUNCTIONS=['CRuleTables::GetClassString','CString::~CString','C2DArray::GetAt',
@@ -26,7 +26,7 @@ def generate():
    at=names[name];end=addresses[addresses.index(at)+1];data=pe.get_data(at-base,end-at)
    lines.append(f'{{0x{at-base:x},0x{end-at:x},0x{fnv(data):016x}ULL}}, // {name}')
   lines.append('}},')
- lines.append('};');(ROOT/'dual_skill_rows_builds.inc').write_text('\n'.join(lines)+'\n')
+ lines.append('};');keep_or_write(ROOT/'dual_skill_rows_builds.inc','\n'.join(lines)+'\n')
 
 def run(dll_path):
  dll=ctypes.CDLL(str(dll_path));dll.CBMDS_Bind.argtypes=[ctypes.c_void_p,ctypes.c_size_t,ctypes.POINTER(ctypes.c_void_p)]
@@ -113,7 +113,7 @@ def run(dll_path):
       assert row[2:]==(40,40+bonus,max(0,min(255,limit-bonus)),max(0,percent,default)),row
      cases.append(dict(percentage=percent,default=default,bonus=bonus,displayCap=limit))
   reports.append(dict(version=version,cases=len(cases),results=cases))
- (ROOT/'dual-skill-row-results.json').write_text(json.dumps(reports,indent=2)+'\n');return reports
+ keep_or_write(ROOT/'dual-skill-row-results.json',json.dumps(reports,indent=2)+'\n');return reports
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--generate',action='store_true');p.add_argument('--dll',type=Path);args=p.parse_args()
  if args.generate:generate()

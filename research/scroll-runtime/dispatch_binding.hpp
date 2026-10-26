@@ -18,6 +18,15 @@ inline CBMS_DispatchFunctions bind_dispatch(uintptr_t base,std::string& detail) 
     }
     for(unsigned i=0;i<7;++i)if(image.object<uintptr_t>(profile->vtable+i*8)!=image.address(profile->slots[i]))
         throw std::runtime_error("native FireSpell message vtable ownership changed");
+    // The value-carried action witness relies on these exact CString bodies
+    // (shared copies, counted release, copy before any write) and on the
+    // CMessageInsertAction class the owned mode0 producer builds.
+    for(const auto& s:profile->strings) {
+        const auto digest=sha256(image.read(s.rva,s.size,true));
+        if(!std::equal(digest.begin(),digest.end(),s.sha))throw std::runtime_error("native CString reference-count body changed");
+    }
+    for(unsigned i=0;i<7;++i)if(image.object<uintptr_t>(profile->insert_vtable+i*8)!=image.address(profile->insert_slots[i]))
+        throw std::runtime_error("native CMessageInsertAction vtable ownership changed");
     for(auto rva:profile->routes) {
         const auto head=image.read(rva,5,true);
         if(head[0]!=0xE9)throw std::runtime_error("dispatch requires the existing EEex mode0 route before scroll hooks");
@@ -44,7 +53,8 @@ inline CBMS_DispatchFunctions bind_dispatch(uintptr_t base,std::string& detail) 
     for(unsigned i=0;i<2;++i)out.action_default_returns[i]=image.address(profile->ctors[i]);
     out.fire_add_return=image.address(profile->add_return);out.fire_run_return=image.address(profile->run_return);
     out.effect_fire_return=image.address(profile->effect_return);out.point_fire_return=image.address(profile->point_return);out.fire_vtable=image.address(profile->vtable);
-    detail="certified native producers/message lifetime and attribution PCs; existing external EEex mode0 caves remain host-owned";
+    out.insert_vtable=image.address(profile->insert_vtable);out.empty_string=image.address(profile->empty_string);
+    detail="certified native producers/message lifetime, CString witness ABI and attribution PCs; existing external EEex mode0 caves remain host-owned";
     return out;
 }
 }

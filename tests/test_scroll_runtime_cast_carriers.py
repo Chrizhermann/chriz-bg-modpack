@@ -7,6 +7,7 @@ import struct
 import pytest
 from test_scroll_runtime_dispatch_carriers import dispatch_api,Harness
 from test_scroll_runtime_actor_archive import allocated
+from test_scroll_runtime_native import WITNESS_BASELINE
 EFFECT=C.CFUNCTYPE(None,C.c_void_p,C.c_void_p,C.c_void_p,C.c_int,C.c_int,C.c_int)
 FIRE=C.CFUNCTYPE(C.c_int16,C.c_void_p,C.c_void_p,C.c_void_p,C.c_int,C.c_int,C.c_void_p,C.c_int,C.c_int)
 TARGET=C.CFUNCTYPE(C.c_int16,C.c_void_p,C.c_void_p)
@@ -17,27 +18,29 @@ class Functions(C.Structure):
     _fields_=[('effect',EFFECT),('fire',FIRE),('point',FIRE),('force',TARGET),('force_point',POINT),
               ('spell',TARGET),('spell_point',POINT),('child',CHILD),('type',TYPE),('getter',C.c_size_t),
               ('selection',C.c_size_t*7),('children',C.c_size_t*7),('extra',C.c_size_t*2)]
+SIGNATURES={
+    'ConfigureCastCarriers':([C.c_void_p,C.POINTER(Functions)],C.c_int),'DetachCastCarriers':([],C.c_int),
+    'CastCarriersIdle':([],C.c_int),'CastCarrierError':([],C.c_char_p),
+    'SelectCapturedNative':([C.c_uint32,C.POINTER(C.c_uint64)],None),
+    'TestEffectFireCarrier':([C.c_size_t,*EFFECT._argtypes_],None),
+    'TestFireCarrier':([C.c_uint32,C.c_size_t,*FIRE._argtypes_],C.c_int16),
+    'TestSpellEffectCarrier':([C.c_size_t,*CHILD._argtypes_],C.c_void_p),
+    'ForceCarrier':(TARGET._argtypes_,C.c_int16),'ForcePointCarrier':(POINT._argtypes_,C.c_int16),
+    'SpellCarrier':(TARGET._argtypes_,C.c_int16),'SpellPointCarrier':(POINT._argtypes_,C.c_int16),
+    'CarrierIsOwned':([C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),
+}
+def configure_cast(native):
+    """Cast-carrier signatures on top of a configured dispatch harness build."""
+    for name,(args,result) in SIGNATURES.items():fn=getattr(native[0],'CBMS_'+name);fn.argtypes=args;fn.restype=result
+    return native
 @pytest.fixture(scope='module')
 def cast_api(dispatch_api):
-    dll=dispatch_api[0]
-    sig={
-        'ConfigureCastCarriers':([C.c_void_p,C.POINTER(Functions)],C.c_int),'DetachCastCarriers':([],C.c_int),
-        'CastCarriersIdle':([],C.c_int),'CastCarrierError':([],C.c_char_p),
-        'SelectCapturedNative':([C.c_uint32,C.POINTER(C.c_uint64)],None),
-        'TestEffectFireCarrier':([C.c_size_t,*EFFECT._argtypes_],None),
-        'TestFireCarrier':([C.c_uint32,C.c_size_t,*FIRE._argtypes_],C.c_int16),
-        'TestSpellEffectCarrier':([C.c_size_t,*CHILD._argtypes_],C.c_void_p),
-        'ForceCarrier':(TARGET._argtypes_,C.c_int16),'ForcePointCarrier':(POINT._argtypes_,C.c_int16),
-        'SpellCarrier':(TARGET._argtypes_,C.c_int16),'SpellPointCarrier':(POINT._argtypes_,C.c_int16),
-        'ActionCopied':([C.c_void_p,C.c_size_t,C.c_size_t,C.c_uint32],C.c_int),
-        'CarrierIsOwned':([C.c_void_p,C.c_uint32,C.c_size_t],C.c_int),
-    }
-    for name,(args,result) in sig.items():fn=getattr(dll,'CBMS_'+name);fn.argtypes=args;fn.restype=result
-    return dispatch_api
+    return configure_cast(dispatch_api)
 class CastHarness(Harness):
     def __init__(self,api):
         super().__init__(api);self.path=0;self.raw_type=1;self.on_cast=lambda:None;self.on_child=lambda:None;self.entries=[];self.scalars=[]
         self.sprite=allocated(bytes(0x5000));self.sprite_address=C.addressof(self.sprite)
+        self.strings.construct(self.sprite_address+0x3F8);self.holders.append(self.sprite_address+0x3F8)
         self.header=allocated(b'SPL V1  '+bytes(0x70));self.resource=allocated(bytes(0x80));self.spell=allocated(bytes(8)+b'SPELL123')
         C.c_void_p.from_buffer(self.resource,0x68).value=C.addressof(self.header);C.c_void_p.from_buffer(self.spell).value=C.addressof(self.resource)
         self.created=[]
@@ -90,10 +93,9 @@ class CastHarness(Harness):
             self.on_apply=lambda effect,target:self.message()
             self.on_run=lambda message:self.api.CBMS_TestFireCarrier(1,103,target,C.addressof(self.spell)+8,0x345,17,-1,0x567,19,23)
         else:
-            def setup(effect,target):
-                action=self.action(path in (4,6));at=target+0x3F8
-                assert self.api.CBMS_ActionCopied(self.runtime,C.addressof(action),at,1)==1
-            self.on_apply=setup
+            # Queued mode0: the witnessed message action reaches m_curAction by
+            # native value copies; the entry then reads ownership from it.
+            self.on_apply=lambda effect,target:self.deliver(self.insert(opcode,int(path>=5)),self.sprite)
         getattr(self.api,f'CBMS_Apply{opcode}Carrier')(C.addressof(root),target)
         if path==1:self.api.CBMS_FireMessageRunCarrier(C.addressof(self.messages[-1]))
         elif path>=3:
@@ -102,7 +104,6 @@ class CastHarness(Harness):
     def close(self):
         assert self.api.CBMS_DetachCastCarriers()==1
         for value in self.created:assert self.api.CBMS_DestructObserved(self.runtime,1,C.addressof(value))==1
-        assert self.api.CBMS_DestructObserved(self.runtime,3,self.sprite_address+0x3F8)==1
         super().close()
 
 @pytest.mark.parametrize('path',range(7))
@@ -137,7 +138,7 @@ def test_strict_site_identity_and_entry_snapshot(cast_api,case):
     try:
         def run():
             if case=='action_reassigned':
-                other=h.action(caller=999);assert h.api.CBMS_ActionCopied(h.runtime,C.addressof(other),h.sprite_address+0x3F8,0)==1
+                other=h.action(caller=999);h.strings.assign_action(h.sprite_address+0x3F8,C.addressof(other))
             h.scalar(pc=777 if case=='wrong_pc' else None)
             if case=='repeated_selection':h.scalar()
             h.produce(pc=777 if case=='wrong_child_pc' else None,instance=C.addressof(h.header) if case=='other_cspell' else None)
@@ -164,3 +165,61 @@ def test_only_exact_native_extra_target_continuations_inherit_and_nested_cast_ma
         assert C.c_uint16.from_buffer(h.sprite,0x4C8A).value==12
         assert h.api.CBMS_CastCarrierError()==b''
     finally:h.close()
+
+@pytest.mark.parametrize('case',['plain_action','replaced_before_entry','corrupted_witness'])
+def test_action_entries_take_ownership_only_from_the_current_action_value(cast_api,case):
+    h=CastHarness(cast_api);current=h.sprite_address+0x3F8
+    try:
+        h.on_cast=lambda:(h.scalar(),h.produce())
+        root=h.effect(146,0,1)
+        if case!='plain_action':
+            h.on_apply=lambda effect,target:h.deliver(h.insert(146,1),h.sprite)
+            h.api.CBMS_Apply146Carrier(C.addressof(root),h.sprite_address)
+        if case=='replaced_before_entry':
+            other=h.action(caller=999);h.strings.assign_action(current,C.addressof(other))
+        witness=C.c_size_t.from_address(current+0x80).value
+        if case=='corrupted_witness':C.c_int32.from_address(witness-8).value=3
+        assert h.api.CBMS_SpellCarrier(h.sprite_address,0x345)==-219
+        assert h.scalars==[7] and C.c_uint32.from_buffer(h.created[0],0xC8).value==0xA5A5A5A5 and not h.calls
+        assert bool(h.api.CBMS_CastCarrierError())==(case=='corrupted_witness')
+        if case=='corrupted_witness':C.c_int32.from_address(witness-8).value=0
+    finally:h.close()
+
+@pytest.mark.parametrize('fault',['field_changed','exhausted','retired_damaged'])
+def test_queued_override_casts_natively_after_a_later_witness_fault(cast_api,fault):
+    """Queue A, fail B, report it, then A casts at its native level: the one
+    latched disabled state also covers ownership queued before the fault."""
+    h=CastHarness(cast_api);current=h.sprite_address+0x3F8;repair=lambda:None
+    try:
+        if fault=='retired_damaged':
+            # C: an earlier scroll cast whose witness is already retired.
+            other=h.new_sprite();h.on_apply=lambda effect,target:h.deliver(h.insert(146,1),other)
+            h.api.CBMS_Apply146Carrier(C.addressof(h.effect(146,0,1)),C.addressof(other))
+            retired=C.c_size_t.from_address(C.addressof(other)+0x3F8+0x80).value
+            fresh=h.action(caller=999)
+            for holder in (C.addressof(other)+0x3F8,C.addressof(h.scratch)):h.strings.assign_action(holder,C.addressof(fresh))
+            assert h.api.CBMS_SweepActionWitnesses(h.runtime)==0 and h.strings.refs(retired)==WITNESS_BASELINE
+        # A: an owned mode0 cast queued into the reader's current action.
+        h.on_apply=lambda effect,target:h.deliver(h.insert(146,1),h.sprite)
+        h.api.CBMS_Apply146Carrier(C.addressof(h.effect(146,0,1)),h.sprite_address)
+        assert h.witness(current)[0]==1 and h.api.CBMS_DispatchCarrierError()==b''
+        # B: a later owned mode0 whose witness fails.
+        edit=None
+        if fault=='exhausted':assert h.api.CBMS_TestLimitActionWitnesses(h.runtime,len(h.witnesses))==1
+        if fault=='field_changed':
+            script=h.strings.block(1,b'SCRIPT')
+            def edit(action):h.strings.put(action+0x80,script)
+        if fault=='retired_damaged':
+            C.c_int32.from_address(retired-12).value+=1  # an engine holder nobody counted
+            def repair():C.c_int32.from_address(retired-12).value=WITNESS_BASELINE
+        h.on_apply=lambda effect,target:h.insert(146,1,edit=edit)
+        assert h.api.CBMS_Apply146Carrier(C.addressof(h.effect(146,0,1)),0x9999)==-71  # native call kept
+        # Reported: the carrier diagnostic, the runtime reporter and the latch.
+        assert h.api.CBMS_DispatchCarrierError() and h.errors and h.api.CBMS_OverridesDisabled(h.runtime)==1
+        # A casts at its native level; its reader is never queried.
+        h.on_cast=lambda:(h.scalar(),h.produce())
+        assert h.api.CBMS_SpellCarrier(h.sprite_address,0x345)==-219
+        assert h.scalars==[7] and C.c_uint32.from_buffer(h.created[0],0xC8).value==0xA5A5A5A5 and not h.calls
+        assert h.api.CBMS_CastCarrierError()==b''
+    finally:
+        repair();h.close()
