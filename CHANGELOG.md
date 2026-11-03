@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.2.0-alpha.15 - 2026-11-03
+
+Alpha.15 adds one optional component: Marek carries the Boomerang Dagger +2 in
+BG1 (**670**), for games without BG1 NPC Project's Kivan quest. Nothing appears
+in the game except the dagger. Collection selection is decided separately.
+
+- **670: Marek carries the Boomerang Dagger +2 in BG1.** The dagger's only BG1
+  or SoD source was BG1 NPC Project's Kivan quest. The new optional component
+  puts one, unidentified and droppable, into the backpack of both Marek
+  creatures: the first meeting in the north-east district (`MAREK`) and the
+  antidote fight at the Blushing Mermaid (`MAREK1`). Only one of them can die,
+  so one dagger drops. His other items and other mods' changes stay as they
+  are. When the Kivan quest's Shipwreck's Coast script already creates the
+  dagger, the installer says so and changes nothing; it checks the script
+  itself, because on EET that mod is logged in the BG:EE game's `WeiDU.log`.
+  See the [Marek guide](docs/marek-boomerang-dagger.md).
+
 ## v0.2.0-alpha.14 - 2026-10-26
 
 Alpha.14 fixes two problems. Scrolls at the reader's level (**430**) now stay on

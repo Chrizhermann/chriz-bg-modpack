@@ -63,6 +63,7 @@ PUBLIC_COMPONENTS = {
     651,
     652,
     660,
+    670,
 }
 
 
@@ -124,6 +125,7 @@ class PublicSurfaceTests(unittest.TestCase):
             651: "cbm_campaign_xp_soa",
             652: "cbm_campaign_xp_chapters",
             660: "cbm_degrodel_fight",
+            670: "cbm_marek_boomerang_dagger",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -196,6 +198,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/companion-stats.md",
                 "docs/degrodel-fight.md",
                 "docs/dorn-ambush-camera.md",
+                "docs/marek-boomerang-dagger.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/recruitment-xp.md",
                 "docs/campaign-xp-banking.md",
@@ -207,7 +210,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.14.md",
+                "docs/releases/v0.2.0-alpha.15.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

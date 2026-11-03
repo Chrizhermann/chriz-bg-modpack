@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.14~
+VERSION ~v0.2.0-alpha.15~
 
 AUTO_TRA ~chriz-bg-modpack/languages/%s~
 LANGUAGE ~English~ ~english~ ~chriz-bg-modpack/languages/english/setup.tra~
@@ -597,6 +597,14 @@ BEGIN @660 DESIGNATED 660 GROUP @1600 LABEL ~cbm_degrodel_fight~
   REQUIRE_PREDICATE GAME_IS ~bgee eet~ @1660
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DEGROD.DLG~ @1661
 INCLUDE ~chriz-bg-modpack/lib/cbm_degrodel_fight.tpa~
+
+// BG1 source of the Boomerang Dagger +2 (DAGG11) without BG1 NPC Project's
+// Kivan quest: both Marek files carry it, so whichever Marek dies drops it.
+// No second dagger when that quest already gives one.
+BEGIN @670 DESIGNATED 670 GROUP @1600 LABEL ~cbm_marek_boomerang_dagger~
+  REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~MAREK.CRE~ OR FILE_EXISTS_IN_GAME ~MAREK1.CRE~) @6701
+  REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DAGG11.ITM~ @6702
+INCLUDE ~chriz-bg-modpack/lib/cbm_marek_boomerang_dagger.tpa~
 
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~

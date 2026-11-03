@@ -3,16 +3,20 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.14`
+**Release:** `v0.2.0-alpha.15`
 
-Alpha.14 keeps reader-level scroll casting (**430**) on for the whole session;
+Alpha.15 adds **670**: both Marek creatures carry the Boomerang Dagger +2, BG1's
+only source of it when BG1 NPC Project's Kivan quest is not installed. With that
+quest, it changes nothing. Collection selection is decided separately. See the
+[release notes](docs/releases/v0.2.0-alpha.15.md).
+
+Alpha.14 kept reader-level scroll casting (**430**) on for the whole session;
 alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or
 an opened container. With campaign XP banking (**650**), a character's script
-variables no longer go missing from saves after the bank could not take one of
+variables no longer went missing from saves after the bank could not take one of
 that character's XP changes. Both write technical information to the loader log
-only, except one 430 message box in a case never seen in a game. Collection
-selection is decided separately. See the
-[release notes](docs/releases/v0.2.0-alpha.14.md).
+only, except one 430 message box in a case never seen in a game. See the
+[scroll casting guide](docs/scroll-casting.md).
 
 Alpha.13 made campaign XP banking (**650/651**) work on EEex 1.2.0 and v1.3.1.
 It added optional chapter-by-chapter XP caps (**652**, experimental), EET's
@@ -107,6 +111,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650; alternative to 652 |
 | 652 (experimental) | `cbm_campaign_xp_chapters` | Chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (plus Baeloth Chapter 5+ spawn gate); requires 650; alternative to 651 |
 | 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
+| 670 | `cbm_marek_boomerang_dagger` | Both Marek creatures carry the Boomerang Dagger +2 in BG1, unless BG1 NPC Project's Kivan quest already gives it; BG:EE or EET |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
@@ -234,6 +239,9 @@ the [companion stat guide](docs/companion-stats.md).
 - Install `660` after mods that change Degrodel's dialog. It finds the helm hand-in
   by what it does and skips with a reason, changing nothing, when that is
   ambiguous. See the [Degrodel guide](docs/degrodel-fight.md).
+- Install `670` after mods that change Marek's creature files `MAREK.CRE` and
+  `MAREK1.CRE`, such as SCS, and before mods that read creature items, such as
+  the Item Randomiser. See the [Marek guide](docs/marek-boomerang-dagger.md).
 
 ## Testing status
 
@@ -273,8 +281,12 @@ v1.3.1). The component guides list what was covered and what is still open.
 
 For alpha.14, `430` and `650` were checked in game on disposable lab installs
 (2.7.3.0, EEex v1.3.1), also together from the release candidate's package. The
-[release notes](docs/releases/v0.2.0-alpha.14.md) list what was covered and
-what is still open.
+component guides list what was covered and what is still open.
+
+Component `670` has focused synthetic and extracted-archive installer coverage,
+plus installs on copies of original BG:EE files and of an EET game's files with
+SCS and BG1 NPC Project, with byte-exact uninstall restoration. The Marek fights
+and the drop have not been tested in a game.
 
 ## License
 

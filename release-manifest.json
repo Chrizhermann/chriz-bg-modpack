@@ -1,6 +1,6 @@
 {
-  "version": "v0.2.0-alpha.14",
-  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.14",
+  "version": "v0.2.0-alpha.15",
+  "archive_basename": "chriz-bg-modpack-v0.2.0-alpha.15",
   "weidu": {
     "version": "249.00",
     "url": "https://github.com/WeiDUorg/weidu/releases/download/v249.00/WeiDU-Windows-249-amd64.zip",
@@ -100,6 +100,7 @@
     "chriz-bg-modpack/lib/cbm_imoen_spellhold_xp.tpa",
     "chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa",
     "chriz-bg-modpack/lib/cbm_legacy_ui_strings.tpa",
+    "chriz-bg-modpack/lib/cbm_marek_boomerang_dagger.tpa",
     "chriz-bg-modpack/lib/cbm_mazzy_prof_fix.tpa",
     "chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa",
     "chriz-bg-modpack/lib/cbm_recruitment_xp.tpa",
@@ -152,9 +153,10 @@
     "docs/evandra.md",
     "docs/imoen-spellhold-xp.md",
     "docs/legacy-ui-strings.md",
+    "docs/marek-boomerang-dagger.md",
     "docs/npc-builds.md",
     "docs/recruitment-xp.md",
-    "docs/releases/v0.2.0-alpha.14.md",
+    "docs/releases/v0.2.0-alpha.15.md",
     "docs/scroll-casting.md",
     "docs/story-utility-xp.md",
     "docs/unidentified-items.md",
