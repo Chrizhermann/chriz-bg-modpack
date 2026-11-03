@@ -122,6 +122,16 @@ I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leav
 @1670 = ~Degrodel's Helm of Balduran choice is already present in DEGROD.DLG. Nothing was changed.~
 @1671 = ~Degrodel's Helm of Balduran choice skipped: the hand-in actions in DEGROD.DLG state %cbm_dgf_state% could not be separated into individual actions. Nothing was changed.~
 @1672 = ~Degrodel's Helm of Balduran choice installed at DEGROD.DLG state %cbm_dgf_state%. Refusing creates the hand-in's %cbm_dgf_n_servants% servant(s), closes its %cbm_dgf_n_journal% open journal entr(ies), and leaves out:%cbm_dgf_dropped%.~
+@670 = ~Marek: carry the Boomerang Dagger +2 in BG1 (drops it when he dies)~
+@6701 = ~Marek's creature files MAREK.CRE and MAREK1.CRE are not in this game (for example BG2:EE without the BG1 campaign), so the Boomerang Dagger +2 for Marek is not applicable.~
+@6702 = ~The Boomerang Dagger +2 (DAGG11.ITM) is not in this game, so it cannot be given to Marek.~
+@6703 = ~Marek's Boomerang Dagger +2 skipped: %cbm_mbd_file% is not a valid file of its type (%cbm_mbd_reason%). Nothing was changed.~
+@6704 = ~[Marek Boomerang Dagger] Shipwreck's Coast (%cbm_mbd_quest_script%.BCS) already gives the Boomerang Dagger +2, as BG1 NPC Project's Kivan quest does. Nothing was changed.~
+@6705 = ~[Marek Boomerang Dagger] %cbm_mbd_cre%.CRE already carries the Boomerang Dagger +2 and was left unchanged.~
+@6706 = ~Marek's Boomerang Dagger +2 skipped: %cbm_mbd_cre%.CRE has no free backpack slot. Nothing was changed.~
+@6707 = ~[Marek Boomerang Dagger] %cbm_mbd_cre%.CRE now carries the Boomerang Dagger +2 in its backpack.~
+@6708 = ~[Marek Boomerang Dagger] %cbm_mbd_cre%.CRE is not in this game and was skipped.~
+@6709 = ~[Marek Boomerang Dagger] Marek drops the dagger when he dies, at his first meeting with the party (MAREK) or at the Blushing Mermaid (MAREK1); only one of them can die. Saves from before that Marek appears get the dagger too.~
 
 @650 = ~Campaign XP caps - keep excess XP for later (BG1/SoD; experimental)~
 @651 = ~Campaign XP caps - also cap SoA until ToB (requires 650; experimental)~

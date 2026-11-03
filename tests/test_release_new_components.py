@@ -23,6 +23,7 @@ from tests import test_degrodel_fight as degrodel
 from tests import test_dorn_ambush_camera_fix as dorn
 from tests import test_edwin_redwizard as edwin
 from tests import test_eet_join_xp as join_xp
+from tests import test_marek_boomerang_dagger as marek
 from tests import test_recruitment_xp as recruitment
 from tests import test_release_archive as release_archive
 from tests import test_unidentified_items_installer as unidentified
@@ -310,6 +311,24 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assertTrue(after[dorn.SENJACK_KEY].endswith(senjack.split(b"\n", 1)[1]))
             self.assertIn(b"CBM_DornAmbushUnlock", after[dorn.SENJACK_KEY])
             self.assert_restored(game, 135, before)
+
+    def test_670_extracted_marek_dagger_installs_skips_for_bg1npc_and_restores(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-marek-") as raw:
+            game = marek.MarekGame(Path(raw) / "game")
+            before = self.extract_release(game)
+            self.run_component(game, 670)
+            after = self.game_files(game.root)
+            self.assertEqual(set(marek.MAREK_KEYS), marek.changed(before, after))
+            for key in marek.MAREK_KEYS:
+                self.assertEqual(marek.with_dagger(before[key]), marek.items_and_slots(after[key]))
+            self.assert_restored(game, 670, before)
+        with tempfile.TemporaryDirectory(prefix="cbm-release-marek-bg1npc-") as raw:
+            game = marek.MarekGame(Path(raw) / "game",
+                                   resources=marek.default_resources("eet", quest=True))
+            before = self.extract_release(game)
+            self.run_component(game, 670)
+            self.assertEqual(before, self.game_files(game.root))
+            self.assert_restored(game, 670, before)
 
     def test_660_extracted_degrodel_choice_installs_and_restores_dialog(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cbm-release-degrodel-") as raw:
