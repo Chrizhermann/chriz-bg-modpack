@@ -327,9 +327,23 @@ DEFINE_PATCH_FUNCTION cbmo_script_block
   PATCH_IF NOT (~%cbmo_old%~ STRING_EQUAL ~~) BEGIN
     SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_old%~)
     PATCH_IF cbmo_found >= 0 BEGIN SET cbmo_place = cbmo_found END
-    REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH ~%cbmo_old%~ ~~
   END
-  REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH ~%cbmo_new%~ ~~
+  // Keep the insertion point in the edited buffer's coordinate system. An
+  // existing replacement can precede the old block; every deletion before
+  // the selected boundary moves that boundary to the left.
+  PATCH_FOR_EACH cbmo_remove IN ~%cbmo_old%~ ~%cbmo_new%~ BEGIN
+    SET cbmo_length = STRING_LENGTH ~%cbmo_remove%~
+    PATCH_IF cbmo_length > 0 BEGIN
+      SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_remove%~)
+      WHILE cbmo_found >= 0 BEGIN
+        PATCH_IF cbmo_found < cbmo_place BEGIN
+          SET cbmo_place = cbmo_found + cbmo_length <= cbmo_place ? cbmo_place - cbmo_length : cbmo_found
+        END
+        DELETE_BYTES cbmo_found cbmo_length
+        SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_remove%~)
+      END
+    END
+  END
   // A changed instance of our one-shot block still belongs to this component.
   // Strip it by its owned variable, independently of old conditions/actions.
   PATCH_IF NOT (~%marker%~ STRING_EQUAL ~~) AND INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%marker%~) >= 0 BEGIN

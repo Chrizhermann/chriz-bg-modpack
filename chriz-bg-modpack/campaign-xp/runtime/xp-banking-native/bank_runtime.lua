@@ -46,9 +46,11 @@ function R.RetiredThreshold(info)
     -- Missing installed labels use our baseline; levels beyond its authored
     -- range use its last threshold rather than disabling this actor's bank.
     if not uint(value) then
-        value=tonumber(stockXPLevels:getAtLabels("41",classNames[info.oldClass])) or 0
+        value=tonumber(stockXPLevels:getAtLabels("41",classNames[info.oldClass]))
     end
-    return value
+    -- EEex returns the table's default (-1), not nil, for absent labels.
+    -- Even an edited fallback table must not feed invalid XP into adoption.
+    return uint(value) and value or 0
 end
 function R.CurrentPhase(saved,policy)
     local game=EngineGlobals.g_pBaldurChitin.m_pObjectGame

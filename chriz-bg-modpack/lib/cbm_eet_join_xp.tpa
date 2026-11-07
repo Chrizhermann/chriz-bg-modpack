@@ -1,7 +1,7 @@
 // Component 239 owns EET's SoA protagonist ladder and ToB 2.5M catch-up.
-// Party-table DVs, transition scripts and CRE override fields locate actors.
-// Old catch-up blocks are replaced; unrelated story blocks remain. Empty
-// override fields receive an owned script. Both ladders carry campaign guards.
+// Party-table DVs identify joinable NPCs, not their campaign-specific CREs.
+// EET's party markers and ToB transitions locate the scripts we own. BG1
+// variants sharing those DVs stay untouched. Both ladders carry campaign guards.
 INCLUDE ~chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa~
 
 // The joinable DVs of a party table, in upper case. WeiDU numbers every
@@ -132,11 +132,16 @@ DEFINE_ACTION_FUNCTION cbm_eet_join_xp BEGIN
       END ELSE BEGIN PATCH_PRINT ~EET join XP: %SOURCE_FILE% is too damaged to read.~ END
     END ELSE BEGIN PRINT ~EET join XP: %cbmj_area%.BCS is absent.~ END
   END
+<<<<<<<< .../cbmj-empty.bcs
+SC
+SC
+>>>>>>>>
+  OUTER_SET cbmj_next_script = 1
   ACTION_PHP_EACH cbmj_created AS cbmj_cre => cbmj_unused BEGIN
     ACTION_IF FILE_EXISTS_IN_GAME ~%cbmj_cre%.CRE~ BEGIN
       OUTER_SPRINT cbmj_dv ~~
       OUTER_SPRINT cbmj_script ~~
-      COPY_EXISTING - ~%cbmj_cre%.CRE~ ~.../cbmj-cre~
+      COPY_EXISTING ~%cbmj_cre%.CRE~ ~override~
         PATCH_IF BUFFER_LENGTH >= 0x2d4 BEGIN
         READ_ASCII 0 cbmj_signature (8)
         PATCH_IF ~%cbmj_signature%~ STRING_EQUAL ~CRE V1.0~ BEGIN
@@ -144,8 +149,21 @@ DEFINE_ACTION_FUNCTION cbm_eet_join_xp BEGIN
           READ_ASCII 0x248 cbmj_script (8) NULL
           TO_UPPER cbmj_dv
           TO_UPPER cbmj_script
+          PATCH_IF VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
+            PATCH_IF ~%cbmj_script%~ STRING_EQUAL ~~ OR ~%cbmj_script%~ STRING_EQUAL ~NONE~ BEGIN
+              SPRINT cbmj_script ~CBJ%cbmj_next_script%~
+              WHILE FILE_EXISTS_IN_GAME ~%cbmj_script%.BCS~ BEGIN
+                SET cbmj_next_script += 1
+                SPRINT cbmj_script ~CBJ%cbmj_next_script%~
+              END
+              WRITE_ASCIIE 0x248 ~%cbmj_script%~ #8
+              INNER_ACTION BEGIN COPY ~.../cbmj-empty.bcs~ ~override/%cbmj_script%.BCS~ END
+              SET cbmj_next_script += 1
+            END
+          END
         END
         END
+      BUT_ONLY
       ACTION_IF VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
         ACTION_IF NOT (~%cbmj_script%~ STRING_EQUAL ~~) AND NOT (~%cbmj_script%~ STRING_EQUAL ~NONE~) BEGIN
           OUTER_SPRINT $cbmj_tob_scripts(~%cbmj_script%~) ~%cbmj_dv%~
@@ -155,41 +173,8 @@ DEFINE_ACTION_FUNCTION cbm_eet_join_xp BEGIN
     END
   END
 
-<<<<<<<< .../cbmj-empty.bcs
-SC
-SC
->>>>>>>>
-  OUTER_SET cbmj_next_script = 1
-  COPY_EXISTING_REGEXP GLOB ~^.+\.CRE$~ ~override~
-    PATCH_IF BUFFER_LENGTH >= 0x2d4 BEGIN
-      READ_ASCII 0 cbmj_signature (8)
-      PATCH_IF ~%cbmj_signature%~ STRING_EQUAL ~CRE V1.0~ BEGIN
-      READ_ASCII 0x280 cbmj_dv (32) NULL
-      READ_ASCII 0x248 cbmj_script (8) NULL
-      TO_UPPER cbmj_dv TO_UPPER cbmj_script
-      PATCH_IF VARIABLE_IS_SET $cbmj_soa_dvs(~%cbmj_dv%~) OR VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
-        PATCH_IF ~%cbmj_script%~ STRING_EQUAL ~~ OR ~%cbmj_script%~ STRING_EQUAL ~NONE~ BEGIN
-          SPRINT cbmj_script ~CBJ%cbmj_next_script%~
-          WHILE FILE_EXISTS_IN_GAME ~%cbmj_script%.BCS~ BEGIN
-            SET cbmj_next_script += 1
-            SPRINT cbmj_script ~CBJ%cbmj_next_script%~
-          END
-          WRITE_ASCIIE 0x248 ~%cbmj_script%~ #8
-          INNER_ACTION BEGIN COPY ~.../cbmj-empty.bcs~ ~override/%cbmj_script%.BCS~ END
-          SET cbmj_next_script += 1
-        END
-        PATCH_IF VARIABLE_IS_SET $cbmj_soa_dvs(~%cbmj_dv%~) BEGIN
-          SPRINT $cbmj_soa_scripts(~%cbmj_script%~) ~%cbmj_dv%~
-          SET $cbmj_soa_found(~%cbmj_dv%~) = 1
-        END
-        PATCH_IF VARIABLE_IS_SET $cbmj_tob_dvs(~%cbmj_dv%~) BEGIN
-          SPRINT $cbmj_tob_scripts(~%cbmj_script%~) ~%cbmj_dv%~
-          SET $cbmj_tob_found(~%cbmj_dv%~) = 1
-        END
-      END
-      END
-    END
-  BUT_ONLY
+  // 4. Patch only the scripts located above. A party-table DV alone never
+  // makes a BG1 or SoD creature's override into a SoA/ToB recruitment script.
   ACTION_CLEAR_ARRAY cbmj_all_scripts
   ACTION_FOR_EACH cbmj_phase IN soa tob BEGIN
     ACTION_PHP_EACH EVAL ~cbmj_%cbmj_phase%_scripts~ AS cbmj_script => cbmj_dv BEGIN
@@ -209,6 +194,11 @@ SC
 %cbmj_text%
 >>>>>>>>
     COPY - ~.../cbmj-replacement.baf~ ~.../cbmj-evaluated.baf~ EVALUATE_BUFFER
+    COPY - ~.../cbmj-evaluated.baf~ ~.../cbmj-owned-prefix~
+      COMPILE_BAF_TO_BCS
+      DELETE_BYTES (BUFFER_LENGTH - 3) 3
+      DELETE_BYTES 0 3
+      READ_ASCII 0 cbmj_owned_prefix (BUFFER_LENGTH)
     ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbmj_script%.BCS~ BEGIN
       COPY ~.../cbmj-empty.bcs~ ~override/%cbmj_script%.BCS~
       PRINT ~EET join XP: creating %cbmj_script%.BCS for its joinable creature.~
@@ -216,10 +206,15 @@ SC
     COPY_EXISTING ~%cbmj_script%.BCS~ ~override~
       LPF cbmo_bcs_writable RET cbmo_bcs_ok END
       PATCH_IF cbmo_bcs_ok BEGIN
+        // Remove only our exact authored prefix before normalizing XP writes.
+        // BD_JOINXP is shared with equipment/spell grants; it does not confer
+        // ownership of an entire foreign recruitment block.
+        REPLACE_TEXTUALLY ~%MNL%~ ~~
+        REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH ~%cbmj_owned_prefix%~ ~~
         DECOMPILE_BCS_TO_BAF
         LPF cbm_join_xp_takeover INT_VAR remove_raises = 1 END
         COMPILE_BAF_TO_BCS
-        LPF cbmo_script_block STR_VAR replacement = ~.../cbmj-evaluated.baf~ marker = ~BD_JOINXP~ END
+        LPF cbmo_script_block STR_VAR replacement = ~.../cbmj-evaluated.baf~ END
       END ELSE BEGIN PATCH_PRINT ~EET join XP: %SOURCE_FILE% is too damaged to write.~ END
     BUT_ONLY
   END

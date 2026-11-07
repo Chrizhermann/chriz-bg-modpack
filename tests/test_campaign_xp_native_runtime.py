@@ -21,6 +21,12 @@ def runtime(request):
         "receipts": "xp-banking-native/dual_reward_receipts.lua",
     }.items():
         lua.globals()[name] = lua.execute((ROOT / source).read_text(encoding="utf-8"))
+    rows = (ROOT.parent / "chriz-bg-modpack/data/progression/xplevel.2da").read_text().splitlines()
+    columns = rows[2].split()
+    lua.globals().stockLevels = lua.table_from({
+        fields[0]: dict(zip(columns, fields[1:]))
+        for row in rows[3:] if (fields := row.split())
+    }, recursive=True)
     lua.execute('''
         phase='BG1'; ending=0; intoB=0
         local game={m_sCurrentCampaign={m_pchData={get=function() return phase end}}}
@@ -38,8 +44,9 @@ def runtime(request):
         levels={FIGHTER={['7']=64000,['10']=500000,['11']=750000},THIEF={['7']=40000}}
         function EEex_Resource_Load2DA(name)
             assert(name=='XPLEVEL' or name=='CBMBXPL')
-            local data=name=='XPLEVEL' and levels or {FIGHTER={['7']=64000,['41']=8250000}}
-            return {getAtLabels=function(_,column,row) return data[row] and data[row][column] end}
+            local data=name=='XPLEVEL' and levels or stockLevels
+            -- EEex returns the 2DA default for an absent row/column, not nil.
+            return {getAtLabels=function(_,column,row) return (data[row] and data[row][column]) or -1 end}
         end
         resetStage='preparing'
         CBMBank_Reset={Query=function(a) return {stage=resetStage,incarnation=a.identity.incarnation,
@@ -1333,13 +1340,46 @@ def test_chapter_caps_standalone_mode_maps_bg2_chapters_to_canonical_phases(runt
 
 
 @pytest.mark.parametrize("value", ["nil", "'edited'", "-1", "42000"])
-def test_retired_threshold_uses_installed_labels_or_authored_fallback(runtime, value):
-    runtime.execute("levels.FIGHTER['7']="+value)
-    expected=42000 if value=="42000" else 64000
-    result=runtime.eval("R.RetiredThreshold({kind='dual',oldLevel=7,oldClass=2})")
+@pytest.mark.parametrize("label,class_id,level7,last", [
+    ("FIGHTER", 2, 64000, 8250000),
+    ("DRUID", 11, 35000, 13000000),
+    ("RANGER", 12, 75000, 9900000),
+])
+def test_retired_threshold_uses_installed_labels_or_authored_fallback(runtime, value, label, class_id, level7, last):
+    runtime.execute(f"levels.{label}={{['7']={value}}}")
+    expected=42000 if value=="42000" else level7
+    result=runtime.eval(f"R.RetiredThreshold({{kind='dual',oldLevel=7,oldClass={class_id}}})")
     assert result == expected
-    runtime.execute("levels.FIGHTER=nil; R.ResetResourceCache()")
-    assert runtime.eval("R.RetiredThreshold({kind='dual',oldLevel=255,oldClass=2})") == 8250000
+    runtime.execute(f"levels.{label}=nil; R.ResetResourceCache()")
+    assert runtime.eval(f"R.RetiredThreshold({{kind='dual',oldLevel=255,oldClass={class_id}}})") == last
+
+
+@pytest.mark.parametrize("label,composite,flag,slot,threshold", [
+    ("FIGHTER", 9, 8, 1, 64000),
+    ("DRUID", 16, 128, 2, 35000),
+    ("RANGER", 18, 256, 2, 75000),
+])
+@pytest.mark.parametrize("value", ["nil", "-1", "'edited'"])
+def test_existing_dual_adopts_real_fallback_threshold(runtime, label, composite, flag, slot, threshold, value):
+    runtime.execute(f"levels.{label}={{['7']={value}}}")
+    runtime.execute(f'''
+        local a=actor(10000,{composite},{flag})
+        a.m_baseStats.m_level{slot}=7
+        assert(R.Adopt(a))
+        local state=a.aux.CBMBank
+        assert(state.history=='native_threshold' and state.old.total=={threshold})
+        assert(R.Snapshot(a,8000000).total=={threshold}+10000)
+    ''')
+
+
+@pytest.mark.parametrize("value", ["nil", "-1", "'edited'", "4294967296", "0.5"])
+def test_final_fallback_never_returns_an_invalid_account_threshold(runtime, value):
+    runtime.execute(f"levels.RANGER=nil;stockLevels.RANGER={{['41']={value}}}")
+    assert runtime.eval("R.RetiredThreshold({kind='dual',oldLevel=255,oldClass=12})") == 0
+    runtime.execute('''
+        local a=actor(10000,18,256);a.m_baseStats.m_level2=255
+        assert(R.Adopt(a));assert(a.aux.CBMBank.old.total==0)
+    ''')
 
 
 @pytest.mark.parametrize("value", ["nil", "-1", "'edited'"])

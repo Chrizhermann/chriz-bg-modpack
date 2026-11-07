@@ -221,7 +221,7 @@
     },
     "runtime/xp-banking-native/bank_runtime.lua": {
       "source": "research/xp-banking-native/bank_runtime.lua",
-      "sha256": "a3e8e0077a75a3e78908f7bda9e19eaca5491b365153c41ceb8734e4445c4b4a"
+      "sha256": "dd9855f8b87c1349cc4436efb2560d0051299d8e326efab387aa0072b1a106a9"
     },
     "runtime/xp-banking-native/callback_abi.lua": {
       "source": "research/xp-banking-native/callback_abi.lua",

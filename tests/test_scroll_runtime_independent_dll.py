@@ -1,5 +1,6 @@
 """Link the real independent binding DLL, inspect it, never LoadLibrary it."""
 import importlib.util
+from pathlib import Path
 import pefile
 
 from test_scroll_runtime_native import SOURCE,compiler_environment
@@ -40,3 +41,8 @@ def test_independent_binding_dll_rebuilds_byte_for_byte(tmp_path):
     second=module.build(tmp_path/"second-folder",compiler,environment)
     assert first["sha256"]==second["sha256"]
     assert (tmp_path/"first"/"CBMScroll.dll").read_bytes()==(tmp_path/"second-folder"/"CBMScroll.dll").read_bytes()
+    shipped=Path(__file__).resolve().parents[1]/"chriz-bg-modpack/scroll-casting/CBMScroll.dll"
+    assert (tmp_path/"first"/"CBMScroll.dll").read_bytes()==shipped.read_bytes(), (
+        "Shipped CBMScroll.dll differs from the recorded source build; "
+        "rebuild with research/scroll-runtime/build_runtime_package.py"
+    )

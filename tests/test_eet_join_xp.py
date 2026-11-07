@@ -38,6 +38,8 @@ IDS = {
               "30 SetGlobal(S:Name*,S:Area*,I:Value*)\n36 Continue()\n"
               "82 ChangeAIScript(S:ScriptFile*,I:Level*Scrlev)\n86 SetInterrupt(I:State*Boolean)\n"
               "160 ApplySpellRES(S:RES*,O:Target*)\n"
+              "140 GiveItemCreate(S:ResRef*,O:Object*,I:Usage1*,I:Usage2*,I:Usage3*)\n"
+              "279 AddSpecialAbility(S:ResRef*)\n"
               "370 ChangeStat(O:Object*,I:Stat*Stats,I:Value*,I:Modifier*Statmod)\n",
     "object": "IDS V1.0\n1 Myself\n21 Player1\n",
     "boolean": "IDS V1.0\n0 FALSE\n1 TRUE\n",
@@ -509,7 +511,51 @@ def test_missing_referenced_tob_script_is_created(tmp_path):
     assert_uninstalled(game)
 
 
-def test_empty_override_gets_one_owned_script_and_both_campaign_rules(tmp_path):
+def test_bg1_variants_sharing_bg2_party_dvs_remain_byte_exact(tmp_path):
+    names = ("JAHEIRA", "EDWIN", "IMOEN")
+    grants = (' GiveItemCreate("SW1H01",Myself,0,0,0)\n'
+              ' AddSpecialAbility("SPWI112")\n')
+    bg1 = raise_block(32_000).replace(' SetInterrupt(TRUE)\n', grants + ' SetInterrupt(TRUE)\n')
+    scripts = {name + "_": bg1 + STORY for name in names}
+    scripts.update({name: party_block(name) + STORY for name in names})
+    game = make_game(tmp_path, scripts=scripts, tables={
+        "pdialog": SOA_TABLE + "".join(f"{name} {name}P {name}J {name}D\n" for name in names),
+        "25dialog": TOB_TABLE + "".join(f"{name} {name}P {name}J {name}D\n" for name in names),
+    })
+    for name in names:
+        (game.override / f"{name.lower()}_.cre").write_bytes(creature(name, name + "_"))
+    # A DV alone must not cause a new SoA/ToB script to be assigned to a BG1 CRE.
+    (game.override / "imoen1_.cre").write_bytes(creature("IMOEN", ""))
+    game.before = tree(game)
+    result, transcript = install(game)
+    assert result.returncode == 0, transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    after = tree(game)
+    for name in names:
+        for extension in ("BCS", "CRE"):
+            key = f"OVERRIDE/{name}_.{extension}"
+            assert after[key] == game.before[key], key
+        assert "ChangeStat(Myself,XP,1250000,SET)" in decompile_script(game, name)
+    assert after["OVERRIDE/IMOEN1_.CRE"] == game.before["OVERRIDE/IMOEN1_.CRE"]
+    assert_uninstalled(game)
+
+
+def test_owned_xp_replacement_keeps_other_actions_and_conditions_in_bd_joinxp_block(tmp_path):
+    grants = (' GiveItemCreate("SW1H01",Myself,0,0,0)\n'
+              ' AddSpecialAbility("SPWI112")\n')
+    provider = raise_block(500_000).replace(' SetInterrupt(TRUE)\n', grants + ' SetInterrupt(TRUE)\n')
+    game = make_game(tmp_path, scripts={"K#SARAH": party_block("K#SARAH") + STORY + provider})
+    before = source_blocks(game, "K#SARAH")[-1]
+    result, transcript = install(game)
+    assert result.returncode == 0, transcript
+    blocks = source_blocks(game, "K#SARAH")
+    # The component owns the XP action, not the containing BD_JOINXP block.
+    expected = (before[0], [action for action in before[1] if not action.startswith("ChangeStat(")])
+    assert blocks.count(expected) == 1
+    assert_uninstalled(game)
+
+
+def test_tob_start_with_empty_override_gets_only_its_tob_rule(tmp_path):
     game=make_game(tmp_path)
     (game.override/"yoshi12.cre").write_bytes(creature("Yoshimo",""))
     game.before=tree(game)
@@ -520,7 +566,7 @@ def test_empty_override_gets_one_owned_script_and_both_campaign_rules(tmp_path):
     script=data[0x248:0x250].rstrip(b"\0").decode()
     assert script.startswith("CBJ")
     source=decompile_script(game,script)
-    assert "ChangeStat(Myself,XP,1250000,SET)" in source
+    assert "ChangeStat(Myself,XP,1250000,SET)" not in source
     assert "ChangeStat(Myself,XP,2500000,SET)" in source
     assert_uninstalled(game)
 

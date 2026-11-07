@@ -237,6 +237,26 @@ class SafanaInventoryInstallerTests(unittest.TestCase):
         self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
         self.assertEqual(snapshot(self.override),before)
 
+    def test_replacement_before_original_keeps_unrelated_block_boundaries(self):
+        replacement = ARRIVAL.replace("SmallWait(1)",
+            'SmallWait(1)\nActionOverride("SAFANA",DestroyAllEquipment())')
+        # Enough trailing compiled object records to keep the stale old offset
+        # inside the buffer, where the previous code inserted into an object.
+        tail = "".join(OTHER_BLOCK.replace("CBMOtherQuest", f"CBMQuest{i}") for i in range(20))
+        self.compile_fixture(replacement + OTHER_BLOCK + ARRIVAL + tail)
+        before = snapshot(self.override)
+        self.install()
+        after = snapshot(self.override)
+        normalize = lambda text: re.sub(r"\s+", "", re.sub(r"//[^\n]*", "", text)).lower()
+        self.assertEqual(normalize(self.decompile()), normalize(OTHER_BLOCK + replacement + tail))
+        self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
+        self.assertEqual(snapshot(self.override), before)
+        # Apply to an already normalized script, independently of WeiDU's
+        # reinstall rollback, and require byte-for-byte stability.
+        find_resource(self.override, "ar0311.bcs").write_bytes(after["ar0311.bcs"])
+        self.install()
+        self.assertEqual(snapshot(self.override), after)
+
     def test_install_history_does_not_gate_arrival(self):
         self.compile_fixture()
         (self.game / "weidu.log").write_text("")
