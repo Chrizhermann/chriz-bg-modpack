@@ -125,10 +125,12 @@ END
     // Yeslick v5 leaves EET's old BG1-only Fate Spirit replies alongside its
     // new BG2 replies. Hide only those obsolete responses. The new mod's
     // LK#YESLKPartyBG2/Summoned/SpawnPlane state remains authoritative.
+    // \b matches only the trigger: SetGlobal("YeslickSummoned",...) actions in
+    // the same replies stay as they are (without it they became SetFalse()).
     ACTION_IF FILE_EXISTS_IN_GAME ~FATESP.dlg~ BEGIN
     COPY_EXISTING ~FATESP.dlg~ ~override~
       DECOMPILE_AND_PATCH BEGIN
-        REPLACE_TEXTUALLY CASE_INSENSITIVE ~Global\(GT\|LT\)?([ %TAB%]*"YeslickSummoned"[ %TAB%]*,[ %TAB%]*"GLOBAL"[ %TAB%]*,[^)]*)~ ~False()~
+        REPLACE_TEXTUALLY CASE_INSENSITIVE ~\bGlobal\(GT\|LT\)?([ %TAB%]*"YeslickSummoned"[ %TAB%]*,[ %TAB%]*"GLOBAL"[ %TAB%]*,[^)]*)~ ~False()~
       END
     BUT_ONLY
     END ELSE BEGIN PRINT ~Continuity: FATESP.DLG is absent.~ END

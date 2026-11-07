@@ -106,7 +106,9 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         )
 
     def make_fatesp(self, value=0):
-        legacy = f'  IF ~Global("YeslickSummoned","GLOBAL",{value})~ THEN REPLY #0 EXIT\n'
+        # EET's real obsolete replies set the same variable in their actions.
+        legacy = (f'  IF ~Global("YeslickSummoned","GLOBAL",{value})~ THEN REPLY #0'
+                  ' DO ~SetGlobal("YeslickSummoned","GLOBAL",2)~ EXIT\n')
         (self.game / "fatesp.d").write_text(
             'BEGIN ~FATESP~\nIF ~True()~ THEN BEGIN first\n SAY #0\n' + legacy * 3
             + '  IF ~Global("LK#YESLKSummoned","GLOBAL",0)~ THEN REPLY #0 EXIT\nEND\n'
@@ -340,6 +342,8 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         self.run_weidu("override/fatesp.dlg", "--out", ".")
         fatesp = norm(find_resource(self.game, "fatesp.d").read_text())
         self.assertEqual(fatesp.count("false()"), 3)
+        self.assertNotIn("setfalse(", fatesp)
+        self.assertEqual(fatesp.count('setglobal("yeslicksummoned","global",2)'), 3)
         self.assertNotIn('global("yeslicksummoned","global",0)', fatesp)
         self.assertIn('global("lk#yeslksummoned","global",0)', fatesp)
         after = snapshot(self.override)
@@ -359,6 +363,8 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         self.run_weidu("override/fatesp.dlg", "--out", ".")
         fatesp = norm(find_resource(self.game, "fatesp.d").read_text())
         self.assertEqual(fatesp.count("false()"), 3)
+        self.assertNotIn("setfalse(", fatesp)
+        self.assertEqual(fatesp.count('setglobal("yeslicksummoned","global",2)'), 3)
         self.assertIn('global("lk#yeslksummoned","global",0)', fatesp)
 
     @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
