@@ -329,6 +329,10 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
         after = _without_weidu_artifacts(_tree(game.root))
         allowed = {f"OVERRIDE/{name.upper()}" for name in PUBLICATIONS}
         allowed.add("INFINITYLOADER.DB")
+        for name in ("CBMNTRLI", "CBMNTRLG", "CBMNTRLP"):
+            key = f"OVERRIDE/{name}.BAM"
+            allowed.add(key)
+            self.assertEqual((SOURCE / "artwork" / (name.lower()+".bam")).read_bytes(), after[key])
         self.assertEqual(set(game.before) | allowed, set(after))
         for name, payload in game.before.items():
             if name != "INFINITYLOADER.DB" and name not in allowed:
@@ -372,8 +376,9 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
             self.assertEqual(0, parsed.returncode, parsed.stdout + parsed.stderr)
         fallback_suffix = hashlib.sha1(b"MISC59").hexdigest()[:7].upper().encode("ascii")
         fallback_has_picture = game.blank_picture_for != "MISC59"
-        for prefix in ((b"I", b"G", b"P") if fallback_has_picture else (b"I", b"G")):
-            self.assertIn(prefix + fallback_suffix, config)
+        fallback = lua.globals().CBMID_Config.fallback
+        self.assertTrue(fallback.inventory and fallback.ground)
+        self.assertEqual(fallback_has_picture, bool(fallback.picture))
 
     def assert_uninstalled(self, game: SyntheticGame) -> None:
         result = game.run(uninstall=True)
@@ -418,20 +423,25 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
     def test_missing_native_executable_refused(self) -> None:
         self.assert_refused(self.make_game(executable=False), r"(?i)Windows game executable")
 
-    def test_randomiser_marker_refused(self) -> None:
-        self.assert_refused(self.make_game(marker_conflict=True), r"(?i)randomi[sz]er|570")
+    def test_randomiser_marker_does_not_block_display(self) -> None:
+        game=self.make_game(marker_conflict=True)
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
-    def test_randomiser_log_refused(self) -> None:
-        self.assert_refused(self.make_game(log_conflict=True), r"(?i)randomi[sz]er|570")
+    def test_install_history_does_not_block_display(self) -> None:
+        game=self.make_game(log_conflict=True)
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
     def test_unrelated_randomiser_component_is_allowed(self) -> None:
         game = self.make_game(unrelated_randomiser=True)
         self.assert_installed(game)
         self.assert_uninstalled(game)
 
-    def test_foreign_owned_hook_label_refused(self) -> None:
-        self.assert_refused(self.make_game(existing_hook_label=True),
-                            r"(?i)hook definitions|CBMID")
+    def test_owned_hook_sections_are_replaced(self) -> None:
+        game=self.make_game(existing_hook_label=True)
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
     def test_missing_native_pattern_refused(self) -> None:
         for index, row in enumerate(_catalog_rows(SOURCE / "hooks.2da")):
@@ -457,7 +467,12 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
         self.assert_installed(game)
         config = (game.override / "cbmidcfg.lua").read_bytes()
         missing_entry = f"[{row['ROW']}]=".encode("ascii")
-        self.assertNotIn(missing_entry, config)
+        self.assertIn(missing_entry, config)
+        lua=LuaRuntime(); lua.execute(config.decode("ascii"))
+        chosen=lua.globals().CBMID_Config.types[int(row["ROW"])]
+        fallback=lua.globals().CBMID_Config.fallback
+        self.assertEqual(fallback.inventory,chosen.inventory)
+        self.assertEqual(fallback.ground,chosen.ground)
         self.assert_uninstalled(game)
 
     def test_optional_picture_may_be_blank(self) -> None:
@@ -467,23 +482,28 @@ class UnidentifiedItemsInstallerTests(unittest.TestCase):
         self.assertIn(b'picture=""', config)
         self.assert_uninstalled(game)
 
-    def test_corrupt_present_donor_fails_without_publications(self) -> None:
+    def test_corrupt_donor_gets_neutral_artwork(self) -> None:
         donors = _catalog_rows(SOURCE / "donors.2da")
         corrupt = next(row["DONOR"].upper() for row in donors
                        if row["ROW"].isdigit() and row["DONOR"].upper() != "MISC59")
-        self.assert_refused(self.make_game(corrupt_donor=corrupt), r"(?i)donor|ITM|item")
+        game=self.make_game(corrupt_donor=corrupt)
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
-    def test_missing_donor_artwork_fails_without_publications(self) -> None:
-        self.assert_refused(self.make_game(missing_bam_for="MISC59"),
-                            r"(?i)artwork|BAM")
+    def test_missing_donor_artwork_gets_bundled_image(self) -> None:
+        game=self.make_game(missing_bam_for="MISC59")
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
-    def test_corrupt_donor_artwork_fails_without_publications(self) -> None:
-        self.assert_refused(self.make_game(corrupt_bam_for="MISC59"),
-                            r"(?i)artwork|BAM")
+    def test_corrupt_donor_artwork_gets_bundled_image(self) -> None:
+        game=self.make_game(corrupt_bam_for="MISC59")
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
-    def test_missing_neutral_fallback_fails_without_publications(self) -> None:
-        self.assert_refused(self.make_game(missing_donor="MISC59"),
-                            r"(?i)fallback|MISC59|donor")
+    def test_missing_neutral_donor_uses_bundled_artwork(self) -> None:
+        game=self.make_game(missing_donor="MISC59")
+        self.assert_installed(game)
+        self.assert_uninstalled(game)
 
 
 if __name__ == "__main__":

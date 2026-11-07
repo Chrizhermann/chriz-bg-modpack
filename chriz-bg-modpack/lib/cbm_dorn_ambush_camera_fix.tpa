@@ -20,9 +20,7 @@
 //    that already has this block stays untouched. Without SENJACK.BCS only the
 //    cutscene changes.
 //
-// The component is aborted (rolled back, nothing written, not logged as
-// installed) when either script is not a compiled BCS, or when a LockScroll()
-// action cannot be read as a complete action record.
+// A missing or unreadable script affects only that script.
 
 // head:   the start of any LockScroll() action, whitespace-tolerant
 // record: one complete compiled action record. Its eight lines are AC, the
@@ -37,7 +35,8 @@ BEGIN
   TEXT_SPRINT nl ~%MNL%?%LNL%~
   TEXT_SPRINT line ~[^%MNL%%LNL%]*~
   TEXT_SPRINT head ~AC[ %TAB%]*%nl%[ %TAB%]*135[ %TAB%]*OB~
-  TEXT_SPRINT record ~AC%nl%135OB%nl%%line%OB%nl%OB%nl%%line%OB%nl%OB%nl%%line%OB%nl%%line%AC%nl%~
+  TEXT_SPRINT ws ~[ %TAB%]*~
+  TEXT_SPRINT record ~AC%ws%%nl%%ws%135%ws%OB%ws%%nl%%line%OB%ws%%nl%%ws%OB%ws%%nl%%line%OB%ws%%nl%%ws%OB%ws%%nl%%line%OB%ws%%nl%%line%AC%ws%%nl%~
 END
 
 // Scan a compiled BCS buffer.
@@ -114,82 +113,25 @@ BEGIN
   REPLACE_TEXTUALLY CASE_SENSITIVE ~%record%~ ~~
 END
 
-// Read-only scans of the effective scripts; nothing is written yet.
-COPY_EXISTING ~CUTDN1B.BCS~ ~override~
-  LPF cbm_dorn_ambush_scan
-    RET
-      cbm_dac_cut_status = status
-      cbm_dac_cut_reason = reason
-      cbm_dac_locks = locks
-      cbm_dac_records = records
-  END
-BUT_ONLY_IF_IT_CHANGES
-
-OUTER_SET cbm_dac_senjack = 0
-OUTER_SET cbm_dac_sj_status = 0
-OUTER_TEXT_SPRINT cbm_dac_sj_reason ~~
-OUTER_SET cbm_dac_sj_marked = 0
-ACTION_IF FILE_EXISTS_IN_GAME ~SENJACK.BCS~ BEGIN
-  OUTER_SET cbm_dac_senjack = 1
-  COPY_EXISTING ~SENJACK.BCS~ ~override~
-    LPF cbm_dorn_ambush_scan
-      RET
-        cbm_dac_sj_status = status
-        cbm_dac_sj_reason = reason
-        cbm_dac_sj_marked = marked
-    END
-  BUT_ONLY_IF_IT_CHANGES
-END
-
-ACTION_IF cbm_dac_cut_status = 1 BEGIN
-  OUTER_TEXT_SPRINT cbm_dac_file ~CUTDN1B.BCS~
-  OUTER_TEXT_SPRINT cbm_dac_reason ~%cbm_dac_cut_reason%~
-  ABORT @1352
-END
-ACTION_IF cbm_dac_cut_status = 2 BEGIN
-  ABORT @1353
-END
-// The release block only prepends to SENJACK.BCS, so an unusual LockScroll()
-// record there (status 2) is no obstacle; only an invalid script is.
-ACTION_IF cbm_dac_senjack AND cbm_dac_sj_status = 1 BEGIN
-  OUTER_TEXT_SPRINT cbm_dac_file ~SENJACK.BCS~
-  OUTER_TEXT_SPRINT cbm_dac_reason ~%cbm_dac_sj_reason%~
-  ABORT @1352
-END
-ACTION_IF cbm_dac_cut_status != 0 BEGIN
-  FAIL ~cbm_dorn_ambush_camera_fix: unexpected CUTDN1B.BCS scan status %cbm_dac_cut_status%.~
-END
-
-ACTION_IF cbm_dac_locks > 0 BEGIN
-  COPY_EXISTING ~CUTDN1B.BCS~ ~override~
-    LPF cbm_dorn_ambush_remove_locks RET cbm_dac_removed = removed END
-  BUT_ONLY_IF_IT_CHANGES
-  PRINT @1354
-END ELSE BEGIN
-  PRINT @1355
-END
-
-ACTION_IF NOT cbm_dac_senjack BEGIN
-  PRINT @1358
-END ELSE ACTION_IF cbm_dac_sj_marked > 0 BEGIN
-  PRINT @1357
-END ELSE BEGIN
-  EXTEND_TOP ~SENJACK.BCS~ ~chriz-bg-modpack/baf/cbm_dorn_ambush_senjack.baf~
-  PRINT @1356
-END
-
-// Verify the written scripts.
-COPY_EXISTING ~CUTDN1B.BCS~ ~override~
-  LPF cbm_dorn_ambush_scan RET cbm_dac_check = status cbm_dac_check_locks = locks END
-BUT_ONLY_IF_IT_CHANGES
-ACTION_IF cbm_dac_check != 0 OR cbm_dac_check_locks != 0 BEGIN
-  FAIL ~cbm_dorn_ambush_camera_fix: CUTDN1B.BCS did not verify (status %cbm_dac_check%, %cbm_dac_check_locks% LockScroll actions left). The component was rolled back.~
-END
-ACTION_IF cbm_dac_senjack BEGIN
-  COPY_EXISTING ~SENJACK.BCS~ ~override~
-    LPF cbm_dorn_ambush_scan RET cbm_dac_check = status cbm_dac_check_marked = marked END
-  BUT_ONLY_IF_IT_CHANGES
-  ACTION_IF cbm_dac_check = 1 OR cbm_dac_check_marked < 1 BEGIN
-    FAIL ~cbm_dorn_ambush_camera_fix: SENJACK.BCS did not verify (status %cbm_dac_check%, release block missing). The component was rolled back.~
-  END
+ACTION_FOR_EACH cbm_dac_file IN CUTDN1B SENJACK BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_dac_file%.BCS~ BEGIN
+    COPY_EXISTING ~%cbm_dac_file%.BCS~ ~override~
+      PATCH_IF BUFFER_LENGTH >= 6 BEGIN READ_ASCII 0 cbm_dac_signature (2) END
+      ELSE BEGIN SPRINT cbm_dac_signature ~~ END
+      PATCH_IF ~%cbm_dac_signature%~ STRING_EQUAL ~SC~ BEGIN
+        PATCH_IF ~%cbm_dac_file%~ STRING_EQUAL ~CUTDN1B~ BEGIN
+          LPF cbm_dorn_ambush_scan RET cbm_dac_status = status END
+          PATCH_IF cbm_dac_status = 0 BEGIN
+            LPF cbm_dorn_ambush_remove_locks RET cbm_dac_removed = removed END
+            PATCH_PRINT ~Removed %cbm_dac_removed% camera lock(s) from CUTDN1B.BCS.~
+          END ELSE BEGIN PATCH_PRINT ~Dorn ambush: %SOURCE_FILE% is too damaged to write.~ END
+        END ELSE BEGIN
+          LPF cbm_dorn_ambush_scan RET cbm_dac_status = status END
+          PATCH_IF cbm_dac_status = 0 BEGIN
+            LPF cbmo_script_block STR_VAR replacement = ~chriz-bg-modpack/baf/cbm_dorn_ambush_senjack.baf~ marker = ~CBM_DornAmbushUnlock~ END
+          END ELSE BEGIN PATCH_PRINT ~Dorn ambush: %SOURCE_FILE% is too damaged to write.~ END
+        END
+      END ELSE BEGIN PATCH_PRINT ~Dorn ambush: %SOURCE_FILE% is too damaged to write.~ END
+    BUT_ONLY
+  END ELSE BEGIN PRINT ~Dorn ambush: %cbm_dac_file%.BCS is absent.~ END
 END

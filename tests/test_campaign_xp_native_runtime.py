@@ -37,8 +37,9 @@ def runtime(request):
             end}
         levels={FIGHTER={['7']=64000,['10']=500000,['11']=750000},THIEF={['7']=40000}}
         function EEex_Resource_Load2DA(name)
-            assert(name=='XPLEVEL')
-            return {getAtLabels=function(_,column,row) return levels[row][column] end}
+            assert(name=='XPLEVEL' or name=='CBMBXPL')
+            local data=name=='XPLEVEL' and levels or {FIGHTER={['7']=64000,['41']=8250000}}
+            return {getAtLabels=function(_,column,row) return data[row] and data[row][column] end}
         end
         resetStage='preparing'
         CBMBank_Reset={Query=function(a) return {stage=resetStage,incarnation=a.identity.incarnation,
@@ -329,7 +330,6 @@ def test_bank_presence_selects_vanilla_threshold_or_exact_baseline(runtime, bank
 @pytest.mark.parametrize('problem,reason', [
     ('missing_preview', 'baseline'), ('stale_preview', 'stale'),
     ('wrong_owner', 'lifetime'), ('serializing', 'serialization'),
-    ('missing_threshold', 'XPLEVEL'), ('invalid_threshold', 'XPLEVEL'),
     ('unearned_threshold', 'exceeds usable'),
 ])
 def test_unbanked_dual_still_requires_valid_identity_receipt_and_threshold(runtime, problem, reason):
@@ -341,8 +341,6 @@ def test_unbanked_dual_still_requires_valid_identity_receipt_and_threshold(runti
         if problem=='stale_preview' then a.m_baseStats.m_xp=80001
         elseif problem=='wrong_owner' then a.aux.CBMBankLifetime.ownerKey=string.rep('b',32)
         elseif problem=='serializing' then a.identity.serializing=true
-        elseif problem=='missing_threshold' then levels.FIGHTER['7']=nil
-        elseif problem=='invalid_threshold' then levels.FIGHTER['7']=-1
         elseif problem=='unearned_threshold' then levels.FIGHTER['7']=80001 end
         local before=a.m_baseStats.m_xp
         local ok,why=pcall(R.PrepareDual,a,4)
@@ -1332,3 +1330,26 @@ def test_chapter_caps_standalone_mode_maps_bg2_chapters_to_canonical_phases(runt
         end
     ''')
 
+
+
+@pytest.mark.parametrize("value", ["nil", "'edited'", "-1", "42000"])
+def test_retired_threshold_uses_installed_labels_or_authored_fallback(runtime, value):
+    runtime.execute("levels.FIGHTER['7']="+value)
+    expected=42000 if value=="42000" else 64000
+    result=runtime.eval("R.RetiredThreshold({kind='dual',oldLevel=7,oldClass=2})")
+    assert result == expected
+    runtime.execute("levels.FIGHTER=nil; R.ResetResourceCache()")
+    assert runtime.eval("R.RetiredThreshold({kind='dual',oldLevel=255,oldClass=2})") == 8250000
+
+
+@pytest.mark.parametrize("value", ["nil", "-1", "'edited'"])
+def test_dual_preparation_uses_fallback_for_missing_or_edited_threshold(runtime, value):
+    runtime.execute("levels.FIGHTER['7']="+value)
+    runtime.execute('''
+        local a=actor(80000,2,0,7);R.Adopt(a)
+        assert(R.CaptureDualPreview(a));assert(R.PrepareDual(a,4))
+        a.m_baseStats.m_xp=0;a.m_startTypeAI.m_Class=9;a.m_baseStats.m_flags=8
+        resetStage='completing';assert(R.CompleteDual(a,4))
+        assert(a.aux.CBMBank.old.preUsable==64000)
+        assert(a.aux.CBMBank.old.total==64000)
+    ''')

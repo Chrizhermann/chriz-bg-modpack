@@ -1,5 +1,9 @@
 # Fade and Evandra: first-recruitment SoA XP
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Independently selectable companion options, added in alpha.11:
 
 | Component | Label | Recruitment resource | Private script |
@@ -31,12 +35,12 @@ finalization and other companion script writers. Install **before the NPC is
 first created in the world**, normally before starting a new game.
 
 The installer reads the effective override-script name from the SoA CRE,
-creates a private copy, and prepends the XP blocks. The only CRE change is its
-eight-byte override-script reference. Original compiled story blocks remain
-intact in the copy; the original shared script is unchanged. This also supports
-renamed scripts and preserves other actors using them. Missing recruitment
-resources produce a warning and no change; a missing required story script or a
-collision with the private script name causes a rollback.
+creates a private copy, and writes its XP blocks. The only CRE change is its
+eight-byte override-script reference. Other actors retain their shared script.
+Competing recruitment XP actions in the private copy are removed; unrelated
+story actions remain. An empty or missing override gets an owned script, and
+an existing private name is rebuilt. Missing or unreadable creatures are logged
+individually without warnings.
 
 Class, kit, current XP, levels, statistics, spellbooks, proficiencies, equipment,
 effects, dialogue and story data are otherwise unchanged. Normal level-up choices
@@ -57,19 +61,11 @@ or start a new game when changing this selection.
 
 ## Other catch-up providers
 
-SCS 35.21 customization supplies its own catch-up and temporarily resets XP
-while the actor is level zero. An effective script containing both its
-`dw#aulel` setup application and its level-zero XP-reset block is left unchanged
-with an explicit installer message. Use SCS's normal character-screen leveling
-flow. A global SCS component flag alone does not prove it handled this actor.
-
-An existing script with a one-shot protagonist-threshold XP setter and an
-unconditional party-membership guard in the same block is also preserved with
-an explicit message. Its chosen ceiling is not replaced. Recognition compares
-the matching completion variable literally, tolerates block/trigger ordering,
-and does not combine unrelated quest blocks or accept a negated party guard.
-Complex scripted/Lua catch-up providers outside these recognized forms have
-not been certified; install ordering is not a universal ownership detector.
+Selection makes the authored ladder authoritative. Recognized one-shot catch-up
+and SCS level-zero reset actions are removed from the private script so they do
+not undo the selected XP. Their other story actions and setup flags remain.
+Unknown Lua providers are not rewritten; competing runtime writers need separate
+integration testing. The original shared script remains available to other actors.
 
 ## Source evidence
 
@@ -107,6 +103,6 @@ or level-up acceptance. No full collection installation was performed.
 
 The remaining manual check is short: naturally recruit each NPC from a
 pre-creation save at a known protagonist threshold, verify XP and ordinary
-level-up, then dismiss/rejoin once. Where SCS owns customization, use its normal
-character-screen flow and confirm it remains the only provider. No game launch
+level-up, then dismiss/rejoin once. With SCS customization, also verify that its character-screen flow does not
+replace the selected recruitment XP. No game launch
 or save modification is authorized by this document.

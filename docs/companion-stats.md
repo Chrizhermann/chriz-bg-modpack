@@ -1,5 +1,9 @@
 # Optional companion stat improvements
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 **Components 230-234** — optional, added in alpha.12.
 
 These five independent components raise the base ability scores of companions
@@ -25,10 +29,9 @@ casts, effects and racial/kit abilities. The implementation uses the declared
 
 The explicit list covers 35 named resources across BG:EE, SoD, BG2:EE and EET.
 Patch every listed file that exists, whether it is in `override` or only in the
-game's BIFF archives. Log each missing file and warn that other or renamed
-variants may remain unpatched. If none exists, report that no resources changed.
-Missing campaign variants never block the files present; malformed CRE headers
-do fail with the affected filename and roll back the component.
+game's BIFF archives. Log each missing or unreadable file without warnings.
+Missing campaign variants and malformed headers cost only those files; the
+remaining variants still receive the selected scores.
 
 | Companion | BG1 recruitment | Later campaigns and other appearances |
 |---|---|---|

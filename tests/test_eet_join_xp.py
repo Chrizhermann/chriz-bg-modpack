@@ -149,7 +149,7 @@ SCRIPTS = {
     ),
 }
 CREATURES = {"YOSHI12": ("Yoshimo", "YOSHIMO"), "CHGOOD01": ("CHGOOD01", "CHGOOD")}
-PATCHED = {"K#SARAH": "soa", "WILSON": "tob", "YOSHIMO": "tob"}
+PATCHED = {"K#SARAH":"soa", "AERIE":"soa", "WILSON":"both", "YOSHIMO":"both", "AERI25":"tob", "K#SARA25":"tob"}
 
 
 def tree(game):
@@ -316,9 +316,11 @@ def assert_installed(game):
     after = tree(game)
     changed = {name for name in set(after) | set(game.before) if after.get(name) != game.before.get(name)}
     assert changed == {f"OVERRIDE/{name}.BCS" for name in PATCHED}, (changed, transcript)
+    assert "INSTALLED WITH WARNINGS" not in transcript
     for name in PATCHED:
-        # EXTEND_TOP: the original compiled blocks follow unchanged.
-        assert after[f"OVERRIDE/{name}.BCS"].endswith(game.before[f"OVERRIDE/{name}.BCS"].removeprefix(b"SC\n"))
+        source=decompile_script(game,name)
+        assert source.count('SetGlobal("QuestAlpha","LOCALS",1)')==1
+        assert source.count('SetGlobal("QuestBeta","LOCALS",1)')==1
     return transcript, after
 
 
@@ -330,21 +332,19 @@ def assert_uninstalled(game):
 
 
 @pytest.mark.parametrize("sr", (False, True))
-def test_adds_eet_blocks_only_where_missing_and_uninstalls_byte_exact(tmp_path, sr):
-    game = make_game(tmp_path, sr=sr)
-    originals = {name: source_blocks(game, name) for name in PATCHED}
-    transcript, _ = assert_installed(game)
-    for name, phase in PATCHED.items():
-        blocks = source_blocks(game, name)
-        added = 8 if phase == "soa" else 1
-        assert blocks[added:] == originals[name], name
-        assert ("SoA join-XP ladder" if phase == "soa" else "ToB join-XP raise") in transcript
-    # Every joinable script that already has its block is reported, not changed.
-    assert "5 SoA and ToB scripts of joinable NPCs already have their join-XP catch-up" in transcript
-    soa_missing = re.search(r"SoA party-table entries without an EET SoA script, unchanged:(.*)", transcript)
-    tob_missing = re.search(r"ToB party-table entries without an EET ToB script, unchanged:(.*)", transcript)
-    assert set(soa_missing[1].split()) == {"KIVAN", "SAFANA"}, transcript
-    assert set(tob_missing[1].split()) == {"SAFANA"}, transcript
+def test_authors_eet_catch_up_for_every_discovered_script_and_uninstalls(tmp_path,sr):
+    game=make_game(tmp_path,sr=sr)
+    transcript,_=assert_installed(game)
+    for name,phase in PATCHED.items():
+        source=decompile_script(game,name)
+        if phase in ("soa","both"):
+            for tier in TIERS: assert source.count(f"ChangeStat(Myself,XP,{tier},SET)")==1
+        if phase in ("tob","both"):
+            assert source.count("ChangeStat(Myself,XP,2500000,SET)")==1
+    soa_missing=re.search(r"SoA party-table entries without an EET SoA script, unchanged:(.*)",transcript)
+    tob_missing=re.search(r"ToB party-table entries without an EET ToB script, unchanged:(.*)",transcript)
+    assert set(soa_missing[1].split())=={"KIVAN","SAFANA"}
+    assert set(tob_missing[1].split())=={"SAFANA"}
     assert_uninstalled(game)
 
 
@@ -399,7 +399,8 @@ def test_tob_raise_runs_first_in_tob_and_never_in_soa(tmp_path, name):
             assert actor.npc_xp == expected and actor.globals[("bd_joinxp", "locals")] == 1
         else:
             run_pass(blocks, actor)
-            assert actor.npc_xp == expected and actor.globals[("bd_joinxp", "locals")] == 1
+            # The authored ToB raise leaves an actor already above its cap alone.
+            assert actor.npc_xp == expected
         run_pass(blocks, actor)
         assert actor.npc_xp == expected
     # In SoA the added raise cannot run: the script behaves as before.
@@ -423,14 +424,13 @@ def test_normalized_input_is_a_byte_stable_second_application(tmp_path):
     game.before = tree(game)
     result, transcript = install(game)
     assert result.returncode == 0, transcript
-    assert "join-XP ladder" not in transcript and "join-XP raise" not in transcript
-    assert "8 SoA and ToB scripts of joinable NPCs already have their join-XP catch-up" in transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
     assert tree(game) == game.before
     assert_uninstalled(game)
 
 
 @pytest.mark.parametrize("variant", ("own-variable-ladder", "ladder-without-catch-all", "scs"))
-def test_existing_soa_catch_up_of_any_owner_is_preserved(tmp_path, variant):
+def test_existing_soa_providers_cannot_override_the_authored_ladder(tmp_path, variant):
     if variant == "own-variable-ladder":
         script = party_block("K#SARAH") + STORY + ladder("SarahJoinedOnce")
     elif variant == "ladder-without-catch-all":
@@ -447,11 +447,15 @@ def test_existing_soa_catch_up_of_any_owner_is_preserved(tmp_path, variant):
     game = make_game(tmp_path, scripts={"K#SARAH": script})
     result, transcript = install(game)
     assert result.returncode == 0, transcript
-    assert "K#SARAH.BCS gets" not in transcript
-    if variant == "scs":
-        assert "SCS NPC customization owns joining XP in K#SARAH.BCS" in transcript
-    after = tree(game)
-    assert after["OVERRIDE/K#SARAH.BCS"] == game.before["OVERRIDE/K#SARAH.BCS"]
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    source=decompile_script(game,"K#SARAH")
+    assert "ChangeStat(Myself,XP,0,SET)" not in source
+    for tier in TIERS: assert source.count(f"ChangeStat(Myself,XP,{tier},SET)")==1
+    if variant!="scs":
+        actor=Actor(2_000_000,300_000,globals=soa())
+        blocks=source_blocks(game,"K#SARAH")
+        for _ in range(5): run_pass(blocks,actor)
+        assert actor.npc_xp==1_250_000
     assert_uninstalled(game)
 
 
@@ -463,7 +467,7 @@ def test_existing_soa_catch_up_of_any_owner_is_preserved(tmp_path, variant):
     # A ToB-only script's own protagonist ladder is that mod's ToB catch-up.
     ("player-based-raise", False),
 ))
-def test_tob_raise_counts_only_if_it_can_run_first(tmp_path, variant, patched):
+def test_changed_tob_raise_is_replaced_by_the_authored_amount(tmp_path, variant, patched):
     catch_all = ('IF\n Global("BD_JOINXP","LOCALS",0)\n InParty(Myself)\nTHEN\n RESPONSE #100\n'
                  ' SetGlobal("BD_JOINXP","LOCALS",1)\nEND\n')
     script = {
@@ -484,21 +488,40 @@ def test_tob_raise_counts_only_if_it_can_run_first(tmp_path, variant, patched):
     game = make_game(tmp_path, scripts={"K#SARA25": script})
     result, transcript = install(game)
     assert result.returncode == 0, transcript
-    after = tree(game)
-    assert (after["OVERRIDE/K#SARA25.BCS"] != game.before["OVERRIDE/K#SARA25.BCS"]) == patched, transcript
-    assert ("K#SARA25.BCS gets EET's ToB join-XP raise" in transcript) == patched
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    blocks=source_blocks(game,"K#SARA25")
+    actor=Actor(4_000_000,300_000,globals=soa({("intob","global"):1}))
+    for _ in range(5): run_pass(blocks,actor)
+    assert actor.npc_xp==2_500_000
+    source=decompile_script(game,"K#SARA25")
+    assert source.count("ChangeStat(Myself,XP,2500000,SET)")==1
+    assert "ChangeStat(Myself,XP,3000000,SET)" not in source
     assert_uninstalled(game)
 
 
-def test_missing_tob_script_is_reported_and_the_rest_installs(tmp_path):
-    game = make_game(tmp_path, scripts={"K#SARA25": None})
-    result, transcript = install(game)
-    assert result.returncode in (0, 3), transcript
-    assert "NOT INSTALLED DUE TO ERRORS" not in transcript
-    assert "ToB script K#SARA25.BCS does not exist" in transcript
-    after = tree(game)
-    assert {name for name in after if after[name] != game.before.get(name)} == {
-        f"OVERRIDE/{name}.BCS" for name in PATCHED}
+def test_missing_referenced_tob_script_is_created(tmp_path):
+    game=make_game(tmp_path,scripts={"K#SARA25":None})
+    result,transcript=install(game)
+    assert result.returncode==0,transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert "creating K#SARA25.BCS" in transcript
+    assert "ChangeStat(Myself,XP,2500000,SET)" in decompile_script(game,"K#SARA25")
+    assert_uninstalled(game)
+
+
+def test_empty_override_gets_one_owned_script_and_both_campaign_rules(tmp_path):
+    game=make_game(tmp_path)
+    (game.override/"yoshi12.cre").write_bytes(creature("Yoshimo",""))
+    game.before=tree(game)
+    result,transcript=install(game)
+    assert result.returncode==0,transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    data=(game.override/"yoshi12.cre").read_bytes()
+    script=data[0x248:0x250].rstrip(b"\0").decode()
+    assert script.startswith("CBJ")
+    source=decompile_script(game,script)
+    assert "ChangeStat(Myself,XP,1250000,SET)" in source
+    assert "ChangeStat(Myself,XP,2500000,SET)" in source
     assert_uninstalled(game)
 
 
@@ -506,7 +529,7 @@ def test_missing_tob_script_is_reported_and_the_rest_installs(tmp_path):
     "no-campaign", "no-pdialog-column", "no-tob-row", "missing-tob-table",
     "blank-default-line", "no-transition-script",
 ))
-def test_unreadable_eet_rules_fail_without_changes(tmp_path, defect):
+def test_changed_or_absent_eet_metadata_does_not_block_present_targets(tmp_path, defect):
     tables, scripts = {}, {}
     if defect == "no-campaign":
         tables["campaign"] = None
@@ -522,9 +545,10 @@ def test_unreadable_eet_rules_fail_without_changes(tmp_path, defect):
         scripts["AR4500"] = None
     game = make_game(tmp_path, tables=tables, scripts=scripts)
     result, transcript = install(game)
-    assert result.returncode != 0, transcript
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert tree(game) == game.before
+    assert result.returncode==0,transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert "ChangeStat(Myself,XP,1250000,SET)" in decompile_script(game,"K#SARAH")
+    assert_uninstalled(game)
 
 
 def test_requires_eet(tmp_path):
@@ -549,18 +573,13 @@ def test_fade_with_component_237_gets_one_catch_up_owner_per_script(tmp_path, or
         transcripts.append(transcript)
     after = tree(game)
     fade_blocks = source_blocks(game, "E3FADE")
-    if order == (237, 239):
-        # 237's private clone keeps its own ladder; 239 recognises it through
-        # the decompiled 0x4043 alias and adds Beamdog's ladder only to the
-        # original script, which existing actors and other users keep.
-        assert "OVERRIDE/CBMFXP.BCS" in after
-        assert "CBMFXP.BCS gets" not in transcripts[1]
-        assert "E3FADE.BCS gets EET's SoA join-XP ladder" in transcripts[1]
-        assert len(fade_blocks) == 8 + len(script_blocks(fade))
-    else:
-        # 237 now sees 239's ladder as the existing provider.
-        assert "provider is preserved" in transcripts[1]
-        assert "OVERRIDE/CBMFXP.BCS" not in after
+    assert "OVERRIDE/CBMFXP.BCS" in after
+    source=decompile_script(game,"CBMFXP")
+    # Whichever component runs last owns the catch-up, with one XP writer per tier.
+    for tier in TIERS: assert source.count(f"ChangeStat(Myself,XP,{tier},SET)")==1
+    actor=Actor(2_000_000,300_000,globals=soa())
+    for _ in range(5): run_pass(source_blocks(game,"CBMFXP"),actor)
+    assert actor.npc_xp==1_250_000
     for component in reversed(order):
         result, transcript = install(game, component, uninstall=True)
         assert result.returncode == 0, transcript

@@ -141,6 +141,10 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 expected = dict(before)
                 for name, payload in payloads.items():
                     expected["OVERRIDE/" + name.upper()] = payload
+                table = (game.override / "CBMXPB.2DA").read_bytes()
+                self.assertTrue(table.startswith(b"2DA V1.0"))
+                self.assertTrue(all(row in table for row in (b"PICK_LOCK", b"DISARM_TRAP", b"LEARN_SPELL")))
+                expected["OVERRIDE/CBMXPB.2DA"] = table
                 self.assertEqual(expected, game_files())
 
                 uninstall = game.run(uninstall=True)

@@ -9,7 +9,7 @@ local slots={ [1]={1},[2]={2},[3]={3},[4]={4},[5]={5},[6]={6},
 local oldFlags={{8,2},{16,1},{32,3},{64,4},{128,11},{256,12}}
 local classNames={ [1]="MAGE",[2]="FIGHTER",[3]="CLERIC",[4]="THIEF",
     [11]="DRUID",[12]="RANGER" }
-local xpLevels
+local xpLevels, stockXPLevels
 local function uint(n) return type(n)=="number" and n>=0 and n<=4294967295 and n%1==0 end
 
 -- This is the native class/slot contract audited in reader-native-probe.py,
@@ -39,7 +39,15 @@ function R.RetiredThreshold(info)
     if info.kind~="dual" then return nil end
     if not xpLevels then xpLevels=EEex_Resource_Load2DA("XPLEVEL") end
     local value=tonumber(xpLevels:getAtLabels(tostring(info.oldLevel),classNames[info.oldClass]))
-    assert(uint(value),"Installed XPLEVEL lacks a valid retired threshold")
+    if not uint(value) then
+        if not stockXPLevels then stockXPLevels=EEex_Resource_Load2DA("CBMBXPL") end
+        value=tonumber(stockXPLevels:getAtLabels(tostring(info.oldLevel),classNames[info.oldClass]))
+    end
+    -- Missing installed labels use our baseline; levels beyond its authored
+    -- range use its last threshold rather than disabling this actor's bank.
+    if not uint(value) then
+        value=tonumber(stockXPLevels:getAtLabels("41",classNames[info.oldClass])) or 0
+    end
     return value
 end
 function R.CurrentPhase(saved,policy)
@@ -980,7 +988,7 @@ function R.OldProgression(sprite)
     if not ok then return nil,tostring(result) end
     return result
 end
-function R.ResetResourceCache() xpLevels=nil end
+function R.ResetResourceCache() xpLevels,stockXPLevels=nil,nil end
 function R.Register()
     assert(R.account and not R.registered,"Runtime must be configured exactly once")
     assert(CBMBank_Identity and CBMBank_Identity.installed,"Native identity hooks required before actor loading")

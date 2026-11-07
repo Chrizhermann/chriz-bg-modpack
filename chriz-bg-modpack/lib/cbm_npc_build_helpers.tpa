@@ -2,17 +2,12 @@
 // records. Stats 109/110 have been repurposed for spell state in EE and are not
 // owned by these presets. Other opcodes and extended spell-state stats survive.
 DEFINE_PATCH_FUNCTION cbm_npc_clear_proficiencies BEGIN
-  PATCH_IF SOURCE_SIZE < 0x2d4 BEGIN PATCH_FAIL ~cbm_npc_build: truncated CRE~ END
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   READ_BYTE 0x33 cbmp_version
   READ_LONG 0x2c4 cbmp_offset
   READ_LONG 0x2c8 cbmp_count
   SET cbmp_size = cbmp_version = 1 ? 0x108 : 0x30
-  PATCH_IF (cbmp_version > 1) OR (cbmp_count < 0)
-      OR (cbmp_count > SOURCE_SIZE / cbmp_size)
-      OR ((cbmp_count > 0) AND ((cbmp_offset < 0x2d4)
-        OR (cbmp_offset > SOURCE_SIZE - cbmp_count * cbmp_size))) BEGIN
-    PATCH_FAIL ~cbm_npc_build: invalid embedded effect table~
-  END
   FOR (cbmp_i = 0; cbmp_i < cbmp_count; ++cbmp_i) BEGIN
     SET cbmp_at = cbmp_offset + cbmp_i * cbmp_size
     SET cbmp_opcode = cbmp_version = 1 ? LONG_AT (cbmp_at + 8) : SHORT_AT cbmp_at
@@ -32,6 +27,9 @@ DEFINE_PATCH_FUNCTION cbm_npc_clear_proficiencies BEGIN
     PATCH_IF (cbmp_stat != 109) AND (cbmp_stat != 110) BEGIN
       SET_BG2_PROFICIENCY cbmp_stat 0
     END
+  END
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
   END
 END
 

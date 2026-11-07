@@ -219,6 +219,10 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                     expected[f"OVERRIDE/{name.upper()}"] = (
                         game.root / utility.MOD_NAME / "story-utility-xp" / name.lower()
                     ).read_bytes()
+                table = (game.override / "CBMXPB.2DA").read_bytes()
+                self.assertTrue(table.startswith(b"2DA V1.0"))
+                self.assertTrue(all(row in table for row in (b"PICK_LOCK", b"DISARM_TRAP", b"LEARN_SPELL")))
+                expected["OVERRIDE/CBMXPB.2DA"] = table
                 # Full-tree equality protects the BIFF/KEY, an override XPBONUS,
                 # every unrelated resource, and absence of an XPLEVEL dependency.
                 self.assertEqual(expected, self.game_files(game.root))
@@ -312,7 +316,7 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assertIn(b"CBM_DornAmbushUnlock", after[dorn.SENJACK_KEY])
             self.assert_restored(game, 135, before)
 
-    def test_670_extracted_marek_dagger_installs_skips_for_bg1npc_and_restores(self) -> None:
+    def test_670_extracted_marek_dagger_installs_with_or_without_bg1npc_and_restores(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cbm-release-marek-") as raw:
             game = marek.MarekGame(Path(raw) / "game")
             before = self.extract_release(game)
@@ -327,7 +331,9 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                                    resources=marek.default_resources("eet", quest=True))
             before = self.extract_release(game)
             self.run_component(game, 670)
-            self.assertEqual(before, self.game_files(game.root))
+            after = self.game_files(game.root)
+            for key in marek.MAREK_KEYS:
+                self.assertEqual(marek.with_dagger(before[key]), marek.items_and_slots(after[key]))
             self.assert_restored(game, 670, before)
 
     def test_660_extracted_degrodel_choice_installs_and_restores_dialog(self) -> None:
@@ -370,6 +376,8 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
         for name in campaign.PUBLICATIONS:
             expected["OVERRIDE/" + name.upper()] = self.shipped_campaign_file(game, name)
         expected["OVERRIDE/CBMBKCFG.LUA"] = self.shipped_campaign_file(game, config)
+        expected["OVERRIDE/CBMBXPL.2DA"] = (
+            game.root / utility.MOD_NAME / "data/progression/XPLEVEL.2da").read_bytes()
         return expected
 
     def assert_campaign_runtime_shipped(self, game) -> None:
@@ -452,28 +460,29 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assert_restored(game, 652, base)
             self.assert_restored(game, 650, before)
 
-    def test_652_extracted_unrecognised_bainvi_warns_unchanged_and_keeps_caps(self) -> None:
+    def test_652_extracted_other_entrance_is_gated_and_unreadable_file_is_isolated(self) -> None:
         for layout, bainvi in sorted(campaign.UNRECOGNISED_BAINVI.items()):
             with self.subTest(layout=layout), tempfile.TemporaryDirectory(
-                prefix="cbm-release-chapter-warn-"
+                prefix="cbm-release-chapter-overwrite-"
             ) as raw:
                 game = campaign.chapter_game(Path(raw), bainvi)
                 before = self.extract_release(game)
                 self.run_component(game, 650)
                 base = self.game_files(game.root)
                 returncode, transcript = self.run_installer(game, 652)
-                # WeiDU exits with 3 after a component installed with warnings.
-                self.assertEqual(3, returncode, transcript)
-                self.assertIn("INSTALLED WITH WARNINGS", transcript)
-                self.assertIn(campaign.NO_GATE_WARNING, transcript)
-                self.assertIn(campaign.NO_GATE_REASONS[layout], transcript)
-                self.assertRegex(game.active_log(), r"(?m)#0\s+#652\b")
-                expected = dict(base)
-                expected["OVERRIDE/CBMBKCFG.LUA"] = self.shipped_campaign_file(game, "cbmbkchp.lua")
-                # Exact equality also proves BAINVI.BCS kept its bytes.
-                self.assertEqual(expected, self.game_files(game.root))
-                self.assertEqual(before["OVERRIDE/BAINVI.BCS"],
-                                 (game.override / "bainvi.bcs").read_bytes())
+                self.assertEqual(0, returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
+                if layout == "not_compiled":
+                    self.assertIn("too damaged to write", transcript)
+                    self.assertEqual(before["OVERRIDE/BAINVI.BCS"],
+                                     (game.override / "bainvi.bcs").read_bytes())
+                else:
+                    bundled = release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root)
+                    with patch.object(recruitment, "WEIDU", bundled):
+                        patched = recruitment.decompile_script(game, "BAINVI")
+                    self.assertEqual(1, patched.count(campaign.CHAPTER_GATE))
+                    self.assertIn('StartCutScene("OMBA01")', patched)
                 self.assert_restored(game, 652, base)
                 self.assert_restored(game, 650, before)
 

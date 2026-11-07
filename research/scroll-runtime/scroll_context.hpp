@@ -118,7 +118,6 @@ class Registry {
     const std::thread::id owner_{std::this_thread::get_id()};
     std::uint64_t next_{1}; // never reset on load; old handles cannot become live
     std::atomic<bool> disabled_{false};
-    static constexpr unsigned max_depth = 64;
 
     void thread_check() const {
         if (owner_ != std::this_thread::get_id()) throw std::logic_error("scroll callback on another thread");
@@ -233,7 +232,7 @@ public:
         return std::make_shared<const Origin>(Origin{next_token(), item, ability, reader, uuid});
     }
     void restore_effect(Handle effect, Context value) {
-        if (effect.kind != Kind::Effect || !value.origin || !value.origin->reader_uuid || value.depth > max_depth)
+        if (effect.kind != Kind::Effect || !value.origin || !value.origin->reader_uuid)
             throw std::invalid_argument("invalid saved effect context");
         set(effect, std::move(value));
     }
@@ -273,8 +272,7 @@ public:
             throw std::invalid_argument("invalid linked-effect transfer");
         auto value = context(parent);
         if (value) {
-            if (value->depth >= max_depth) throw std::overflow_error("scroll linked-effect depth exceeded");
-            ++value->depth;
+            if (value->depth != std::numeric_limits<unsigned>::max()) ++value->depth;
             value->pending_selector.reset();
         }
         set(child, std::move(value));
@@ -306,8 +304,12 @@ public:
             // A frame entered before the latch still keeps its native level.
             if (!current.context || registry_->disabled()) return {};
             if (!current.selected) {
-                if (!current.context->origin->reader.address)
-                    throw std::logic_error("original scroll reader UUID is pending load binding");
+                if (!current.context->origin->reader.address) {
+                    // The reader can remain in an unloaded area. This cast
+                    // keeps its native level; later casts can bind the reader.
+                    current.context.reset(); current.selected = true;
+                    return {};
+                }
                 registry_->entry(current.context->origin->reader);
                 // Resolve only this original reader, never the reflected native
                 // source. Calls are synchronous; refs are reacquired afterwards
@@ -334,8 +336,7 @@ public:
             auto value = registry_->disabled() ? std::nullopt : current.context;
             if (value) {
                 if (!current.selected) throw std::logic_error("scroll child before ability selection");
-                if (value->depth >= max_depth) throw std::overflow_error("scroll spell depth exceeded");
-                ++value->depth;
+                if (value->depth != std::numeric_limits<unsigned>::max()) ++value->depth;
                 value->applied_level = current.level;
                 value->pending_selector.reset();
             }

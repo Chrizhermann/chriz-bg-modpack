@@ -1,8 +1,13 @@
 # Dorn's ambush: no camera lock on Senjak
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Component **135**, label `cbm_dorn_ambush_camera_fix`, is an optional fix for
 the BG1 campaign. It supports BG:EE (with or without SoD) and EET and needs the
-ambush cutscene `CUTDN1B.BCS`. EEex and SCS are not required.
+ambush scripts `CUTDN1B.BCS` and `SENJACK.BCS`, handled independently. EEex and
+SCS are not required.
 
 ## The problem
 
@@ -44,10 +49,9 @@ EET (`BG5800`) work.
 - A cutscene without a camera lock is already fixed and stays unchanged.
 - Senjak's script is not extended twice.
 - Without `SENJACK.BCS`, only the cutscene changes.
-- Without `CUTDN1B.BCS` (for example BG2:EE alone), the component is skipped.
-- If either script is not a valid compiled script, or a camera-lock action
-  cannot be read safely, the installer explains why and changes nothing. The
-  component is then not recorded as installed.
+- Without `CUTDN1B.BCS`, the present Senjak script still gets its release block.
+- A missing or unreadable script is logged without warnings and costs only that
+  script. Changed owned release blocks are replaced with the authored block.
 
 Installing during a playthrough is safe: every ambush that has not started yet
 uses the changed scripts. Loading a save always clears a camera lock, so a game

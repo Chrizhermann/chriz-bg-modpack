@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Apply selected NPC, spell, item and script changes regardless of earlier game
+  values or descriptions. Missing optional targets and unreadable resources are
+  reported individually without rolling back other files.
+- Read progression tables by labels with bundled defaults for absent cells;
+  replace owned spell effects and script blocks, and publish complete English
+  descriptions. Other languages retain their current text pending translation.
+- Remove resource fingerprints and the 64-link scroll ancestry limit. Native
+  hook signatures remain in place; campaign banking handler behavior is unchanged.
+- See [overwrite scope and evidence](docs/we-overwrite.md) for owned data,
+  normal-input differences, unresolved cases and verification limits. These
+  changes have not been tested in a running game.
+
 ## v0.2.0-alpha.15 - 2026-11-03
 
 Alpha.15 adds one optional component: Marek carries the Boomerang Dagger +2 in

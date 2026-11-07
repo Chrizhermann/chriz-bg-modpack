@@ -1,24 +1,12 @@
 // Component430: per-reader scroll casting. No ITM/SPL gameplay bytes change.
 // Install after spell/item providers; the resource policy is built from the
-// effective installed override+KEY/BIF resources and reverified at startup.
-ACTION_IF NOT ("%WEIDU_OS%" STRING_EQUAL_CASE "win32") BEGIN
-  FAIL @1430
-END
-ACTION_IF NOT (FILE_EXISTS ~EEex.dll~ AND FILE_EXISTS ~EEex_scripts/EEex_Modules.lua~) BEGIN
-  FAIL @1431
-END
-ACTION_IF NOT (FILE_EXISTS ~chriz-bg-modpack/scroll-casting/CBMScroll.dll~ AND
-               FILE_EXISTS ~chriz-bg-modpack/scroll-casting/tools/CBMSPolicy.exe~) BEGIN
-  FAIL @1432
-END
+// effective installed override+KEY/BIF resources and applied at startup; native hook signatures remain checked.
+ACTION_IF ("%WEIDU_OS%" STRING_EQUAL_CASE "win32") AND
+    FILE_EXISTS ~EEex.dll~ AND FILE_EXISTS ~EEex_scripts/EEex_Modules.lua~ BEGIN
 AT_NOW cbm_scroll_policy_result ~chriz-bg-modpack\scroll-casting\tools\CBMSPolicy.exe --game-root "." --output-dir "weidu_external/chriz-bg-modpack/scroll-policy-work" --installer-staging~ EXACT
-ACTION_IF (cbm_scroll_policy_result != 0 AND cbm_scroll_policy_result != 2) BEGIN
-  FAIL @1433
-END
-ACTION_IF NOT (FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.bin~ AND
-               FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.json~) BEGIN
-  FAIL @1433
-END
+ACTION_IF (cbm_scroll_policy_result = 0 OR cbm_scroll_policy_result = 2) AND
+    FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.bin~ AND
+    FILE_EXISTS ~weidu_external/chriz-bg-modpack/scroll-policy-work/CBMSPOL1.json~ BEGIN
 COPY ~chriz-bg-modpack/scroll-casting/CBMScroll.dll~ ~CBMScroll.dll~
 COPY ~chriz-bg-modpack/scroll-casting/CBMS_Startup.lua~ ~CBMScroll/CBMS_Startup.lua~
 COPY ~chriz-bg-modpack/scroll-casting/CBMS_ScrollMarshal.lua~ ~CBMScroll/CBMS_ScrollMarshal.lua~
@@ -31,3 +19,8 @@ APPEND_OUTER ~EEex_scripts/EEex_Modules.lua~ ~dofile("CBMScroll/CBMS_Startup.lua
   UNLESS ~CBMScroll/CBMS_Startup.lua~ KEEP_CRLF
 ACTION_IF cbm_scroll_policy_result = 2 BEGIN PRINT @1434 END
 PRINT @1435
+END ELSE BEGIN
+  PRINT ~Scroll reader level: its policy builder could not run or publish its files; this feature was not installed.~
+END
+
+END ELSE BEGIN PRINT ~Scroll reader level: Windows EEex is required for this feature.~ END

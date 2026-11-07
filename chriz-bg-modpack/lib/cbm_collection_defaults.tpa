@@ -1,6 +1,6 @@
 // =====================================================================
 //  cbm_collection_defaults   (components @194-@198)
-//  Narrow, fail-closed helpers for the collection's optional NPC defaults
+//  Authoritative field helpers for the collection's optional NPC defaults
 // =====================================================================
 
 // Resolve installed IDS symbols in the action phase. Callers pass the
@@ -16,9 +16,16 @@ BEGIN
   ACTION_IF (~%cbm_collection_class_symbol%~ STRING_EQUAL ~~) BEGIN
     FAIL ~cbm_collection_defaults: empty CLASS.IDS symbol~
   END
-  OUTER_SET class_id = IDS_OF_SYMBOL (~class~ ~%cbm_collection_class_symbol%~)
-  ACTION_IF ((class_id <= 0) OR (class_id > 0xff)) BEGIN
-    FAIL ~cbm_collection_defaults: CLASS.IDS symbol %cbm_collection_class_symbol% resolved outside the CRE byte range~
+  OUTER_SET class_id = (FILE_EXISTS_IN_GAME ~CLASS.IDS~ ? IDS_OF_SYMBOL (~class~ ~%cbm_collection_class_symbol%~) : (0 - 1))
+  ACTION_IF class_id < 0 BEGIN
+    ACTION_DEFINE_ASSOCIATIVE_ARRAY cbmo_classes BEGIN
+      MAGE => 1 FIGHTER => 2 CLERIC => 3 THIEF => 4 BARD => 5 PALADIN => 6
+      FIGHTER_MAGE => 7 FIGHTER_CLERIC => 8 FIGHTER_THIEF => 9
+      FIGHTER_MAGE_THIEF => 10 DRUID => 11 RANGER => 12 MAGE_THIEF => 13
+      CLERIC_MAGE => 14 CLERIC_THIEF => 15 FIGHTER_DRUID => 16
+      FIGHTER_MAGE_CLERIC => 17 CLERIC_RANGER => 18 SORCERER => 19 MONK => 20
+    END
+    OUTER_SET class_id = $cbmo_classes(~%cbm_collection_class_symbol%~)
   END
 END
 
@@ -32,9 +39,14 @@ BEGIN
   ACTION_IF (~%cbm_collection_kit_symbol%~ STRING_EQUAL ~~) BEGIN
     FAIL ~cbm_collection_defaults: empty KIT.IDS symbol~
   END
-  OUTER_SET cbm_collection_kit_id = IDS_OF_SYMBOL (~kit~ ~%cbm_collection_kit_symbol%~)
-  ACTION_IF ((cbm_collection_kit_id <= 0) OR (cbm_collection_kit_id > 0x7fff)) BEGIN
-    FAIL ~cbm_collection_defaults: KIT.IDS symbol %cbm_collection_kit_symbol% has an invalid CRE kit value~
+  OUTER_SET cbm_collection_kit_id = (FILE_EXISTS_IN_GAME ~KIT.IDS~ ? IDS_OF_SYMBOL (~kit~ ~%cbm_collection_kit_symbol%~) : (0 - 1))
+  ACTION_IF cbm_collection_kit_id < 0 BEGIN
+    ACTION_DEFINE_ASSOCIATIVE_ARRAY cbmo_kits BEGIN
+      TRUECLASS => 0x4000 DWARVEN_DEFENDER => 0x4022 SWASHBUCKLER => 0x400c
+      BEASTFRIEND => 0x4012 FERALAN => 0x4007 MAGESCHOOL_INVOKER => 0x0800
+      SHADOWDANCER => 0x4021 ASSASIN => 0x400a
+    END
+    OUTER_SET cbm_collection_kit_id = $cbmo_kits(~%cbm_collection_kit_symbol%~)
   END
   OUTER_SET kit_dword = cbm_collection_kit_id * 0x10000
 END
@@ -52,16 +64,15 @@ BEGIN
   ACTION_IF (~%cbm_collection_spell_symbol%~ STRING_EQUAL ~~) BEGIN
     FAIL ~cbm_collection_defaults: empty SPELL.IDS symbol~
   END
-  OUTER_SET cbm_collection_spell_id = IDS_OF_SYMBOL (~spell~ ~%cbm_collection_spell_symbol%~)
-  ACTION_IF ((cbm_collection_spell_id < 2100)
-          OR (cbm_collection_spell_id > 2999)) BEGIN
-    FAIL ~cbm_collection_defaults: SPELL.IDS symbol %cbm_collection_spell_symbol% is not a wizard spell slot~
+  OUTER_SET cbm_collection_spell_id = (FILE_EXISTS_IN_GAME ~SPELL.IDS~ ? IDS_OF_SYMBOL (~spell~ ~%cbm_collection_spell_symbol%~) : (0 - 1))
+  ACTION_IF cbm_collection_spell_id < 0 BEGIN
+    INCLUDE ~%cbmo_data_root%/spell_defaults.tpa~
+    ACTION_IF VARIABLE_IS_SET $cbmo_spell_defaults(~%cbm_collection_spell_symbol%~) BEGIN
+      OUTER_SET cbm_collection_spell_id = $cbmo_spell_defaults(~%cbm_collection_spell_symbol%~)
+    END
   END
   OUTER_SET cbm_collection_spell_slot = cbm_collection_spell_id - 2000
   OUTER_SPRINT spell_resref ~SPWI%cbm_collection_spell_slot%~
-  ACTION_IF NOT (FILE_EXISTS_IN_GAME ~%spell_resref%.SPL~) BEGIN
-    FAIL ~cbm_collection_defaults: resolved spell %spell_resref%.SPL is missing~
-  END
 END
 
 // Shared kit-only transformation. The explicit component controls which CREs
@@ -75,44 +86,25 @@ DEFINE_PATCH_FUNCTION cbm_collection_set_npc_kit
     expected_dv = ~~
     patch_name = ~NPC kit patch~
 BEGIN
+  PATCH_IF BUFFER_LENGTH >= 0x2d4 BEGIN
+    READ_ASCII 0 cbmo_signature (8)
+  END ELSE BEGIN SPRINT cbmo_signature ~~ END
+  PATCH_IF (~%cbmo_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
   SPRINT cbm_collection_expected_dv EVALUATE_BUFFER ~%expected_dv%~
   SPRINT cbm_collection_patch_name EVALUATE_BUFFER ~%patch_name%~
 
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: truncated CRE (smaller than the V1.0 header)~
-  END
-  PATCH_IF ((expected_class <= 0) OR (expected_class > 0xff)) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: invalid installed class context~
-  END
-  PATCH_IF ((source_kit <= 0) OR (target_kit <= 0) OR (source_kit = target_kit)) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: invalid installed kit context~
-  END
-  PATCH_IF (~%cbm_collection_expected_dv%~ STRING_EQUAL ~~) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: empty expected death variable~
-  END
 
   READ_ASCII 0x00 cbm_collection_signature (8)
   READ_ASCII 0x280 cbm_collection_dv (32) NULL
   READ_BYTE  0x273 cbm_collection_class
   READ_LONG  0x244 cbm_collection_kit
 
-  PATCH_IF NOT (~%cbm_collection_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: expected a CRE V1.0 signature~
-  END
-  PATCH_IF NOT (~%cbm_collection_dv%~ STRING_EQUAL_CASE ~%cbm_collection_expected_dv%~) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected death variable %cbm_collection_dv%; expected %cbm_collection_expected_dv%~
-  END
-  PATCH_IF (cbm_collection_class != expected_class) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected class %cbm_collection_class%; expected installed class %expected_class%~
-  END
-  PATCH_IF ((cbm_collection_kit != source_kit)
-         AND (cbm_collection_kit != target_kit)) BEGIN
-    PATCH_FAIL ~%cbm_collection_patch_name%: unexpected kit %cbm_collection_kit%; expected source or already-target kit~
-  END
 
-  // All preconditions have passed. No CRE field other than the kit dword is
-  // touched; in particular, THAC0 at 0x52 is deliberately preserved.
+  // This component owns the kit dword; THAC0 remains outside its scope.
   WRITE_LONG 0x244 target_kit
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END
 
 DEFINE_PATCH_FUNCTION cbm_collection_make_kagain_dwarven_defender
@@ -167,19 +159,11 @@ DEFINE_PATCH_FUNCTION cbm_collection_add_dynaheir_haste
     expected_dv = ~~
     haste_resref = ~~
 BEGIN
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   SPRINT cbm_collection_expected_dv EVALUATE_BUFFER ~%expected_dv%~
   SPRINT cbm_collection_haste_resref EVALUATE_BUFFER ~%haste_resref%~
 
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: truncated CRE (smaller than the V1.0 header)~
-  END
-  PATCH_IF ((expected_class <= 0) OR (expected_class > 0xff)
-         OR (expected_kit <= 0)) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: invalid installed class or kit context~
-  END
-  PATCH_IF (~%cbm_collection_expected_dv%~ STRING_EQUAL ~~) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: empty expected death variable~
-  END
   PATCH_IF (~%cbm_collection_haste_resref%~ STRING_EQUAL ~~) BEGIN
     PATCH_FAIL ~Dynaheir Haste: empty resolved Haste resref~
   END
@@ -189,73 +173,38 @@ BEGIN
   READ_BYTE  0x273 cbm_collection_class
   READ_LONG  0x244 cbm_collection_kit
 
-  PATCH_IF NOT (~%cbm_collection_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: expected a CRE V1.0 signature~
-  END
-  PATCH_IF NOT (~%cbm_collection_dv%~ STRING_EQUAL_CASE ~%cbm_collection_expected_dv%~) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: unexpected death variable %cbm_collection_dv%; expected %cbm_collection_expected_dv%~
-  END
-  PATCH_IF (cbm_collection_class != expected_class) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: unexpected class %cbm_collection_class%; expected installed Mage class %expected_class%~
-  END
-  PATCH_IF (cbm_collection_kit != expected_kit) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: unexpected kit %cbm_collection_kit%; expected installed Invoker kit~
-  END
 
   READ_LONG 0x2a0 cbm_collection_known_offset
   READ_LONG 0x2a4 cbm_collection_known_count
-  PATCH_IF ((cbm_collection_known_offset < 0x2d4)
-         OR (cbm_collection_known_offset > SOURCE_SIZE)) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: malformed known-spell table offset~
-  END
-  PATCH_IF (cbm_collection_known_count > ((SOURCE_SIZE - cbm_collection_known_offset) / 12)) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: malformed known-spell table count~
-  END
 
-  SET cbm_collection_haste_count = 0
-  FOR (cbm_collection_i = 0;
-       cbm_collection_i < cbm_collection_known_count;
-       cbm_collection_i += 1) BEGIN
-    SET cbm_collection_known_record = cbm_collection_known_offset + (cbm_collection_i * 12)
-    READ_ASCII cbm_collection_known_record cbm_collection_known_resref (8) NULL
-    PATCH_IF (~%cbm_collection_known_resref%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~) BEGIN
-      READ_SHORT (cbm_collection_known_record + 0x08) cbm_collection_known_level
-      READ_SHORT (cbm_collection_known_record + 0x0a) cbm_collection_known_type
-      PATCH_IF ((cbm_collection_known_level != 2)
-             OR (cbm_collection_known_type != 1)) BEGIN
-        PATCH_FAIL ~Dynaheir Haste: existing Haste entry has unexpected level or spell-type metadata~
-      END
-      SET cbm_collection_haste_count += 1
+  // Own exactly one known Haste record, regardless of old metadata or duplicates.
+  SET cbmh_first = 0 - 1
+  FOR (cbmh_i = 0; cbmh_i < cbm_collection_known_count; ++cbmh_i) BEGIN
+    READ_ASCII (cbm_collection_known_offset + cbmh_i * 12) cbmh_name (8) NULL
+    PATCH_IF ~%cbmh_name%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~ BEGIN
+      PATCH_IF cbmh_first < 0 BEGIN SET cbmh_first = cbmh_i END
     END
   END
-
-  PATCH_IF (cbm_collection_haste_count > 1) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: duplicate Haste entries found; expected exactly once~
-  END
-  PATCH_IF (cbm_collection_haste_count = 0) BEGIN
+  PATCH_IF cbmh_first >= 0 BEGIN
+    FOR (cbmh_i = cbm_collection_known_count - 1; cbmh_i > cbmh_first; --cbmh_i) BEGIN
+      SET cbmh_at = cbm_collection_known_offset + cbmh_i * 12
+      READ_ASCII cbmh_at cbmh_name (8) NULL
+      PATCH_IF ~%cbmh_name%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~ BEGIN
+        DELETE_BYTES cbmh_at 12
+        WRITE_LONG 0x2a4 (LONG_AT 0x2a4 - 1)
+        PATCH_FOR_EACH cbmh_p IN 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+          PATCH_IF LONG_AT cbmh_p >= cbmh_at + 12 BEGIN WRITE_LONG cbmh_p (LONG_AT cbmh_p - 12) END
+        END
+      END
+    END
+    SET cbmh_at = cbm_collection_known_offset + cbmh_first * 12
+    WRITE_SHORT (cbmh_at + 8) 2
+    WRITE_SHORT (cbmh_at + 10) 1
+  END ELSE BEGIN
+    PATCH_IF cbm_collection_known_count = 0 BEGIN WRITE_LONG 0x2a0 BUFFER_LENGTH END
     ADD_KNOWN_SPELL ~%cbm_collection_haste_resref%~ #2 ~wizard~
   END
-
-  // Prove the mutation's semantic postcondition before publishing the copy.
-  READ_LONG 0x2a0 cbm_collection_known_offset
-  READ_LONG 0x2a4 cbm_collection_known_count
-  SET cbm_collection_haste_count = 0
-  FOR (cbm_collection_i = 0;
-       cbm_collection_i < cbm_collection_known_count;
-       cbm_collection_i += 1) BEGIN
-    SET cbm_collection_known_record = cbm_collection_known_offset + (cbm_collection_i * 12)
-    READ_ASCII cbm_collection_known_record cbm_collection_known_resref (8) NULL
-    PATCH_IF (~%cbm_collection_known_resref%~ STRING_EQUAL_CASE ~%cbm_collection_haste_resref%~) BEGIN
-      READ_SHORT (cbm_collection_known_record + 0x08) cbm_collection_known_level
-      READ_SHORT (cbm_collection_known_record + 0x0a) cbm_collection_known_type
-      PATCH_IF ((cbm_collection_known_level != 2)
-             OR (cbm_collection_known_type != 1)) BEGIN
-        PATCH_FAIL ~Dynaheir Haste: Haste postcondition has invalid metadata~
-      END
-      SET cbm_collection_haste_count += 1
-    END
-  END
-  PATCH_IF (cbm_collection_haste_count != 1) BEGIN
-    PATCH_FAIL ~Dynaheir Haste: failed to establish exactly one known Haste spell~
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
   END
 END

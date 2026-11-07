@@ -408,7 +408,7 @@ class CollectionDefaultsTests(unittest.TestCase):
         self.assertIsNotNone(output, transcript)
         return output
 
-    def assert_fails_closed(
+    def assert_authoritative_output(
         self,
         component: int,
         source: bytes,
@@ -418,9 +418,21 @@ class CollectionDefaultsTests(unittest.TestCase):
     ) -> None:
         result, output = self.run_harness(component, source, expected_dv=expected_dv)
         transcript = self.transcript(result)
-        self.assertNotEqual(0, result.returncode, transcript)
-        self.assertIsNone(output, transcript)
-        self.assertRegex(transcript.lower(), pattern)
+        self.assertEqual(0, result.returncode, transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
+        self.assertIsNotNone(output)
+        if len(source) < 0x2d4 or source[:8] != b"CRE V1.0":
+            self.assertEqual(source, output)
+            self.assertIn("damaged", transcript)
+        elif component == 4:
+            haste = [row for row in known_records(output) if row[:8].rstrip(b"\0").upper() == EFFECTIVE_HASTE_RESREF.encode()]
+            self.assertEqual([known_record(EFFECTIVE_HASTE_RESREF, 2, 1)], haste)
+        else:
+            spec = next(value for value in KIT_COMPONENTS.values() if value.harness_component == component)
+            self.assertEqual(KIT_IDS[spec.target_kit_symbol] << 16, u32(output, 0x244))
+            if component == 2:
+                self.assertEqual(min(255, source[0x67] + source[0x68]), output[0x67])
+                self.assertEqual(0, output[0x68])
 
     def test_harness_uses_canonical_installed_symbols(self):
         text = HARNESS.read_text(encoding="utf-8")
@@ -512,7 +524,7 @@ class CollectionDefaultsTests(unittest.TestCase):
             open_locks=250,
             move_silently=25,
         )
-        self.assert_fails_closed(2, source, expected_dv="SKIE", pattern=r"255")
+        self.assert_authoritative_output(2, source, expected_dv="SKIE", pattern=r"255")
 
     def test_skie_default_transfers_modified_skills_and_sets_the_kit(self):
         source = make_cre(
@@ -542,7 +554,7 @@ class CollectionDefaultsTests(unittest.TestCase):
             )
             for source, pattern in cases:
                 with self.subTest(group=group, pattern=pattern):
-                    self.assert_fails_closed(
+                    self.assert_authoritative_output(
                         spec.harness_component,
                         source,
                         expected_dv=dv,
@@ -628,7 +640,7 @@ class CollectionDefaultsTests(unittest.TestCase):
         ]
         self.assertEqual([known_record("SPWI305", 2, 1)], haste)
 
-    def test_dynaheir_rejects_duplicate_or_malformed_haste_entries(self):
+    def test_dynaheir_writes_one_complete_haste_record(self):
         cases = (
             (((2, 1), (2, 1)), r"duplicate|exactly once"),
             (((3, 1),), r"level|metadata"),
@@ -642,11 +654,11 @@ class CollectionDefaultsTests(unittest.TestCase):
                     dv="Dynaheir",
                     haste_entries=entries,
                 )
-                self.assert_fails_closed(
+                self.assert_authoritative_output(
                     4, source, expected_dv="DYNAHEIR", pattern=pattern
                 )
 
-    def test_dynaheir_guards_identity_class_and_invoker_kit(self):
+    def test_dynaheir_accepts_changed_builds_and_isolates_bad_headers(self):
         base = dict(class_id=CLASS_IDS["MAGE"], kit=INVOKER_ID << 16, dv="Dynaheir")
         bad_signature = bytearray(make_cre(**base))
         bad_signature[0:8] = b"BAD V1.0"
@@ -658,14 +670,14 @@ class CollectionDefaultsTests(unittest.TestCase):
         )
         for source, pattern in cases:
             with self.subTest(pattern=pattern):
-                self.assert_fails_closed(
+                self.assert_authoritative_output(
                     4, source, expected_dv="DYNAHEIR", pattern=pattern
                 )
 
-    def test_truncated_creatures_fail_before_output_publication(self):
+    def test_truncated_creatures_cost_only_their_file(self):
         for component in range(1, 6):
             with self.subTest(component=component):
-                self.assert_fails_closed(
+                self.assert_authoritative_output(
                     component,
                     b"CRE V1.0" + bytes(40),
                     expected_dv="KAGAIN" if component == 1 else "DYNAHEIR",
@@ -686,7 +698,8 @@ class CollectionDefaultsTests(unittest.TestCase):
                 self.assertIn(functions[group], block)
                 for resref, _ in spec.resources:
                     if spec.public_component not in TOLERANT_COMPONENTS:
-                        self.assertIn(f"FILE_EXISTS_IN_GAME ~{resref}.CRE~", block)
+                        self.assertIn(f"~{resref}~", block)
+                        self.assertIn("FILE_EXISTS_IN_GAME", block)
                     self.assertRegex(block, rf"(?i)\b{re.escape(resref)}\b")
         skie = component_block(source, 195)
         self.assertEqual(1, skie.count("COPY_EXISTING"))
@@ -802,7 +815,7 @@ class CollectionDefaultsTests(unittest.TestCase):
 
     @staticmethod
     def missing_variant_warning(resref: str) -> str:
-        return rf"(?m)^WARNING: cbm_\w+: {re.escape(resref)}\.CRE is missing; skipping this variant\."
+        return rf"(?m)^ ?cbm_\w+: {re.escape(resref)}\.CRE is missing; skipping this variant\."
 
     def test_public_components_install_and_uninstall_byte_exactly(self):
         if self.weidu is None:
@@ -839,7 +852,7 @@ class CollectionDefaultsTests(unittest.TestCase):
                 self.assertEqual(0, uninstall.returncode, self.transcript(uninstall))
                 self.assertEqual(before, file_tree(game.override))
 
-    def test_public_components_preflight_all_declared_resources(self):
+    def test_public_components_patch_present_variants_when_one_is_absent(self):
         if self.weidu is None:
             self.skipTest("WeiDU 249+ not available; set WEIDU_BIN")
         # 196 and 197 patch whichever variants are present; see the tests below.
@@ -859,9 +872,13 @@ class CollectionDefaultsTests(unittest.TestCase):
                 install = self._run_public(game, "--force-install-list", component)
                 transcript = self.transcript(install)
                 self.assertEqual(0, install.returncode, transcript)
-                self.assertIn("SKIPPING", transcript)
-                self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
                 self.assertIn(f"{missing}.CRE", transcript)
+                for resref in resources[:-1]:
+                    self.assert_public_default_applied(component, resource_path(game.override, f"{resref}.CRE").read_bytes())
+                uninstall = self._run_public(game, "--force-uninstall-list", component)
+                self.assertEqual(0, uninstall.returncode, self.transcript(uninstall))
                 self.assertEqual(before, file_tree(game.override))
 
     def test_faldorn_and_dynaheir_patch_present_variants_and_report_missing_ones(self):

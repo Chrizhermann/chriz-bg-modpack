@@ -1,0 +1,299 @@
+// Complete English descriptions from the existing supported resource output.
+// No old wording is read or matched. Other game languages retain their text.
+DEFINE_PATCH_FUNCTION cbmo_write_description BEGIN
+  PATCH_IF BUFFER_LENGTH >= 0x72 BEGIN
+    PATCH_IF (NOT VARIABLE_IS_SET EE_LANGUAGE) OR (~%EE_LANGUAGE%~ STRING_EQUAL_CASE ~en_US~) BEGIN
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN113~ BEGIN
+        SAY 0x50 ~~~~~Spiritual Hammer
+(Invocation)
+
+Level: 2
+Sphere: Combat
+Range: 0
+Duration: 3 rounds + 1 round/level
+Casting Time: 5
+Area of Effect: Special
+Saving Throw: None
+
+By calling upon <PRO_HISHER> deity, the caster of a Spiritual Hammer spell brings into existence a magical hammer, which <PRO_HESHE> can use for the duration of the spell. It strikes as a magical weapon with a bonus of +1 for every 6 experience levels (or fraction) of the caster, up to a total of +3 to the attack roll and +3 to the damage roll for a 13th-level caster. The base damage inflicted when it scores a hit is exactly the same as a normal war hammer (1d4+1 vs. opponents of man-size or smaller and 1d4 upon larger opponents, plus the magical bonus).~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN112~ BEGIN
+        SAY 0x50 ~~~~~Remove Magic
+(Abjuration)
+
+Level: 3
+Range: 40 ft.
+Duration: Instant
+Casting Time: 3
+Area of Effect: 15-ft. radius
+Saving Throw: None
+
+This is the combat version of Dispel Magic; it will only affect opponents. A Remove Magic dispels the magical effects upon any enemies within the area. This includes effects given from spells, potions, and certain magical items such as wands. It does not, however, affect enchanted magical items. The chance of the dispel succeeding is determined by the level of the caster and the level of the magic being dispelled. The base chance of successfully dispelling is 50%. For every level that the caster of Remove Magic is above the original caster, <PRO_HISHER> chance of success increases by 5%. For every level that the caster of Remove Magic is below the original caster, <PRO_HISHER> chance of success decreases by 10%. However, despite the difference in levels, there is always at least a 1% chance of success or failure. Thus, if a caster is 10 levels higher than the magic <PRO_HESHE> is trying to dispel, there is only a 1% chance of failure. Similarly, if the caster is 4 levels lower than the magic <PRO_HESHE> is trying to dispel, there is only a 10% chance of success. Intuitively, this spell is almost useless if the target is 5 or more levels higher than the caster.
+
+Note: While this spell dispels the individual effects of Grease, Web, Stinking Cloud, and other such spells, it does not dispel the area of effect.~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL231~ BEGIN
+        SAY 0x50 ~~~~~Dispel Magic
+(Abjuration)
+
+Level: 1
+Range: 40 ft.
+Duration: Instant
+Casting Time: 1
+Area of Effect: 15-ft. radius
+Saving Throw: None
+
+A Dispel Magic spell removes magical effects upon anyone within the area. This includes effects given from spells, potions and certain magical items such as wands. It does not, however, affect enchanted magical items or spell protections such as Spell Turning and Spell Deflection. The chance of the dispel succeeding is determined by the level of the caster and the level of the magic being dispelled. The base chance of successfully dispelling is 50%. For every level that the caster of the Dispel Magic is above the original caster, <PRO_HISHER> chance of success increases by 5%. For every level that the caster of Dispel Magic is below the original caster, <PRO_HISHER> chance of success decreases by 10%. However, despite the difference in levels, there is always at least a 5% chance of success or failure. Thus, if a caster is 10 levels higher than the magic <PRO_HESHE> is trying to dispel, there is only a 5% chance of failure. Similarly if the caster is 4 levels lower than the magic <PRO_HESHE> is trying to dispel, there is only a 10% chance of success. Intuitively, this spell is almost useless if the target is 5 or more levels higher than the caster.
+
+Note: While this spell dispels the individual effects of Grease, Web, Stinking Cloud, and other such spells, it does not dispel the area of effect.~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SLAYER2~ BEGIN
+        SAY 0x50 ~~~~~Slayer Change
+
+When you use this ability, you take on the form of the brutal essence of Bhaal: a violent, powerful creature made of teeth and claws. Using this ability reduces your reputation by two points, as even those who do not witness the event can sense the corruption caused by giving yourself over to instinct.
+
+The Slayer form grants the following benefits:
+
+– Strength and Dexterity set to 25
+– Effective AC set to -9
+– Magic Resistance set to 40%
+– Saving Throws set to 2
+– Attacks per round set to 4 (1d8 crushing, 2 cold)
+– THAC0 set to 0
+– +100 Hit Points
+– Immunity to imprisonment, level drain, stun, and missile attacks~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SLAYER3~ BEGIN
+        SAY 0x50 ~~~~~Slayer Change
+
+When you use this ability, you take on the form of the brutal essence of Bhaal: a violent, powerful creature made of teeth and claws. Using this ability reduces your reputation by two points, as even those who do not witness the event can sense the corruption caused by giving yourself over to instinct.
+
+The Slayer form grants the following benefits:
+
+– Strength and Dexterity set to 25
+– Effective AC set to -9
+– Magic Resistance set to 40%
+– Saving Throws set to 2
+– Attacks per round set to 4 (1d8 crushing, 2 cold)
+– THAC0 set to 0
+– +100 Hit Points
+– Immunity to imprisonment, level drain, stun, and missile attacks~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SLAYER4~ BEGIN
+        SAY 0x50 ~~~~~Slayer Change
+
+When you use this ability, you take on the form of the brutal essence of Bhaal: a violent, powerful creature made of teeth and claws. Using this ability reduces your reputation by two points, as even those who do not witness the event can sense the corruption caused by giving yourself over to instinct.
+
+The Slayer form grants the following benefits:
+
+– Strength and Dexterity set to 25
+– Effective AC set to -9
+– Magic Resistance set to 40%
+– Saving Throws set to 2
+– Attacks per round set to 4 (1d8 crushing, 2 cold)
+– THAC0 set to 0
+– +100 Hit Points
+– Immunity to imprisonment, level drain, stun, and missile attacks~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPWI495~ BEGIN
+        SAY 0x50 ~~~~~Shapeshift: Spider
+
+Strength: 15
+Dexterity: 17
+
+Base Armor Class: 4
+Number of Attacks: 2
+Attack Damage: 1d4 (piercing), poison (1 damage per 2 seconds for 5 rounds; Save vs. Poison at +1 negates), strikes as a +1 weapon
+
+Special Abilities:
+ – Immunity to web
+ – Increased movement rate
+ – Web Tangle once per 2 rounds (target must Save vs. Breath or be webbed for 2 rounds)~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPWI496~ BEGIN
+        SAY 0x50 ~~~~~Shapeshift: Mustard Jelly
+
+Strength: 14
+Dexterity: 9
+
+Base Armor Class: 4
+Number of Attacks: 1
+Attack Damage (ranged): 5d4 (crushing), strikes as a +3 weapon, poison (1 damage per 2 seconds for 5 rounds; Save vs. Poison at +2 negates), slow (200 seconds; Save vs. Breath at -2 negates)
+
+Special Abilities:
+– Cold Resistance: 50%
+– Electrical Resistance: 100%
+– Magic Resistance: 125%
+– Magic Cold Resistance: 50%
+– Slashing Resistance: 30%
+– Crushing Resistance: 30%
+– Piercing Resistance: 100%
+– Missile Resistance: 85%
+– Immunity to stun, sleep, fear, poison, petrification, confusion, charm, paralysis, and level drain
+– Immunity to non-magical weapons
+– Increased movement rate~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN152~ BEGIN
+        SAY 0x50 ~~~~~Shapechange: Mind Flayer
+
+Strength: 10
+Dexterity: 10
+
+Base Armor Class: 5
+Number of Attacks: 4
+Base THAC0: 11
+Attack Damage: 1d2 (crushing), -5 Intelligence, strikes as a +2 weapon
+
+Special Abilities:
+ – Magic Resistance: 90%
+ – Psionic Blast once per round (stuns all enemies in a small area for 10 rounds unless they make a successful Save vs. Spell)
+ – Can cast spells in this form~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN153~ BEGIN
+        SAY 0x50 ~~~~~Shapechange: Iron Golem
+
+Strength: 24
+Dexterity: 9
+
+Base Armor Class: 3
+Number of Attacks: 1
+Base THAC0: 3
+Attack Damage: 4d10 (crushing), strikes as a +4 weapon
+
+Special Abilities:
+ – Gas Cloud once per 3 rounds (anyone exposed to it must Save vs. Poison at -2 once per round or be poisoned)
+ – Fire Resistance: 125%
+ – Cold Resistance: 100%
+ – Electrical Resistance: 100%
+ – Acid Resistance: 100%
+ – Magic Resistance: 100% (cannot be lowered)
+ – Magic Fire Resistance: 125%
+ – Magic Cold Resistance: 100%
+ – Slashing Resistance: 20%
+ – Crushing Resistance: 20%
+ – Piercing Resistance: 20%
+ – Missile Resistance: 20%
+ – Immune to backstab, weapons of +2 enchantment or less, sleep, fear, hold, charm, paralysis, poison~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN154~ BEGIN
+        SAY 0x50 ~~~~~Shapechange: Giant Troll
+
+Strength: 22
+Dexterity: 18
+
+Base Armor Class: 4
+Number of Attacks: 3
+Base THAC0: 8
+Attack Damage: 2d6 (piercing), strikes as a +2 weapon
+
+Special Abilities:
+ – Immune to stun, sleep, hold, paralysis
+ – Regenerates 5 Hit Points per second
+ – Can cast spells in this form~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~DW-SSRA~ BEGIN
+        SAY 0x50 ~~~~~Shapeshift: Natural Form
+This ability causes the character to return to <PRO_HISHER> natural shape and ends the polymorph effect.~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~NPSW02~ BEGIN
+        SAY 0x50 ~~~~~The katana is a single-edged, slightly curved sword that ends with a chisel point. The katana is perhaps one of the finest swords ever made, the steps to its creation a long and secret process that is more art form than anything else. This blade is an important facet of Kara-Turan culture. To touch or wield a samurai's katana is to insult the samurai and to incite his wrath. For a gaijin, or foreigner, to own such a blade is a rare occurrence. Either the gaijin is a greatly honored friend of an important minister, or the gaijin has murdered a samurai.
+
+STATISTICS:
+
+Damage: 1d10 (slashing)
+Speed Factor: 4
+Proficiency Type: Katana
+Type: One-handed
+Requires:
+ 6 Strength
+
+Weight: 6~~~~~
+        SAY 0x54 ~~~~~This blade, although only lightly enchanted, has achieved a semblance of awareness, enough so that it allows only the thief known as Yoshimo to wield it. Any other than he cannot use this flawless katana in battle.
+
+STATISTICS:
+
+THAC0: +1
+Damage: 1d10+1 (slashing)
+Speed Factor: 3
+Proficiency Type: Katana
+Type: One-handed
+Requires:
+ 6 Strength
+
+Weight: 5~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~E3AMUL01~ BEGIN
+        WRITE_LONG 0x50 (0 - 1)
+        SAY 0x54 ~~~~~This amulet was given to Fade by the Shadow Master once he charged her with uncovering all she could find out about the rival Guild plaguing the Shadow Thieves.
+
+STATISTICS
+
+Equipped Abilities:
+Negative Plane Protection
+Protection from Evil
+Protection from Charm
+
+Usable by:
+Fade~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~MISC89~ BEGIN
+        SAY 0x50 ~~~~~This is Edwin's birthright, inlaid with his family stone.
+
+STATISTICS:
+
+Equipped abilities:
+– Can memorize two extra wizard spells of each level
+
+Weight: 1~~~~~
+        SAY 0x54 ~~~~~This is Edwin's birthright, inlaid with his family stone.
+
+STATISTICS:
+
+Weight: 1~~~~~
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~MISC89_~ BEGIN
+        SAY 0x50 ~~~~~This is Edwin's birthright, inlaid with his family stone.
+
+STATISTICS:
+
+Equipped abilities:
+– Can memorize one extra wizard spell of each level
+
+Weight: 1~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~PLYJELLY~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~PLYSPID~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~TROLLALL~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~CDGOLIRO~ BEGIN
+        WRITE_LONG 0x50 (0 - 1)
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~CDMINDFL~ BEGIN
+        WRITE_LONG 0x50 (0 - 1)
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~DW-SSBAI~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~DW-PSHHI~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+      PATCH_IF ~%SOURCE_RES%~ STRING_EQUAL_CASE ~DW-PSRTI~ BEGIN
+        SAY 0x50 ~~~~~Attack~~~~~
+        WRITE_LONG 0x54 (0 - 1)
+      END
+    END
+  END
+END

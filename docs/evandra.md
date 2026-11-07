@@ -1,5 +1,9 @@
 # Evandra: class and portrait choices
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 These two components restore preferences from Chriz's original collection.
 They are included from **v0.2.0-alpha.8** onward.
 Both require Evandra to be installed first, on BG2:EE or EET. Neither requires

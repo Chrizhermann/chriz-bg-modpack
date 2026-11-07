@@ -14,8 +14,12 @@ ACTION_FOR_EACH cbmb_native IN ~Baldur.exe~ ~EEex.dll~ ~LuaBindings.dll~ ~LuaPro
       PATCH_FAIL ~Campaign XP: %cbmb_native% must be a Windows x64 PE module.~
     END
 END
+COPY ~chriz-bg-modpack/data/progression/XPLEVEL.2da~ ~override/CBMBXPL.2DA~
 // Exact engine/EEex version, function and hook ABI checks execute at startup,
 // before any hook is published. Presence/PE checks do not waive those checks.
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~ BEGIN
+  COPY ~chriz-bg-modpack/data/progression/XPLEVEL.2da~ ~override/XPLEVEL.2DA~
+END
 INCLUDE ~chriz-bg-modpack/campaign-xp/bank_recruitment_patch.tpa~
 LAF cbmbank_patch_recruitment END
 COPY ~chriz-bg-modpack/campaign-xp/m_cbmbnk.lua~ ~override/M_CBMBNK.lua~

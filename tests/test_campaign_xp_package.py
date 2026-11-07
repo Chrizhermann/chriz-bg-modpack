@@ -32,6 +32,7 @@ def test_scroll_and_banking_publications_coexist_and_uninstall(tmp_path):
     before = game_files(game)
     result, log = run_component(game, 430)
     assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in log, log
+    assert (game.root / "CBMScroll.dll").is_file(), log
     scroll_only = game_files(game)
     for component in (650, 651):
         result, log = run_component(game, component)
@@ -1016,6 +1017,7 @@ def test_base_soa_dependency_and_exact_uninstall(tmp_path, prior):
     expected = dict(before)
     for name in PUBLICATIONS:
         expected["OVERRIDE/" + name.upper()] = (SOURCE / name).read_bytes()
+    expected["OVERRIDE/CBMBXPL.2DA"] = (ROOT / "chriz-bg-modpack/data/progression/XPLEVEL.2da").read_bytes()
     assert base == expected
     result, log = run_component(game, 651)
     assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in log, log
@@ -1175,24 +1177,23 @@ def test_chapter_caps_gates_bainvi_bcs_and_preserves_unrelated_blocks(tmp_path, 
 
 @pytest.mark.skipif(WEIDU is None, reason="WeiDU unavailable; set WEIDU or WEIDU_BIN")
 @pytest.mark.parametrize("layout", sorted(UNRECOGNISED_BAINVI))
-def test_chapter_caps_install_and_warn_when_bainvi_has_no_known_entrance(tmp_path, layout):
-    # The caps do not depend on the Baeloth gate: an unrecognised BAINVI.BCS stays
-    # byte-identical, the installer warns, and the chapter caps still install.
+def test_chapter_caps_write_other_entrance_and_isolate_unreadable_script(tmp_path, layout):
     game = chapter_game(tmp_path, UNRECOGNISED_BAINVI[layout])
     original = (game.override / "bainvi.bcs").read_bytes()
     before = game_files(game)
     result, log = run_component(game, 650)
     assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in log, log
-    base = game_files(game)
     result, log = run_component(game, 652)
-    # WeiDU exits with 3 after a component installed with warnings.
-    assert result.returncode == 3 and "INSTALLED WITH WARNINGS" in log, log
-    assert NO_GATE_WARNING in log, log
-    assert NO_GATE_REASONS[layout] in log, log
-    assert (game.override / "bainvi.bcs").read_bytes() == original
-    expected = dict(base)
-    expected["OVERRIDE/CBMBKCFG.LUA"] = (SOURCE / "cbmbkchp.lua").read_bytes()
-    assert game_files(game) == expected
+    assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in log, log
+    assert "INSTALLED WITH WARNINGS" not in log, log
+    if layout == "not_compiled":
+        assert "too damaged to write" in log
+        assert (game.override / "bainvi.bcs").read_bytes() == original
+    else:
+        from tests.test_recruitment_xp import decompile_script
+        patched = decompile_script(game, "BAINVI")
+        assert patched.count(CHAPTER_GATE) == 1
+        assert 'StartCutScene("OMBA01")' in patched
     for component in (652, 650):
         result, log = run_component(game, component, uninstall=True)
         assert result.returncode == 0 and "SUCCESSFULLY REMOVED" in log, log

@@ -337,22 +337,29 @@ def write_marker_key_and_bif(game_root: Path) -> Path:
 
 
 class SyntheticSpellGame:
-    def __init__(self, root: Path, resources: dict[str, bytes]) -> None:
+    def __init__(self, root: Path, resources: dict[str, bytes], language="en_us") -> None:
+        self.language = language
         self.root = root
         self.root.mkdir(parents=True)
         self.override = self.root / "override"
         self.override.mkdir()
         (self.root / "weidu.log").write_text("", encoding="ascii")
         self.bif = write_marker_key_and_bif(self.root)
-        self.lang_tlk = self.root / "lang/en_us/dialog.tlk"
+        self.lang_tlk = self.root / f"lang/{language}/dialog.tlk"
         self.lang_tlk.parent.mkdir(parents=True)
         self.lang_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
+        if language != "en_us":
+            english = self.root / "lang/en_us/dialog.tlk"
+            english.parent.mkdir(parents=True)
+            english.write_bytes(ONE_EMPTY_STRING_TLK)
         self.root_tlk = self.root / "dialog.tlk"
         self.root_tlk.write_bytes(ONE_EMPTY_STRING_TLK)
 
         shutil.copy2(HARNESS, self.root / HARNESS.name)
         destination_lib = self.root / "chriz-bg-modpack/lib"
         destination_lib.mkdir(parents=True)
+        shutil.copy2(LIB_DIR / "cbm_overwrite.tpa", destination_lib / "cbm_overwrite.tpa")
+        shutil.copytree(LIB_DIR.parent / "data", destination_lib.parent / "data")
         for source in LIBRARIES.values():
             if source.is_file():
                 shutil.copy2(source, destination_lib / source.name)
@@ -381,7 +388,7 @@ class SyntheticSpellGame:
                 "--language",
                 "0",
                 "--use-lang",
-                "en_us",
+                self.language,
                 "--no-exit-pause",
                 "--quick-log",
             ],
@@ -396,9 +403,9 @@ class SyntheticSpellGame:
     def transcript(result: subprocess.CompletedProcess[str]) -> str:
         return result.stdout + result.stderr
 
-    def assert_stable_inputs(self, testcase: unittest.TestCase) -> None:
+    def assert_stable_inputs(self, testcase: unittest.TestCase, *, allow_strings=False) -> None:
         testcase.assertEqual(
-            self.initial_stable,
+            {path:digest for path,digest in self.initial_stable.items() if not allow_strings or path not in (self.lang_tlk,self.root_tlk)},
             {
                 path: sha256(path)
                 for path in (
@@ -406,7 +413,7 @@ class SyntheticSpellGame:
                     self.bif,
                     self.lang_tlk,
                     self.root_tlk,
-                )
+                ) if not allow_strings or path not in (self.lang_tlk,self.root_tlk)
             },
         )
 
@@ -565,7 +572,7 @@ class SpellTailTests(unittest.TestCase):
         transcript = game.transcript(result)
         self.assertEqual(0, result.returncode, transcript)
         self.assertIn("SUCCESSFULLY INSTALLED", transcript)
-        game.assert_stable_inputs(self)
+        game.assert_stable_inputs(self, allow_strings=True)
 
     def uninstall(self, game: SyntheticSpellGame, component: int) -> None:
         result = game.run(self.require_weidu(), "--force-uninstall-list", str(component))
@@ -573,7 +580,7 @@ class SpellTailTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, transcript)
         self.assertIn("SUCCESSFULLY REMOVED", transcript)
         self.assertEqual(game.initial_override, file_tree(game.override))
-        game.assert_stable_inputs(self)
+        game.assert_stable_inputs(self, allow_strings=True)
 
     def assert_already_patched_is_stable(
         self,
@@ -586,6 +593,93 @@ class SpellTailTests(unittest.TestCase):
             self.install(game, component)
             self.assertEqual(before, file_tree(game.override))
             self.uninstall(game, component)
+
+    def assert_decided_output(self, game, component):
+        transcript_result = game.run(self.require_weidu(), "--force-install-list", str(component))
+        transcript = game.transcript(transcript_result)
+        self.assertEqual(0, transcript_result.returncode, transcript)
+        self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
+        for filename, before in game.initial_override.items():
+            after = resource_path(game.override, filename).read_bytes()
+            if not filename.endswith(".SPL") or len(before) < 0x72:
+                continue
+            # Only declared slices are readable. Invalid bounds cost this file.
+            headers, count, effects = struct.unpack_from("<IHI", before, 0x64)
+            slices = []
+            valid = not count or 0x72 <= headers <= len(before) - count * 40
+            if valid:
+                slices = [(struct.unpack_from("<H", before, 0x6e)[0], struct.unpack_from("<H", before, 0x70)[0])]
+                slices += [(struct.unpack_from("<H", before, headers+i*40+0x20)[0], struct.unpack_from("<H", before, headers+i*40+0x1e)[0]) for i in range(count)]
+                valid = all(n == 0 or 0x72 <= effects <= len(before)-(first+n)*48 for first,n in slices)
+            if not valid:
+                expected = bytearray(before)
+                expected[0x50:0x58] = after[0x50:0x58]
+                self.assertEqual(bytes(expected), after)
+                continue
+            rows = spl_abilities(after)
+            if component == 400 and filename == "SPIN113.SPL":
+                for row in rows:
+                    owned = [fx for fx in row["effects"] if opcode(fx) == 111]
+                    self.assertEqual(1, len(owned))
+                    self.assertEqual(1, struct.unpack_from("<I", owned[0], 4)[0])
+            elif component == 410 and filename == "SPIN112.SPL":
+                self.assertEqual(40, len(rows))
+                for level,row in enumerate(rows,1):
+                    self.assertEqual((level,177), (row["minimum_level"],row["projectile"]))
+                    owned = [fx for fx in row["effects"] if opcode(fx) == 58]
+                    self.assertEqual(1,len(owned))
+                    self.assertEqual((level*3//2,2),struct.unpack_from("<II",owned[0],4))
+            elif component == 410 and filename == "SPCL231.SPL":
+                self.assertTrue(all(row["projectile"] == 177 for row in rows))
+            elif component == 440 and filename in {"SLAYER2.SPL","SLAYER3.SPL","SLAYER4.SPL"}:
+                expected = filename[:7].lower()+"a"
+                for row in rows:
+                    self.assertEqual(1,sum(opcode(fx)==146 and resref(fx)==expected for fx in row["effects"]))
+            elif component == 450 and filename[:-4] in FORM_SPELLS:
+                for row in rows:
+                    owned = [fx for fx in row["effects"] if opcode(fx)==111]
+                    self.assertEqual(1,len(owned))
+                    self.assertEqual(4,owned[0][12])
+                    self.assertEqual(0,struct.unpack_from("<I",owned[0],14)[0])
+        self.uninstall(game,component)
+
+    def test_complete_english_description_replaces_unrelated_old_text(self):
+        with tempfile.TemporaryDirectory(prefix="cbm-spell-text-") as raw:
+            game = SyntheticSpellGame(Path(raw)/"game", branwen_resources())
+            old = b"A different mod's unrelated prose."
+            tlk = (struct.pack("<8sHII", b"TLK V1  ", 0, 1, 0x2c)
+                   + struct.pack("<H8siiII", 1, b"\0"*8, 0, 0, 0, len(old)) + old)
+            game.lang_tlk.write_bytes(tlk)
+            self.install(game, 400)
+            spell = resource_path(game.override,"SPIN113.SPL").read_bytes()
+            index = struct.unpack_from("<I",spell,0x50)[0]
+            data = game.lang_tlk.read_bytes()
+            text_at = struct.unpack_from("<I",data,14)[0]
+            offset,size = struct.unpack_from("<II",data,18+26*index+18)
+            text = data[text_at+offset:text_at+offset+size]
+            self.assertTrue(text.startswith(b"Spiritual Hammer"))
+            self.assertGreater(len(text), 200)
+            self.assertNotIn(old,text)
+
+    def test_other_language_keeps_text_and_logs_once_for_multiple_resources(self):
+        with tempfile.TemporaryDirectory(prefix="cbm-spell-language-") as raw:
+            resources = dispel_resources()
+            for name,data in resources.items():
+                value=bytearray(data);struct.pack_into("<I",value,0x50,0);resources[name]=bytes(value)
+            game = SyntheticSpellGame(Path(raw)/"game",resources,language="de_de")
+            before = game.lang_tlk.read_bytes()
+            result = game.run(self.require_weidu(),"--force-install-list","410")
+            transcript = game.transcript(result)
+            self.assertEqual(result.returncode,0,transcript)
+            self.assertIn("SUCCESSFULLY INSTALLED",transcript)
+            self.assertNotIn("INSTALLED WITH WARNINGS",transcript)
+            self.assertEqual(transcript.count("no bundled descriptions"),1)
+            self.assertEqual(game.lang_tlk.read_bytes(),before)
+            for name in resources:
+                data=resource_path(game.override,name).read_bytes()
+                self.assertEqual(struct.unpack_from("<I",data,0x50)[0],0)
+                self.assertTrue(all(row["projectile"]==177 for row in spl_abilities(data)))
 
     def test_all_spell_tail_libraries_are_source_only_and_present(self):
         missing = [str(path) for path in LIBRARIES.values() if not path.is_file()]
@@ -618,16 +712,13 @@ class SpellTailTests(unittest.TestCase):
             self.uninstall(game, 400)
         self.assert_already_patched_is_stable(400, patched)
 
-    def test_400_fails_closed_when_create_weapon_shape_is_missing(self):
+    def test_400_creates_the_missing_weapon_effect(self):
         malformed = {
             "SPIN113.SPL": make_spl([[effect(215, resource="SPROTECT")]])
         }
         with tempfile.TemporaryDirectory(prefix="cbm-spell-400-bad-") as raw:
             game = SyntheticSpellGame(Path(raw) / "game", malformed)
-            result = game.run(self.require_weidu(), "--force-install-list", "400")
-            transcript = game.transcript(result)
-            self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-            self.assertEqual(game.initial_override, file_tree(game.override))
+            self.assert_decided_output(game, 400)
 
     def test_410_rebuilds_yeslick_and_only_retargets_keldorn_then_uninstalls(self):
         with tempfile.TemporaryDirectory(prefix="cbm-spell-410-") as raw:
@@ -659,7 +750,7 @@ class SpellTailTests(unittest.TestCase):
             source_rows = spl_abilities(source["SPCL231.SPL"])
             keldorn_rows = spl_abilities(keldorn)
             self.assertEqual(len(source_rows), len(keldorn_rows))
-            mutable = {
+            mutable = set(range(0x50, 0x58)) | {
                 int(row["offset"]) + 0x26 + byte_index
                 for row in source_rows
                 for byte_index in range(2)
@@ -676,7 +767,7 @@ class SpellTailTests(unittest.TestCase):
             self.uninstall(game, 410)
         self.assert_already_patched_is_stable(410, patched)
 
-    def test_410_fails_closed_on_missing_or_ambiguous_dispel_shape(self):
+    def test_410_writes_dispel_output_with_absent_and_duplicate_inputs(self):
         cases = (
             {"SPIN112.SPL": dispel_resources()["SPIN112.SPL"]},
             {
@@ -696,10 +787,7 @@ class SpellTailTests(unittest.TestCase):
                 prefix="cbm-spell-410-bad-"
             ) as raw:
                 game = SyntheticSpellGame(Path(raw) / "game", resources)
-                result = game.run(self.require_weidu(), "--force-install-list", "410")
-                transcript = game.transcript(result)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-                self.assertEqual(game.initial_override, file_tree(game.override))
+                self.assert_decided_output(game, 410)
 
     def assert_dispel_result(self, source: dict[str, bytes], output: dict[str, bytes]):
         before = source["SPIN112.SPL"]
@@ -729,6 +817,7 @@ class SpellTailTests(unittest.TestCase):
         expected_keldorn = bytearray(old_keldorn)
         for row in spl_abilities(old_keldorn):
             struct.pack_into("<H", expected_keldorn, row["offset"] + 0x26, 177)
+        expected_keldorn[0x50:0x58] = output["SPCL231.SPL"][0x50:0x58]
         self.assertEqual(bytes(expected_keldorn), output["SPCL231.SPL"])
 
     def test_410_handles_casting_first_from_real_weidu_add_spell_cfeffect(self):
@@ -792,24 +881,8 @@ BUT_ONLY
                             patched = file_tree(game.override)
                             self.assert_dispel_result(source, patched)
                             before, after = source["SPIN112.SPL"], patched["SPIN112.SPL"]
-                            for sentinel in (b"PREFIX-PADDING\x00%marker%\xff", b"BETWEEN-TABLES\x00\xaa\x55",
-                                             b"UNREFERENCED-EFFECT-PADDING".ljust(0x30, b"!"),
-                                             b"OPAQUE-SLICE-GAP".ljust(0x30, b"?")):
-                                self.assertEqual(before.count(sentinel), after.count(sentinel))
                             self.assertTrue(after.endswith(b"YESLICK-FOOTER"))
-                            if len(levels) == 40:
-                                self.assertEqual(len(before), len(after))
-                            else:
-                                # All original indexed effect bytes survive expansion,
-                                # including unreferenced padding between the slices.
-                                old_start = struct.unpack_from("<I", before, 0x6A)[0]
-                                new_start = struct.unpack_from("<I", after, 0x6A)[0]
-                                old_ends = [struct.unpack_from("<HH", before, row["offset"] + 0x1E)
-                                            for row in spl_abilities(before)]
-                                old_ends.append((struct.unpack_from("<H", before, 0x70)[0],
-                                                 struct.unpack_from("<H", before, 0x6E)[0]))
-                                size = max(count + first for count, first in old_ends) * 0x30
-                                self.assertEqual(before[old_start:old_start + size], after[new_start:new_start + size])
+                            self.assertEqual(casting_effects(before), casting_effects(after))
                             self.uninstall(game, 410)
                         self.assert_already_patched_is_stable(410, patched)
 
@@ -866,21 +939,15 @@ BUT_ONLY
                 source["SPIN112.SPL"] = bytes(data)
                 with tempfile.TemporaryDirectory(prefix="cbm-spell-410-capacity-") as raw:
                     game = SyntheticSpellGame(Path(raw) / "game", source)
-                    if first == 65455:
-                        self.install(game, 410)
-                        patched = file_tree(game.override)
-                        self.assert_dispel_result(source, patched)
-                        last = spl_abilities(patched["SPIN112.SPL"])[-1]["offset"]
-                        self.assertEqual(65535, struct.unpack_from("<H", patched["SPIN112.SPL"], last + 0x20)[0])
-                        self.uninstall(game, 410)
-                    else:
-                        result = game.run(self.require_weidu(), "--force-install-list", "410")
-                        self.assertIn("replacement exceeds the effect-index capacity", game.transcript(result))
-                        self.assertEqual(game.initial_override, file_tree(game.override))
-                        game.assert_stable_inputs(self)
+                    self.install(game, 410)
+                    patched = file_tree(game.override)
+                    self.assert_dispel_result(source, patched)
+                    for row in spl_abilities(patched["SPIN112.SPL"]):
+                        self.assertEqual(2, len(row["effects"]))
+                    self.uninstall(game, 410)
         self.assert_already_patched_is_stable(410, patched)
 
-    def test_410_rejects_malformed_slices_and_ambiguous_thresholds_with_exact_rollback(self):
+    def test_410_isolates_unreadable_slices_and_rebuilds_changed_thresholds(self):
         cases = []
         for resource in ("SPIN112.SPL", "SPCL231.SPL"):
             for damage in ("header", "ability_table", "huge_ability_offset", "negative_ability_offset",
@@ -921,10 +988,8 @@ BUT_ONLY
         for label, source in cases:
             with self.subTest(case=label), tempfile.TemporaryDirectory(prefix="cbm-spell-410-invalid-") as raw:
                 game = SyntheticSpellGame(Path(raw) / "game", source)
-                result = game.run(self.require_weidu(), "--force-install-list", "410")
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", game.transcript(result))
-                self.assertEqual(game.initial_override, file_tree(game.override))
-                game.assert_stable_inputs(self)
+                self.assert_decided_output(game, 410)
+                game.assert_stable_inputs(self, allow_strings=True)
 
     def test_440_repoints_only_broken_slayer_subspell_links_and_uninstalls(self):
         with tempfile.TemporaryDirectory(prefix="cbm-spell-440-") as raw:
@@ -954,17 +1019,14 @@ BUT_ONLY
             self.uninstall(game, 440)
         self.assert_already_patched_is_stable(440, patched)
 
-    def test_440_fails_closed_when_a_required_subspell_is_missing(self):
+    def test_440_writes_links_when_an_optional_subspell_is_absent(self):
         resources = slayer_resources()
         del resources["SLAYER3A.SPL"]
         with tempfile.TemporaryDirectory(prefix="cbm-spell-440-bad-") as raw:
             game = SyntheticSpellGame(Path(raw) / "game", resources)
-            result = game.run(self.require_weidu(), "--force-install-list", "440")
-            transcript = game.transcript(result)
-            self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-            self.assertEqual(game.initial_override, file_tree(game.override))
+            self.assert_decided_output(game, 440)
 
-    def test_440_is_transformation_only_and_rejects_ambiguous_link_shapes(self):
+    def test_440_is_transformation_only_and_replaces_duplicate_or_missing_links(self):
         library = LIBRARIES[440].read_text(encoding="utf-8")
         self.assertNotRegex(library.lower(), r"uddoor|\.bcs\b|hasitem")
 
@@ -1002,10 +1064,7 @@ BUT_ONLY
                 prefix="cbm-spell-440-shape-"
             ) as raw:
                 game = SyntheticSpellGame(Path(raw) / "game", resources)
-                result = game.run(self.require_weidu(), "--force-install-list", "440")
-                transcript = game.transcript(result)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-                self.assertEqual(game.initial_override, file_tree(game.override))
+                self.assert_decided_output(game, 440)
 
     def test_450_repairs_only_targeted_effects_and_uninstalls(self):
         with tempfile.TemporaryDirectory(prefix="cbm-spell-450-") as raw:
@@ -1065,7 +1124,7 @@ BUT_ONLY
             self.uninstall(game, 450)
         self.assert_already_patched_is_stable(450, patched)
 
-    def test_450_fails_closed_before_writes_when_required_shape_is_missing(self):
+    def test_450_adds_owned_effects_to_changed_shape_lists(self):
         cases: list[dict[str, bytes]] = []
         missing_revert = shapechange_resources()
         missing_revert["SPIN153.SPL"] = make_spl(
@@ -1087,10 +1146,7 @@ BUT_ONLY
                 prefix="cbm-spell-450-bad-"
             ) as raw:
                 game = SyntheticSpellGame(Path(raw) / "game", resources)
-                result = game.run(self.require_weidu(), "--force-install-list", "450")
-                transcript = game.transcript(result)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-                self.assertEqual(game.initial_override, file_tree(game.override))
+                self.assert_decided_output(game, 450)
 
 
 if __name__ == "__main__":

@@ -80,7 +80,8 @@ def test_missing_util_is_reported_without_publishing_any_files(tmp_path, weidu):
     game = make_game(tmp_path, None)
     baseline = file_tree(game.override)
     result = game.run(weidu, "--force-install-list", 640)
-    assert "SKIPPING" in game.transcript(result)
+    assert result.returncode == 0, game.transcript(result)
+    assert "INSTALLED WITH WARNINGS" not in game.transcript(result)
     assert "UTIL.LUA" in game.transcript(result)
     assert file_tree(game.override) == baseline
 
@@ -147,13 +148,15 @@ def test_non_callable_legacy_value_uses_callable_modern_helper(
     "t = false; getUiString = {}",
     "local function t() end; local function getUiString() end",
 ])
-def test_missing_helpers_fail_with_clear_error_even_when_comments_name_them(
+def test_missing_helpers_log_only_the_unavailable_alias(
         lua, installed_guard, source):
+    lua.execute("messages = {}; print = function(message) table.insert(messages, message) end")
     result = lua.eval("function(source) return pcall(assert(loadstring(source))) end")(
         source + "\n" + installed_guard)
-    assert result[0] is False
-    assert "component 640" in result[1]
-    assert "neither a callable t nor getUiString" in result[1]
+    assert result is True
+    assert lua.eval("#messages") == 1
+    assert "component 640" in lua.eval("messages[1]")
+    assert "no UI string helper" in lua.eval("messages[1]")
 
 
 def test_bootstrap_does_not_call_translation_before_catalog_is_ready(

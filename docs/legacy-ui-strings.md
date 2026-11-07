@@ -1,5 +1,9 @@
 # Legacy UI text compatibility
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Component **640**, label `cbm_legacy_ui_strings`, is independently selectable
 from **v0.2.0-alpha.8**. It supports BG2EE/EET and requires the game's `UTIL.LUA`.
 EEex and Hidden Gameplay Options are not required by this component.
@@ -12,8 +16,8 @@ in an independently ordered `M_` loader would be too late on some load orders.
 Component 640 appends a guarded adapter to the installed `UTIL.LUA`, after the
 game's helper definitions and before the UI's `M_` scripts execute. If `t` is
 already a function, it is preserved exactly. Otherwise a function-valued
-`getUiString` becomes the alias. If neither is callable, the adapter raises a
-clear error identifying component 640 and the missing helpers. It does not
+`getUiString` becomes the alias. If neither is callable, the adapter logs the
+missing runtime requirement and leaves that helper unavailable. It does not
 guess how an unknown UI implements translations.
 
 Install **after the selected LeUI/Dragonspear provider and before Bubb's Spell

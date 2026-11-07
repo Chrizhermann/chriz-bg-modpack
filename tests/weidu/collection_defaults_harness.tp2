@@ -5,6 +5,15 @@
 BACKUP ~weidu-backup~
 AUTHOR ~chriz-bg-modpack tests~
 
+ALWAYS
+  OUTER_SPRINT cbmo_library ~%argv[0]%~
+  OUTER_INNER_PATCH_SAVE cbmo_library ~%cbmo_library%~ BEGIN
+    REPLACE_TEXTUALLY ~[^/\\]+$~ ~~
+  END
+  OUTER_SPRINT cbmo_data_root ~%cbmo_library%../data/progression~
+  INCLUDE ~%cbmo_library%cbm_overwrite.tpa~
+END
+
 BEGIN ~Kagain Dwarven Defender harness~ DESIGNATED 1
 INCLUDE ~%argv[0]%~
 LAF cbm_collection_resolve_class STR_VAR symbol = ~FIGHTER~ RET class_id END

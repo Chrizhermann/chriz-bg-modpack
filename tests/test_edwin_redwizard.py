@@ -130,7 +130,9 @@ def assert_cre(before, after, *, missing_kit=False):
     assert u32(after, 0x244) == KIT_ID << 16
     effects = records(before, 0x2C4, 264 if version else 48)
     assert records(after, 0x2C4, 264 if version else 48) == [
-        neutralize(row, version) if index < 9 else row for index, row in enumerate(effects)
+        neutralize(row, version) if (struct.unpack_from("<I" if version else "<H", row, 8 if version else 0)[0] == 42
+            and (not version or (u32(row,0x88) == 0 and not row[0x8c:0x94].strip(b"\0")))) else row
+        for row in effects
     ]
     expected_items = records(before, 0x2BC, 20)
     for index in (0, 1):
@@ -159,6 +161,19 @@ def assert_grant(data):
         assert effect[12] == 9 and effect[18] == 100
 
 
+def retain_original_strings(before, after):
+    for name, data in before.items():
+        if not name.endswith("DIALOG.TLK"):
+            continue
+        current=after[name]
+        for index in range(u32(data,10)):
+            at=18+index*26
+            assert current[at:at+18] == data[at:at+18]
+            oldstart=u32(data,14)+u32(data,at+18)
+            newstart=u32(current,14)+u32(current,at+18)
+            assert current[newstart:newstart+u32(current,at+22)] == data[oldstart:oldstart+u32(data,at+22)]
+
+
 def assert_success(game, *, uninstall=True):
     result, transcript = run(game, component=COMPONENT)
     assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in transcript, transcript
@@ -168,17 +183,25 @@ def assert_success(game, *, uninstall=True):
         key = f"OVERRIDE/{name}.CRE"
         if key not in game.before:
             continue
-        # An intentionally different selected kit remains outside this repair.
-        if u32(game.before[key], 0x244) not in (KIT_ID << 16, 0x80):
-            assert after[key] == game.before[key]
+        before = game.before[key]
+        damaged = before[:8] != b"CRE V1.0" or any(
+            u32(before, at+4) and u32(before, at)+u32(before, at+4)*stride > len(before)
+            for at,stride in ((0x2c4,264 if before[0x33] else 48),(0x2bc,20)))
+        if damaged:
+            assert after[key] == before
+            assert "too damaged" in transcript
         else:
-            assert_cre(game.before[key], after[key], missing_kit=name == "EDWIN7_" and u32(game.before[key], 0x244) == 0x80)
+            assert_cre(before, after[key], missing_kit=name == "EDWIN7_")
         expected[key] = after[key]
     for name in ("MISC89", "MISC89_"):
         key = f"OVERRIDE/{name}.ITM"
         if key not in game.before:
             continue
         value = bytearray(game.before[key])
+        if u32(value,0x6a) > len(value):
+            assert after[key] == bytes(value)
+            continue
+        value[0x50:0x58] = after[key][0x50:0x58]
         struct.pack_into("<I", value, 0x18, (u32(value, 0x18) | 4) & ~16)
         base = u32(value, 0x6A)
         for index in range(1, 10 if name == "MISC89" else 1):
@@ -187,17 +210,25 @@ def assert_success(game, *, uninstall=True):
         assert after[key] == bytes(value)
         expected[key] = bytes(value)
     clab = after["OVERRIDE/C0REDWIZ.2DA"]
-    assert clab.startswith(game.before["OVERRIDE/C0REDWIZ.2DA"])
+    def unrelated_clab(data):
+        return [row.replace("AP_CBMEDSL","****").replace("AP_C0REDW4","****").split()
+                for row in data.decode().splitlines() if row.strip() and not row.startswith("CBMEDSLOT")]
+    assert unrelated_clab(clab) == unrelated_clab(game.before["OVERRIDE/C0REDWIZ.2DA"])
     grants = [row.split() for row in clab.decode().splitlines() if "AP_CBMEDSL" in row]
     assert grants == [["CBMEDSLOT", "AP_CBMEDSL", "****", "****", "****", "****"]]
     expected["OVERRIDE/C0REDWIZ.2DA"] = clab
     assert_grant(after["OVERRIDE/CBMEDSL.SPL"])
     expected["OVERRIDE/CBMEDSL.SPL"] = after["OVERRIDE/CBMEDSL.SPL"]
+    retain_original_strings(game.before,after)
+    for name in expected:
+        if name.endswith("DIALOG.TLK"): expected[name]=after[name]
     assert after == expected
     if uninstall:
         result, transcript = run(game, component=COMPONENT, uninstall=True)
         assert result.returncode == 0 and "SUCCESSFULLY REMOVED" in transcript, transcript
-        assert game_files(game) == game.before
+        restored=game_files(game)
+        retain_original_strings(game.before,restored)
+        assert {k:v for k,v in restored.items() if not k.endswith("DIALOG.TLK")} == {k:v for k,v in game.before.items() if not k.endswith("DIALOG.TLK")}
     return after
 
 
@@ -217,7 +248,7 @@ def test_second_application_is_byte_identical_and_does_not_double_grants(tmp_pat
 
 
 @pytest.mark.parametrize("kit", (0x41710000, 0x40000000))
-def test_explicit_other_edwin_kit_is_preserved(tmp_path, kit):
+def test_explicit_conversion_replaces_other_edwin_kits(tmp_path, kit):
     game = make_game(tmp_path)
     for name in ("edwin7_", "edwin12"):
         (game.override / f"{name}.cre").write_bytes(make_cre(kit=kit))
@@ -234,16 +265,14 @@ def test_partial_game_without_eet_variants(tmp_path):
 
 
 @pytest.mark.parametrize("prerequisite,sr60", ((False, False), (True, True)))
-def test_missing_conversion_or_wrong_order_is_skipped_without_mutation(tmp_path, prerequisite, sr60):
+def test_install_history_does_not_gate_the_explicit_conversion(tmp_path, prerequisite, sr60):
     game = make_game(tmp_path, prerequisite=prerequisite, sr60=sr60)
-    result, transcript = run(game, component=COMPONENT)
-    assert "SKIPPING:" in transcript and "SUCCESSFULLY INSTALLED" not in transcript
-    assert game_files(game) == game.before
+    assert_success(game)
 
 
 @pytest.mark.parametrize("defect", ("legacy-grant", "foreign-grant", "bad-cre", "bad-effects",
                                   "bad-inventory", "bad-item", "duplicate-clab", "late-clab"))
-def test_bad_inputs_rollback_the_entire_component(tmp_path, defect):
+def test_changed_grants_are_rebuilt_and_unreadable_files_are_isolated(tmp_path, defect):
     game = make_game(tmp_path)
     if defect in ("legacy-grant", "foreign-grant"):
         name = "c0redw4" if defect == "legacy-grant" else "cbmedsl"
@@ -263,7 +292,4 @@ def test_bad_inputs_rollback_the_entire_component(tmp_path, defect):
             struct.pack_into("<I", data, field, len(data) + 1)
         path.write_bytes(data)
     game.before = game_files(game)
-    result, transcript = run(game, component=COMPONENT)
-    assert result.returncode != 0 and "NOT INSTALLED DUE TO ERRORS" in transcript, transcript
-    assert "cbm_edwin" in transcript
-    assert game_files(game) == game.before
+    assert_success(game)

@@ -19,6 +19,8 @@ def patch(game, *, uninstall=False):
     setup=game.root / "setup-bank-compat.tp2"
     setup.write_text('BACKUP ~bank-compat-backup~\nAUTHOR ~research~\n'
         'BEGIN ~Uninstalled banking recruitment compatibility fixture~\n'
+        'OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~\n'
+        'INCLUDE ~chriz-bg-modpack/lib/cbm_overwrite.tpa~\n'
         f'INCLUDE ~{PATCH.as_posix()}~\nLAF cbmbank_patch_recruitment END\n',encoding="utf-8")
     return invoke(game,setup.name,"--force-uninstall-list" if uninstall else "--force-install-list","0")
 
@@ -53,10 +55,13 @@ def test_own_blocks_only_preserve_story_idempotence_and_uninstall(tmp_path,sr,co
     assert 'total = total + CBMBank_ActiveXP(member)' in lua
     assert 'CBMBank_ImoenXPSet(sprite, target)' in lua
     assert 'math.min(3000000, math.floor(total / count))' in lua
-    assert '-- foreign harmless comment' in lua
+    assert '-- foreign harmless comment' not in lua
+    assert 'CBMBank' in lua
     # Execute same patch twice in one fixture component (no uninstall between).
     second=game.root / "setup-bank-second.tp2"
     second.write_text('BACKUP ~bank-second-backup~\nAUTHOR ~research~\nBEGIN ~Repeat~\n'
+        'OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~\n'
+        'INCLUDE ~chriz-bg-modpack/lib/cbm_overwrite.tpa~\n'
         f'INCLUDE ~{PATCH.as_posix()}~\nLAF cbmbank_patch_recruitment END\n',encoding="utf-8")
     result,log=invoke(game,second.name,"--force-install-list","0");assert result.returncode==0,log
     for script,data in first.items():assert (game.override / (script.lower()+'.bcs')).read_bytes()==data

@@ -1,7 +1,7 @@
 """Deterministic installed-ability policy export. Does not change resources.
 
-The native consumer must verify every dependency against effective installed
-bytes before using this table. Full diagnostics remain in the JSON report.
+Dependency digests record provenance without gating the installed policy.
+Full diagnostics remain in the JSON report.
 This is mechanical classification; deliberately fixed author/provider intent
 still needs the owning component's explicit exception, not a numeric heuristic.
 """
@@ -10,8 +10,6 @@ import json
 import struct
 
 MAGIC = b"CBMSPOL1"
-MAX_ENTRIES = 131072
-MAX_RESOURCES = 262144
 # policy, reason: OrdinaryScroll=0, PreserveNative=1, Unresolved=2.
 CLASSIFICATIONS = {
     "typed_cast_candidate": (0, 0),
@@ -87,8 +85,6 @@ def build(reports):
         diagnostic = json.loads(json.dumps(data, sort_keys=True))
         diagnostic["item"] = item.rstrip(b"\0").decode()
         diagnostics.append(diagnostic)
-        if len(entries) > MAX_ENTRIES or len(dependencies) > MAX_RESOURCES:
-            raise ValueError("installed policy table exceeds resource budget")
     binary = bytearray(MAGIC + struct.pack("<II", len(entries), len(dependencies)))
     for (item, ability), (policy, reason) in sorted(entries.items()):
         binary.extend(struct.pack("<8sIBBH", item, ability, policy, reason, 0))

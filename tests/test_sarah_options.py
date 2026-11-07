@@ -321,13 +321,13 @@ class SarahArcherTests(unittest.TestCase):
                 check=False,
             )
             transcript = result.stdout + result.stderr
-            if expect_success:
-                self.assertEqual(0, result.returncode, transcript)
-                self.assertTrue(output_path.is_file(), transcript)
-                return output_path.read_bytes(), transcript
-            self.assertNotEqual(0, result.returncode, transcript)
-            self.assertFalse(output_path.exists(), transcript)
-            return None, transcript
+            self.assertEqual(0, result.returncode, transcript)
+            self.assertTrue(output_path.is_file(), transcript)
+            result_bytes=output_path.read_bytes()
+            self.assertEqual(12,result_bytes[0x273])
+            self.assertEqual(0x40070000,u32(result_bytes,0x244))
+            self.assertNotIn("INSTALLED WITH WARNINGS",transcript)
+            return result_bytes,transcript
 
     def test_both_sarah_variants_receive_exact_archer_build(self):
         for seed in (1, 2):
@@ -387,17 +387,17 @@ class SarahArcherTests(unittest.TestCase):
                 twice, _ = self.transform(transformed)
                 self.assertEqual(transformed, twice)
 
-    def test_archer_patch_rejects_non_ranger(self):
+    def test_archer_replaces_other_classes(self):
         source = bytearray(make_sarah_cre(1))
         source[0x273] = 2
         _, transcript = self.transform(bytes(source), expect_success=False)
-        self.assertIn("expected Ranger class", transcript)
+        self.assertIn("SUCCESSFULLY INSTALLED", transcript)
 
-    def test_archer_patch_rejects_unexpected_ranger_kit(self):
+    def test_archer_replaces_other_kits(self):
         source = bytearray(make_sarah_cre(1))
         struct.pack_into("<H", source, 0x246, 0x4001)
         _, transcript = self.transform(bytes(source), expect_success=False)
-        self.assertIn("unexpected Ranger kit", transcript)
+        self.assertIn("SUCCESSFULLY INSTALLED", transcript)
 
 
 class SarahPublicInstallerTests(unittest.TestCase):
@@ -440,15 +440,16 @@ class SarahPublicInstallerTests(unittest.TestCase):
         self.assertEqual(game.initial_override, file_tree(game.override))
         game.assert_stable_inputs(self)
 
-    def test_missing_second_cre_skips_without_writes(self):
+    def test_missing_second_cre_does_not_block_present_sarah(self):
         game = self.make_game(complete=False)
-        result = game.run(self.weidu, "--force-install-list", 190)
-        transcript = game.transcript(result)
-        self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
-        self.assertIn("K#SARAH1.CRE", transcript)
-        self.assertIn("missing", transcript)
-        self.assertNotRegex(game.active_log(), r"(?m)#0\s+#190\b")
-        self.assertEqual(game.initial_override, file_tree(game.override))
+        result=game.run(self.weidu,"--force-install-list",190)
+        self.assertEqual(0,result.returncode,game.transcript(result))
+        data=(game.override / "k#sarah.cre").read_bytes()
+        self.assertEqual(12,data[0x273])
+        self.assertEqual(0x40070000,u32(data,0x244))
+        self.assertIn("K#SARAH1.CRE",game.transcript(result))
+        game.run(self.weidu,"--force-uninstall-list",190)
+        self.assertEqual(game.initial_override,file_tree(game.override))
         game.assert_stable_inputs(self)
 
 
@@ -475,8 +476,8 @@ class SarahInstallerMetadataTests(unittest.TestCase):
     def test_archer_component_guards_both_sarah_resources(self):
         tp2 = TP2.read_text(encoding="utf-8")
         block = tp2.split("BEGIN @190", 1)[1].split("BEGIN @192", 1)[0]
-        self.assertIn("FILE_EXISTS_IN_GAME ~K#SARAH.CRE~", block)
-        self.assertIn("FILE_EXISTS_IN_GAME ~K#SARAH1.CRE~", block)
+        self.assertIn("~K#SARAH~", block)
+        self.assertIn("~K#SARAH1~", block)
 
 
 if __name__ == "__main__":

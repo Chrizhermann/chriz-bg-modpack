@@ -1,13 +1,7 @@
 // Component 652: chapter-bound XP caps across BG1, SoD, SoA, and ToB,
 // plus Baeloth's Chapter 5+ spawn gate in BAINVI.BCS when BG1 content is present.
-//
-// The gate keeps Baeloth's starting XP under the chapter cap without changing
-// BAELOTH.CRE: every BAINVI.BCS block that starts his Larswood entrance (it
-// names BA_START_SCENE or CUTBA01) gets GlobalGT("Chapter","GLOBAL",4). The
-// caps do not depend on the gate. When BAINVI.BCS is not a compiled script or
-// has no entrance block (another mod replaced the scene), the script stays
-// unchanged and the installer warns instead of dropping the caps. Banking keeps
-// a joiner's XP above a lower cap and banks what he earns until the cap passes it.
+// This component owns the chapter condition of Baeloth's entrance blocks.
+// If another mod removed them, add the authored entrance with the same gate.
 COPY ~chriz-bg-modpack/campaign-xp/cbmbkchp.lua~ ~override/CBMBKCFG.lua~
 
 // Gate a decompiled BAINVI.BCS buffer.
@@ -35,7 +29,7 @@ BEGIN
       SET cbmg_modified = 0
       INNER_PATCH_SAVE cbmg_block ~%cbmg_block%~ BEGIN
         PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE ~"BA_START_SCENE"~) >= 0)
-            OR (INDEX_BUFFER (CASE_INSENSITIVE ~"CUTBA01"~) >= 0) BEGIN
+            OR (INDEX_BUFFER (CASE_INSENSITIVE ~StartCutScene(~) >= 0) BEGIN
           SET matched += 1
           PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE ~GlobalGT("Chapter","GLOBAL",4)~) < 0) BEGIN
             REPLACE_TEXTUALLY ~^IF~ ~IF%LNL%  GlobalGT("Chapter","GLOBAL",4)~
@@ -94,10 +88,12 @@ ACTION_IF FILE_EXISTS_IN_GAME ~BAINVI.BCS~ BEGIN
   BUT_ONLY_IF_IT_CHANGES
 
   ACTION_IF cbm_cxc_status = 2 BEGIN
-    WARN @1658
+    PRINT ~Chapter XP: BAINVI.BCS is too damaged to write; chapter caps remain installed.~
   END ELSE ACTION_IF cbm_cxc_matched = 0 BEGIN
-    WARN @1659
+    COPY_EXISTING ~BAINVI.BCS~ ~override~
+      LPF cbmo_script_block STR_VAR replacement = ~chriz-bg-modpack/baf/cbm_baeloth_chapter_gate.baf~ END
+    BUT_ONLY
   END
-END
+END ELSE BEGIN PRINT ~Chapter XP: BAINVI.BCS is absent; chapter caps remain installed.~ END
 
 PRINT @1657

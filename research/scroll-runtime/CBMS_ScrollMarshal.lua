@@ -16,34 +16,18 @@ end
 
 local function importer(sprite, envelope)
     local value = state(sprite)
-    if value.raw ~= nil then
-        -- Preserve both conflicting envelopes in memory for recovery. An
-        -- operation with this fault must be cancelled, never exported as valid.
-        value.conflicts = value.conflicts or {value.raw}
-        value.conflicts[#value.conflicts + 1] = envelope
-        reject(value, "duplicate scroll actor envelope; cancel this load")
-        return
-    end
-    value.raw = envelope -- retain before parsing or calling the native bridge
-    if type(envelope) ~= "table" or envelope.schema ~= 1 or type(envelope.payload) ~= "string" then
-        reject(value, "unknown scroll actor envelope schema; retained unchanged")
-        return
-    end
-    -- Unknown fields may belong to a newer implementation. Do not normalize
-    -- them away by claiming this complete envelope belongs to schema1.
-    for key in pairs(envelope) do
-        if key ~= "schema" and key ~= "payload" then
-            reject(value, "unknown scroll actor envelope fields; retained unchanged")
-            return
-        end
-    end
     if not CBMS_NativeHealthy() then
-        -- Saved again unchanged. If this actor's records change meanwhile, a
-        -- later healthy load drops the outdated envelope for this actor only.
+        value.raw = envelope
         value.error = "scroll native bridge unavailable; retained unchanged"
         return
     end
-    local ok, reason = CBMS_NativeStage(sprite, envelope.payload)
+    value.raw = envelope
+    -- A missing payload or an unknown serialized format is unreadable only for
+    -- this actor. The native importer stages its local drop reason and remains
+    -- healthy for other actors. Extra Lua fields do not prevent reading payload.
+    local payload = type(envelope) == "table" and envelope.schema == 1 and envelope.payload
+    if type(payload) ~= "string" then payload = "" end
+    local ok, reason = CBMS_NativeStage(sprite, payload)
     if not ok then reject(value, reason or "native scroll actor envelope rejected") end
 end
 
@@ -53,7 +37,10 @@ local function exporter(sprite)
     if fallback and fallback[handlerName] ~= nil then
         -- EEex appends fallback storage separately. Returning it here too
         -- duplicates the handler. Late activation cannot infer decoded pairs.
-        reject(value, "scroll envelope loaded before handler; retain fallback and reload with native decoder")
+        if not value.fallbackLogged then
+            print("[CBM scroll] Actor scroll data loaded before its handler; retaining that actor's data until reload.")
+            value.fallbackLogged = true
+        end
         return nil
     end
     if value.raw ~= nil then return value.raw end

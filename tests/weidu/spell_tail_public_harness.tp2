@@ -1,6 +1,11 @@
 BACKUP ~weidu-backup/spell-tail-public~
 AUTHOR ~chriz-bg-modpack tests~
 
+ALWAYS
+  OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
+  INCLUDE ~chriz-bg-modpack/lib/cbm_overwrite.tpa~
+END
+
 BEGIN ~Branwen Spiritual Hammer structural patch~ DESIGNATED 400
 INCLUDE ~chriz-bg-modpack/lib/cbm_branwen_hammer_fix.tpa~
 

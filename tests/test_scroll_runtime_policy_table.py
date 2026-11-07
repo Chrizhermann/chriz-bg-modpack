@@ -1,4 +1,4 @@
-"""Installed graph export -> compiled bounded lookup, with fresh hash gating."""
+"""Installed graph export -> compiled bounded lookup, without resource hash gating."""
 import hashlib
 import importlib.util
 from pathlib import Path
@@ -103,8 +103,8 @@ def test_unverified_or_invalid_runtime_input_refused(probe, tmp_path, mode, expe
     assert actual.returncode == 1 and expected in actual.stderr
 
 
-@pytest.mark.parametrize("mode,expected", [("fixed8", "0"), ("changed", "invalidated"), ("missing", "invalidated")])
-def test_fixed_resrefs_and_dependency_refresh_invalidate(probe, tmp_path, mode, expected):
+@pytest.mark.parametrize("mode,expected", [("fixed8", "0"), ("changed", "0"), ("missing", "0")])
+def test_changed_or_missing_dependencies_preserve_installed_policy(probe, tmp_path, mode, expected):
     actual = run(probe, tmp_path, exporter.build(reports()[1])[0], mode)
     assert actual.returncode == 0 and actual.stdout.strip() == expected, actual.stderr
 
@@ -114,7 +114,7 @@ def test_compiled_wire_bounds_and_ambiguity_checks(probe, tmp_path, mutation):
     blob, manifest = exporter.build(reports()[1])
     raw = bytearray(blob)
     dep = 16 + manifest["entries"] * 16
-    if mutation == "count": struct.pack_into("<I", raw, 8, exporter.MAX_ENTRIES + 1)
+    if mutation == "count": struct.pack_into("<I", raw, 8, 0xffffffff)
     elif mutation == "truncate": raw.pop()
     elif mutation == "trailing": raw.append(0)
     elif mutation == "duplicate": raw[32:48] = raw[16:32]
@@ -145,8 +145,8 @@ def test_export_rejects_ambiguous_or_invalid_inventory(mutation):
 
 
 @pytest.mark.parametrize("name,target", [("SCRL08", 25), ("SCRL15", 134)])
-def test_opcode101_exception_requires_actual_protected_condition(name, target):
-    for mode, classification in [(target, "native_exception"), (12, "unresolved")]:
+def test_decided_protection_exception_survives_other_effects(name, target):
+    for mode, classification in [(target, "native_exception"), (12, "native_exception")]:
         data = {name + ".ITM": fixtures.resource("ITM", 11, [(3, 0, [fixtures.effect(101, mode=mode)])])}
         result = fixtures.inventory(data).item(name)[0]
         assert result.classification == classification

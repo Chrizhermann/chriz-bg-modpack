@@ -165,7 +165,7 @@ def default_script(gated: bool) -> str:
         _gate(EET_BG1_STANCE, gated),
         _gate(OR_FIRST_STANCE, gated),
         CONDITION_ONLY,
-        OTHER_OPTION_FORM,
+        OTHER_OPTION_FORM.replace('!Global("BDAI_DISABLE_SPECIAL","LOCALS",1)', GATE) if gated else OTHER_OPTION_FORM,
     ))
 
 
@@ -332,7 +332,7 @@ class DefensiveStanceAITests(unittest.TestCase):
                 after = file_tree(game.override)
                 self.assertEqual(expected_tree(game, before), after)
                 self.assertIn(
-                    'BDDEFAI.BCS now checks "Use special abilities" in 2 Defensive Stance block(s)', text
+                    'BDDEFAI.BCS now checks "Use special abilities" in 4 Defensive Stance block(s)', text
                 )
                 self.assertIn(
                     'BDCOMPC.BCS now checks "Use special abilities" in 1 Defensive Stance block(s)', text
@@ -376,7 +376,7 @@ class DefensiveStanceAITests(unittest.TestCase):
         before = file_tree(game.override)
         text = self._install(game)
         self.assertEqual(before, file_tree(game.override))
-        self.assertIn('every party AI use of Defensive Stance already checks "Use special abilities"', text)
+        self.assertNotIn("INSTALLED WITH WARNINGS",text)
 
     def test_party_ai_without_the_stance_installs_unchanged(self) -> None:
         game = self._game()
@@ -389,16 +389,28 @@ class DefensiveStanceAITests(unittest.TestCase):
         self.assertEqual(before, file_tree(game.override))
         self.assertIn("no party AI script uses Defensive Stance; nothing to gate", text)
 
-    def test_game_without_partyai_is_not_installed(self) -> None:
+    def test_option_gate_on_another_ability_is_preserved(self):
+        game=self._game()
+        other=OTHER_ABILITY.replace("IF\n",f"IF\n  {GATE}\n")
+        game.add_script("BDDEFAI",other+EET_BG1_STANCE.format(gate=""))
+        game.write_partyai(PARTYAI)
+        self._install(game)
+        expected=game.compile("expected_other",other+EET_BG1_STANCE.format(gate=f"  {GATE}\n"))
+        self.assertEqual(expected,file_tree(game.override)["BDDEFAI.BCS"])
+
+    def test_game_without_partyai_still_gates_the_default_script(self) -> None:
         game = self._game()
         game.add_script("BDDEFAI", default_script(gated=False))
-        self._assert_not_installed(game, "cbm_defensive_stance_ai: PARTYAI.2DA is missing.")
+        output=self._install(game)
+        self.assertIn("PARTYAI.2DA is absent",output)
+        self.assertEqual(game.compile("expected",default_script(gated=True)),file_tree(game.override)["BDDEFAI.BCS"])
 
-    def test_unreadable_partyai_fails_without_mutation(self) -> None:
+    def test_unreadable_partyai_uses_default_script(self) -> None:
         game = self._game()
         game.add_script("BDDEFAI", default_script(gated=False))
         game.write_partyai("BDDEFAI\nAI_SCRIPT\nCOMPANION BDCOMPC\n")
-        self._assert_not_installed(game, "PARTYAI.2DA is not a readable 2DA table")
+        self._install(game)
+        self.assertEqual(game.compile("expected",default_script(gated=True)),file_tree(game.override)["BDDEFAI.BCS"])
 
 
 if __name__ == "__main__":

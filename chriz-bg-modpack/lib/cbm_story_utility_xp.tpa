@@ -1,3 +1,4 @@
+INCLUDE ~chriz-bg-modpack/lib/cbm_xpbonus_prepare.tpa~
 // Runtime campaign switching only. Do not change the on-disk XPBONUS table.
 COPY ~chriz-bg-modpack/story-utility-xp/m_cbmsxp.lua~ ~override/M_CBMSXP.lua~
      ~chriz-bg-modpack/story-utility-xp/cbmsxp.lua~ ~override/CBMSXP.lua~

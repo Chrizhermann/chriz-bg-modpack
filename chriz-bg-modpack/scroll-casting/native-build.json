@@ -1,7 +1,7 @@
 {
   "artifact": "CBMScroll.dll",
-  "sha256": "74ea73d879c906d57497eb7f3d3ec6dc4b890da5a066961ec46e596b2a29aa54",
-  "status": "installed by component 430; in-game checks are recorded by DLL SHA-256 in docs/scroll-casting.md",
+  "sha256": "b8763231bcc5bce1a0551d8ea3e70d0194895c3e7439b74dfb2c8ec82b6a426f",
+  "status": "installed by component 430; unreleased overwrite revision has offline checks only; earlier in-game checks are recorded by DLL SHA-256 in docs/scroll-casting.md",
   "imports": {
     "InfinityLoaderCommon.dll": [
       "??0SharedState@@QEAA@AEBV0@@Z",
@@ -127,13 +127,13 @@
   },
   "text_hash_normalization": "LF",
   "sources": {
-    "native_api.cpp": "b764262b7bb8a60a35c8601ab24ca977b28fd998b1de543f6d1090201192530e",
+    "native_api.cpp": "0535e81066253b7dfd9cdbb9e3a175cc93cd8f053802ec8879532d244822e5e4",
     "eeex_save_bridge.cpp": "8357e9118653ca503f537e3643fd643a40dcd61dbbbb4b4c5d4fd87d898b19b1",
     "decode_carrier_api.cpp": "47df311c9ce8e8118c4e719c7e03314b1a36e706f3a1b1a80f3fefe314076300",
     "decode_hook_host.cpp": "2f982b1f529d2fbd72c80af5af024197f7e94b44471f4c7ff17e8565f9b221c1",
     "marshal_carrier_api.cpp": "de5152c1a951393582d72d9d848f3edae6d729bdea01678c84c034ab2a5376a7",
     "lifecycle_carrier_api.cpp": "23654a7fe380268c113563b3a2dd759a61ad8b61f20965587bc3581492abcf84",
-    "item_carrier_api.cpp": "fcce13e295199684bd1b53a25b4b871e53d0a4519b27e93e414cfda1df06204e",
+    "item_carrier_api.cpp": "e3ea5181658e980c2537fad8bb982bc0efa274fa82e6dad0c5c1ec0ab7f68c15",
     "item_hook_host.cpp": "85feabca2aebb376b90c71214e327af9b71e2898171ab0eeb7c312093d738c9f",
     "dispatch_carrier_api.cpp": "4b163a92705a82d62d303cc29aedc7a22a07aa4a05f7bfb58e768a8ccfc5ca86",
     "dispatch_hook_host.cpp": "20def23ada32d63d545fc588a2cb6d8e6187478714d45763d1ac9e24687df867",
@@ -188,8 +188,8 @@
     "dispatch_hook_code.hpp": "327035067ae96a1d4e88d6e0018eda367a1bb92c153bcf5ba2217338c6228492",
     "dispatch_profiles.hpp": "1488442e19d6c583df170d426c0cb646952f7874edc2a911d41c77612b0ce338",
     "eeex_bridge.hpp": "b948388c4c8fb5532f66c2d6990f2fe6a89d8f8bbe9bec999faf4fde8a2c2204",
-    "effect_archive.hpp": "52e012e7d96a4fcbd1ea292434cb06bae7606395715fbd5edafd3e58c436cc53",
-    "effect_archive_text.hpp": "2877a015d6a482a49ed07f5be48a7396031c66ccd9cf1f2df310e097a5ebd396",
+    "effect_archive.hpp": "31f10e5f0c2ee0d7fbd7cffd43b8195de8174b7bee7fba4f5d50e242c2add8fd",
+    "effect_archive_text.hpp": "ea87a3e0db14194bd86f5e6a650752869f7ec4bd510a261971f6e85575ce9aee",
     "entry_hook_group.hpp": "cb7a63b4abe443513c4f3f6604f068ab39e7a600a6dc2c5c11f16a54532ace23",
     "item_binding.hpp": "363d759671c46e0c794b3d3d6074caf11ba14e30ffbd30df915042dbda4fe2fb",
     "item_hook_code.hpp": "134c0f87babbd9d5a45c2e608b8ed7d6ddbb7314a0ac13fe635660a6f4e5f604",
@@ -201,14 +201,14 @@
     "marshal_profiles.hpp": "9e50a516265f19d3f6f1ebc9096a2f17703fe4141086e8db9df8510110dbda36",
     "native_binder.hpp": "33429b83dc55efa0df79e11c0de64d9d7958af2f7bdc9241f24887e9fc06c20e",
     "native_provider.hpp": "68e9ef641cae2fa97129e96f8e1d654e1d675ad8ea4ad710653ca93f4b228429",
-    "policy_table.hpp": "2267a902aba937ef7603690c74288ca93a6af80836a1ada633b4311aa7842e60",
-    "scroll_context.hpp": "1b63fb544d4fcc04683edde411bd85819a2832ca8d8eafd1e042eea3adb69933",
+    "policy_table.hpp": "62b0f18c19e75f105a1e1d5f6d520528533596934f12c19e9aa96febac5d7d8c",
+    "scroll_context.hpp": "32bbae21fa4a6bbcbd690a3f0f60a210d2f5a126241d6ed2580a74e5ce26030e",
     "selection_hook_group.hpp": "06f214e4a9532282776592cf53ebe202cc0f4d9b411bc0d66ca10b3683bf9cba"
   },
   "package": {
-    "CBMS_ScrollMarshal.lua": "3a7260e7e612c50aa720f831bdbba2fbedb7aa836b9b56cb69b08174dc91cc1c",
-    "CBMS_Startup.lua": "8f1cef80bc362a02a63801567b29e99ca7fa8f3b9f08a8380917a62cde15e3bb",
-    "CBMScroll.dll": "74ea73d879c906d57497eb7f3d3ec6dc4b890da5a066961ec46e596b2a29aa54",
+    "CBMS_ScrollMarshal.lua": "833de04754c05272f236f4bf21d94c8c4d37ba60a02ff6a558622bc1791acad6",
+    "CBMS_Startup.lua": "326c04640b7bb0ae29bd1c0bdd85311f37bf96c488431157a22185a523f89be4",
+    "CBMScroll.dll": "b8763231bcc5bce1a0551d8ea3e70d0194895c3e7439b74dfb2c8ec82b6a426f",
     "policy_resource.lua": "7d36f03d73c739b4c537b836804bb416e6dcc7fe43d78aba3f3bacb773708df3"
   }
 }

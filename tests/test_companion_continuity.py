@@ -63,6 +63,7 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         # Read the actual production include tree, including identity preflight.
         for path in (REPO / "chriz-bg-modpack/lib").glob("*.tpa"):
             shutil.copy2(path, library_dir / path.name)
+        shutil.copytree(REPO / "chriz-bg-modpack/data", self.game / "chriz-bg-modpack/data", dirs_exist_ok=True)
         identity = library_dir / "cbm_continuity_identity.tpa"
         if not identity.exists():
             self.fail("Production cbm_continuity_identity.tpa must exist")
@@ -104,8 +105,8 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
             expected_success=expected_success,
         )
 
-    def make_fatesp(self):
-        legacy = '  IF ~Global("YeslickSummoned","GLOBAL",0)~ THEN REPLY #0 EXIT\n'
+    def make_fatesp(self, value=0):
+        legacy = f'  IF ~Global("YeslickSummoned","GLOBAL",{value})~ THEN REPLY #0 EXIT\n'
         (self.game / "fatesp.d").write_text(
             'BEGIN ~FATESP~\nIF ~True()~ THEN BEGIN first\n SAY #0\n' + legacy * 3
             + '  IF ~Global("LK#YESLKSummoned","GLOBAL",0)~ THEN REPLY #0 EXIT\nEND\n'
@@ -142,7 +143,9 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
 
     def harness(self, cases):
         body = ('BACKUP ~ci-backup~\nAUTHOR ~test~\nBEGIN ~Continuity arrival fixture~\n'
-                'INCLUDE ~chriz-bg-modpack/lib/cbm_companion_continuity.tpa~\n')
+                'OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~\n'
+        'INCLUDE ~chriz-bg-modpack/lib/cbm_overwrite.tpa~\n'
+        'INCLUDE ~chriz-bg-modpack/lib/cbm_companion_continuity.tpa~\n')
         for name in cases:
             case = CASES[name]
             (self.game / f"{name}-old.baf").write_text(case["old"])
@@ -238,7 +241,7 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         self.install()
         self.assert_arrival(case, self.normalize_ids(self.decompile(case)), blade="O#XANMS")
 
-    def test_second_companion_hook_failure_rolls_back_first_companion(self):
+    def test_changed_second_companion_hook_gets_the_authored_arrival(self):
         self.prepare()
         for case in CASES.values():
             self.make_template(case)
@@ -246,12 +249,13 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
             self.compile_area(case, body)
         self.harness(CASES)
         before = snapshot(self.override)
-        output = self.install(expected_success=False)
-        self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-        self.assertIn("spawn code differs", output)
-        self.assertEqual(snapshot(self.override), before)
+        self.install()
+        for name,case in CASES.items():
+            self.assert_arrival(case,self.normalize_ids(self.decompile(case)),blade="O#XANMB" if name=="xan" else None)
+        self.run_weidu("ci-harness.tp2","--force-uninstall-list","0","--quick-log")
+        self.assertEqual(snapshot(self.override),before)
 
-    def test_missing_duplicate_and_malformed_moonblade_fail_atomically(self):
+    def test_changed_moonblade_inventory_keeps_the_authored_arrival(self):
         self.prepare()
         case = CASES["xan"]
         self.compile_area(case)
@@ -266,12 +270,13 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
                     struct.pack_into("<I", data, 0x2C0, 40)
                     find_resource(self.override, "O#XAN09.cre").write_bytes(data)
                 before = snapshot(self.override)
-                output = self.install(expected_success=False)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-                self.assertIn("cbm_companion_continuity:", output)
-                self.assertEqual(snapshot(self.override), before)
+                output = self.install()
+                self.assertNotIn("INSTALLED WITH WARNINGS",output)
+                self.assert_arrival(case,self.normalize_ids(self.decompile(case)),blade="O#XANMS" if mode=="duplicate" else "O#XANMB")
+                self.run_weidu("ci-harness.tp2","--force-uninstall-list","0","--quick-log")
+                self.assertEqual(snapshot(self.override),before)
 
-    def test_duplicate_and_missing_spawn_hooks_fail_atomically(self):
+    def test_duplicate_and_missing_spawn_hooks_get_one_authored_pair(self):
         self.prepare()
         case = CASES["yeslick"]
         self.make_template(case)
@@ -280,9 +285,11 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
             with self.subTest(body=body):
                 self.compile_area(case, body)
                 before = snapshot(self.override)
-                output = self.install(expected_success=False)
-                self.assertIn("ambiguous", output)
-                self.assertEqual(snapshot(self.override), before)
+                output = self.install()
+                self.assertNotIn("INSTALLED WITH WARNINGS",output)
+                self.assert_arrival(case,self.normalize_ids(self.decompile(case)),blade=None)
+                self.run_weidu("ci-harness.tp2","--force-uninstall-list","0","--quick-log")
+                self.assertEqual(snapshot(self.override),before)
 
     @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
     def test_bg1_alaghor_preset_survives_public_199_without_regrant_or_reset(self):
@@ -342,21 +349,54 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
         self.assertEqual(snapshot(self.override), before)
 
     @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
-    def test_public_199_rejects_late_order_and_legacy_stat_transfer(self):
+    def test_changed_fate_spirit_old_value_does_not_keep_obsolete_replies(self):
         self.prepare_public()
+        for case in CASES.values():
+            self.make_template(case)
+            self.compile_area(case)
+        self.make_fatesp(value=7)
+        self.public_install(199)
+        self.run_weidu("override/fatesp.dlg", "--out", ".")
+        fatesp = norm(find_resource(self.game, "fatesp.d").read_text())
+        self.assertEqual(fatesp.count("false()"), 3)
+        self.assertIn('global("lk#yeslksummoned","global",0)', fatesp)
+
+    @unittest.skipUnless(os.environ.get("CBM_EET_SOURCE"), "Set CBM_EET_SOURCE to an EET source directory")
+    def test_public_199_ignores_install_history_and_keeps_unrelated_lua(self):
+        self.prepare_public()
+        for case in CASES.values():
+            self.make_template(case)
+            self.compile_area(case)
+        self.make_fatesp()
         (self.game / "weidu.log").write_text("~EET_END/EET_END.TP2~ #0 #0 // EET end\n")
-        before = snapshot(self.override)
-        output = self.public_install(199)
-        self.assertIn("SKIPPING:", output)
-        self.assertNotIn("SUCCESSFULLY INSTALLED", output)
-        self.assertEqual(snapshot(self.override), before)
-        (self.game / "weidu.log").write_text("~XAN/XAN.TP2~ #0 #0 // Xan v19\n")
-        (self.override / "m_k#fp.lua").write_text("-- conflicting legacy stat transfer\n")
-        before = snapshot(self.override)
-        output = self.public_install(199, expected_success=False)
-        self.assertIn("remove legacy", output)
-        self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-        self.assertEqual(snapshot(self.override), before)
+        (self.override / "m_k#fp.lua").write_text("-- foreign Lua file\n")
+        before=snapshot(self.override)
+        output=self.public_install(199)
+        self.assertNotIn("INSTALLED WITH WARNINGS",output)
+        for name,case in CASES.items():
+            self.assert_arrival(case,self.normalize_ids(self.decompile(case)),blade="O#XANMB" if name=="xan" else None)
+        self.assertEqual(before["m_k#fp.lua"],snapshot(self.override)["m_k#fp.lua"])
+        self.run_weidu("setup-chriz-bg-modpack.tp2","--force-uninstall-list","199","--quick-log")
+        self.assertEqual(before,snapshot(self.override))
+
+    def test_absent_or_unreadable_template_costs_only_its_arrival(self):
+        self.prepare()
+        for case in CASES.values():
+            self.make_template(case)
+            self.compile_area(case)
+        self.harness(CASES)
+        for payload in (None,b"CRE V1.0"):
+            path=find_resource(self.override,"O#Xan09.cre") if payload is None else self.override/"o#xan09.cre"
+            if payload is None: path.unlink()
+            else: path.write_bytes(payload)
+            before=snapshot(self.override)
+            output=self.install()
+            self.assertIn("O#Xan09.CRE".lower(),output.lower())
+            self.assertNotIn("INSTALLED WITH WARNINGS",output)
+            self.assertEqual(before["ar1000.bcs"],snapshot(self.override)["ar1000.bcs"])
+            self.assert_arrival(CASES["yeslick"],self.normalize_ids(self.decompile(CASES["yeslick"])),blade=None)
+            self.run_weidu("ci-harness.tp2","--force-uninstall-list","0","--quick-log")
+            self.assertEqual(before,snapshot(self.override))
 
     def test_public_199_wrong_game_or_missing_eet_source_skips_without_changes(self):
         self.prepare_public(eet_source=False)
@@ -423,19 +463,6 @@ class CompanionContinuityInstallerTests(unittest.TestCase):
             expected[name] = dict(dialog=dialog, scripts=scripts, blade=blade,
                                   expected_sounds=sounds, expected_others=0)
         self.harness(CASES)
-        legacy_present = any(b"K#FP_" in find_resource(self.override, case["area"] + ".bcs").read_bytes()
-                             for case in CASES.values())
-        if legacy_present:
-            # The inspected live installation contains old stat-transfer
-            # hooks. They must be rejected unchanged. Then use the independently
-            # audited mod-source spawn fixtures with the effective donor CREs.
-            rejected_before = snapshot(self.override)
-            output = self.install(expected_success=False)
-            self.assertIn("ambiguous", output)
-            self.assertEqual(snapshot(self.override), rejected_before)
-            for name, case in CASES.items():
-                self.compile_area(case)
-                expected[name]["expected_others"] = 2
         before = snapshot(self.override)
         self.install()
         for name, case in CASES.items():

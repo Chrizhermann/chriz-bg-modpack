@@ -27,7 +27,7 @@ struct CBMS_Runtime {
     struct Captured { Selector selector; std::optional<Context> context; };
     std::unordered_map<std::uint64_t,Captured> captured;
     struct EffectSave { SavedEffectArchive archive; std::string text; };
-    struct EffectLoad { EffectImport importer; std::optional<SavedEffectArchive> archive; std::size_t next{}; bool failed{}; };
+    struct EffectLoad { EffectImport importer; std::optional<SavedEffectArchive> archive; std::size_t next{}; bool failed{}; std::optional<std::string> dropped{}; bool staged{}; };
     std::unordered_map<Address, EffectSave> effect_exports;
     std::unordered_map<Address, std::unique_ptr<EffectLoad>> effect_imports;
     ActionWitnesses witnesses;
@@ -333,10 +333,18 @@ int CBMS_StageEffectImportText(CBMS_Runtime* runtime, uintptr_t actor, const cha
         if (!text) throw std::logic_error("null effect envelope");
         auto& load = *runtime->effect_imports.at(actor);
         if (load.failed) throw std::logic_error("effect import is failed; retain envelope and cancel operation");
-        load.failed = true;
-        if (load.archive) throw std::logic_error("duplicate actor effect envelope");
-        load.archive = read_archive_text(std::string_view(text, length));
-        load.failed = false;
+        if (load.staged) {
+            load.archive.reset();
+            load.dropped = "duplicate actor effect envelope";
+            return 1;
+        }
+        load.staged = true;
+        try { load.archive = read_archive_text(std::string_view(text, length)); }
+        catch (const std::invalid_argument& error) {
+            // Parsing this actor's serialized bytes is separate from native
+            // pointer, callback and lifetime contracts enforced by guarded().
+            load.dropped = error.what();
+        }
         return 1;
     });
 }
@@ -348,8 +356,8 @@ int CBMS_FinishEffectImport(CBMS_Runtime* runtime, uintptr_t actor, char* droppe
         // A refused restore is final: only cancellation follows, never a retry
         // that could read differently once overrides are off.
         load.failed = true;
-        std::optional<std::string> stale;
-        if (load.archive) stale = load.importer.restore(*load.archive);
+        std::optional<std::string> stale = load.dropped;
+        if (!stale && load.archive) stale = load.importer.restore(*load.archive);
         runtime->effect_imports.erase(actor);
         dropped[0] = '\0';
         if (!stale) return 1;

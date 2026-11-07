@@ -65,7 +65,7 @@ def build(directory, compiler, environment):
         if not required<=exports:
             raise RuntimeError(family+" is missing imported scroll binding APIs: "+str(required-exports))
     manifest = dict(artifact=str(output),sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
-        status="installed by component 430; in-game checks are recorded by DLL SHA-256 in docs/scroll-casting.md",imports=imported,
+        status="installed by component 430; unreleased overwrite revision has offline checks only; earlier in-game checks are recorded by DLL SHA-256 in docs/scroll-casting.md",imports=imported,
         text_hash_normalization="LF",
         sources={name:hashlib.sha256((SOURCE/name).read_bytes().replace(b"\r\n",b"\n")).hexdigest() for name in units},
         dependencies={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in dependencies})

@@ -307,14 +307,19 @@ class DornAmbushCameraFixTests(unittest.TestCase):
         self.assertIn("SUCCESSFULLY REMOVED", transcript)
         self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{COMPONENT}\b")
 
-    def assert_aborted(self, game: DornGame, message: str) -> None:
-        result, transcript = game.run()
-        self.assertEqual(0, result.returncode, transcript)
-        self.assertIn("INSTALLATION ABORTED", transcript)
-        self.assertIn(message, transcript)
-        self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
-        self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{COMPONENT}\b")
-        self.assertEqual(game.before, game.files())
+    def assert_damaged_script_is_isolated(self,game,message):
+        transcript=self.install(game)
+        self.assertIn("too damaged",transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS",transcript)
+        after=game.files()
+        if message.startswith("SENJACK"):
+            self.assertEqual(game.before[SENJACK_KEY],after[SENJACK_KEY])
+            self.assert_cutscene_fixed(game.before[CUT_KEY],after[CUT_KEY])
+        else:
+            self.assertEqual(game.before[CUT_KEY],after[CUT_KEY])
+            self.assert_release_prepended(game,game.before[SENJACK_KEY],after[SENJACK_KEY])
+        self.uninstall(game)
+        self.assertEqual(game.before,game.files())
 
     def assert_cutscene_fixed(self, original: bytes, patched: bytes) -> None:
         self.assertTrue(LOCK_HEAD.search(original), "fixture must contain a camera lock")
@@ -408,7 +413,7 @@ class DornAmbushCameraFixTests(unittest.TestCase):
     def test_already_fixed_scripts_install_as_a_no_op(self) -> None:
         game = self.make_game(cut=cutscene(lock=""))
         transcript = self.install(game)
-        self.assertIn("CUTDN1B.BCS already has no camera lock", transcript)
+        self.assertIn("Removed 0 camera lock(s)", transcript)
         installed = game.files()
         self.assertEqual({SENJACK_KEY}, {k for k in installed if installed[k] != game.before.get(k)})
 
@@ -416,7 +421,7 @@ class DornAmbushCameraFixTests(unittest.TestCase):
         # is not in this game's log): nothing is written at all.
         done = self.make_game(cut=installed[CUT_KEY], senjack=installed[SENJACK_KEY])
         transcript = self.install(done)
-        self.assertIn("already contains this release block", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS",transcript)
         self.assertEqual(done.before, done.files())
         self.assertFalse(any((done.root / "weidu_external").rglob("CUTDN1B.BCS")))
 
@@ -428,29 +433,28 @@ class DornAmbushCameraFixTests(unittest.TestCase):
         self.install(again)
         self.assertEqual(again.before, again.files())
 
-    def test_missing_cutscene_skips_without_changes(self) -> None:
-        game = self.make_game(cut=b"", senjack=SENJACK)
-        (game.override / "cutdn1b.bcs").unlink()
-        game.before = game.files()
-        result, transcript = game.run()
-        self.assertEqual(0, result.returncode, transcript)
-        self.assertIn("SKIPPING:", transcript)
-        self.assertIn("CUTDN1B.BCS is not in this game", transcript)
-        self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
-        self.assertEqual(game.before, game.files())
+    def test_missing_cutscene_still_installs_senjak_release(self):
+        game=self.make_game()
+        (game.override/"cutdn1b.bcs").unlink()
+        game.before=game.files()
+        transcript=self.install(game)
+        self.assertIn("CUTDN1B.BCS is absent",transcript)
+        self.assert_release_prepended(game,game.before[SENJACK_KEY],game.files()[SENJACK_KEY])
+        self.uninstall(game)
+        self.assertEqual(game.before,game.files())
 
     def test_missing_senjack_script_changes_the_cutscene_only(self) -> None:
         game = self.make_game(senjack=None)
         cut = game.before[CUT_KEY]
         transcript = self.install(game)
-        self.assertIn("SENJACK.BCS is not in this game, so only the cutscene was changed", transcript)
+        self.assertIn("SENJACK.BCS is absent", transcript)
         installed = game.files()
         self.assertEqual({CUT_KEY}, {k for k in installed if installed[k] != game.before.get(k)})
         self.assert_cutscene_fixed(cut, installed[CUT_KEY])
         self.uninstall(game)
         self.assertEqual(game.before, game.files())
 
-    def test_invalid_scripts_abort_without_changes(self) -> None:
+    def test_damaged_scripts_are_isolated(self) -> None:
         cases = {
             "not a script": (b"not a compiled script\n", SENJACK, "CUTDN1B.BCS is not a valid compiled script"),
             "truncated": (None, SENJACK, "CUTDN1B.BCS is not a valid compiled script"),
@@ -465,9 +469,9 @@ class DornAmbushCameraFixTests(unittest.TestCase):
                 elif cut is not None:
                     (game.override / "cutdn1b.bcs").write_bytes(cut)
                 game.before = game.files()
-                self.assert_aborted(game, message)
+                self.assert_damaged_script_is_isolated(game, message)
 
-    def test_unreadable_lock_record_aborts_without_changes(self) -> None:
+    def test_unreadable_lock_record_costs_only_cutscene(self) -> None:
         game = self.make_game()
         data = game.before[CUT_KEY]
         match = LOCK_HEAD.search(data)
@@ -476,7 +480,7 @@ class DornAmbushCameraFixTests(unittest.TestCase):
         broken = data[:match.end()] + b"0 0\n" + data[match.end():]
         (game.override / "cutdn1b.bcs").write_bytes(broken)
         game.before = game.files()
-        self.assert_aborted(game, "CUTDN1B.BCS has 2 LockScroll() action(s), but only 1 could be read")
+        self.assert_damaged_script_is_isolated(game, "CUTDN1B.BCS has 2 LockScroll() action(s), but only 1 could be read")
 
     def test_windows_line_endings_are_supported(self) -> None:
         game = self.make_game()
@@ -487,6 +491,16 @@ class DornAmbushCameraFixTests(unittest.TestCase):
         patched = game.files()[CUT_KEY]
         self.assert_cutscene_fixed(crlf, patched)
         self.assertNotIn(b"\n", patched.replace(b"\r\n", b""))
+
+    def test_action_record_whitespace_is_not_a_content_gate(self) -> None:
+        game = self.make_game()
+        original = game.before[CUT_KEY]
+        changed = original.replace(b"AC\n135OB\n", b"AC \t\n 135 OB \t\n")
+        (game.override / "cutdn1b.bcs").write_bytes(changed)
+        game.before = game.files()
+        transcript = self.install(game)
+        self.assertIn("Removed 2 camera lock(s)", transcript)
+        self.assertEqual(without_locks(original), game.files()[CUT_KEY])
 
     @unittest.skipUnless(os.environ.get("CBM_DORN_SCRIPTS"), "Optional installed-script copy")
     def test_read_only_copy_of_installed_scripts(self) -> None:

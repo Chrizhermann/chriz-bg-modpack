@@ -119,7 +119,7 @@ def test_contingency_eff_secondary_slots_are_effective_dependencies():
     assert not report.diagnostics
 
 
-def test_repeating_edges_are_recorded_without_reexpansion_and_budgets_still_apply():
+def test_repeating_edges_end_the_branch_without_resource_budgets():
     data = {"S.ITM": resource("ITM", 11, [(3, 0, [effect(146, b"A")])]),
             "A.SPL": resource("SPL", 1, [(1, 1, [effect(146, b"B")])]),
             "B.SPL": resource("SPL", 2, [(1, 1, [effect(146, b"A")])])}
@@ -127,8 +127,8 @@ def test_repeating_edges_are_recorded_without_reexpansion_and_budgets_still_appl
     assert report.classification == 'typed_cast_candidate'
     assert "native repeating edge" in report.diagnostics[0]
     assert len(report.edges) == 3 and set(report.spells) == {'A','B'}
-    assert "depth" in inventory(data, max_depth=1).item("S")[0].diagnostics[0]
-    assert "resources" in inventory(data, max_nodes=1).item("S")[0].diagnostics[0]
+    assert set(inventory(data, max_depth=1).item("S")[0].spells) == {"A", "B"}
+    assert set(inventory(data, max_nodes=1).item("S")[0].spells) == {"A", "B"}
 
 
 @pytest.mark.parametrize('opcode', [146, 326])
@@ -143,8 +143,8 @@ def test_native_repeating_helper_retains_untyped_semantics_and_checks_other_bran
     assert set(report.resources)=={'S.ITM','A.SPL','HELPER.SPL','B.SPL'}
     del data['B.SPL']
     report=inventory(data).item('S')[0]
-    assert report.classification=='unresolved'
-    assert 'B.SPL' in report.diagnostics[-1]
+    assert report.classification=='typed_cast_candidate'
+    assert any('B.SPL' in entry for entry in report.diagnostics)
 
 
 def test_direct_native_effects_and_binary_unrelated_resref_are_preserved():
@@ -159,7 +159,8 @@ def test_missing_mode_malformed_and_learning_mix_have_explicit_outcomes():
     data = {"S.ITM": resource("ITM", 11, [(3, 0, [effect(146, b"MISSING")])])}
     assert "MISSING.SPL" in inventory(data).item("S")[0].diagnostics[0]
     data["S.ITM"] = resource("ITM", 11, [(3, 0, [effect(146, b"A", 99)])])
-    assert "mode 99" in inventory(data).item("S")[0].diagnostics[0]
+    data["A.SPL"] = resource("SPL", 1, [(1, 1, [])])
+    assert inventory(data).item("S")[0].classification == "typed_cast_candidate"
     data["S.ITM"] = resource("ITM", 11, [(3, 0, [effect(147, b"A"), effect(146, b"A")])])
     data["A.SPL"] = resource("SPL", 1, [(1, 1, [])])
     assert inventory(data).item("S")[0].classification == "mixed_learning_cast"
@@ -220,12 +221,12 @@ def test_fixed_family_mechanics_allow_reordering_links_and_added_typed_helpers()
     assert report.exception == "protection from acid"
     data["ACID.EFF"] = eff(12, b"", level=17)
     report = inventory(data).item("SCRL03")[0]
-    assert report.classification == "unresolved"
-    assert "lacks its protection mechanic" in report.diagnostics[0]
+    assert report.classification == "native_exception"
+    assert report.exception == "protection from acid"
 
 
-def test_unknown_installed_spell_type_is_not_native_preservation():
+def test_other_installed_spell_type_uses_native_untyped_semantics():
     report = inventory({"S.ITM": resource("ITM", 11, [(3, 0, [effect(146, b"A")])]),
                         "A.SPL": resource("SPL", 99, [(1, 1, [])])}).item("S")[0]
-    assert report.classification == "unresolved"
-    assert "unknown installed spell type 99" in report.diagnostics[0]
+    assert report.classification == "native_only"
+    assert report.spells["A"]["installed_type"] == 99

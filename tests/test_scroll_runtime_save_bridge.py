@@ -93,18 +93,16 @@ def test_concrete_native_save_decode_uuid_event_chain(bridge):
     assert api.CBMS_Destroy(runtime) == 1
 
 
-def test_rejected_import_cannot_finish_or_detach_until_host_cancelled(bridge):
+def test_unreadable_envelope_drops_only_that_actor_through_bridge(bridge):
     api, runtime, resolve, report, calls, errors = runtime_fixture(bridge)
     assert api.CBMS_EEexAttachForTest(runtime) == 1
     api.CBMS_EEexBeginEffectUnmarshal(0x1000, 1)
     unknown = b"CBMSFX99:future"
-    assert api.CBMS_EEexStageText(0x1000, unknown, len(unknown)) == 0
+    assert api.CBMS_EEexStageText(0x1000, unknown, len(unknown)) == 1
     api.CBMS_EEexAfterActorUUID(0x1000, 17)
-    assert api.CBMS_EEexImportFinished(0x1000) == 0
-    assert api.CBMS_EEexBridgeHealthy() == 0
-    assert api.CBMS_EEexDetachQuiescent() == 0
-    assert api.CBMS_EEexCancelledActorIO(0x1000) == 1
-    assert api.CBMS_EEexBridgeHealthy() == 0  # cancellation does not silently clear the fault
+    assert api.CBMS_EEexImportFinished(0x1000) == 1
+    assert api.CBMS_EEexImportDropped(0x1000) == b"unknown/malformed effect envelope"
+    assert api.CBMS_EEexBridgeHealthy() == 1 and errors == []
     assert api.CBMS_EEexDetachQuiescent() == 1
     assert api.CBMS_Destroy(runtime) == 1
 
@@ -474,18 +472,18 @@ def test_outdated_envelope_drops_for_one_actor_through_the_shipped_adapter(bridg
 
 BRIDGE_DAMAGE = {
     "hex": "invalid effect envelope hex",
-    "version": "unknown/malformed effect envelope; retain original actor data",
+    "version": "unknown/malformed effect envelope",
     "origins": "conflicting saved scroll origin definitions",
     "scalar": "saved effect scalar mismatch",
     "ancestry": "invalid saved effect ancestry",
-    "duplicate": "duplicate scroll actor envelope; cancel this load",
-    "schema": "unknown scroll actor envelope schema; retained unchanged",
-    "fields": "unknown scroll actor envelope fields; retained unchanged",
+    "duplicate": "duplicate actor effect envelope",
+    "schema": "unknown/malformed effect envelope",
+    "fields": "saved effect record count mismatch (saved 2, loaded 3)",
 }
 
 
 @pytest.mark.parametrize("damage", sorted(BRIDGE_DAMAGE))
-def test_damaged_envelope_still_turns_430_off_through_the_shipped_adapter(bridge, damage):
+def test_damaged_envelope_is_actor_local_through_shipped_adapter(bridge, damage):
     imoen = Actor(0x1000, 0x100000011, "Imoen", "IMOEN2")
     game = Game(bridge)
     first = game.load(imoen, [], None)
@@ -510,9 +508,12 @@ def test_damaged_envelope_still_turns_430_off_through_the_shipped_adapter(bridge
     game = Game(bridge)
     first = game.load(imoen, records + [bytes(native_effect(0, 600))[8:]], damaged,
                       copies=2 if damage == "duplicate" else 1)
-    assert game.api.CBMS_EEexBridgeHealthy() == 0
-    assert game.api.CBMS_EEexBridgeError() == BRIDGE_DAMAGE[damage].encode()
-    assert game.printed == [] and game.api.CBMS_EEexImportDropped(imoen.address) is None
-    # Kept unchanged for a later version that can read it, never dropped.
-    assert game.save(first)[1] == damaged
+    assert game.api.CBMS_EEexBridgeHealthy() == 1
+    assert game.printed == [DROPPED.format("Imoen (IMOEN2, UUID 100000011)", BRIDGE_DAMAGE[damage])]
+    assert game.api.CBMS_EEexImportDropped(imoen.address) == BRIDGE_DAMAGE[damage].encode()
+    assert game.levels(first) == [(0, 90)] * 3
+    game.read_scroll(first, 1)
+    assert game.levels(first)[-1] == (1, 12)
+    saved, fresh = game.save(first)
+    assert fresh != damaged and fresh is not None
     game.close()

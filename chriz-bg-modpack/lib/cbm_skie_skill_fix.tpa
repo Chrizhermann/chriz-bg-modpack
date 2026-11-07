@@ -8,16 +8,9 @@ DEFINE_ACTION_FUNCTION cbm_skie_load_context
     cbm_skie_thief_class
     cbm_skie_swashbuckler_kit
 BEGIN
-  OUTER_SET cbm_skie_thief_class = IDS_OF_SYMBOL (~class~ ~THIEF~)
-  ACTION_IF ((cbm_skie_thief_class <= 0) OR (cbm_skie_thief_class > 255)) BEGIN
-    FAIL ~cbm_skie_skill_fix: CLASS.IDS has an invalid THIEF value~
-  END
-  OUTER_SET cbm_skie_swashbuckler_id = IDS_OF_SYMBOL (~kit~ ~SWASHBUCKLER~)
-  ACTION_IF ((cbm_skie_swashbuckler_id <= 0)
-          OR (cbm_skie_swashbuckler_id > 0x7fff)
-          OR (cbm_skie_swashbuckler_id = 0x4000)) BEGIN
-    FAIL ~cbm_skie_skill_fix: KIT.IDS has an invalid SWASHBUCKLER value~
-  END
+  OUTER_SET cbm_skie_thief_class = (FILE_EXISTS_IN_GAME ~CLASS.IDS~ ? IDS_OF_SYMBOL (~class~ ~THIEF~) : (0 - 1))
+  OUTER_SET cbm_skie_swashbuckler_id = (FILE_EXISTS_IN_GAME ~KIT.IDS~ ? IDS_OF_SYMBOL (~kit~ ~SWASHBUCKLER~) : (0 - 1))
+  ACTION_IF cbm_skie_swashbuckler_id < 0 BEGIN OUTER_SET cbm_skie_swashbuckler_id = 0x400c END
   OUTER_SET cbm_skie_swashbuckler_kit = cbm_skie_swashbuckler_id * 0x10000
 END
 
@@ -29,35 +22,21 @@ DEFINE_PATCH_FUNCTION cbm_skie_move_stealth_to_locks
     cbm_skie_thief_class = 0
     cbm_skie_swashbuckler_kit = 0
 BEGIN
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: truncated CRE~
-  END
+  PATCH_IF BUFFER_LENGTH >= 0x2d4 BEGIN
+    READ_ASCII 0 cbmo_signature (8)
+  END ELSE BEGIN SPRINT cbmo_signature ~~ END
+  PATCH_IF (~%cbmo_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
   READ_ASCII 0x00 cbm_skie_signature (8)
   READ_ASCII 0x280 cbm_skie_dv (32) NULL
   READ_BYTE 0x273 cbm_skie_class
   READ_LONG 0x244 cbm_skie_kit
   READ_BYTE 0x67 cbm_skie_locks
   READ_BYTE 0x68 cbm_skie_move
-  PATCH_IF NOT (~%cbm_skie_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: expected a CRE V1.0 resource~
-  END
-  PATCH_IF (cbm_skie_class != cbm_skie_thief_class) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: expected Thief class~
-  END
-  PATCH_IF (cbm_skie_swashbuckler_kit <= 0)
-        OR (cbm_skie_kit != cbm_skie_swashbuckler_kit) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: expected installed Swashbuckler kit~
-  END
 
-  PATCH_IF NOT ((~%cbm_skie_dv%~ STRING_EQUAL_CASE ~SKIE~)
-             OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIE~)
-             OR (~%cbm_skie_dv%~ STRING_EQUAL_CASE ~BDSKIED~)) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: unexpected Skie death variable~
-  END
   SET cbm_skie_target_locks = cbm_skie_locks + cbm_skie_move
-  PATCH_IF (cbm_skie_target_locks > 255) BEGIN
-    PATCH_FAIL ~cbm_skie_skill_fix: combined Open Locks and Move Silently exceeds the CRE skill limit of 255~
-  END
-  WRITE_BYTE 0x67 cbm_skie_target_locks
+  WRITE_BYTE 0x67 (cbm_skie_target_locks > 255 ? 255 : cbm_skie_target_locks)
   WRITE_BYTE 0x68 0
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END

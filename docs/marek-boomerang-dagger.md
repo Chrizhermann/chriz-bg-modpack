@@ -1,5 +1,9 @@
 # Marek carries the Boomerang Dagger +2
 
+Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Component **670**, label `cbm_marek_boomerang_dagger`, is an optional change
 for the BG1 campaign. It supports BG:EE (with SoD) and EET and needs Marek's
 creature files `MAREK.CRE` and `MAREK1.CRE` and the dagger `DAGG11.ITM`. EEex
@@ -34,24 +38,13 @@ values, including those other mods such as SCS added. The dagger is an
 ordinary inventory entry, so mods that read or swap creature items, such as
 the Item Randomiser, see it like his other items.
 
-## No second dagger
+## One dagger per target
 
-When BG1 NPC Project's Kivan quest already gives the dagger, the component
-changes neither file and the installer says so:
-
-```text
-[Marek Boomerang Dagger] Shipwreck's Coast (BG3100.BCS) already gives the Boomerang Dagger +2, as BG1 NPC Project's Kivan quest does. Nothing was changed.
-```
-
-The installer finds this in the game itself, not in `WeiDU.log`: on EET, BG1
-NPC Project is installed into BG:EE before EET imports it, so this game's log
-does not list it. It reads which script Shipwreck's Coast runs (`BG3100.ARE`
-in EET, `AR3100.ARE` in BG:EE) and checks whether that script has an action
-that creates `DAGG11`. A script that only checks for the dagger, or a script
-of another area, does not count.
-
-A Marek file that already carries the dagger, for example from an earlier
-installation, is left unchanged; each file has at most one.
+Selecting 670 writes one unidentified, droppable dagger to each present Marek
+file, even when another quest also offers it. Existing copies are normalized to
+one entry. A full backpack uses an available quick-item or spare weapon slot.
+The all-slots-occupied case remains an unresolved placement decision; see the
+[overwrite review](we-overwrite.md).
 
 ## Installation and compatibility
 
@@ -68,10 +61,9 @@ game reads `MAREK.CRE` when the party first enters the north-east district and
   installer names the missing one.
 - Without both files (for example BG2:EE alone) or without `DAGG11.ITM`, the
   component is skipped.
-- If a Marek file, the Shipwreck's Coast area or its script is not a valid file
-  of its type, or a Marek file without the dagger has no free backpack slot,
-  the installer explains why and changes nothing; both files are checked before
-  either is written. The component is then not recorded as installed.
+- A damaged item table or slot index costs only the affected creature, with a
+  log line. Other present Marek files are still patched. The area and quest
+  scripts are not inspected to decide whether to place the dagger.
 
 Letting Marek throw the dagger is left for later.
 

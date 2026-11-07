@@ -1,13 +1,8 @@
 // EEex supplies the exact runtime average; native BCS only offers fixed XP tests.
-ACTION_IF (NOT FILE_EXISTS_IN_GAME ~action.ids~) BEGIN
-  FAIL @1621
-END
-ACTION_IF (IDS_OF_SYMBOL (~action~ ~EEex_LuaAction~) != 472) BEGIN
-  FAIL @1621
-END
-
-COPY ~chriz-bg-modpack/imoen-xp/m_cbmixp.lua~ ~override/M_CBMIXP.lua~
-// Run before vanilla's 1.25M ceiling and EET's retired-thief subtraction.
-// Keep every existing block, including other mods' dialogue and quest logic.
-EXTEND_TOP ~imoen2.bcs~ ~chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf~
-PRINT @1623
+ACTION_IF (FILE_EXISTS_IN_GAME ~ACTION.IDS~ ? IDS_OF_SYMBOL (~action~ ~EEex_LuaAction~) : (0 - 1)) >= 0 BEGIN
+  COPY ~chriz-bg-modpack/imoen-xp/m_cbmixp.lua~ ~override/M_CBMIXP.lua~
+  COPY_EXISTING ~imoen2.bcs~ ~override~
+    LPF cbmo_script_block STR_VAR replacement = ~chriz-bg-modpack/baf/cbm_imoen_spellhold_xp.baf~ END
+  BUT_ONLY
+  PRINT @1623
+END ELSE BEGIN PRINT ~Imoen XP: EEex_LuaAction is unavailable; this listener cannot run.~ END

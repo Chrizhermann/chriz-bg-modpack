@@ -81,7 +81,7 @@ BEGIN
     SET cbmjs_start = INDEX_BUFFER (~^IF~ cbmjs_next)
     WHILE cbmjs_start >= 0 BEGIN
       SET cbmjs_end = INDEX_BUFFER (~^END~ cbmjs_start)
-      PATCH_IF cbmjs_end < cbmjs_start BEGIN PATCH_FAIL ~%script%.BCS: incomplete script block.~ END
+      PATCH_IF cbmjs_end < cbmjs_start BEGIN SET cbmjs_end = BUFFER_LENGTH END
       READ_ASCII cbmjs_start cbmjs_block (cbmjs_end - cbmjs_start)
       CLEAR_ARRAY cbmjs_armed
       INNER_PATCH ~%cbmjs_block%~ BEGIN
@@ -107,4 +107,29 @@ BEGIN
       SET cbmjs_start = INDEX_BUFFER (~^IF~ cbmjs_next)
     END
   OUTER_SET scs = cbmjs_setup AND cbmjs_reset
+END
+
+// Recruitment components own their XP catch-up. Remove competing XP writes
+// from the private script, keeping each provider's other actions and flags.
+// The authored ladder is added independently of whether any provider exists.
+DEFINE_PATCH_FUNCTION cbm_join_xp_takeover INT_VAR remove_raises = 0 BEGIN
+  SET cbmjo_start = INDEX_BUFFER (~^IF~)
+  WHILE cbmjo_start >= 0 BEGIN
+    SET cbmjo_end = INDEX_BUFFER (~^END~ cbmjo_start)
+    PATCH_IF cbmjo_end < cbmjo_start BEGIN SET cbmjo_end = BUFFER_LENGTH - 3 END
+    SET cbmjo_length = cbmjo_end + 3 - cbmjo_start
+    READ_ASCII cbmjo_start cbmjo_block (cbmjo_length)
+    INNER_PATCH_SAVE cbmjo_replacement ~%cbmjo_block%~ BEGIN
+      LPF cbm_join_xp_block RET cbmjo_provider = provider cbmjo_reset = scs_reset cbmjo_raise = raise END
+      PATCH_IF cbmjo_provider OR cbmjo_reset OR (remove_raises AND cbmjo_raise) BEGIN
+        REPLACE_TEXTUALLY ~^[ ]*ChangeStat(Myself,XP,[0-9]+,SET)~ ~~
+      END
+    END
+    PATCH_IF NOT (~%cbmjo_block%~ STRING_EQUAL ~%cbmjo_replacement%~) BEGIN
+      DELETE_BYTES cbmjo_start cbmjo_length
+      INSERT_BYTES cbmjo_start (STRING_LENGTH ~%cbmjo_replacement%~)
+      WRITE_ASCIIE cbmjo_start ~%cbmjo_replacement%~
+    END
+    SET cbmjo_start = INDEX_BUFFER (~^IF~ (cbmjo_start + STRING_LENGTH ~%cbmjo_replacement%~))
+  END
 END

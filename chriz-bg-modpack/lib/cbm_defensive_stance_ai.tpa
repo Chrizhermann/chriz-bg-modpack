@@ -9,8 +9,7 @@
 //
 // Every block of a party AI script that casts SPDWD02 without reading the
 // option gains Global("BDAI_DISABLE_SPECIAL","LOCALS",0) as its first
-// condition. A block that already reads the option, in any form, keeps its own
-// condition. Other blocks keep their text, and scripts without such a block are
+// condition. Existing option conditions are normalized to the selected value. Other blocks keep their text, and scripts without such a block are
 // not recompiled, so their bytes stay unchanged.
 
 // Gate the blocks of the decompiled script in the buffer. Returns how many
@@ -41,8 +40,8 @@ BEGIN
         SET cbm_dsai_end = INDEX_BUFFER (CASE_SENSITIVE EVALUATE_REGEXP ~^END[ %TAB%%MNL%]*$~ cbm_dsai_then)
       END
       PATCH_IF (cbm_dsai_end < 0) BEGIN
-        PATCH_FAIL ~cbm_defensive_stance_ai: the decompiled script block at offset %cbm_dsai_if% has no THEN/END.~
-      END
+        SET cbm_dsai_cursor = 0 - 1
+      END ELSE BEGIN
       READ_ASCII cbm_dsai_if cbm_dsai_triggers (cbm_dsai_then - cbm_dsai_if)
       READ_ASCII cbm_dsai_then cbm_dsai_responses (cbm_dsai_end - cbm_dsai_then)
       SET cbm_dsai_casts = 0
@@ -58,7 +57,16 @@ BEGIN
       PATCH_IF cbm_dsai_casts BEGIN
         SET casting += 1
       END
-      PATCH_IF (cbm_dsai_casts AND NOT cbm_dsai_reads) BEGIN
+      PATCH_IF cbm_dsai_casts BEGIN
+        INNER_PATCH_SAVE cbm_dsai_fixed ~%cbm_dsai_triggers%~ BEGIN
+          REPLACE_TEXTUALLY ~!?Global\(GT\|LT\)?("BDAI_DISABLE_SPECIAL","LOCALS",-?[0-9]+)~ ~Global("BDAI_DISABLE_SPECIAL","LOCALS",0)~
+        REPLACE_TEXTUALLY ~^IF[ %TAB%%MNL%]*%LNL%[ %TAB%]*Global("BDAI_DISABLE_SPECIAL","LOCALS",0)[ %TAB%%MNL%]*%LNL%~ ~IF%LNL%~
+        END
+        SET cbm_dsai_delta = STRING_LENGTH ~%cbm_dsai_fixed%~ - STRING_LENGTH ~%cbm_dsai_triggers%~
+        DELETE_BYTES cbm_dsai_if (STRING_LENGTH ~%cbm_dsai_triggers%~)
+        INSERT_BYTES cbm_dsai_if (STRING_LENGTH ~%cbm_dsai_fixed%~)
+        WRITE_ASCIIE cbm_dsai_if ~%cbm_dsai_fixed%~
+        SET cbm_dsai_end += cbm_dsai_delta
         // First condition of the block, so an OR() group below keeps its members.
         SET cbm_dsai_at = INDEX_BUFFER (CASE_SENSITIVE EXACT_MATCH ~%LNL%~ cbm_dsai_if) + 1
         SET cbm_dsai_size = STRING_LENGTH ~%cbm_dsai_gate%~
@@ -68,6 +76,7 @@ BEGIN
         SET gated += 1
       END
       SET cbm_dsai_cursor = cbm_dsai_end + 3
+      END
     END
   END
 END
@@ -75,6 +84,7 @@ END
 DEFINE_ACTION_FUNCTION cbm_defensive_stance_ai_install BEGIN
   ACTION_CLEAR_ARRAY cbm_dsai_scripts
   OUTER_SET cbm_dsai_valid = 0
+  ACTION_IF FILE_EXISTS_IN_GAME ~PARTYAI.2DA~ BEGIN
   COPY_EXISTING ~PARTYAI.2DA~ ~override~
     READ_2DA_ENTRIES_NOW cbm_dsai_rows 1
     PATCH_IF (cbm_dsai_rows > 2) BEGIN
@@ -94,8 +104,9 @@ DEFINE_ACTION_FUNCTION cbm_defensive_stance_ai_install BEGIN
       END
     END
   BUT_ONLY
+  END ELSE BEGIN PRINT ~Party AI: PARTYAI.2DA is absent; using the default script.~ END
   ACTION_IF NOT cbm_dsai_valid BEGIN
-    FAIL ~cbm_defensive_stance_ai: PARTYAI.2DA is not a readable 2DA table, so the party AI scripts are unknown.~
+    OUTER_SET $cbm_dsai_scripts(~BDDEFAI~) = 1
   END
 
   OUTER_SET cbm_dsai_casting_total = 0
@@ -105,6 +116,8 @@ DEFINE_ACTION_FUNCTION cbm_defensive_stance_ai_install BEGIN
       OUTER_SET cbm_dsai_casting = 0
       OUTER_SET cbm_dsai_gated = 0
       COPY_EXISTING ~%cbm_dsai_script%.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
         PATCH_IF (INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~"SPDWD02"~) >= 0) BEGIN
           // Dry run first: recompile only a script that has a block to gate.
           READ_ASCII 0 cbm_dsai_bcs (BUFFER_LENGTH)
@@ -118,6 +131,7 @@ DEFINE_ACTION_FUNCTION cbm_defensive_stance_ai_install BEGIN
             END
           END
         END
+        END ELSE BEGIN PATCH_PRINT ~Party AI: %SOURCE_FILE% is too damaged to write.~ END
       BUT_ONLY
       OUTER_SET cbm_dsai_casting_total += cbm_dsai_casting
       OUTER_SET cbm_dsai_gated_total += cbm_dsai_gated

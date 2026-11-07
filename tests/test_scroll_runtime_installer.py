@@ -25,7 +25,7 @@ def test_native_package_matches_current_sources_and_distributable_files():
     for name,expected in manifest['package'].items():
         assert hashlib.sha256((PACKAGE/name).read_bytes()).hexdigest()==expected,name
     assert manifest['sha256']==manifest['package']['CBMScroll.dll']
-    # The record says where this DLL's in-game checks are; the guide must name it.
+    # Name this exact DLL and distinguish offline checks from older live builds.
     assert manifest['status'].startswith('installed by component 430;')
     assert manifest['sha256'] in (ROOT/'docs/scroll-casting.md').read_text(encoding='utf-8')
 
@@ -86,17 +86,32 @@ def test_public_installer_real_builder_no_resource_mutation_exact_uninstall(tmp_
     assert tree(game)==before
 
 
-@pytest.mark.parametrize('failure',['missing_eeex','missing_builder','bad_root','unsupported_game'])
-def test_public_installer_failure_has_no_public_runtime_or_resource_writes(tmp_path,failure):
+@pytest.mark.parametrize('failure',['missing_eeex','missing_builder','unsupported_game'])
+def test_unavailable_feature_is_logged_without_install_failure(tmp_path,failure):
     game=fixture(tmp_path,kind='bgee' if failure=='unsupported_game' else 'bg2ee')
     if failure=='missing_eeex':(game.root/'EEex.dll').unlink()
     elif failure=='missing_builder':(game.root/'chriz-bg-modpack/scroll-casting/tools/CBMSPolicy.exe').unlink()
-    elif failure=='bad_root':(game.override/'scroll.itm').write_bytes(b'bad')
     before=tree(game)
     result,transcript=install(game,430)
+    assert result.returncode==0,transcript
     if failure=='unsupported_game':
         assert 'SKIPPING:' in transcript and 'not supported' in transcript
     else:
-        assert result.returncode!=0,transcript
+        assert 'SUCCESSFULLY INSTALLED' in transcript,transcript
+        assert 'INSTALLED WITH WARNINGS' not in transcript,transcript
     assert not (game.root/'CBMScroll.dll').exists()
     assert tree(game)==before
+
+
+def test_unreadable_scroll_is_isolated_and_readable_scroll_policy_is_written(tmp_path):
+    game=fixture(tmp_path)
+    (game.override/'broken.itm').write_bytes(b'bad')
+    result,transcript=install(game,430)
+    assert result.returncode==0 and 'SUCCESSFULLY INSTALLED' in transcript,transcript
+    assert 'INSTALLED WITH WARNINGS' not in transcript,transcript
+    assert (game.root/'CBMScroll.dll').is_file(),transcript
+    report=json.loads((game.root/'CBMScroll/CBMSPOL1.json').read_text())
+    assert report['inventory']['root_errors']==1
+    assert report['inventory_errors'][0]['resource']=='BROKEN.ITM'
+    assert any(row['item']=='SCROLL' for row in report['abilities'])
+    assert (game.override/'broken.itm').read_bytes()==b'bad'

@@ -27,20 +27,18 @@ int main(int argc, char** argv) {
         };
         table.verify(verify);
         if (mode == "changed" || mode == "missing") {
-            try {
-                table.verify([&](std::string_view item, std::string_view ext) -> std::optional<PolicyTable::Digest> {
-                    if (mode == "missing") return {};
-                    auto digest = verify(item, ext);
-                    if (digest) (*digest)[0] ^= 1;
-                    return digest;
-                });
-                return 3;
-            } catch (const std::runtime_error&) {
-                if (table.verified()) return 4;
-                try { (void)table.lookup(name, 0); return 5; }
-                catch (const std::logic_error&) { std::cout << "invalidated\n"; return 0; }
-            }
+            table.verify([&](std::string_view item, std::string_view ext) -> std::optional<PolicyTable::Digest> {
+                if (mode == "missing") return {};
+                auto digest = verify(item, ext);
+                if (digest) (*digest)[0] ^= 1;
+                return digest;
+            });
+            const auto result = table.lookup(name, 0);
+            if (!result || !table.verified()) return 3;
+            std::cout << static_cast<unsigned>(result->policy) << '\n';
+            return 0;
         }
+
         if (mode == "lookup") {
             if (argc != 5) throw std::invalid_argument("lookup arguments missing");
             const std::string item = argv[3];

@@ -199,22 +199,22 @@ def test_actor_archive_actual_list_filter_decode_association(native_api, permane
     assert finish(api, runtime, 0x3000) == (1, "")
     frame, level = C.c_uint64(), C.c_uint32(91)
     if pending:
-        # The original reader is not loaded yet. The cast is refused with a
-        # report, which disables every override, also after the reader loads.
+        # An unloaded reader affects this cast only; later UUID binding restores
+        # reader-level casting without restarting the runtime.
         assert api.CBMS_BeginCast(runtime, 1, C.addressof(decoded[0]), 0, 0xD000, b"SPELL", 0, 3, 4, 1, 2, C.byref(frame)) == 1
-        assert api.CBMS_Select(runtime, frame, 0, 0xD000, C.byref(level)) == -1
-        assert b"pending" in api.CBMS_LastError(runtime)
-        assert level.value == 91 and calls == [] and api.CBMS_OverridesDisabled(runtime) == 1
+        assert api.CBMS_Select(runtime, frame, 0, 0xD000, C.byref(level)) == 0
+        assert errors == []
+        assert level.value == 91 and calls == [] and api.CBMS_OverridesDisabled(runtime) == 0
         assert api.CBMS_EndCast(runtime, frame) == 1
     assert api.CBMS_Construct(runtime, 0, 0x2000) == 1
     assert api.CBMS_ActorUUID(runtime, 0x2000, uuid) == 1
     for effect in decoded:
         assert api.CBMS_BeginCast(runtime, 1, C.addressof(effect), 0, 0xD000, b"SPELL", 0, 3, 4, 1, 2, C.byref(frame)) == 1
         status = api.CBMS_Select(runtime, frame, 0, 0xD000, C.byref(level))
-        assert (status, level.value) == ((0, 91) if pending else (1, 12))
+        assert (status, level.value) == (1, 12)
         assert api.CBMS_EndCast(runtime, frame) == 1
         assert api.CBMS_Destruct(runtime, 1, C.addressof(effect)) == 1
-    assert all(call[0] == 0x2000 for call in calls) and (calls == []) == pending
+    assert all(call[0] == 0x2000 for call in calls) and calls
     assert api.CBMS_Quiescent(runtime) == 1
     assert api.CBMS_Destroy(runtime) == 1
 
@@ -232,11 +232,8 @@ def test_native_archive_refusal_retains_pending_until_explicit_abort(native_api)
     assert api.CBMS_AbortEffectExport(runtime, 0x1000) == 1
     assert api.CBMS_BeginEffectImport(runtime, 0x1000) == 1
     unknown = b"CBMSFX99:012345"
-    assert api.CBMS_StageEffectImportText(runtime, 0x1000, unknown, len(unknown)) == -1
-    assert unknown == b"CBMSFX99:012345"  # caller must retain the actual actor envelope
-    assert finish(api, runtime, 0x1000)[0] == -1
-    assert api.CBMS_Quiescent(runtime) == 0
-    assert api.CBMS_AbortEffectImport(runtime, 0x1000) == 1
+    assert api.CBMS_StageEffectImportText(runtime, 0x1000, unknown, len(unknown)) == 1
+    assert finish(api, runtime, 0x1000) == (2, "unknown/malformed effect envelope")
     assert api.CBMS_Quiescent(runtime) == 1
     assert api.CBMS_Destroy(runtime) == 1
 
@@ -365,7 +362,7 @@ DAMAGE = {
     "ancestry": "invalid saved effect ancestry",
     "origins": "conflicting saved scroll origin definitions",
     "lifetime": "decoded effect acquired ancestry before import",
-    "version": "unknown/malformed effect envelope; retain original actor data",
+    "version": "unknown/malformed effect envelope",
     "hex": "invalid effect envelope hex",
     "truncated": "truncated effect envelope",
     "trailing": "trailing bytes in effect envelope",
@@ -374,7 +371,7 @@ DAMAGE = {
 
 
 @pytest.mark.parametrize("damage", sorted(DAMAGE))
-def test_damaged_envelope_still_turns_every_override_off(native_api, damage):
+def test_damaged_metadata_is_actor_local_and_native_lifetime_faults_still_stop(native_api, damage):
     api, runtime, resolve, report, calls, errors = runtime_fixture(native_api)
     text, records = saved_actor(api, runtime, 0x1000, 0x1111, [9, 0, 0])
     valid_text, valid_records = saved_actor(api, runtime, 0x2000, 0x2222, [9, 0])
@@ -399,19 +396,20 @@ def test_damaged_envelope_still_turns_every_override_off(native_api, damage):
     if damage == "duplicate":
         assert api.CBMS_StageEffectImportText(runtime, 0x3000, text, len(text)) == 1
     stage = api.CBMS_StageEffectImportText(runtime, 0x3000, staged, len(staged))
-    assert stage == (1 if damage in ("scalar", "ancestry", "origins", "lifetime") else -1)
-    if stage == 1:
-        assert api.CBMS_ActorObserved(runtime, 0x3000, 0x1111) == 1
-        assert finish(api, runtime, 0x3000)[0] == -1
-    assert errors == [DAMAGE[damage]] and api.CBMS_LastError(runtime) == DAMAGE[damage].encode()
-    assert api.CBMS_OverridesDisabled(runtime) == 1
-    # Everything is off, as before: a valid envelope loaded afterwards stays native.
+    assert stage == 1
+    assert api.CBMS_ActorObserved(runtime, 0x3000, 0x1111) == 1
+    status, reason = finish(api, runtime, 0x3000)
+    if damage == "lifetime":
+        assert status == -1 and errors == [DAMAGE[damage]]
+        assert api.CBMS_OverridesDisabled(runtime) == 1
+        assert api.CBMS_AbortEffectImport(runtime, 0x3000) == 1
+    else:
+        assert (status, reason) == (2, DAMAGE[damage])
+        assert errors == [] and api.CBMS_OverridesDisabled(runtime) == 0
+        assert [selected(api, runtime, effect) for effect in decoded] == [(0, 90)] * len(decoded)
     status, reason, kept = load(api, runtime, 0x4000, 0x2222, valid_records, valid_text)
     assert (status, reason) == (1, "")
-    assert [selected(api, runtime, effect) for effect in kept] == [(0, 90)] * len(kept)
-    # The refused load stays pending until its host cancels it.
-    assert finish(api, runtime, 0x3000)[0] == -1 and api.CBMS_Quiescent(runtime) == 0
-    assert api.CBMS_AbortEffectImport(runtime, 0x3000) == 1
+    assert [selected(api, runtime, effect) for effect in kept] == ([(0, 90)] if damage == "lifetime" else [(1, 12)]) * len(kept)
     for effect in decoded + kept:
         assert api.CBMS_DestructObserved(runtime, 1, C.addressof(effect)) == 1
     assert api.CBMS_Quiescent(runtime) == 1 and api.CBMS_Destroy(runtime) == 1

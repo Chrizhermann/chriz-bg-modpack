@@ -65,10 +65,10 @@ def test_unsupported_campaign_cannot_be_enabled_by_transition_flags(
     (0, -1), (0, 2), (0, 0.5), (0, None), (0, "1"), (0, True),
     (3, 1),  # ToB priority does not excuse corrupt flags.
 ])
-def test_malformed_phase_flags_are_rejected(lua, ending, tob):
+def test_changed_phase_flags_are_normalized_without_blocking_rewards(lua, ending, tob):
     mode, reason = phase(lua, "BG1", ending, tob)
-    assert mode is None
-    assert isinstance(reason, str) and reason
+    assert mode in {"bg1", "bg2"}
+    assert reason is None
 
 
 @pytest.mark.parametrize("mode,locks,traps,multiplier", [
@@ -219,7 +219,10 @@ def test_initial_unsupported_or_invalid_phase_does_not_touch_table(
     table = g.game.m_ruleTables.m_tXPBonus
     before = values(table)
     g.CBM_StoryXP_Runtime.Refresh()
-    assert table.writes == 0 and values(table) == before
+    if campaign == "BG1":
+        assert values(table) == expected_rewards(before,50,50,"bg2")
+    else:
+        assert table.writes == 0 and values(table) == before
 
 
 def test_repeated_frame_action_refreshes_never_add_xp_or_rewrite_cells(lua):
@@ -281,9 +284,12 @@ def test_leaving_a_supported_phase_restores_resource_baseline_not_modified_memor
         g.listeners.destroy()
     set_phase(lua, campaign, ending, tob)
     g.CBM_StoryXP_Runtime.Refresh()
-    for row, offset in enumerate((700, 800, 900)):
-        for column in range(50):
-            expected[row * 53 + column] = str(offset + column + 1)
+    if campaign == "BG1":
+        expected = expected_rewards(expected,53,50,"bg2")
+    else:
+        for row, offset in enumerate((700, 800, 900)):
+            for column in range(50):
+                expected[row * 53 + column] = str(offset + column + 1)
     assert values(table) == expected
     writes = table.writes
     g.CBM_StoryXP_Runtime.Refresh()
@@ -296,21 +302,28 @@ def test_leaving_a_supported_phase_restores_resource_baseline_not_modified_memor
     "t.findRowLabel = function(self, name) return name == 'LEARN_SPELL' and -1 or 0 end",
     "t.findRowLabel = function() return 4 end",
     "t.m_nSizeX = 8",
+    "t.m_nSizeX = 0; t.m_nSizeY = 0",
 ])
-def test_malformed_table_is_rejected_before_any_partial_write(lua, mutation):
+def test_changed_table_is_repaired_and_receives_authored_rewards(lua, mutation):
     g = start_adapter(lua)
     table = g.game.m_ruleTables.m_tXPBonus
     before = values(table)
     lua.execute("local t = game.m_ruleTables.m_tXPBonus; " + mutation)
     g.CBM_StoryXP_Runtime.Refresh()
     g.CBM_StoryXP_Runtime.Refresh()
-    assert table.writes == 0
-    assert [table.cells[index].value for index in range(200)] == before
-    assert g.CBM_StoryXP_Runtime.lastError
-    assert len(g.logs) == 1
+    assert table.writes > 0
+    assert g.CBM_StoryXP_Runtime.lastError is None
+    assert len(g.logs) == 0
+    width=table.m_nSizeX
+    for column in range(width):
+        label=table.getColumnLabel(table,column)
+        if label.isdigit():
+            reward=g.CBM_StoryXP.Rewards("bg1",int(label))
+            assert table.cells[table.findRowLabel(table,"PICK_LOCK")*width+column].value == str(reward.lock)
+            assert table.cells[table.findRowLabel(table,"DISARM_TRAP")*width+column].value == str(reward.trap)
 
 
-def test_invalid_baseline_is_validated_before_restore_writes(lua):
+def test_non_numeric_baseline_cell_is_zero_while_other_cells_are_restored(lua):
     g = start_adapter(lua, "SOA", 2)
     g.CBM_StoryXP_Runtime.Refresh()
     table = g.game.m_ruleTables.m_tXPBonus
@@ -320,7 +333,9 @@ def test_invalid_baseline_is_validated_before_restore_writes(lua):
     set_phase(lua, "BP2", 2, 1)
     writes = table.writes
     g.CBM_StoryXP_Runtime.Refresh()
-    assert table.writes == writes and values(table) == before
+    assert table.writes > writes
+    assert table.cells[149].value == "0"
+    assert table.cells[0].value == "701"
     assert g.CBM_StoryXP_Runtime.lastError
 
 

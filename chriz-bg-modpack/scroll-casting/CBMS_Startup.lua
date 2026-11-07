@@ -49,7 +49,7 @@ local ok,why=pcall(function()
     local bytes=file:read("*a");file:close()
     assert(type(bytes)=="string" and #bytes>0,"Installed scroll policy is empty")
     -- Register before actors can load. The native bridge stays inert until all
-    -- carrier groups have installed and effective dependency hashes agree.
+    -- carrier groups have installed and their native memory signatures agree.
     dofile("CBMScroll/CBMS_ScrollMarshal.lua")
     EEex_GameState_AddInitializedListener(function()
         -- Banking installs its actor lifetime hook first; only that owner's
@@ -63,7 +63,7 @@ local ok,why=pcall(function()
         local started,reason=CBMS_NativeStart(bytes,verifier.Digest,offer)
         bytes=nil
         if not started then fallback(reason or "Native startup refused");retainedNotice();return end
-        log("Native carrier groups and installed resources verified.")
+        log("Native carrier groups verified; installed reader policy applied.")
         -- A scripting-object update alone can be minutes away in a quiet scene, so
         -- every creature's action start polls too. CBMS_NativeStatus only reads
         -- latched flags; after the one log entry, or a failed check, a poll is

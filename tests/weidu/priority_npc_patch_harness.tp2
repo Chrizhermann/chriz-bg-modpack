@@ -4,6 +4,15 @@ AUTHOR ~chriz-bg-modpack tests~
 // argv[0] = production TPA; argv[1] = source; argv[2] = output; argv[3] = template.
 // argv[4] = shared NPC build helpers.
 
+ALWAYS
+  OUTER_SPRINT cbmo_library ~%argv[0]%~
+  OUTER_INNER_PATCH_SAVE cbmo_library ~%cbmo_library%~ BEGIN
+    REPLACE_TEXTUALLY ~[^/\\]+$~ ~~
+  END
+  OUTER_SPRINT cbmo_data_root ~%cbmo_library%../data/progression~
+  INCLUDE ~%cbmo_library%cbm_overwrite.tpa~
+END
+
 BEGIN ~Priority NPC: Fade CRE~ DESIGNATED 1
 INCLUDE ~%argv[4]%~
 INCLUDE ~%argv[0]%~

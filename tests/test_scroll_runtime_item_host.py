@@ -86,18 +86,30 @@ def test_later_owner_last_entry_blocks_all_restoration_and_foreign_thread(item_a
         if host.CBMS_TestItemHookAllocation():assert host.CBMS_RemoveItemHooks()==1
         sites.close();h.close()
 
-@pytest.mark.parametrize('bad',['prefix','digest','overlap'])
+@pytest.mark.parametrize('bad',['prefix','overlap'])
 def test_item_hook_rejects_bad_preconditions_without_persistent_registration(item_api,host,windows,bad):
     h=Harness(item_api);assert host.CBMS_DetachItemCarriers()==1;h.configured=False;sites=Sites(windows,h)
     try:
         digest=h.keep[-1]
         if bad=='prefix':sites.edit(sites.entries[3],b'\x90')
         if bad=='overlap':sites.functions.fire_point=FIRE(sites.entries[2])
-        if bad=='digest':digest=DIGEST(lambda name,extension,out,user:0)
         before=C.string_at(sites.base,0x1000)
         assert host.CBMS_TestInstallItemHooks(C.byref(sites.functions),h.runtime,h.table,len(h.table),digest,None)==0
         assert host.CBMS_ItemHookError() and host.CBMS_TestItemHookAllocation()==0
         assert C.string_at(sites.base,0x1000)==before
+    finally:
+        if host.CBMS_TestItemHookAllocation():assert host.CBMS_RemoveItemHooks()==1
+        sites.close();h.close()
+
+
+def test_item_hooks_install_despite_changed_resource_digest(item_api,host,windows):
+    h=Harness(item_api);assert host.CBMS_DetachItemCarriers()==1;h.configured=False;sites=Sites(windows,h)
+    try:
+        digest=DIGEST(lambda name,extension,out,user:0)
+        assert host.CBMS_TestInstallItemHooks(C.byref(sites.functions),h.runtime,h.table,len(h.table),digest,None)==1
+        assert host.CBMS_TestItemHookAllocation()!=0
+        assert host.CBMS_RemoveItemHooks()==1
+        sites.original()
     finally:
         if host.CBMS_TestItemHookAllocation():assert host.CBMS_RemoveItemHooks()==1
         sites.close();h.close()
