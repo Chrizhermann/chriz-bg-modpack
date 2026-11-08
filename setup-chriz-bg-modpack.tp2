@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.15~
+VERSION ~v0.2.0-alpha.16~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~

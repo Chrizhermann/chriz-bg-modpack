@@ -1,6 +1,6 @@
 # Campaign XP caps with banking
 
-Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
 Missing or invalid installed retired-class thresholds now use the bundled stock
 table. Conflicting class flags, campaign progress and saved balance ownership
 still need the reconciliation decisions recorded in that review.

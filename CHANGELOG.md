@@ -1,18 +1,17 @@
 # Changelog
 
-## Unreleased
+## v0.2.0-alpha.16 - 2026-11-08
 
-- Apply selected NPC, spell, item and script changes regardless of earlier game
-  values or descriptions. Missing optional targets and unreadable resources are
-  reported individually without rolling back other files.
-- Read progression tables by labels with bundled defaults for absent cells;
-  replace owned spell effects and script blocks, and publish complete English
-  descriptions. Other languages retain their current text pending translation.
-- Remove resource fingerprints and the 64-link scroll ancestry limit. Native
-  hook signatures remain in place; campaign banking handler behavior is unchanged.
-- See [overwrite scope and evidence](docs/we-overwrite.md) for owned data,
-  normal-input differences, unresolved cases and verification limits. These
-  changes have not been tested in a running game.
+Alpha.16 makes every component write the result it decided, whatever the game
+files held before. Hand-edited values, another mod's version of the same file,
+changed text, and missing or extra old pieces no longer stop the install, print
+a compatibility warning, or skip a component.
+
+Components still need their supported game type and any kit, resource, or
+component they genuinely build on; EEex features still need EEex. A truly absent
+optional target or one resource too damaged to change leaves out only that
+piece. Native Windows features still check the game executable before changing
+memory. See the [overwrite scope and evidence](docs/we-overwrite.md).
 
 ## v0.2.0-alpha.15 - 2026-11-03
 

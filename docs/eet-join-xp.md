@@ -1,6 +1,6 @@
 # EET join-XP catch-up for joinable NPCs (239)
 
-Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
 Dated checks below describe earlier builds and do not establish live acceptance
 for this revision.
 

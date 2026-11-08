@@ -1,19 +1,20 @@
 # Scroll casting at the reader's level
 
-Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
 Dated checks below describe earlier builds and do not establish live acceptance
 for this revision.
 
 Replacement for component **430** since alpha.11. Alpha.11 to alpha.13 stop their
 scroll runtime soon after a game starts (see [Earlier versions](#earlier-versions)).
-The released alpha.14 implementation was checked in a lab game. The unreleased
-resource and saved-metadata changes have offline coverage only.
+The released alpha.14 implementation was checked in a lab game. Alpha.16
+started and loaded a save in the release lab; its changed content has not been
+played.
 
-The current unreleased DLL is SHA-256
+The alpha.16 DLL is SHA-256
 `b8763231bcc5bce1a0551d8ea3e70d0194895c3e7439b74dfb2c8ec82b6a426f`.
 It removes resource fingerprints and fixed ancestry limits, and isolates unreadable
 saved metadata to the actor that owns it. The native and save-bridge tests cover
-those paths; this exact binary has not been run in a game.
+those paths; it started and loaded a save in the alpha.16 release lab.
 
 Arcane scrolls use the reader's active arcane caster level; divine scrolls use
 their active divine caster level. When the reader has no active caster level
@@ -180,7 +181,7 @@ check of the same day found the fourth.
   can still get the reader's level; every later one uses the normal level.
   This needs a game call from another thread at exactly that moment, which was
   never seen. The practical risk is very low, and the effect is that one cast.
-- **A saved scroll effect whose reader is not loaded.** The unreleased update
+- **A saved scroll effect whose reader is not loaded.** The alpha.16 update
   leaves that cast at its native level. Once the original reader loads, later
   casts can use its level without restarting 430. Invalid private saved metadata
   is dropped only for the affected actor, with a loader-log line; unrelated

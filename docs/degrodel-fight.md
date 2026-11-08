@@ -1,6 +1,6 @@
 # Degrodel: hand over the Helm of Balduran or fight him
 
-Unreleased input-handling changes are described in [the overwrite review](we-overwrite.md).
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
 Dated checks below describe earlier builds and do not establish live acceptance
 for this revision.
 

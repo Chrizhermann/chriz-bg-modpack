@@ -3,16 +3,13 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.15`
+**Release:** `v0.2.0-alpha.16`
 
-The working tree contains an unreleased [overwrite update](docs/we-overwrite.md).
-The release history below describes the published packages; its earlier live
-checks do not cover this update.
-
-Alpha.15 adds **670**: both Marek creatures carry the Boomerang Dagger +2, BG1's
-only source of it when BG1 NPC Project's Kivan quest is not installed. With that
-quest, it changes nothing. Collection selection is decided separately. See the
-[release notes](docs/releases/v0.2.0-alpha.15.md).
+Alpha.16 makes every component write its decided result regardless of hand edits
+or another mod's version of the same game files. Genuine game, prerequisite and
+runtime requirements remain; an absent optional target leaves out only that
+target. See the [release notes](docs/releases/v0.2.0-alpha.16.md) and the
+[overwrite scope](docs/we-overwrite.md).
 
 Alpha.14 kept reader-level scroll casting (**430**) on for the whole session;
 alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or

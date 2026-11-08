@@ -215,7 +215,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.15.md",
+                "docs/releases/v0.2.0-alpha.16.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},

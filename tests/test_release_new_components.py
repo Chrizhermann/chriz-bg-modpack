@@ -246,8 +246,13 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assertTrue(before["BALDUR.EXE"].startswith(b"synthetic Baldur.exe"))
             self.run_component(game, 630)
             after = self.game_files(game.root)
+            source = game.root / utility.MOD_NAME / "unidentified-items"
             allowed = {f"OVERRIDE/{name.upper()}" for name in unidentified.PUBLICATIONS}
             allowed.add("INFINITYLOADER.DB")
+            for name in ("CBMNTRLI", "CBMNTRLG", "CBMNTRLP"):
+                key = f"OVERRIDE/{name}.BAM"
+                allowed.add(key)
+                self.assertEqual((source / "artwork" / (name.lower() + ".bam")).read_bytes(), after[key])
             self.assertEqual(set(before) | allowed, set(after))
             for name, payload in before.items():
                 if name not in allowed:
@@ -255,7 +260,6 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             self.assertIn(unidentified.LOADER_DB, after["INFINITYLOADER.DB"])
             loader = after["INFINITYLOADER.DB"].decode("ascii")
             self.assertEqual(1, loader.count("[Foreign::Hook]"))
-            source = game.root / utility.MOD_NAME / "unidentified-items"
             for row in unidentified._catalog_rows(source / "hooks.2da"):
                 label = f"[CBMID::{row['ROW']}]"
                 self.assertEqual(1, loader.count(label))

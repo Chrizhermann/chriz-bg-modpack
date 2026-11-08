@@ -1,4 +1,4 @@
-# Unreleased overwrite update
+# Alpha.16 overwrite update
 
 Selecting a component makes its documented output authoritative for the fields
 and behavior it owns. Old values, wording, extra effects, missing owned effects,
@@ -76,7 +76,7 @@ must never return zero to the game.
   Arbitrarily corrupted BCS/DLG interiors and every possible custom runtime XP
   writer have not been covered. This is not a claim about all mod setups.
 
-Current commands and final counts are recorded in the uncommitted
-`WE-OVERWRITE-LEDGER.md`. No game, lab, saved character, full collection install,
-release, tag or version update is part of this work. Historical playtest results
-in component guides apply to those earlier packages only.
+The [alpha.16 release notes](releases/v0.2.0-alpha.16.md) record the current
+automated and lab evidence. The full install predates the final, test-covered
+199 Fate Spirit correction. Historical component-guide playtests apply to their
+earlier packages; changed content has not been played for alpha.16.
