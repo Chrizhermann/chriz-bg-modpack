@@ -381,7 +381,7 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
             expected["OVERRIDE/" + name.upper()] = self.shipped_campaign_file(game, name)
         expected["OVERRIDE/CBMBKCFG.LUA"] = self.shipped_campaign_file(game, config)
         expected["OVERRIDE/CBMBXPL.2DA"] = (
-            game.root / utility.MOD_NAME / "data/progression/XPLEVEL.2da").read_bytes()
+            game.root / utility.MOD_NAME / "data/progression/xplevel.2da").read_bytes()
         return expected
 
     def assert_campaign_runtime_shipped(self, game) -> None:

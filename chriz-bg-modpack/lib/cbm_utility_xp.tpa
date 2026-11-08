@@ -3,7 +3,7 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_xpbonus_prepare.tpa~
 // thief from a low-level thief, or use character progression when scribing.
 // Existing tables stay intact. An absent XPLEVEL gets the bundled progression.
 ACTION_IF NOT FILE_EXISTS_IN_GAME ~XPLEVEL.2DA~ BEGIN
-  COPY ~chriz-bg-modpack/data/progression/XPLEVEL.2da~ ~override/XPLEVEL.2DA~
+  COPY ~chriz-bg-modpack/data/progression/xplevel.2da~ ~override/XPLEVEL.2DA~
 END
 COPY ~chriz-bg-modpack/utility-xp/m_cbmuxp.lua~ ~override/M_CBMUXP.lua~
      ~chriz-bg-modpack/utility-xp/cbmuxp.lua~   ~override/CBMUXP.lua~

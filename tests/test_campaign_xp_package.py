@@ -1017,7 +1017,7 @@ def test_base_soa_dependency_and_exact_uninstall(tmp_path, prior):
     expected = dict(before)
     for name in PUBLICATIONS:
         expected["OVERRIDE/" + name.upper()] = (SOURCE / name).read_bytes()
-    expected["OVERRIDE/CBMBXPL.2DA"] = (ROOT / "chriz-bg-modpack/data/progression/XPLEVEL.2da").read_bytes()
+    expected["OVERRIDE/CBMBXPL.2DA"] = (ROOT / "chriz-bg-modpack/data/progression/xplevel.2da").read_bytes()
     assert base == expected
     result, log = run_component(game, 651)
     assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in log, log
