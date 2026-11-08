@@ -344,16 +344,21 @@ class UtilityXPPublicInstallerTests(unittest.TestCase):
     def test_missing_eeex_is_skipped_without_changes(self) -> None:
         self._assert_skipped(self._make_game(eeex=False), r"(?i)EEex")
 
+    @staticmethod
+    def _override_has(game, name: str) -> bool:
+        # Linux WeiDU writes override names in lowercase; Windows keeps the case it was given.
+        return any(path.name.lower() == name.lower() for path in game.override.iterdir())
+
     def test_missing_xpbonus_is_created_from_authored_rows(self) -> None:
         game=self._make_game(missing_tables=("XPBONUS.2DA",))
         self._assert_installed(game)
-        self.assertTrue((game.override / "XPBONUS.2DA").exists())
+        self.assertTrue(self._override_has(game, "XPBONUS.2DA"))
         self._assert_uninstalled(game)
 
     def test_missing_xplevel_is_created_for_dual_class_progression(self) -> None:
         game=self._make_game(missing_tables=("XPLEVEL.2DA",))
         self._assert_installed(game)
-        self.assertTrue((game.override / "XPLEVEL.2DA").exists())
+        self.assertTrue(self._override_has(game, "XPLEVEL.2DA"))
         self._assert_uninstalled(game)
 
 
