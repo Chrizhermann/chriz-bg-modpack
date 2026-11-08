@@ -397,15 +397,6 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         self.assertIn("SUCCESSFULLY REMOVED", transcript)
         self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{COMPONENT}\b")
 
-    def assert_aborted(self, game: MarekGame, message: str) -> None:
-        result, transcript = game.run()
-        self.assertEqual(0, result.returncode, transcript)
-        self.assertIn("INSTALLATION ABORTED", transcript)
-        self.assertIn(message, transcript)
-        self.assertNotIn("SUCCESSFULLY INSTALLED", transcript)
-        self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{COMPONENT}\b")
-        self.assertEqual(game.before, game.files())
-
     def assert_skipped(self, game: MarekGame, message: str) -> None:
         result, transcript = game.run()
         self.assertEqual(0, result.returncode, transcript)
@@ -415,14 +406,13 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         self.assertNotRegex(game.active_log(), rf"(?m)#0\s+#{COMPONENT}\b")
         self.assertEqual(game.before, game.files())
 
-    def assert_no_op(self, game: MarekGame, message: str) -> str:
-        transcript = self.install(game)
-        self.assertIn(message, transcript)
-        self.assertNotIn("now carries", transcript)
-        self.assertEqual(game.before, game.files())
-        self.assertFalse(any((game.root / "weidu_external").rglob("MAREK*.CRE")))
+    def assert_owned_placement(self,game):
+        originals={key:game.before.get(key) or biff_resource(game.root,key[9:-4],"CRE") for key in MAREK_KEYS}
+        transcript=self.install(game)
+        for key,original in originals.items():
+            self.assert_dagger_added(original,game.files()[key])
         self.uninstall(game)
-        self.assertEqual(game.before, game.files())
+        self.assertEqual(game.before,game.files())
         return transcript
 
     def assert_dagger_added(self, original: bytes, patched: bytes) -> None:
@@ -524,40 +514,38 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
                     self.install(game)
                     self.assert_both_added(game)
 
-    def test_kivan_quest_already_gives_the_dagger(self) -> None:
+    def test_kivan_quest_does_not_cancel_mareks_placement(self) -> None:
         # BG1 NPC Project installed on the BG:EE side before EET: its block is
         # in BG3100.BCS, and this game's WeiDU.log does not mention it.
         game = self.make_game(resources=default_resources("eet", quest=True))
         self.assertEqual("", game.active_log())
-        transcript = self.assert_no_op(
-            game, "Shipwreck's Coast (BG3100.BCS) already gives the Boomerang Dagger +2")
-        self.assertIn("Nothing was changed.", transcript)
+        self.assert_owned_placement(game)
 
-    def test_kivan_quest_skips_scs_changed_mareks_too(self) -> None:
+    def test_kivan_quest_and_changed_mareks_keep_the_owned_placement(self) -> None:
         marek = make_cre(SCS_ITEMS, scripts=("DW#MG274", "", "", "DW#MAREK", "DW#MG273"),
                          effect_version=1, shuffled=True)
         street = make_cre(SCS_STREET_ITEMS, effect_version=1)
         game = self.make_game(resources=default_resources("eet", marek=marek, street=street,
                                                           quest=True))
-        self.assert_no_op(game, "already gives the Boomerang Dagger +2")
+        self.assert_owned_placement(game)
 
     def test_kivan_quest_on_bgee_and_with_windows_line_endings(self) -> None:
         game = self.make_game(game="bgee", location="bif", resources=default_resources("bgee", quest=True))
-        self.assert_no_op(game, "Shipwreck's Coast (AR3100.BCS) already gives the Boomerang Dagger +2")
+        self.assert_owned_placement(game)
 
         game = self.make_game(resources=default_resources("eet", quest=True))
         crlf = game.before["OVERRIDE/BG3100.BCS"].replace(b"\n", b"\r\n")
         (game.override / "bg3100.bcs").write_bytes(crlf)
         game.before = game.files()
-        self.assert_no_op(game, "already gives the Boomerang Dagger +2")
+        self.assert_owned_placement(game)
 
-    def test_the_script_the_area_names_is_checked(self) -> None:
+    def test_another_area_script_does_not_cancel_the_owned_placement(self) -> None:
         # The area file decides which script runs there.
         resources = default_resources("eet")
         resources["BG3100.ARE"] = make_area("CBMSHIP")
         resources["CBMSHIP.BCS"] = kivan_quest("BG3100")
         game = self.make_game(resources=resources)
-        self.assert_no_op(game, "Shipwreck's Coast (CBMSHIP.BCS) already gives")
+        self.assert_owned_placement(game)
 
     def test_dagger_mentions_that_give_nothing_in_bg1(self) -> None:
         # A trigger that checks for the dagger, another area's script that
@@ -588,15 +576,18 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         self.install(game)
         self.assert_both_added(game)
 
-    def test_a_marek_with_the_dagger_already_is_left_unchanged(self) -> None:
+    def test_existing_dagger_is_normalized_without_adding_a_duplicate(self) -> None:
         # Only the file without a dagger changes; it never gets a second one.
         marek = make_cre(VANILLA_ITEMS + [(item("dagg11"), 30)])
         game = self.make_game(resources=default_resources("eet", marek=marek))
         transcript = self.install(game)
-        self.assertIn("MAREK1.CRE already carries the Boomerang Dagger +2 and was left unchanged",
-                      transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS",transcript)
         installed = game.files()
-        self.assertEqual({STREET_KEY}, changed(game.before, installed))
+        self.assertEqual(set(MAREK_KEYS), changed(game.before, installed))
+        expected=bytearray(marek)
+        start=u32(marek,0x2bc)+(u32(marek,0x2c0)-1)*20
+        expected[start:start+20]=item("DAGG11")
+        self.assertEqual(bytes(expected),installed[MAREK1_KEY])
         self.assert_dagger_added(game.before[STREET_KEY], installed[STREET_KEY])
         self.uninstall(game)
         self.assertEqual(game.before, game.files())
@@ -607,8 +598,10 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         installed = game.files()
         again = self.make_game(resources=default_resources(
             "eet", marek=installed[MAREK1_KEY], street=installed[STREET_KEY]))
-        transcript = self.assert_no_op(again, "MAREK.CRE already carries")
-        self.assertIn("MAREK1.CRE already carries", transcript)
+        self.install(again)
+        self.assertEqual(again.before,again.files())
+        self.uninstall(again)
+        self.assertEqual(again.before,again.files())
 
     def test_one_missing_marek_is_skipped_with_a_note(self) -> None:
         for missing, present in (("MAREK1", STREET_KEY), ("MAREK", MAREK1_KEY)):
@@ -635,17 +628,24 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         self.assert_skipped(self.make_game(resources=resources),
                             "The Boomerang Dagger +2 (DAGG11.ITM) is not in this game")
 
-    def test_full_backpack_aborts_before_either_file_is_written(self) -> None:
+    def test_full_backpack_uses_a_free_quick_item_slot(self) -> None:
         full = [(item("DAGG03", 1), 9)] + [(item(f"POTN{slot:02d}"), slot) for slot in INVENTORY]
         game = self.make_game(resources=default_resources("eet", marek=make_cre(full)))
-        self.assert_aborted(game, "MAREK1.CRE has no free backpack slot")
+        self.install(game)
+        records,slots=items_and_slots(game.files()[MAREK1_KEY])
+        self.assertEqual([record for record,_ in full],records[:-1])
+        self.assertEqual(item("DAGG11"),records[-1])
+        self.assertEqual(18,slots.index(len(records)-1))
+        self.assert_dagger_added(game.before[STREET_KEY],game.files()[STREET_KEY])
+        self.uninstall(game)
+        self.assertEqual(game.before,game.files())
         # A full backpack that already holds the dagger needs no slot.
         with_one = [(item("DAGG11"), 9)] + full[1:]
         game = self.make_game(resources=default_resources("eet", marek=make_cre(with_one)))
         self.install(game)
         self.assertEqual({STREET_KEY}, changed(game.before, game.files()))
 
-    def test_invalid_files_abort_before_either_file_is_written(self) -> None:
+    def test_damaged_creature_costs_only_that_file_and_areas_are_unrelated(self) -> None:
         valid = make_cre(VANILLA_ITEMS)
         dangling = bytearray(valid)
         struct.pack_into("<H", dangling, u32(valid, 0x2B8) + 2 * 3, len(VANILLA_ITEMS))
@@ -666,7 +666,18 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
             with self.subTest(name=name):
                 resources = default_resources("eet")
                 resources[resource] = data
-                self.assert_aborted(self.make_game(resources=resources), message)
+                game=self.make_game(resources=resources)
+                transcript=self.install(game)
+                if resource.endswith(".CRE"):
+                    damaged="OVERRIDE/"+resource
+                    self.assertIn("too damaged",transcript)
+                    self.assertEqual(game.before[damaged],game.files()[damaged])
+                    other=next(key for key in MAREK_KEYS if key!=damaged)
+                    self.assert_dagger_added(game.before[other],game.files()[other])
+                else:
+                    self.assert_both_added(game)
+                self.uninstall(game)
+                self.assertEqual(game.before,game.files())
 
     @unittest.skipUnless(os.environ.get("CBM_MAREK_RESOURCES"), "Optional installed-resource copy")
     def test_read_only_copy_of_installed_resources(self) -> None:
@@ -676,18 +687,13 @@ class MarekBoomerangDaggerTests(unittest.TestCase):
         originals = {p.name.upper(): p.read_bytes() for p in source.iterdir() if p.is_file()}
         game = self.make_game(game="eet" if "BG3100.ARE" in originals else "bgee",
                               resources=dict(originals))
-        quest = any(b'"DAGG11"' in data.upper() for name, data in originals.items()
-                    if name.endswith(".BCS"))
-        transcript = self.install(game)
-        if quest:
-            self.assertIn("already gives the Boomerang Dagger +2", transcript)
-            self.assertEqual(game.before, game.files())
-        else:
-            present = [key for key in MAREK_KEYS if key[9:] in originals]
-            self.assertTrue(present)
-            self.assertEqual(set(present), changed(game.before, game.files()))
-            for key in present:
-                self.assert_dagger_added(originals[key[9:]], game.files()[key])
+        self.install(game)
+        present=[key for key in MAREK_KEYS if key[9:] in originals]
+        self.assertTrue(present)
+        for key in present:
+            records,_=items_and_slots(game.files()[key])
+            daggers=[record for record in records if record[:8].rstrip(b"\0").upper()==b"DAGG11"]
+            self.assertEqual([item("DAGG11")],daggers)
         self.uninstall(game)
         self.assertEqual(game.before, game.files())
         self.assertEqual(originals, {p.name.upper(): p.read_bytes() for p in source.iterdir() if p.is_file()})

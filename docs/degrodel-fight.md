@@ -1,5 +1,9 @@
 # Degrodel: hand over the Helm of Balduran or fight him
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Component **660**, label `cbm_degrodel_fight`, is optional and was added in
 v0.2.0-alpha.11. It supports EET and BG:EE and needs Degrodel's dialog
 `DEGROD.DLG`. EEex and SCS are not required.
@@ -30,14 +34,12 @@ Install after mods that change Degrodel's dialog or his hand-in. Uninstalling
 restores the previous `DEGROD.DLG`. The new lines stay in `dialog.tlk`, as
 usual for WeiDU, without affecting anything.
 
-The installer finds the hand-in by what it does: the one reply that takes the
-helm from the party and makes Degrodel leave. It does not depend on state
-numbers, exact wording or action order, and it leaves companion interjections
-on other parts of the conversation unchanged. If the hand-in cannot be
-identified safely, the installer explains why, changes nothing, and the
-component is not recorded as installed. This happens when there is no hand-in,
-more than one, a companion interjection directly on the hand-in, or the choice
-is already present.
+The installer identifies the hand-in behavior and writes the owned choices.
+When no hand-in exists it adds the authored hand-in and refusal states. If action
+syntax cannot be separated, the refusal uses the four stock servants and the
+authored journal closure. Existing
+owned choices are reused on a second application. Unrelated dialogue states
+and companion interjections are retained where they are outside the owned path.
 
 Refusing also sets the global `CBMDegrodelFight` to 1. A later difficulty option
 can use that, or extend the fight path in `cbm_degrodel_fight_actions`.
@@ -46,5 +48,5 @@ can use that, or extend the fight path in `cbm_degrodel_fight_actions`.
 
 Synthetic WeiDU tests cover vanilla, BG:EE and EET-shaped dialogs, BG1NPC-style
 interjections, dialogs rewritten by other tools, extra and reordered actions,
-the skip cases, reinstalling and uninstalling. The fight has not yet been played
+missing and changed hand-ins, unreadable-file isolation, reinstalling and uninstalling. The fight has not yet been played
 in game, with or without SCS.

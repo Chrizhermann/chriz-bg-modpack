@@ -11,99 +11,31 @@ DEFINE_ACTION_FUNCTION cbm_fade_load_context
     cbm_fade_fighter_xp
     cbm_fade_thief_xp
 BEGIN
-  OUTER_SET cbm_fade_thief_class = IDS_OF_SYMBOL (~class~ ~THIEF~)
-  OUTER_SET cbm_fade_fighter_thief_class = IDS_OF_SYMBOL (~class~ ~FIGHTER_THIEF~)
-  ACTION_IF ((cbm_fade_thief_class <= 0) OR (cbm_fade_thief_class > 255)
-          OR (cbm_fade_fighter_thief_class <= 0) OR (cbm_fade_fighter_thief_class > 255)
-          OR (cbm_fade_thief_class = cbm_fade_fighter_thief_class)) BEGIN
-    FAIL ~cbm_fade_ft_fix: CLASS.IDS has invalid THIEF/FIGHTER_THIEF values~
-  END
-
+  OUTER_SET cbm_fade_thief_class = (FILE_EXISTS_IN_GAME ~CLASS.IDS~ ? IDS_OF_SYMBOL (~class~ ~THIEF~) : (0 - 1))
+  OUTER_SET cbm_fade_fighter_thief_class = (FILE_EXISTS_IN_GAME ~CLASS.IDS~ ? IDS_OF_SYMBOL (~class~ ~FIGHTER_THIEF~) : (0 - 1))
+  ACTION_IF cbm_fade_fighter_thief_class < 0 BEGIN OUTER_SET cbm_fade_fighter_thief_class = 9 END
+  LAF cbmo_read_table STR_VAR table = ~XPLEVEL~ RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
   ACTION_CLEAR_ARRAY cbm_fade_fighter_xp
   ACTION_CLEAR_ARRAY cbm_fade_thief_xp
-  COPY_EXISTING ~XPLEVEL.2DA~ ~override~
-    COUNT_2DA_COLS cbm_fade_xp_cols
-    PATCH_IF (cbm_fade_xp_cols < 3) OR (cbm_fade_xp_cols > 257) BEGIN
-      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA must contain a class label and supported level columns~
+  OUTER_PATCH ~~ BEGIN
+    FOR (level = 1; level <= 255; ++level) BEGIN
+      LPF cbmo_number INT_VAR fallback = 2147483647 STR_VAR table = ~XPLEVEL~ row = ~FIGHTER~ column = EVAL ~%level%~ RET number END
+      SET $cbm_fade_fighter_xp(~%level%~) = number < 0 ? 2147483647 : number
+      LPF cbmo_number INT_VAR fallback = 2147483647 STR_VAR table = ~XPLEVEL~ row = ~THIEF~ column = EVAL ~%level%~ RET number END
+      SET $cbm_fade_thief_xp(~%level%~) = number < 0 ? 2147483647 : number
     END
-
-    SET cbm_fade_xp_levels = cbm_fade_xp_cols - 1
-    READ_2DA_ENTRIES_NOW cbm_fade_xp_wide cbm_fade_xp_levels
-    PATCH_IF (cbm_fade_xp_wide < 3) BEGIN
-      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA is missing its header or class rows~
-    END
-    FOR (cbm_fade_col = 0; cbm_fade_col < cbm_fade_xp_levels; cbm_fade_col += 1) BEGIN
-      READ_2DA_ENTRY_FORMER cbm_fade_xp_wide 0 cbm_fade_col cbm_fade_header
-      PATCH_IF (!(IS_AN_INT ~%cbm_fade_header%~)
-             OR (cbm_fade_header != (cbm_fade_col + 1))) BEGIN
-        PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA level header must be consecutive from 1~
-      END
-    END
-
-    READ_2DA_ENTRIES_NOW cbm_fade_xp_rows cbm_fade_xp_cols
-    SET cbm_fade_found_fighter = 0
-    SET cbm_fade_found_thief = 0
-    FOR (cbm_fade_row = 0; cbm_fade_row < cbm_fade_xp_rows; cbm_fade_row += 1) BEGIN
-      READ_2DA_ENTRY_FORMER cbm_fade_xp_rows cbm_fade_row 0 cbm_fade_label
-      PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~)
-            OR (~%cbm_fade_label%~ STRING_EQUAL_CASE ~THIEF~) BEGIN
-        PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
-          SET cbm_fade_found_fighter += 1
-        END ELSE BEGIN
-          SET cbm_fade_found_thief += 1
-        END
-        SET cbm_fade_previous = 0
-        FOR (cbm_fade_level = 1; cbm_fade_level <= cbm_fade_xp_levels; cbm_fade_level += 1) BEGIN
-          READ_2DA_ENTRY_FORMER cbm_fade_xp_rows cbm_fade_row cbm_fade_level cbm_fade_cell
-          PATCH_IF (!(IS_AN_INT ~%cbm_fade_cell%~)) BEGIN
-            PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP thresholds must be integers~
-          END
-          SET cbm_fade_threshold = cbm_fade_cell
-          PATCH_IF (cbm_fade_threshold = (0 - 1)) BEGIN
-            PATCH_IF (cbm_fade_level != cbm_fade_xp_levels) BEGIN
-              PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP sentinel must be the final column~
-            END
-          END ELSE BEGIN
-            PATCH_IF ((cbm_fade_threshold < 0)
-                   OR ((cbm_fade_level = 1) AND (cbm_fade_threshold != 0))
-                   OR ((cbm_fade_level > 1) AND (cbm_fade_threshold <= cbm_fade_previous))) BEGIN
-              PATCH_FAIL ~cbm_fade_ft_fix: FIGHTER/THIEF XP rows must be complete and strictly increasing~
-            END
-            PATCH_IF (~%cbm_fade_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
-              SET $cbm_fade_fighter_xp(~%cbm_fade_level%~) = cbm_fade_threshold
-            END ELSE BEGIN
-              SET $cbm_fade_thief_xp(~%cbm_fade_level%~) = cbm_fade_threshold
-            END
-            SET cbm_fade_previous = cbm_fade_threshold
-          END
-        END
-      END
-    END
-    PATCH_IF ((cbm_fade_found_fighter != 1) OR (cbm_fade_found_thief != 1)) BEGIN
-      PATCH_FAIL ~cbm_fade_ft_fix: XPLEVEL.2DA needs exactly one FIGHTER and one THIEF row~
-    END
-  BUT_ONLY
+  END
 END
 
-// The public installer supplies the intended template explicitly. Its old
-// gameplay values do not determine whether this authored build may be applied.
 DEFINE_PATCH_FUNCTION cbm_fade_make_fighter_thief
   INT_VAR cbm_fade_thief_class = 0 cbm_fade_fighter_thief_class = 0
   STR_VAR cbm_fade_template = ~~
 BEGIN
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN PATCH_FAIL ~cbm_fade_ft_fix: truncated CRE~ END
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   READ_ASCII 0x00 cbm_fade_signature (8)
   READ_ASCII 0x280 cbm_fade_dv (32) NULL
   READ_LONG 0x18 cbm_fade_total_xp
-  PATCH_IF NOT (~%cbm_fade_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: expected a CRE V1.0 resource~
-  END
-  PATCH_IF NOT (~%cbm_fade_dv%~ STRING_EQUAL_CASE ~E3FADE~) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: expected death variable E3FADE~
-  END
-  PATCH_IF (cbm_fade_fighter_thief_class <= 0) OR (cbm_fade_fighter_thief_class > 255) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: invalid class context~
-  END
   SPRINT cbm_fade_template EVALUATE_BUFFER ~%cbm_fade_template%~
   PATCH_IF (~%cbm_fade_template%~ STRING_EQUAL_CASE ~E3FADE13~) BEGIN
     SET cbm_fade_target_hide = 70
@@ -121,8 +53,8 @@ BEGIN
     PATCH_FAIL ~cbm_fade_ft_fix: unsupported Fade template~
   END
   SET cbm_fade_class_xp = cbm_fade_total_xp / 2
-  SET cbm_fade_fighter_level = 0
-  SET cbm_fade_thief_level = 0
+  SET cbm_fade_fighter_level = 1
+  SET cbm_fade_thief_level = 1
   FOR (cbm_fade_level = 1; cbm_fade_level <= 255; ++cbm_fade_level) BEGIN
     PATCH_IF VARIABLE_IS_SET $cbm_fade_fighter_xp(~%cbm_fade_level%~) BEGIN
       PATCH_IF ($cbm_fade_fighter_xp(~%cbm_fade_level%~) <= cbm_fade_class_xp) BEGIN
@@ -135,19 +67,10 @@ BEGIN
       END
     END
   END
-  PATCH_IF (cbm_fade_fighter_level < 1) OR (cbm_fade_thief_level < 1) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: installed XPLEVEL.2DA cannot derive Fade levels~
-  END
   READ_BYTE 0x33 cbm_fade_effect_version
   READ_LONG 0x2c4 cbm_fade_effect_offset
   READ_LONG 0x2c8 cbm_fade_effect_count
   SET cbm_fade_effect_size = cbm_fade_effect_version = 1 ? 0x108 : 0x30
-  PATCH_IF ((cbm_fade_effect_version > 1) OR (cbm_fade_effect_count < 0)
-         OR (cbm_fade_effect_count > SOURCE_SIZE / cbm_fade_effect_size)
-         OR ((cbm_fade_effect_count > 0) AND ((cbm_fade_effect_offset < 0x2d4)
-           OR (cbm_fade_effect_offset > SOURCE_SIZE - cbm_fade_effect_count * cbm_fade_effect_size)))) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: invalid embedded effect table~
-  END
   LPF cbm_npc_clear_previous_kit INT_VAR target_kit = 0x40000000 END
   // A multiclass build has no inactive former class; preserve unrelated flags.
   WRITE_LONG 0x10 ((LONG_AT 0x10) BAND 0xfffffe07)
@@ -166,15 +89,19 @@ BEGIN
   SET_BG2_PROFICIENCY 96 1
   SET_BG2_PROFICIENCY 105 1
   SET_BG2_PROFICIENCY 114 cbm_fade_target_two_weapon
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END
 
 DEFINE_PATCH_FUNCTION cbm_fade_allow_fighter_thief BEGIN
-  PATCH_IF (SOURCE_SIZE < 0x72) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: truncated Fade amulet ITM~
-  END
+  PATCH_IF BUFFER_LENGTH >= 0x72 BEGIN
+    READ_ASCII 0 cbmo_signature (8)
+  END ELSE BEGIN SPRINT cbmo_signature ~~ END
+  PATCH_IF (~%cbmo_signature%~ STRING_EQUAL ~ITM V1  ~) BEGIN
   READ_ASCII 0x00 cbm_fade_item_signature (8)
-  PATCH_IF NOT (~%cbm_fade_item_signature%~ STRING_EQUAL ~ITM V1  ~) BEGIN
-    PATCH_FAIL ~cbm_fade_ft_fix: expected an ITM V1 resource~
-  END
   WRITE_BYTE 0x20 ((BYTE_AT 0x20) BAND 0xfd)
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END

@@ -287,7 +287,7 @@ class ContinuityIdentityTests(unittest.TestCase):
         self.install()
         self.assertEqual(snapshot(self.override), after)
 
-    def test_collision_fails_before_any_change(self):
+    def test_colliding_identity_labels_do_not_block_normalization(self):
         self.tables()
         self.compile()
         for collision in ("row", "column"):
@@ -300,10 +300,12 @@ class ContinuityIdentityTests(unittest.TestCase):
                 else:
                     path.write_text("2DA V1.0\n0\n Xan O#XAN\nXan 0 c\nYeslick s 0\n")
                 before = snapshot(self.override)
-                output = self.install(success=False)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-                self.assertIn("conflicting", output)
-                self.assertEqual(snapshot(self.override), before)
+                output=self.install()
+                self.assertNotIn("INSTALLED WITH WARNINGS",output)
+                self.assertNotRegex(self.read(name).decode(),r"(?m)^Xan\s")
+                self.assertIn(b"O#XAN",self.read(name))
+                self.run_weidu("identity-harness.tp2","--force-uninstall-list","0","--quick-log")
+                self.assertEqual(snapshot(self.override),before)
 
     def test_disabled_mapping_and_empty_selection_leave_resources_untouched(self):
         (self.override / "yeslic.cre").write_bytes(creature("Yeslick", 1))
@@ -328,16 +330,20 @@ class ContinuityIdentityTests(unittest.TestCase):
                 self.assertEqual(actual, [names] + [[name] + ["0"] * len(names) for name in names])
                 self.run_weidu("identity-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
 
-    def test_invalid_candidate_effects_roll_back_already_patched_tables(self):
+    def test_unreadable_effects_do_not_block_identity_fields_and_tables(self):
         self.tables()
         bad = creature()
         struct.pack_into("<I", bad, 0x2c8, 999999)
         (self.override / "xan_.cre").write_bytes(bad)
         before = snapshot(self.override)
-        output = self.install(success=False)
-        self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-        self.assertIn("invalid CRE effects", output)
-        self.assertEqual(snapshot(self.override), before)
+        output=self.install()
+        self.assertIn("unreadable creature effect list",output)
+        data=self.read("xan_.cre")
+        self.assertEqual(b"O#XAN",data[0x280:0x2a0].rstrip(b"\0"))
+        self.assertEqual(bytes(bad[0x2d4:]),data[0x2d4:])
+        self.assertIn(b"O#XAN",self.read("bddialog.2da"))
+        self.run_weidu("identity-harness.tp2","--force-uninstall-list","0","--quick-log")
+        self.assertEqual(snapshot(self.override),before)
 
     def test_shared_eet_command_metadata_is_restored(self):
         harness = self.game / "identity-harness.tp2"

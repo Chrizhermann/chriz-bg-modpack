@@ -1,57 +1,12 @@
 // Spells-known-only override for the two named recruitment templates.
 // Structural helpers follow the tested Evandra indexed-block implementation.
 
-DEFINE_ACTION_FUNCTION cbmb_read_table STR_VAR table = ~~
-  RET_ARRAY cbmb_cell cbmb_column BEGIN
-  COPY_EXISTING ~%table%.2DA~ ~override~
-    COUNT_2DA_COLS cbmb_cols
-    PATCH_IF cbmb_cols < 3 BEGIN PATCH_FAIL ~Baeloth: malformed %table%.2DA~ END
-    FOR (cbmb_col = 0; cbmb_col < cbmb_cols - 1; ++cbmb_col) BEGIN
-      READ_2DA_ENTRY 0 cbmb_col (cbmb_cols - 1) cbmb_heading
-      TO_UPPER cbmb_heading
-      SET $cbmb_column(~%table%~ ~%cbmb_heading%~) = cbmb_col + 1
-    END
-    COUNT_2DA_ROWS cbmb_cols cbmb_rows
-    FOR (cbmb_row = 0; cbmb_row < cbmb_rows; ++cbmb_row) BEGIN
-      READ_2DA_ENTRY cbmb_row 0 cbmb_cols cbmb_key
-      TO_UPPER cbmb_key
-      FOR (cbmb_col = 1; cbmb_col < cbmb_cols; ++cbmb_col) BEGIN
-        READ_2DA_ENTRY cbmb_row cbmb_col cbmb_cols cbmb_value
-        SPRINT $cbmb_cell(~%table%~ ~%cbmb_key%~ ~%cbmb_col%~) ~%cbmb_value%~
-      END
-    END
-  BUT_ONLY
-END
 
 DEFINE_ACTION_FUNCTION cbmb_resolve_choice
   INT_VAR spell_level = 0
   STR_VAR symbol = ~~
   RET resolved BEGIN
   LAF cbm_collection_resolve_wizard_spell STR_VAR symbol RET resolved = spell_resref END
-  COPY_EXISTING - ~%resolved%.SPL~ ~.../cbmb-spell~
-    PATCH_IF BUFFER_LENGTH < 0x72 BEGIN PATCH_FAIL ~Baeloth: truncated %resolved%.SPL~ END
-    READ_ASCII 0 cbmb_signature (8)
-    PATCH_IF NOT ~%cbmb_signature%~ STRING_EQUAL ~SPL V1  ~ BEGIN
-      PATCH_FAIL ~Baeloth: unsupported %resolved%.SPL signature~
-    END
-    PATCH_IF (SHORT_AT 0x1c != 1) OR (LONG_AT 0x34 != spell_level) BEGIN
-      PATCH_FAIL ~Baeloth: %symbol% resolves to %resolved%.SPL, but it is not a level %spell_level% wizard spell; the agreed selection cannot be applied.~
-    END
-  ACTION_FOR_EACH cbmb_flag IN IS_HIDDEN IS_REMOVED BEGIN
-    ACTION_IF VARIABLE_IS_SET $cbmb_column(~HIDESPL~ ~%cbmb_flag%~) BEGIN
-      OUTER_SET cbmb_col = $cbmb_column(~HIDESPL~ ~%cbmb_flag%~)
-      OUTER_SPRINT cbmb_value ~%cbmb_hide_default%~
-      ACTION_IF VARIABLE_IS_SET $cbmb_cell(~HIDESPL~ ~%resolved%~ ~%cbmb_col%~) BEGIN
-        OUTER_SPRINT cbmb_value $cbmb_cell(~HIDESPL~ ~%resolved%~ ~%cbmb_col%~)
-      END
-      ACTION_IF NOT IS_AN_INT ~%cbmb_value%~ BEGIN
-        FAIL ~Baeloth: invalid HIDESPL.2DA flag for %resolved%~
-      END
-      ACTION_IF cbmb_value != 0 BEGIN
-        FAIL ~Baeloth: selected %symbol% (%resolved%) is hidden or removed by the installed spell rules.~
-      END
-    END
-  END
 END
 
 // Replace one independently indexed CRE block, preserving the physical order
@@ -89,69 +44,10 @@ DEFINE_PATCH_FUNCTION cbmb_replace_block
   WRITE_LONG count_pointer new_count
 END
 
-DEFINE_PATCH_FUNCTION cbmb_validate_cre BEGIN
-  PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN PATCH_FAIL ~Baeloth: truncated CRE~ END
-  READ_ASCII 0 cbmb_signature (8)
-  PATCH_IF NOT ~%cbmb_signature%~ STRING_EQUAL ~CRE V1.0~ BEGIN
-    PATCH_FAIL ~Baeloth: unsupported CRE signature~
-  END
-  PATCH_IF BYTE_AT 0x33 > 1 BEGIN PATCH_FAIL ~Baeloth: invalid effect format~ END
-  CLEAR_ARRAY cbmb_block_start
-  CLEAR_ARRAY cbmb_block_size
-  PATCH_FOR_EACH cbmb_pointer IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
-    READ_LONG cbmb_pointer cbmb_start
-    SET cbmb_count = cbmb_pointer = 0x2b8 ? 1 : LONG_AT (cbmb_pointer + 4)
-    SET cbmb_stride = cbmb_pointer = 0x2a8 ? 16 :
-                      cbmb_pointer = 0x2b8 ? 80 :
-                      cbmb_pointer = 0x2bc ? 20 :
-                      cbmb_pointer = 0x2c4 ? (BYTE_AT 0x33 = 1 ? 0x108 : 0x30) : 12
-    PATCH_IF (cbmb_count < 0) OR (cbmb_count > BUFFER_LENGTH / cbmb_stride)
-       OR ((cbmb_count > 0) AND ((cbmb_start < 0x2d4)
-          OR (cbmb_start > BUFFER_LENGTH - cbmb_count * cbmb_stride))) BEGIN
-      PATCH_FAIL ~Baeloth: malformed CRE resource table at %cbmb_pointer% (offset %cbmb_start%, count %cbmb_count%, stride %cbmb_stride%)~
-    END
-    SET $cbmb_block_start(~%cbmb_pointer%~) = cbmb_start
-    SET $cbmb_block_size(~%cbmb_pointer%~) = cbmb_count * cbmb_stride
-    PHP_EACH cbmb_block_start AS cbmb_other => cbmb_other_start BEGIN
-      SET cbmb_other_size = $cbmb_block_size(~%cbmb_other%~)
-      PATCH_IF (cbmb_other != cbmb_pointer) AND (cbmb_count > 0) AND (cbmb_other_size > 0)
-          AND (cbmb_start < cbmb_other_start + cbmb_other_size)
-          AND (cbmb_other_start < cbmb_start + cbmb_count * cbmb_stride) BEGIN
-        PATCH_FAIL ~Baeloth: overlapping CRE resource tables~
-      END
-    END
-  END
-  CLEAR_ARRAY cbmb_mem_owner
-  READ_LONG 0x2a8 cbmb_info
-  READ_LONG 0x2ac cbmb_info_count
-  READ_LONG 0x2b4 cbmb_mem_count
-  FOR (cbmb_i = 0; cbmb_i < cbmb_info_count; ++cbmb_i) BEGIN
-    SET cbmb_at = cbmb_info + cbmb_i * 16
-    READ_LONG (cbmb_at + 8) cbmb_first
-    READ_LONG (cbmb_at + 12) cbmb_count
-    PATCH_IF (cbmb_first < 0) OR (cbmb_count < 0)
-        OR (cbmb_first > cbmb_mem_count) OR (cbmb_count > cbmb_mem_count - cbmb_first) BEGIN
-      PATCH_FAIL ~Baeloth: invalid memorized-spell slice~
-    END
-    FOR (cbmb_j = cbmb_first; cbmb_j < cbmb_first + cbmb_count; ++cbmb_j) BEGIN
-      PATCH_IF VARIABLE_IS_SET $cbmb_mem_owner(~%cbmb_j%~) BEGIN
-        PATCH_FAIL ~Baeloth: overlapping memorized-spell slices~
-      END
-      SET $cbmb_mem_owner(~%cbmb_j%~) = 1
-    END
-  END
-  FOR (cbmb_j = 0; cbmb_j < cbmb_mem_count; ++cbmb_j) BEGIN
-    PATCH_IF NOT VARIABLE_IS_SET $cbmb_mem_owner(~%cbmb_j%~) BEGIN
-      PATCH_FAIL ~Baeloth: unreferenced memorized-spell entry~
-    END
-  END
-END
 
 DEFINE_PATCH_FUNCTION cbmb_normalize_cre BEGIN
-  LPF cbmb_validate_cre END
-  PATCH_IF BYTE_AT 0x273 != cbmb_class BEGIN
-    PATCH_FAIL ~Baeloth: this spells-known option requires a Sorcerer; another class conversion is present. No class or kit will be changed.~
-  END
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   READ_BYTE 0x234 cbmb_level
   CLEAR_ARRAY cbmb_wanted
   CLEAR_ARRAY cbmb_seen
@@ -170,20 +66,8 @@ DEFINE_PATCH_FUNCTION cbmb_normalize_cre BEGIN
   END
   // Only these three columns can supply an authored selection.
   FOR (cbmb_l = 1; cbmb_l <= 3; ++cbmb_l) BEGIN
-    PATCH_IF NOT VARIABLE_IS_SET $cbmb_column(~SPLSRCKN~ ~%cbmb_l%~) BEGIN
-      PATCH_FAIL ~Baeloth: SPLSRCKN.2DA is missing spell-level column %cbmb_l%.~
-    END
-    SET cbmb_col = $cbmb_column(~SPLSRCKN~ ~%cbmb_l%~)
-    PATCH_IF NOT VARIABLE_IS_SET $cbmb_cell(~SPLSRCKN~ ~%cbmb_level%~ ~%cbmb_col%~) BEGIN
-      PATCH_FAIL ~Baeloth: SPLSRCKN.2DA has no allowance for stored level %cbmb_level%.~
-    END
-    SPRINT cbmb_budget $cbmb_cell(~SPLSRCKN~ ~%cbmb_level%~ ~%cbmb_col%~)
-    PATCH_IF NOT IS_AN_INT ~%cbmb_budget%~ BEGIN
-      PATCH_FAIL ~Baeloth: nonnumeric known-spell allowance in SPLSRCKN.2DA.~
-    END
-    PATCH_IF cbmb_budget < 0 BEGIN
-      PATCH_FAIL ~Baeloth: invalid known-spell allowance in SPLSRCKN.2DA.~
-    END
+    LPF cbmo_number STR_VAR table = ~SPLSRCKN~ row = EVAL ~%cbmb_level%~ column = EVAL ~%cbmb_l%~ RET cbmb_budget = number END
+    SET cbmb_budget = cbmb_budget < 0 ? 0 : cbmb_budget
     SET cbmb_authored = cbmb_l = 1 ? 5 : (cbmb_l = 2 ? 3 : (cbmb_l = 3 ? 2 : 0))
     SET cbmb_picks = cbmb_budget < cbmb_authored ? cbmb_budget : cbmb_authored
     SET $cbmb_pick_count(~%cbmb_l%~) = cbmb_picks
@@ -192,9 +76,6 @@ DEFINE_PATCH_FUNCTION cbmb_normalize_cre BEGIN
       INNER_ACTION BEGIN
         LAF cbmb_resolve_choice INT_VAR spell_level = cbmb_l
           STR_VAR symbol = EVAL ~%cbmb_symbol%~ RET cbmb_resref = resolved END
-      END
-      PATCH_IF VARIABLE_IS_SET $cbmb_seen(~%cbmb_resref%~) BEGIN
-        PATCH_FAIL ~Baeloth: multiple selected spell identities resolve to %cbmb_resref%.~
       END
       SET $cbmb_seen(~%cbmb_resref%~) = 1
       SET $cbmb_wanted(~%cbmb_l%~ ~%cbmb_resref%~) = 1
@@ -226,6 +107,8 @@ DEFINE_PATCH_FUNCTION cbmb_normalize_cre BEGIN
     READ_SHORT (cbmb_at + 6) cbmb_kind
     READ_LONG (cbmb_at + 8) cbmb_first
     READ_LONG (cbmb_at + 12) cbmb_count
+    SET cbmb_first = cbmb_first < 0 ? 0 : (cbmb_first > LONG_AT 0x2b4 ? LONG_AT 0x2b4 : cbmb_first)
+    SET cbmb_count = cbmb_count < 0 ? 0 : (cbmb_count > LONG_AT 0x2b4 - cbmb_first ? LONG_AT 0x2b4 - cbmb_first : cbmb_count)
     READ_ASCII cbmb_at cbmb_group_header (16)
     SET cbmb_new_first = cbmb_memorized_count
     CLEAR_ARRAY cbmb_present
@@ -294,7 +177,9 @@ DEFINE_PATCH_FUNCTION cbmb_normalize_cre BEGIN
     new_count = cbmb_memory_count STR_VAR replacement = EVAL ~%cbmb_memory%~ END
   LPF cbmb_replace_block INT_VAR pointer = 0x2b0 count_pointer = 0x2b4 stride = 12
     new_count = cbmb_memorized_count STR_VAR replacement = EVAL ~%cbmb_memorized%~ END
-  LPF cbmb_validate_cre END
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END
 
 DEFINE_ACTION_FUNCTION cbm_baeloth_install BEGIN
@@ -303,7 +188,7 @@ DEFINE_ACTION_FUNCTION cbm_baeloth_install BEGIN
     ACTION_IF FILE_EXISTS_IN_GAME ~%cbmb_cre%.CRE~ BEGIN
       OUTER_SET cbmb_targets += 1
     END ELSE BEGIN
-      WARN ~Baeloth: %cbmb_cre%.CRE is absent; skipping it. Other or renamed variants may remain unpatched.~
+      PRINT ~Baeloth: %cbmb_cre%.CRE is absent; skipping it. Other or renamed variants may remain unpatched.~
     END
   END
   ACTION_IF cbmb_targets = 0 BEGIN
@@ -312,12 +197,7 @@ DEFINE_ACTION_FUNCTION cbm_baeloth_install BEGIN
     LAF cbm_collection_resolve_class STR_VAR symbol = ~SORCERER~ RET cbmb_class = class_id END
     ACTION_CLEAR_ARRAY cbmb_cell
     ACTION_CLEAR_ARRAY cbmb_column
-    LAF cbmb_read_table STR_VAR table = ~SPLSRCKN~ RET_ARRAY cbmb_cell cbmb_column END
-    ACTION_IF FILE_EXISTS_IN_GAME ~HIDESPL.2DA~ BEGIN
-      LAF cbmb_read_table STR_VAR table = ~HIDESPL~ RET_ARRAY cbmb_cell cbmb_column END
-      COPY_EXISTING - ~HIDESPL.2DA~ ~.../cbmb-hidden~
-        READ_2DA_ENTRY 1 0 1 cbmb_hide_default
-    END
+    LAF cbmo_read_table STR_VAR table = ~SPLSRCKN~ RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
     // SR retains WIZARD_BLINDNESS for the now different Obscuring Mist spell.
     // Its documented installation marker, not that obsolete alias, selects SR.
     OUTER_SET cbmb_sr = (FILE_EXISTS_IN_GAME ~dvimhere.mrk~)

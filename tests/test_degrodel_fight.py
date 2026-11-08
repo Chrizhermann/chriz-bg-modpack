@@ -254,15 +254,30 @@ def install(game):
     return transcript
 
 
-def assert_skipped(game, message: str):
-    result, transcript = run(game)
-    assert result.returncode == 0, transcript
-    assert "INSTALLATION ABORTED" in transcript, transcript
-    assert message in transcript, transcript
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    assert not re.search(rf"(?m)#0\s+#{COMPONENT}\b", game.active_log())
-    # No partial patch: every game file, including the TLK, is untouched.
-    assert files(game) == game.before
+def assert_authored_choice(game):
+    transcript=install(game)
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    current=files(game)
+    dialog=parse_dlg(current[DLG_KEY],semantic=False)
+    strings=tlk_strings(current[TLK_KEY])
+    handins=0
+    for state in dialog:
+        takes=[t for t in state["transitions"] if t["action"] and
+               'takepartyitem' in t["action"].lower() and 'escapearea' in t["action"].lower()]
+        if not takes:continue
+        handins+=1
+        replies=[t for t in state["transitions"] if t["text"] is not None and
+                 strings[t["text"]]==ADDED_TEXT["refuse"]]
+        assert len(replies)==1
+        target=replies[0]["next"]
+        assert target[0]=="DEGROD"
+        fight=dialog[target[1]]["transitions"][0]["action"].lower()
+        assert '"cbmdegrodelfight"' in fight and 'enemy()' in fight
+        assert all(action not in fight for action in ('takepartyitem','givegold','escapearea'))
+    assert handins>0
+    install(game)
+    assert files(game)==current
+    return dialog
 
 
 def assert_choice(game, *, handin_state: int, handin_index: int = 0, reply_was=None,
@@ -428,14 +443,10 @@ END
     assert_choice(game, handin_state=0)
 
 
-@pytest.mark.parametrize("case,message", [
-    ("missing_take", "no transition in DEGROD.DLG takes the Helm of Balduran"),
-    ("missing_escape", "no transition in DEGROD.DLG takes the Helm of Balduran"),
-    ("two_handins", "has 2 Helm of Balduran hand-ins (states 3 4)"),
-    ("handin_interjection", "hand-in state 4 in DEGROD.DLG also continues without a player reply"),
-    ("already_applied", "choice is already present in DEGROD.DLG"),
+@pytest.mark.parametrize("case", [
+    "missing_take", "missing_escape", "two_handins", "handin_interjection", "already_applied",
 ])
-def test_ambiguous_or_unsupported_handins_skip_cleanly(tmp_path, case, message):
+def test_changed_or_missing_handins_receive_the_authored_choice(tmp_path, case):
     base = ("GiveGoldForce(5000)\nTakePartyItem(\"HELM07\")\n"
             + SERVANTS.format(stalker="STALKE_") + JOURNAL + "EscapeArea()\n")
     dialog = {
@@ -450,23 +461,29 @@ def test_ambiguous_or_unsupported_handins_skip_cleanly(tmp_path, case, message):
             'GOTO 2\n', f'GOTO 2\n  IF ~~ THEN DO ~{FIGHT_GLOBAL} Enemy()~ EXIT\n', 1),
     }[case]
     game = make_game(tmp_path, dialog)
-    assert_skipped(game, message)
+    assert_authored_choice(game)
 
 
-def test_invalid_dialog_skips_cleanly(tmp_path):
+def test_unreadable_dialog_is_isolated_without_component_failure(tmp_path):
     game = make_game(tmp_path, make_dialog())
     path = next(p for p in game.override.iterdir() if p.name.upper() == "DEGROD.DLG")
     data = bytearray(path.read_bytes())
     struct.pack_into("<I", data, 0x28, len(data) + 100)  # action table past EOF
     path.write_bytes(bytes(data))
     game.before = files(game)
-    assert_skipped(game, "DEGROD.DLG is not a valid dialog (a state, transition, trigger or action table lies outside the file)")
+    transcript=install(game)
+    assert "too damaged to write" in transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert files(game)==game.before
 
 
-def test_unbalanced_handin_actions_skip_cleanly(tmp_path):
+def test_unbalanced_handin_receives_the_authored_servant_fallback(tmp_path):
     handin = 'TakePartyItem("HELM07") CreateCreature("HELMHO",[371.427],S EscapeArea()'
     game = make_game(tmp_path, make_dialog(handin=handin))
-    assert_skipped(game, "could not be separated into individual actions")
+    dialog=assert_authored_choice(game)
+    fights=[t["action"] for state in dialog for t in state["transitions"]
+            if t["action"] and '"CBMDegrodelFight"' in t["action"]]
+    assert len(fights)==1 and fights[0].lower().count('createcreature(')==4
 
 
 def test_missing_dialog_and_unsupported_game_are_not_attempted(tmp_path):

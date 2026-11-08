@@ -33,8 +33,8 @@ record is `chriz-bg-modpack/scroll-casting/tools/CBMSPolicy-build.json`.
 
 ## Compatibility research and factual attribution
 
-This project interoperates with user-installed mods; it does not redistribute their
-packages or assets.
+This project interoperates with user-installed mods; it does not redistribute
+complete third-party mod packages.
 
 - Component `440` addresses an installed-resource interaction involving
   [Ascension](https://github.com/Gibberlings3/Ascension) and EE Fixpack.
@@ -58,3 +58,16 @@ with ChatGPT and approved its inclusion in future installations. It is not
 artwork copied from the Evandra NPC mod. The supplied 210x330, 24-bit BMP is
 included unchanged; SHA-256:
 `b4bde98aec195d47db521d3cc4d72b636ae5a0f391cc7469ea5d48688b112aad`.
+
+## Overwrite fallback data
+
+`chriz-bg-modpack/data/progression` contains standard EE 2.7.3 progression data
+used when an installed row or cell is missing. `data/descriptions.tpa` records
+the complete English text produced by the former patches on their intended
+installed resources. These game descriptions and rule data are not newly
+licensed as first-party MIT prose.
+
+The three neutral BAMs in `unidentified-items/artwork` are the stock MISC59
+inventory, ground and description artwork, used only when the corresponding
+installed donor cannot be read. This original game artwork is not covered by the
+project's MIT license. No third-party NPC portrait is included in that fallback.

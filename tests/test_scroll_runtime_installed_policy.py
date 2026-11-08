@@ -129,8 +129,10 @@ def test_malformed_or_missing_indexed_input_has_clear_outcome(tmp_path,capsys,ki
     status = cli.main(["--game-root",str(root),"--output-dir",str(output)])
     assert hashes(root) == before
     if kind.endswith("key"):
-        assert status == 1 and "KEY" in capsys.readouterr().err.upper()
-        assert not output.exists()
+        assert status == 2
+        report = json.loads((output/cli.REPORT_NAME).read_text())
+        assert report["inventory_errors"][0]["resource"] == "chitin.key"
+        assert (output/cli.TABLE_NAME).read_bytes()[:8] == b"CBMSPOL1"
     else:
         assert status == 2
         report = json.loads((output/cli.REPORT_NAME).read_text())
@@ -219,14 +221,18 @@ def test_installer_mode_does_not_allow_arbitrary_output_paths(tmp_path,where):
     assert hashes(root)==before
 
 
-def test_installer_mode_refuses_missing_root_and_keeps_previous_stage(tmp_path):
+def test_installer_mode_logs_damaged_root_and_writes_other_policies(tmp_path):
     root=game(tmp_path,{"S.ITM":scroll(effect(12))})
     out=root/cli.INSTALLER_STAGE;out.mkdir(parents=True)
     (out/cli.TABLE_NAME).write_bytes(b"previous table")
     (root/'OvErRiDe'/'s.itm').write_bytes(b"invalid root")
-    before=hashes(root)
-    assert cli.main(["--game-root",str(root),"--output-dir",str(out),"--installer-staging"])==1
-    assert hashes(root)==before
+    assert cli.main(["--game-root",str(root),"--output-dir",str(out),"--installer-staging"])==2
+    assert (out/cli.TABLE_NAME).read_bytes()[:8] == b"CBMSPOL1"
+    report=json.loads((out/cli.REPORT_NAME).read_text())
+    assert report["inventory"]["root_errors"] == 1
+    assert report["entries"] == 0
+    assert (root/'OvErRiDe'/'s.itm').read_bytes() == b"invalid root"
+
 
 
 @pytest.mark.skipif(sys.platform!='win32',reason='packaged installer helper targets Windows')

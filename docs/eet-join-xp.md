@@ -1,5 +1,9 @@
 # EET join-XP catch-up for joinable NPCs (239)
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Optional component **239** (`cbm_eet_join_xp`), EET only.
 
 EET gives each joinable BG2:EE NPC a one-time join-XP catch-up, tracked by the
@@ -14,7 +18,7 @@ NPC's local `BD_JOINXP`:
 
 Mod NPCs that EET moves into BG2 often lack the SoA ladder, and some ToB scripts
 cannot reach the raise. Component 239 adds EET's own block wherever a joinable
-NPC's script lacks it. XP is never lowered.
+NPC is found and replaces competing recruitment XP writes. XP is never lowered.
 
 ## How it finds joinable NPCs
 
@@ -31,33 +35,18 @@ It reads EET's rules from the installed game, not a list of NPCs:
    `AR4500`. Each of those scripts, and each created creature's override script,
    is checked when its NPC is in the ToB table.
 
-The installer lists the party-table entries for which EET has no such script.
-Their join XP is unchanged: they cannot join in that campaign, or a mod adds
-them without EET's NPC transition.
+The installer also scans readable CRE headers for party-table death variables.
+An empty override receives a new private script. Missing campaign metadata falls
+back to `PDIALOG` and `25DIALOG`. Entries without any discoverable script or CRE
+are listed; there is no target to change for those entries.
 
-## What it adds
+## What it writes
 
-- A **SoA script** without a one-shot ladder gets Beamdog's ladder on top. Each
-  block also requires `ENDOFBG1` 2 (BG2) and not `INTOB` 1, so it runs only in
-  SoA.
-- A **ToB script** gets EET's raise on top when it has none, or when a block
-  above the raise completes `BD_JOINXP` first. The raise also requires `INTOB` 1,
-  so it never runs in SoA, where some of these scripts are used as well.
-
-Left unchanged:
-
-- a SoA ladder of any owner, keyed on any variable, with any thresholds or cap,
-  including one without the final block (Pai'Na, Sirene) and the private copies
-  of 237/238;
-- a ToB raise that can run, keyed on any variable;
-- a protagonist ladder in a ToB-only script, which is that mod's ToB catch-up;
-- scripts where SCS NPC customization set the actor up (it owns joining XP);
-- everything on a second installation. A patched script already has its block.
-
-EET's own "already patched" check looks for the text `"BD_JOINXP"` in the
-compiled ToB script. Compiled scripts store `"LOCALSBD_JOINXP"`, so it never
-matches; EET adds the raise again on each transition call (Fade's ToB script has
-it twice). Component 239 recognises blocks by what they do instead.
+Each discovered SoA script gets Beamdog's authored ladder, gated to SoA by
+`ENDOFBG1` and `INTOB`. Each ToB script gets the authored 2,500,000 raise, gated
+to ToB. Old `BD_JOINXP` blocks are replaced, and recognized competing catch-up
+or SCS reset actions are removed. Other story blocks stay in place. A second
+application leaves the authored output stable.
 
 ## Effects in a game
 
@@ -79,10 +68,9 @@ it twice). Component 239 recognises blocks by what they do instead.
   EET's ladder relies on EET's import reset, which these routes do not do.
 - Sarevok (fixed 2,700,000) and Safana (no ToB route in EET) are unchanged.
 - With 650, the added blocks behave like the vanilla NPCs' ladders and raise.
-- With 237/238 (Fade, Evandra), either order works. 239 leaves 237/238's
-  private script with its own ladder and gives the original script, which
-  existing actors keep, Beamdog's ladder. Installed after 239, 237/238 find
-  that ladder and leave the NPC alone.
+- With 237/238 (Fade, Evandra), the last selected component owns the private
+  recruitment ladder. Both orders retain the chosen 1,250,000 ceiling and
+  one-shot completion; their below-first-band completion markers differ.
 
 No spell, class, kit, Spell Revisions or EEex dependency.
 

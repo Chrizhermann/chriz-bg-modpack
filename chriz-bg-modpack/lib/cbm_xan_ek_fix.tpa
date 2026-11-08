@@ -15,99 +15,32 @@ DEFINE_ACTION_FUNCTION cbm_xan_load_context
     cbm_xan_fighter_xp
     cbm_xan_mage_xp
 BEGIN
-  OUTER_SET cbm_xan_fighter_mage_class = IDS_OF_SYMBOL (~class~ ~FIGHTER_MAGE~)
-  ACTION_IF ((cbm_xan_fighter_mage_class <= 0) OR (cbm_xan_fighter_mage_class > 255)) BEGIN
-    FAIL ~cbm_xan_ek_fix: CLASS.IDS has an invalid FIGHTER_MAGE value~
-  END
-  OUTER_SET cbm_xan_eldritch_knight_id = IDS_OF_SYMBOL (~kit~ ~C0EK~)
-  ACTION_IF ((cbm_xan_eldritch_knight_id <= 0) OR (cbm_xan_eldritch_knight_id > 0x7fff)
-          OR (cbm_xan_eldritch_knight_id = 0x4000)) BEGIN
-    FAIL ~cbm_xan_ek_fix: KIT.IDS has an invalid C0EK value~
-  END
-  OUTER_SET cbm_xan_eldritch_knight_kit = cbm_xan_eldritch_knight_id * 0x10000
-
+  OUTER_SET cbm_xan_fighter_mage_class = (FILE_EXISTS_IN_GAME ~CLASS.IDS~ ? IDS_OF_SYMBOL (~class~ ~FIGHTER_MAGE~) : (0 - 1))
+  ACTION_IF cbm_xan_fighter_mage_class < 0 BEGIN OUTER_SET cbm_xan_fighter_mage_class = 7 END
+  OUTER_SET cbm_xan_kit_id = (FILE_EXISTS_IN_GAME ~KIT.IDS~ ? IDS_OF_SYMBOL (~kit~ ~C0EK~) : (0 - 1))
+  OUTER_SET cbm_xan_eldritch_knight_kit = cbm_xan_kit_id * 0x10000
+  LAF cbmo_read_table STR_VAR table = ~XPLEVEL~ RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
   ACTION_CLEAR_ARRAY cbm_xan_fighter_xp
   ACTION_CLEAR_ARRAY cbm_xan_mage_xp
-  COPY_EXISTING ~XPLEVEL.2DA~ ~override~
-    COUNT_2DA_COLS cbm_xan_xp_cols
-    PATCH_IF (cbm_xan_xp_cols < 3) OR (cbm_xan_xp_cols > 257) BEGIN
-      PATCH_FAIL ~cbm_xan_ek_fix: XPLEVEL.2DA must contain a class label and supported level columns~
+  OUTER_PATCH ~~ BEGIN
+    FOR (level = 1; level <= 255; ++level) BEGIN
+      LPF cbmo_number INT_VAR fallback = 2147483647 STR_VAR table = ~XPLEVEL~ row = ~FIGHTER~ column = EVAL ~%level%~ RET number END
+      SET $cbm_xan_fighter_xp(~%level%~) = number < 0 ? 2147483647 : number
+      LPF cbmo_number INT_VAR fallback = 2147483647 STR_VAR table = ~XPLEVEL~ row = ~MAGE~ column = EVAL ~%level%~ RET number END
+      SET $cbm_xan_mage_xp(~%level%~) = number < 0 ? 2147483647 : number
     END
-
-    SET cbm_xan_xp_levels = cbm_xan_xp_cols - 1
-    READ_2DA_ENTRIES_NOW cbm_xan_xp_wide cbm_xan_xp_levels
-    PATCH_IF (cbm_xan_xp_wide < 3) BEGIN
-      PATCH_FAIL ~cbm_xan_ek_fix: XPLEVEL.2DA is missing its header or class rows~
-    END
-    FOR (cbm_xan_col = 0; cbm_xan_col < cbm_xan_xp_levels; cbm_xan_col += 1) BEGIN
-      READ_2DA_ENTRY_FORMER cbm_xan_xp_wide 0 cbm_xan_col cbm_xan_header
-      PATCH_IF (!(IS_AN_INT ~%cbm_xan_header%~)
-             OR (cbm_xan_header != (cbm_xan_col + 1))) BEGIN
-        PATCH_FAIL ~cbm_xan_ek_fix: XPLEVEL.2DA level header must be consecutive from 1~
-      END
-    END
-
-    READ_2DA_ENTRIES_NOW cbm_xan_xp_rows cbm_xan_xp_cols
-    SET cbm_xan_found_fighter = 0
-    SET cbm_xan_found_mage = 0
-    FOR (cbm_xan_row = 0; cbm_xan_row < cbm_xan_xp_rows; cbm_xan_row += 1) BEGIN
-      READ_2DA_ENTRY_FORMER cbm_xan_xp_rows cbm_xan_row 0 cbm_xan_label
-      PATCH_IF (~%cbm_xan_label%~ STRING_EQUAL_CASE ~FIGHTER~)
-            OR (~%cbm_xan_label%~ STRING_EQUAL_CASE ~MAGE~) BEGIN
-        PATCH_IF (~%cbm_xan_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
-          SET cbm_xan_found_fighter += 1
-        END ELSE BEGIN
-          SET cbm_xan_found_mage += 1
-        END
-
-        SET cbm_xan_previous = 0
-        FOR (cbm_xan_level = 1; cbm_xan_level <= cbm_xan_xp_levels; cbm_xan_level += 1) BEGIN
-          READ_2DA_ENTRY_FORMER cbm_xan_xp_rows cbm_xan_row cbm_xan_level cbm_xan_cell
-          PATCH_IF (!(IS_AN_INT ~%cbm_xan_cell%~)) BEGIN
-            PATCH_FAIL ~cbm_xan_ek_fix: FIGHTER/MAGE XP thresholds must be integers~
-          END
-          SET cbm_xan_threshold = cbm_xan_cell
-          PATCH_IF (cbm_xan_threshold = (0 - 1)) BEGIN
-            PATCH_IF (cbm_xan_level != cbm_xan_xp_levels) BEGIN
-              PATCH_FAIL ~cbm_xan_ek_fix: FIGHTER/MAGE XP sentinel must be the final column~
-            END
-          END ELSE BEGIN
-            PATCH_IF ((cbm_xan_threshold < 0)
-                   OR ((cbm_xan_level = 1) AND (cbm_xan_threshold != 0))
-                   OR ((cbm_xan_level > 1) AND (cbm_xan_threshold <= cbm_xan_previous))) BEGIN
-              PATCH_FAIL ~cbm_xan_ek_fix: FIGHTER/MAGE XP rows must be complete and strictly increasing~
-            END
-            PATCH_IF (~%cbm_xan_label%~ STRING_EQUAL_CASE ~FIGHTER~) BEGIN
-              SET $cbm_xan_fighter_xp(~%cbm_xan_level%~) = cbm_xan_threshold
-            END ELSE BEGIN
-              SET $cbm_xan_mage_xp(~%cbm_xan_level%~) = cbm_xan_threshold
-            END
-            SET cbm_xan_previous = cbm_xan_threshold
-          END
-        END
-      END
-    END
-    PATCH_IF ((cbm_xan_found_fighter != 1) OR (cbm_xan_found_mage != 1)) BEGIN
-      PATCH_FAIL ~cbm_xan_ek_fix: XPLEVEL.2DA needs exactly one FIGHTER and one MAGE row~
-    END
-  BUT_ONLY
+  END
 END
 
 DEFINE_PATCH_FUNCTION cbm_xan_make_eldritch_knight
   INT_VAR cbm_xan_fighter_mage_class = 0 cbm_xan_eldritch_knight_kit = 0
   STR_VAR cbm_xan_template = ~~
 BEGIN
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN PATCH_FAIL ~cbm_xan_ek_fix: truncated CRE~ END
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   READ_ASCII 0x00 cbm_xan_signature (8)
   READ_ASCII 0x280 cbm_xan_dv (32) NULL
   READ_LONG 0x18 cbm_xan_total_xp
-  PATCH_IF NOT (~%cbm_xan_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~cbm_xan_ek_fix: expected a CRE V1.0 resource~
-  END
-  PATCH_IF ((cbm_xan_fighter_mage_class <= 0) OR (cbm_xan_fighter_mage_class > 255)
-         OR (cbm_xan_eldritch_knight_kit <= 0)) BEGIN
-    PATCH_FAIL ~cbm_xan_ek_fix: invalid class or kit context~
-  END
   SPRINT cbm_xan_template EVALUATE_BUFFER ~%cbm_xan_template%~
   SPRINT cbm_xan_expected_dv ~XAN~
   SET cbm_xan_target_sling = 1
@@ -125,9 +58,6 @@ BEGIN
   END ELSE BEGIN
     PATCH_FAIL ~cbm_xan_ek_fix: unsupported Xan template~
   END
-  PATCH_IF NOT (~%cbm_xan_dv%~ STRING_EQUAL_CASE ~%cbm_xan_expected_dv%~) BEGIN
-    PATCH_FAIL ~cbm_xan_ek_fix: unexpected Xan death variable~
-  END
   SET cbm_xan_target_fighter_level = 0
   SET cbm_xan_target_mage_level = 0
   SET cbm_xan_class_xp = cbm_xan_total_xp / 2
@@ -143,19 +73,10 @@ BEGIN
       END
     END
   END
-  PATCH_IF (cbm_xan_target_fighter_level < 1) OR (cbm_xan_target_mage_level < 1) BEGIN
-    PATCH_FAIL ~cbm_xan_ek_fix: installed XPLEVEL.2DA cannot derive Xan levels~
-  END
   READ_BYTE 0x33 cbm_xan_effect_version
   READ_LONG 0x2c4 cbm_xan_effect_offset
   READ_LONG 0x2c8 cbm_xan_effect_count
   SET cbm_xan_effect_size = cbm_xan_effect_version = 1 ? 0x108 : 0x30
-  PATCH_IF ((cbm_xan_effect_version > 1) OR (cbm_xan_effect_count < 0)
-         OR (cbm_xan_effect_count > SOURCE_SIZE / cbm_xan_effect_size)
-         OR ((cbm_xan_effect_count > 0) AND ((cbm_xan_effect_offset < 0x2d4)
-           OR (cbm_xan_effect_offset > SOURCE_SIZE - cbm_xan_effect_count * cbm_xan_effect_size)))) BEGIN
-    PATCH_FAIL ~cbm_xan_ek_fix: invalid embedded effect table~
-  END
   LPF cbm_npc_clear_previous_kit INT_VAR target_kit = cbm_xan_eldritch_knight_kit END
   // A multiclass build has no inactive former class; preserve unrelated flags.
   WRITE_LONG 0x10 ((LONG_AT 0x10) BAND 0xfffffe07)
@@ -172,4 +93,7 @@ BEGIN
   SET_BG2_PROFICIENCY 96 1
   SET_BG2_PROFICIENCY 107 cbm_xan_target_sling
   SET_BG2_PROFICIENCY 113 1
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END

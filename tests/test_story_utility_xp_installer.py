@@ -90,6 +90,16 @@ class StoryUtilityXPInstallerTests(unittest.TestCase):
             for name, payload in _file_tree(game.root).items()
             if not _is_weidu_artifact(name)
         }
+        if installed:
+            table = actual["OVERRIDE/CBMXPB.2DA"]
+            self.assertTrue(table.startswith(b"2DA V1.0"))
+            self.assertTrue(all(label in table for label in (b"PICK_LOCK", b"DISARM_TRAP", b"LEARN_SPELL")))
+            expected["OVERRIDE/CBMXPB.2DA"] = table
+            for resource in ("XPBONUS", "XPLEVEL"):
+                key=f"OVERRIDE/{resource}.2DA"
+                if key in actual and key not in expected:
+                    self.assertTrue(actual[key].startswith(b"2DA V1.0"))
+                    expected[key]=actual[key]
         self.assertEqual(set(expected), set(actual), "installer wrote outside its allowlist")
         for name, payload in expected.items():
             self.assertEqual(payload, actual[name], f"unexpected bytes in {name}")
@@ -159,7 +169,6 @@ class StoryUtilityXPInstallerTests(unittest.TestCase):
     def test_missing_runtime_dependencies_are_skipped_without_changes(self) -> None:
         cases = (
             ({"eeex": False}, r"(?i)EEex"),
-            ({"missing_tables": ("XPBONUS.2DA",)}, r"(?i)XPBONUS"),
         )
         for options, reason in cases:
             with self.subTest(options=options):

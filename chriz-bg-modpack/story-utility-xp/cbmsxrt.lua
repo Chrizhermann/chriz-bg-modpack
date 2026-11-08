@@ -11,6 +11,27 @@ function R.Reset()
     -- a reused rule table must not retain our rewards in an unsupported game.
 end
 
+local function completeTable(array)
+    local width, height = array.m_nSizeX, array.m_nSizeY
+    local needs = false
+    for _, label in ipairs({"PICK_LOCK", "DISARM_TRAP", "LEARN_SPELL"}) do
+        local row = array:findRowLabel(label)
+        if row < 0 or row >= height then needs = true end
+    end
+    local columns = {}
+    for column = 0, width - 1 do
+        local level = tonumber(array:getColumnLabel(column))
+        if level and level >= 1 and level % 1 == 0 then columns[level] = true end
+    end
+    for level = 1, 9 do if not columns[level] then needs = true end end
+    if needs then
+        EEex_RunWithStackManager({
+            {name="resref", struct="CResRef", constructor={args={"CBMXPB"}}}},
+            function(manager) array:Load(manager:getUD("resref")) end)
+    end
+    return array.m_nSizeX, array.m_nSizeY
+end
+
 local function refresh()
     local game = EngineGlobals.g_pBaldurChitin.m_pObjectGame
     if game.m_nCharacters < 1 then return end
@@ -22,38 +43,27 @@ local function refresh()
     end
     local array = game.m_ruleTables.m_tXPBonus
     local width, height = array.m_nSizeX, array.m_nSizeY
-    if width == 0 or height == 0 then return end
-    assert(width >= 9 and height >= 3, "XPBONUS has an unsupported shape")
+    width, height = completeTable(array)
     local key = tostring(EEex_UDToPtr(array.m_pArray)) .. ":" .. width .. ":" .. height
-    if phase and R.lastKey == key and R.lastPhase == phase then return end
 
     local rows = {lock = array:findRowLabel("PICK_LOCK"),
         trap = array:findRowLabel("DISARM_TRAP"),
         scribe = array:findRowLabel("LEARN_SPELL")}
-    for name, row in pairs(rows) do
-        assert(row >= 0 and row < height, "XPBONUS is missing row " .. name)
-    end
-    local levels = width
-    while levels > 0 and array:getColumnLabel(levels - 1) == "" do levels = levels - 1 end
-    assert(levels >= 9, "XPBONUS has too few level columns")
-    for column = 0, levels - 1 do
-        assert(tonumber(array:getColumnLabel(column)) == column + 1,
-            "XPBONUS columns must be consecutive levels starting at 1")
-    end
-
     -- Fully prepare and validate before publishing any cells. On unsupported
     -- state, restore the installed resource rather than leaking a previous mode.
     local plan = {}
     if not phase and not baseline then baseline = EEex_Resource_Load2DA("XPBONUS") end
     local labels = {lock = "PICK_LOCK", trap = "DISARM_TRAP", scribe = "LEARN_SPELL"}
-    for column = 0, levels - 1 do
-        local reward = phase and M.Rewards(phase, column + 1) or nil
+    for column = 0, width - 1 do
+        local level = tonumber(array:getColumnLabel(column))
+        if level and level >= 1 and level % 1 == 0 then
+        local reward = phase and M.Rewards(phase, level) or nil
         for name, row in pairs(rows) do
             local value = reward and reward[name]
-                or tonumber(baseline:getAtLabels(tostring(column + 1), labels[name]))
-            assert(type(value) == "number" and value >= 0 and value % 1 == 0
-                and value <= 2147483647, "Invalid XPBONUS baseline reward")
+                or tonumber(baseline:getAtLabels(tostring(level), labels[name]))
+            value = math.max(0, math.min(2147483647, math.floor(tonumber(value) or 0)))
             plan[#plan + 1] = {row * width + column, tostring(value)}
+        end
         end
     end
     for _, entry in ipairs(plan) do

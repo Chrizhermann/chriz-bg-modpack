@@ -1,5 +1,9 @@
 # BG1 Yeslick: Fighter/Alaghor of Clangeddin (188)
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 YeslickNPC v5 component 1 assigns Alaghor to its BG2 templates only. Component
 **188** extends that selected preset to the two BG1 recruitment templates,
 `YESLIC.CRE` and `YESLIC5.CRE`. Later native EET routes carry the existing actor;
@@ -10,27 +14,17 @@ then **199**, then **EET_end**. Component 188 requires EET and must precede
 Yeslick's first creation in the saved world. Use a new campaign for continuity.
 It does not need EEex. Existing saved actors are not migrated.
 
-This is an optional preset. Omit 188 for the collection's vanilla-companion
-opt-out. Selecting YeslickNPC **0** makes 188 skip without changing any resources,
-even if an unrelated mod also installed the Alaghor kit. An unexpected class or
-different kit on either recruitment template is an installation error, not
-permission to overwrite an intentional conversion.
+This is an optional preset. Omit 188 to keep the existing kit. Selecting it
+writes the installed `LK_ALAGHOR` kit to each present BG1 target, whatever its
+previous class or kit and regardless of earlier component-log choices.
 
 ## Kit and ability handling
 
-The installer resolves `LK_ALAGHOR` from the local `KIT.IDS`, finds its unique
-`KITLIST.2DA` row and reads that row's `ABILITIES` CLAB. It validates the
-installed priest-level delivery for each nonempty AP_/GA_ entry: either an
-existing base-priest CLAB entry at that level, or the provider's qd_multiclass
-dispatcher and kit-filtered EFF. Missing resources, stale kit IDs, missing
-priest dispatch and unexpected source shapes fail with rollback.
-
-After that preflight, only the recruitment CREs' kit dword changes. The native
-recruitment/level-up mechanism supplies the installed grants at priest levels.
-The installer does not bake additional spells/effects into the CRE, replay kit
-abilities at transitions, change levels to match XP, or assign the BG2 template's
-build. XP, both class levels, attributes, proficiencies, spellbooks (including
-SPIN112), memorization state, effects, inventory, scripts and dialogue remain.
+The kit and its qd_multiclass implementation must exist. Their old CLAB layout,
+grant counts and dispatcher contents do not gate the kit-field write. The native
+recruitment/level-up machinery supplies the installed kit's abilities. The
+installer writes no extra spells or effects and preserves XP, class levels,
+attributes, proficiencies, spellbooks, inventory, scripts and dialogue.
 
 Yeslick v5's original kit table grants `LK#Y1` at priest level **8**, `LK#Y2` at
 **14**, and `LK#Y3` at **16**. A Fighter 17 / Cleric 5 still receives none of

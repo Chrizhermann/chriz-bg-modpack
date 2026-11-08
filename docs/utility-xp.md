@@ -1,5 +1,9 @@
 # Progressive utility XP — component 610
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 This mode retains its original smooth protagonist-XP curve. The
 [story-based alternative, component 611](story-utility-xp.md), is the approved
 next CEBG default; collection integration is separate. Select one mode only.
@@ -142,8 +146,8 @@ original exact whole-point behavior, use `roundingStep = 1` and
 `roundingMode = "nearest"`. Older configs omitting both settings retain that
 whole-point behavior. The step must be a positive integer; overflow checks
 include the rounded result. A disabled category still awards zero.
-Invalid numbers and integer-overflowing rewards are rejected with a Lua log
-message. Syntax errors are reported during initialization.
+Invalid configuration fields use the authored defaults. Syntax errors still
+mean the Lua file cannot be loaded and are reported during initialization.
 
 Scribing becomes more valuable later, including for low-level spells. This
 creates an incentive to save scrolls for later, and the base game's erase/relearn
@@ -157,22 +161,17 @@ The hidden, noninteractive menu refreshes the existing engine-owned
 listener also refreshes it. It follows EEex's own persistent hidden-menu pattern.
 [EEex B3TimeStep](https://github.com/Bubb13/EEex/blob/204040502ac920161d60046d90b766b8d2d08152/EEex/copy/EEex_scripts/B3TimeStep.lua).
 
-Every existing lock/trap level column receives the current shared reward, so
-native class-level selection no longer affects the amount. Scribing columns
-1–9 receive spell-level rewards. Higher custom scribing columns, unrelated rows,
-headers and defaults are preserved. In particular, a 50-column table with
-missing level-41–50 values is filled for locks and traps. No new columns are
-invented; other mods must provide columns for any supported levels above the
-existing table's width. The native parser can allocate extra unnamed columns:
-the disposable EET installation exposed 51 allocated columns for 50 level
-headers. Trailing unnamed columns remain untouched, and the allocated width
-is retained when addressing each row. Interior gaps or reordered level headers
-are rejected before any write.
+Every labeled lock/trap level column receives the current shared reward.
+Scribing columns 1-9 receive spell-level rewards. Missing owned rows and columns
+are supplied by a complete private table; extra named columns and unrelated rows
+are retained. Reordered headers are addressed by label, and unnamed allocation
+padding is not treated as a level.
 
 Cells are assigned with the native CString assignment operator. The adapter
 does not retain creature or cell pointers between callbacks and clears caches
 when loading another save. It does not add XP directly, alter character stats,
-write save variables, replace UI.MENU, or edit disk XPBONUS/XPLEVEL.
+write save variables or replace UI.MENU. The installer publishes a private
+complete XP table and supplies missing XPBONUS/XPLEVEL baseline files.
 [EEex resource access](https://github.com/Bubb13/EEex/blob/204040502ac920161d60046d90b766b8d2d08152/EEex/copy/EEex_scripts/EEex_Resource.lua),
 [CString alias](https://github.com/Bubb13/EEex/blob/204040502ac920161d60046d90b766b8d2d08152/EEex/copy/EEex_scripts/EEex_Alias.lua).
 
@@ -182,7 +181,7 @@ cells is not provided. The component changes neither kill nor quest rewards,
 and it leaves normal engine XP caps and sharing in force. Rewards refresh at UI
 callbacks/action starts; it is not an interception of each individual XP award.
 
-WeiDU owns five payload files and restores their prior bytes on uninstall.
+WeiDU owns the payload and fallback files and restores their prior bytes on uninstall.
 Restart after uninstall to clear the modified in-memory table. No extra files
 or character effects need cleanup.
 

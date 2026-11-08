@@ -3,25 +3,10 @@
 
 DEFINE_ACTION_FUNCTION cbm_npc_table STR_VAR table = ~~
   RET_ARRAY cbm_cell cbm_column cbm_cols BEGIN
-  // Read-only COPY: tables are never published or rewritten by this component.
-  COPY_EXISTING ~%table%.2da~ ~override~
-    COUNT_2DA_COLS cols
-    COUNT_2DA_ROWS cols rows
-    SET $cbm_cols(~%table%~) = cols
-    FOR (col = 0; col < (cols - 1); ++col) BEGIN
-      READ_2DA_ENTRY 0 col (cols - 1) heading
-      TO_UPPER heading
-      SET $cbm_column(~%table%~ ~%heading%~) = col + 1
-    END
-    FOR (row = 0; row < rows; ++row) BEGIN
-      READ_2DA_ENTRY row 0 cols key
-      TO_UPPER key
-      FOR (col = 1; col < cols; ++col) BEGIN
-        READ_2DA_ENTRY row col cols value
-        SPRINT $cbm_cell(~%table%~ ~%key%~ ~%col%~) ~%value%~
-      END
-    END
-  BUT_ONLY
+  LAF cbmo_read_table STR_VAR table RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
+  ACTION_PHP_EACH cbmo_cell AS keys => value BEGIN OUTER_SPRINT $cbm_cell(~%keys_0%~ ~%keys_1%~ ~%keys_2%~) ~%value%~ END
+  ACTION_PHP_EACH cbmo_column AS keys => value BEGIN OUTER_SET $cbm_column(~%keys_0%~ ~%keys_1%~) = value END
+  ACTION_PHP_EACH cbmo_cols AS key => value BEGIN OUTER_SET $cbm_cols(~%key%~) = value END
 END
 
 DEFINE_PATCH_FUNCTION cbm_npc_level INT_VAR xp = 0 STR_VAR class = ~~ RET level BEGIN
@@ -32,14 +17,31 @@ DEFINE_PATCH_FUNCTION cbm_npc_level INT_VAR xp = 0 STR_VAR class = ~~ RET level 
   END
 END
 
-DEFINE_PATCH_FUNCTION cbm_npc_hp INT_VAR level = 1 STR_VAR table = ~~ RET hp BEGIN
+DEFINE_PATCH_FUNCTION cbm_npc_number
+  INT_VAR fallback = 0 STR_VAR table = ~~ row = ~~ column = ~~ RET number BEGIN
+  SET number = fallback
+  TO_UPPER table
+  PATCH_IF VARIABLE_IS_SET $cbm_column(~%table%~ ~%column%~) BEGIN
+    SET hp_column = $cbm_column(~%table%~ ~%column%~)
+    PATCH_IF VARIABLE_IS_SET $cbm_cell(~%table%~ ~%row%~ ~%hp_column%~) BEGIN
+      SPRINT hp_value $cbm_cell(~%table%~ ~%row%~ ~%hp_column%~)
+      PATCH_IF IS_AN_INT ~%hp_value%~ BEGIN SET number = hp_value END
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_npc_hp INT_VAR level = 1 STR_VAR table = ~~ baseline = ~HPROG~ RET hp BEGIN
   // Half-hit-point units retain the expected value of odd-sided averages.
   // Preserve the original creature's roll quality by scaling its existing HP.
   SET hp = 0
   FOR (n = 1; n <= level; ++n) BEGIN
-    SET sides = $cbm_cell(~%table%~ ~%n%~ ~1~)
-    SET rolls = $cbm_cell(~%table%~ ~%n%~ ~2~)
-    SET modifier = $cbm_cell(~%table%~ ~%n%~ ~3~)
+    SET cbm_hp_row = n > 50 ? 50 : n
+    LPF cbm_npc_number STR_VAR table = EVAL ~%baseline%~ row = EVAL ~%cbm_hp_row%~ column = ~SIDES~ RET sides = number END
+    LPF cbm_npc_number STR_VAR table = EVAL ~%baseline%~ row = EVAL ~%cbm_hp_row%~ column = ~ROLLS~ RET rolls = number END
+    LPF cbm_npc_number STR_VAR table = EVAL ~%baseline%~ row = EVAL ~%cbm_hp_row%~ column = ~MODIFIER~ RET modifier = number END
+    LPF cbm_npc_number INT_VAR fallback = sides STR_VAR table = EVAL ~%table%~ row = EVAL ~%n%~ column = ~SIDES~ RET sides = number END
+    LPF cbm_npc_number INT_VAR fallback = rolls STR_VAR table = EVAL ~%table%~ row = EVAL ~%n%~ column = ~ROLLS~ RET rolls = number END
+    LPF cbm_npc_number INT_VAR fallback = modifier STR_VAR table = EVAL ~%table%~ row = EVAL ~%n%~ column = ~MODIFIER~ RET modifier = number END
     SET hp += modifier * 2 + rolls * (n = 1 ? sides * 2 : sides + 1)
   END
 END
@@ -112,7 +114,8 @@ DEFINE_PATCH_FUNCTION cbm_npc_skills INT_VAR level = 1 vampire = 0
     SET weight_sum += weight
   END
   PATCH_IF (budget < 0 OR weight_sum = 0) BEGIN
-    PATCH_FAIL ~Companion conversion: invalid thief-skill budget or no enabled skills.~
+    SET budget = budget < 0 ? 0 : budget
+    SET weight_sum = weight_sum = 0 ? 1 : weight_sum
   END
   SET left = budget
   PHP_EACH cbm_skill_offset AS skill => offset BEGIN
@@ -133,7 +136,7 @@ DEFINE_PATCH_FUNCTION cbm_npc_skills INT_VAR level = 1 vampire = 0
       END
     END
     PATCH_IF (before = left) BEGIN
-      PATCH_FAIL ~Companion conversion: thief-skill budget exceeds enabled skill capacity.~
+      SET left = 0
     END
   END
   PHP_EACH cbm_skill_offset AS skill => offset BEGIN
@@ -144,21 +147,43 @@ END
 DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
   READ_LONG 0x18 total_xp
   READ_BYTE 0x234 old_level
+  SET old_level = old_level < 1 ? 1 : (old_level > 50 ? 50 : old_level)
+  READ_BYTE 0x235 old_thief
+  SET old_thief = old_thief < 1 ? 1 : (old_thief > 50 ? 50 : old_thief)
+  SET source_multi = BYTE_AT 0x273 = 9
   SET represented_xp = total_xp
   SET next = old_level + 1
   PATCH_IF (next < $cbm_cols(~XPLEVEL~)) BEGIN
     SET ceiling = $cbm_cell(~XPLEVEL~ ~THIEF~ ~%next%~)
     PATCH_IF (ceiling > 0 AND represented_xp >= ceiling) BEGIN SET represented_xp = ceiling - 1 END
   END
+  PATCH_IF source_multi BEGIN
+    SET represented_xp = total_xp
+    SET next = old_level + 1
+    PATCH_IF next < $cbm_cols(~XPLEVEL~) BEGIN
+      SET ceiling = 2 * $cbm_cell(~XPLEVEL~ ~FIGHTER~ ~%next%~)
+      PATCH_IF ceiling > 0 AND represented_xp >= ceiling BEGIN SET represented_xp = ceiling - 1 END
+    END
+    SET next = old_thief + 1
+    PATCH_IF next < $cbm_cols(~XPLEVEL~) BEGIN
+      SET ceiling = 2 * $cbm_cell(~XPLEVEL~ ~THIEF~ ~%next%~)
+      PATCH_IF ceiling > 0 AND represented_xp >= ceiling BEGIN SET represented_xp = ceiling - 1 END
+    END
+  END
   LPF cbm_npc_level INT_VAR xp = represented_xp / 2 STR_VAR class = ~FIGHTER~ RET fighter = level END
   LPF cbm_npc_level INT_VAR xp = represented_xp / 2 STR_VAR class = ~THIEF~ RET thief = level END
-  WRITE_BYTE 0x273 (IDS_OF_SYMBOL (~CLASS~ ~FIGHTER_THIEF~))
+  WRITE_BYTE 0x273 9
   WRITE_BYTE 0x234 fighter
   WRITE_BYTE 0x235 thief
   WRITE_BYTE 0x236 0
   WRITE_LONG 0x244 0x40000000
   // Rebuild base progression, retaining individual NPC bonuses/penalties.
   SET old_thac0 = $cbm_cell(~THAC0~ ~THIEF~ ~%old_level%~)
+  PATCH_IF source_multi BEGIN
+    SET old_thac0 = $cbm_cell(~THAC0~ ~FIGHTER~ ~%old_level%~)
+    SET old_thief_thac0 = $cbm_cell(~THAC0~ ~THIEF~ ~%old_thief%~)
+    SET old_thac0 = old_thac0 < old_thief_thac0 ? old_thac0 : old_thief_thac0
+  END
   SET fighter_thac0 = $cbm_cell(~THAC0~ ~FIGHTER~ ~%fighter%~)
   SET thief_thac0 = $cbm_cell(~THAC0~ ~THIEF~ ~%thief%~)
   SET new_thac0 = fighter_thac0 < thief_thac0 ? fighter_thac0 : thief_thac0
@@ -168,6 +193,11 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
   FOR (save = 0; save < 5; ++save) BEGIN
     SPRINT row $cbm_save_row(~%save%~)
     SET old_save = $cbm_cell(~SAVEROG~ ~%row%~ ~%old_level%~)
+    PATCH_IF source_multi BEGIN
+      SET old_save = $cbm_cell(~SAVEWAR~ ~%row%~ ~%old_level%~)
+      SET old_thief_save = $cbm_cell(~SAVEROG~ ~%row%~ ~%old_thief%~)
+      SET old_save = old_save < old_thief_save ? old_save : old_thief_save
+    END
     SET fighter_save = $cbm_cell(~SAVEWAR~ ~%row%~ ~%fighter%~)
     SET thief_save = $cbm_cell(~SAVEROG~ ~%row%~ ~%thief%~)
     SET new_save = fighter_save < thief_save ? fighter_save : thief_save
@@ -176,6 +206,11 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
     WRITE_BYTE (0x54 + save) (result < (0 - 128) ? (0 - 128) : (result > 127 ? 127 : result))
   END
   SET old_lore = old_level * $cbm_cell(~LORE~ ~THIEF~ ~1~)
+  PATCH_IF source_multi BEGIN
+    SET old_lore = old_level * $cbm_cell(~LORE~ ~FIGHTER~ ~1~)
+    SET old_thief_lore = old_thief * $cbm_cell(~LORE~ ~THIEF~ ~1~)
+    SET old_lore = old_lore > old_thief_lore ? old_lore : old_thief_lore
+  END
   SET fighter_lore = fighter * $cbm_cell(~LORE~ ~FIGHTER~ ~1~)
   SET thief_lore = thief * $cbm_cell(~LORE~ ~THIEF~ ~1~)
   SET new_lore = fighter_lore > thief_lore ? fighter_lore : thief_lore
@@ -184,12 +219,18 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
   SPRINT rogue_hp $cbm_cell(~HPCLASS~ ~THIEF~ ~1~)
   SPRINT warrior_hp $cbm_cell(~HPCLASS~ ~FIGHTER~ ~1~)
   LPF cbm_npc_hp INT_VAR level = old_level STR_VAR table = EVAL ~%rogue_hp%~ RET old_hp = hp END
-  LPF cbm_npc_hp INT_VAR level = fighter STR_VAR table = EVAL ~%warrior_hp%~ RET fighter_hp = hp END
+  LPF cbm_npc_hp INT_VAR level = fighter STR_VAR table = EVAL ~%warrior_hp%~ baseline = ~HPWAR~ RET fighter_hp = hp END
   LPF cbm_npc_hp INT_VAR level = thief STR_VAR table = EVAL ~%rogue_hp%~ RET thief_hp = hp END
-  PATCH_IF old_hp <= 0 BEGIN PATCH_FAIL ~Companion conversion: invalid hit-point table.~ END
+  SET old_hp = old_hp * 2
+  PATCH_IF source_multi BEGIN
+    LPF cbm_npc_hp INT_VAR level = old_level STR_VAR table = EVAL ~%warrior_hp%~ baseline = ~HPWAR~ RET old_fighter_hp = hp END
+    LPF cbm_npc_hp INT_VAR level = old_thief STR_VAR table = EVAL ~%rogue_hp%~ RET old_thief_hp = hp END
+    SET old_hp = old_fighter_hp + old_thief_hp
+  END
+  SET old_hp = old_hp > 0 ? old_hp : 1
   READ_SHORT 0x24 current_hp
   READ_SHORT 0x26 maximum_hp
-  SET new_hp = (maximum_hp * (fighter_hp + thief_hp) + old_hp) / (old_hp * 2)
+  SET new_hp = (maximum_hp * (fighter_hp + thief_hp) + old_hp / 2) / old_hp
   SET new_hp = new_hp > 0 ? new_hp : 1
   WRITE_SHORT 0x24 (maximum_hp > 0 ? (current_hp * new_hp / maximum_hp) : new_hp)
   WRITE_SHORT 0x26 new_hp
@@ -199,8 +240,9 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
   // Spend its installed-table budget in the authored order below, independently
   // of any earlier mod's pips. Clear only standard proficiency effects.
   SET prof_col = $cbm_column(~WEAPPROF~ ~FIGHTER_THIEF~)
-  SET prof_budget = $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~1~) +
-                   fighter / $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~2~)
+  SET cbm_prof_interval = $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~2~)
+  SET cbm_prof_interval = cbm_prof_interval > 0 ? cbm_prof_interval : 3
+  SET prof_budget = $cbm_cell(~PROFS~ ~FIGHTER_THIEF~ ~1~) + fighter / cbm_prof_interval
   CLEAR_ARRAY cbm_profs
   FOR (stat = 89; stat <= 115; ++stat) BEGIN
     SET $cbm_profs(~%stat%~) = 0
@@ -217,7 +259,7 @@ DEFINE_PATCH_FUNCTION cbm_npc_fighter_thief BEGIN
       END
     END
     PATCH_IF before = prof_budget BEGIN
-      PATCH_FAIL ~Companion conversion: unsupported proficiency caps; no room for remaining points.~
+      SET prof_budget = 0
     END
   END
 END
@@ -249,7 +291,7 @@ DEFINE_ACTION_FUNCTION cbm_companion_class STR_VAR npc = ~~ kit = ~~ BEGIN
   END
   OUTER_SET target_kit = 0x4000
   ACTION_IF ~%kit%~ STRING_EQUAL_CASE ~FIGHTER_THIEF~ BEGIN
-    ACTION_FOR_EACH table IN ~XPLEVEL~ ~THAC0~ ~SAVEROG~ ~SAVEWAR~ ~LORE~ ~HPCLASS~ ~PROFS~ ~WEAPPROF~ BEGIN
+    ACTION_FOR_EACH table IN ~XPLEVEL~ ~THAC0~ ~SAVEROG~ ~SAVEWAR~ ~LORE~ ~HPCLASS~ ~PROFS~ ~WEAPPROF~ ~HPROG~ ~HPWAR~ BEGIN
       LAF cbm_npc_table STR_VAR table RET_ARRAY cbm_cell cbm_column cbm_cols END
     END
     OUTER_SPRINT table $cbm_cell(~HPCLASS~ ~THIEF~ ~1~)
@@ -257,8 +299,12 @@ DEFINE_ACTION_FUNCTION cbm_companion_class STR_VAR npc = ~~ kit = ~~ BEGIN
     OUTER_SPRINT table $cbm_cell(~HPCLASS~ ~FIGHTER~ ~1~)
     LAF cbm_npc_table STR_VAR table RET_ARRAY cbm_cell cbm_column cbm_cols END
   END ELSE BEGIN
-    OUTER_SET target_kit = IDS_OF_SYMBOL (~KIT~ ~%kit%~)
-    ACTION_IF target_kit < 0 BEGIN FAIL ~Companion conversion: requested kit is missing from KIT.IDS.~ END
+    OUTER_SET target_kit = FILE_EXISTS_IN_GAME ~KIT.IDS~ ? IDS_OF_SYMBOL (~KIT~ ~%kit%~) : (0 - 1)
+    ACTION_IF target_kit < 0 BEGIN
+      INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~
+      LAF cbm_collection_resolve_kit STR_VAR symbol = EVAL ~%kit%~ RET kit_dword END
+      OUTER_SET target_kit = (kit_dword BLSR 16) BAND 0xffff
+    END
   END
   ACTION_IF ~%npc%~ STRING_EQUAL_CASE ~YOSHIMO~ BEGIN
     ACTION_DEFINE_ARRAY cbm_creatures BEGIN ~YOSHI7~ ~YOSHI8~ ~YOSHI10~ ~YOSHI11~ ~YOSHI12~ END
@@ -269,14 +315,8 @@ DEFINE_ACTION_FUNCTION cbm_companion_class STR_VAR npc = ~~ kit = ~~ BEGIN
   ACTION_PHP_EACH cbm_creatures AS index => creature BEGIN
     ACTION_IF FILE_EXISTS_IN_GAME ~%creature%.cre~ BEGIN
       COPY_EXISTING ~%creature%.cre~ ~override~
-        PATCH_IF (SOURCE_SIZE < 0x2d4 OR ~%SOURCE_RES%~ STRING_EQUAL_CASE ~~) BEGIN
-          PATCH_FAIL ~Companion conversion: invalid CRE resource.~
-        END
-        READ_ASCII 0 signature (8)
-        PATCH_IF (NOT ~%signature%~ STRING_EQUAL_CASE ~CRE V1.0~ OR
-                  BYTE_AT 0x273 != IDS_OF_SYMBOL (~CLASS~ ~THIEF~) OR BYTE_AT 0x234 < 1) BEGIN
-          PATCH_FAIL ~Companion conversion: expected an existing single-class thief CRE V1.0. Install before other class/respec changes.~
-        END
+        LPF cbmo_cre_writable RET cbmo_writable END
+        PATCH_IF cbmo_writable BEGIN
         READ_LONG 0x244 old_kit
         SET old_kit = ((old_kit BAND 0xffff) BLSL 16) BOR ((old_kit BLSR 16) BAND 0xffff)
         LPF cbm_npc_clear_clab STR_VAR clab = ~CLABTH01~ END
@@ -293,38 +333,57 @@ DEFINE_ACTION_FUNCTION cbm_companion_class STR_VAR npc = ~~ kit = ~~ BEGIN
         PATCH_IF ~%kit%~ STRING_EQUAL_CASE ~FIGHTER_THIEF~ BEGIN
           LPF cbm_npc_fighter_thief END
         END ELSE BEGIN
+          WRITE_BYTE 0x273 4
           WRITE_LONG 0x244 (((target_kit BAND 0xffff) BLSL 16) BOR ((target_kit BLSR 16) BAND 0xffff))
           LPF cbm_npc_skills INT_VAR level = BYTE_AT 0x234
               vampire = ~%npc%~ STRING_EQUAL_CASE ~HEXXAT~ STR_VAR kit END
         END
         SET count += 1
+        END ELSE BEGIN PATCH_PRINT ~Companion conversion: %SOURCE_FILE% is too damaged to write.~ END
       BUT_ONLY
-    END
+    END ELSE BEGIN PRINT ~Companion conversion: %creature%.CRE is absent.~ END
   END
-  ACTION_IF count = 0 BEGIN FAIL ~Companion conversion: no supported companion CREs were found.~ END
+  ACTION_IF count = 0 BEGIN PRINT ~Companion conversion: no supported companion CREs were found.~ END
 
   ACTION_IF ~%npc%~ STRING_EQUAL_CASE ~YOSHIMO~ AND FILE_EXISTS_IN_GAME ~NPSW02.ITM~ BEGIN
     COPY_EXISTING ~NPSW02.ITM~ ~override~
-      PATCH_IF SOURCE_SIZE < 0x72 BEGIN PATCH_FAIL ~Companion conversion: invalid Yoshimo katana.~ END
-      WRITE_BYTE 0x2b (BYTE_AT 0x2b BAND 0xef)
+      PATCH_IF SOURCE_SIZE >= 0x72 BEGIN
+        WRITE_BYTE 0x2b (BYTE_AT 0x2b BAND 0xef)
+        LPF cbmo_write_description END
+      END ELSE BEGIN PATCH_PRINT ~Companion conversion: %SOURCE_FILE% is too damaged to write.~ END
     BUT_ONLY
   END
   ACTION_IF ~%kit%~ STRING_EQUAL_CASE ~FIGHTER_THIEF~ BEGIN
     OUTER_SET domination_1 = $cbm_cell(~XPLEVEL~ ~THIEF~ ~14~) - 1
     OUTER_SET domination_2 = $cbm_cell(~XPLEVEL~ ~THIEF~ ~24~) - 1
+<<<<<<<< .../cbmo-domination-old.baf
+IF
+  Global("ohh_dom","LOCALS",0)
+  LevelGT(Myself,13)
+THEN
+  RESPONSE #100
+    AddSpecialAbility("SPIN883")
+    SetGlobal("ohh_dom","LOCALS",1)
+END
+IF
+  Global("ohh_dom","LOCALS",1)
+  LevelGT(Myself,23)
+THEN
+  RESPONSE #100
+    AddSpecialAbility("SPIN883")
+    SetGlobal("ohh_dom","LOCALS",2)
+END
+>>>>>>>>
+    COPY - ~.../cbmo-domination-old.baf~ ~.../cbmo-domination-new.baf~
+      REPLACE_TEXTUALLY EXACT_MATCH ~LevelGT(Myself,13)~ ~XPGT(Myself,%domination_1%)~
+      REPLACE_TEXTUALLY EXACT_MATCH ~LevelGT(Myself,23)~ ~XPGT(Myself,%domination_2%)~
     ACTION_FOR_EACH script IN ~HEXXAT~ ~HEXXA25~ BEGIN
-      COPY_EXISTING ~%script%.BCS~ ~override~
-        DECOMPILE_AND_PATCH BEGIN
-          SPRINT pattern ~\(Global("ohh_dom","LOCALS",0)[ %TAB%%LNL%%MNL%%WNL%]+\)LevelGT(Myself,13)~
-          COUNT_REGEXP_INSTANCES ~%pattern%~ matches
-          PATCH_IF matches != 1 BEGIN PATCH_FAIL ~Companion conversion: expected first Domination progression block; another mod has changed it.~ END
-          REPLACE_TEXTUALLY ~%pattern%~ ~\1XPGT(Myself,%domination_1%)~
-          SPRINT pattern ~\(Global("ohh_dom","LOCALS",1)[ %TAB%%LNL%%MNL%%WNL%]+\)LevelGT(Myself,23)~
-          COUNT_REGEXP_INSTANCES ~%pattern%~ matches
-          PATCH_IF matches != 1 BEGIN PATCH_FAIL ~Companion conversion: expected second Domination progression block; another mod has changed it.~ END
-          REPLACE_TEXTUALLY ~%pattern%~ ~\1XPGT(Myself,%domination_2%)~
-        END
-      BUT_ONLY
+      ACTION_IF FILE_EXISTS_IN_GAME ~%script%.BCS~ BEGIN
+        COPY_EXISTING ~%script%.BCS~ ~override~
+          LPF cbmo_script_block STR_VAR original = ~.../cbmo-domination-old.baf~
+              replacement = ~.../cbmo-domination-new.baf~ marker = ~ohh_dom~ END
+        BUT_ONLY
+      END ELSE BEGIN PRINT ~Companion conversion: %script%.BCS is absent.~ END
     END
   END
   PRINT @1195

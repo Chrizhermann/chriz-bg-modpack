@@ -1,3 +1,11 @@
+# Game modding: we overwrite
+
+Apply the shared `bg-modding/references/compatibility-policy.md` rule. Write the
+component's decided fields and behavior regardless of previous game content.
+Missing optional targets and files too damaged to address cost only that file,
+with one log line. Keep native memory signature checks. Test changed inputs
+against the decided output; bundled-file checks belong in offline tests.
+
 # chriz-bg-modpack project decisions
 
 ## Authoritative NPC conversions and proficiency allocations

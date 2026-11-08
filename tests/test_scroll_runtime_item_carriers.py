@@ -160,7 +160,7 @@ def test_unowned_operations_leave_native_return_and_effect_bytes(item_api,case):
         assert h.api.CBMS_ItemCarrierError()==b''
     finally:h.close()
 
-@pytest.mark.parametrize('case',['missing_ability','unobserved_ai','bad_resource_digest'])
+@pytest.mark.parametrize('case',['missing_ability','unobserved_ai'])
 def test_visible_refusal_without_replacing_native_result_or_stranding_use(item_api,case):
     h=Harness(item_api,classification='unresolved' if case=='unresolved' else 'typed_cast_candidate',verify=case!='bad_resource_digest',observe=case!='unobserved_ai')
     try:
@@ -171,8 +171,12 @@ def test_visible_refusal_without_replacing_native_result_or_stranding_use(item_a
         else:
             h.on_use=lambda reader,target:h.root(ability=3 if case=='missing_ability' else 2)
             assert h.api.CBMS_UseItemCarrier(0x1000,0)==0xFEDC
-        assert h.api.CBMS_ItemCarrierError()
-        assert all(row is None for row in h.archive())
+        if case == 'missing_ability':
+            assert h.api.CBMS_ItemCarrierError() == b''
+            assert any(row is not None for row in h.archive())
+        else:
+            assert h.api.CBMS_ItemCarrierError()
+            assert all(row is None for row in h.archive())
     finally:h.close()
 
 def test_root_origin_survives_return_for_later_typed_selection(item_api):
@@ -200,3 +204,15 @@ def test_actual_cpp_original_exceptions_release_scope_and_use_token(exception_pr
     result=subprocess.run([str(exception_probe),mode],capture_output=True,text=True)
     assert result.returncode==0,result.stdout+result.stderr
     assert result.stdout.strip()==f'PASS original {mode} exception cleanup'
+
+
+def test_changed_resource_digest_keeps_reader_policy(item_api):
+    h = Harness(item_api, verify=False)
+    try:
+        assert h.configured == 1
+        h.on_use = lambda reader,target: h.root()
+        assert h.api.CBMS_UseItemCarrier(0x1000,0x2000) == 0xFEDC
+        assert h.archive()[0]['reader'] == 0xFEDCBA9876543210
+        assert h.api.CBMS_ItemCarrierError() == b''
+    finally:
+        h.close()

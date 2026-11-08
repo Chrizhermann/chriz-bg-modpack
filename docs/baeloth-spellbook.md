@@ -1,5 +1,9 @@
 # Baeloth: standard sorcerer spells known
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 **Component 235** — `cbm_baeloth_spellbook` — **major rebalance, alpha.10**.
 
 This independent option reduces Baeloth's unusually large starting spellbook to
@@ -30,19 +34,15 @@ The fresh level-seven recruitment template additionally knows:
 | 2 | Melf's Acid Arrow | Melf's Acid Arrow |
 | 3 | Haste | Haste |
 
-The installer resolves the current `SPELL.IDS` identities and validates each
-selected SPL's actual wizard type and level. It does not treat a vanilla resource
-number as a spell's identity. In the inspected SR installation, `SPWI106` is
-Obscuring Mist although `WIZARD_BLINDNESS` still points at it. SR's installation
-markers/component select the Identify branch instead. Hidden or removed choices
-are rejected when the installed `HIDESPL.2DA` marks them as such.
+The installer resolves installed spell symbols and uses the bundled stock resref
+when a symbol is absent. SR's marker selects the existing Identify branch. Old
+spell type, level, visibility or descriptions do not gate the selected book.
 
 Limits come from the **stored CRE level's row in installed `SPLSRCKN.2DA`**,
 not from a hardcoded allowance or the creature's XP. With altered levels/tables,
 the agreed priority lists are capped at that allowance. Additional capacity
 beyond the authored five/three/two selections stays unfilled; the component does
-not invent higher-level selections. A missing rule row or an incompatible moved
-spell gets a specific diagnostic rather than silently substituting another build.
+not invent higher-level selections. Bundled progression cells fill missing rules.
 
 ## Exact scope
 
@@ -51,12 +51,9 @@ Both named templates are used unchanged in BG:EE/SoD and EET. BG1 recruits
 his existing spellbook. Black Pits resources such as `BPBAELOT` and `OHBBAEL`,
 debug duplicates and merely similar names are outside the target list.
 
-Each present template is patched independently. Missing variants are logged with
-a warning that other/renamed variants may remain unpatched. If neither exists,
-the component reports no changes and does not load unused class or spell rules.
-An actual non-Sorcerer conversion is rejected: this option owns the Sorcerer book,
-not class or kit. Different HP, XP or valid stored levels are not incompatibility
-fingerprints.
+Each present template is patched independently. Missing or unreadable variants
+are logged without warnings. The component owns the wizard book, not class or kit:
+those fields remain unchanged even when an earlier mod supplied a different build.
 
 Rejected wizard spells are removed from **both known spells and their castable
 memorized records**. Keeping the latter could leave rejected spells available.

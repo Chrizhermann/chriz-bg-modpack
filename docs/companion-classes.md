@@ -1,5 +1,9 @@
 # Yoshimo and Hexxat class options
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 | Component | Choice |
 |---:|---|
 | 220 | Yoshimo: Swashbuckler |
@@ -37,7 +41,7 @@ The exact creature families are `YOSHI7/8/10/11/12` and
 `OHHEX8/9/10/11/13/15/25`. Clara's `OHHFAK*` creatures are not changed.
 The companions retain their XP, identity, attributes, portraits, inventory,
 dialogue and quest scripts. Yoshimo's personal katana has only its Swashbuckler
-usability restriction cleared.
+usability restriction cleared and receives its complete bundled English description.
 
 Kit choices keep the existing class levels. The installer resolves kit IDs
 from `KIT.IDS`; it does not assume kit-list row numbers or an Artisan install.
@@ -81,15 +85,14 @@ lore, hit points and proficiencies from the installed progression tables:
   from `XPLEVEL.2DA`, preserving the original XP milestones for extra Domination
   uses. Other script conditions remain unchanged.
 
-An unsupported creature class, missing required progression data or an
-unrecognized Domination block causes the component to fail and WeiDU to roll
-back its changes. These conversions are not a general saved-character respec
-system.
+Selecting a conversion writes its class and kit regardless of the incoming build.
+Progression tables are read by label, with bundled values filling missing cells.
+The two owned Domination blocks are replaced or inserted. Missing or unreadable
+CREs are logged individually; they do not prevent item or script changes.
 
-To reapply a conversion, use WeiDU's normal uninstall/reinstall process, which
-restores the original templates before converting them again. Fighter/Thief's
-stat calculations require the original thief progression; directly patching
-an already converted Fighter/Thief is not supported.
+Direct repeat application recognizes the resulting Fighter/Thief progression and
+retains its HP ratio and other NPC adjustments. Normal WeiDU uninstall/reinstall
+also restores the original templates first. Neither path edits saved actors.
 
 ## Research and validation
 

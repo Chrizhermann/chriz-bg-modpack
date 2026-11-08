@@ -66,11 +66,12 @@ void attach_root(uintptr_t caller,void* item,int ability,int index,void* reader,
         std::array<std::uint8_t,8> name{};
         std::memcpy(name.data(),static_cast<unsigned char*>(item)+0x10,8);
         const auto classification=policy->lookup(name,static_cast<unsigned>(ability));
-        if(!classification) throw std::logic_error("used scroll ability is absent from verified installed policy inventory");
+        // Newly added scroll abilities get the reader rule too. The native
+        // cast selector still distinguishes typed spells and learning actions.
         // Explicit reviewed inventory rows (e.g. cyclic helper graphs) remain
         // native, with their precise installer diagnostics. An absent key is
         // still a runtime fault: it was never part of that inventory decision.
-        if(classification->policy!=cbm::scroll::ItemPolicy::OrdinaryScroll) return;
+        if(classification && classification->policy!=cbm::scroll::ItemPolicy::OrdinaryScroll) return;
         // Direct FireItem accepts generic AI objects. Only previously observed
         // sprites may reach the sprite reader provider; never cast the target.
         if(CBMS_ActorIsObserved(runtime,reinterpret_cast<uintptr_t>(reader))!=1)

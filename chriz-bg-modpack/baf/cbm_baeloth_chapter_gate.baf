@@ -1,0 +1,11 @@
+IF
+  GlobalGT("Chapter","GLOBAL",4)
+  XPGT(Player1,10000)
+  Global("BA_START_SCENE","MYAREA",0)
+THEN
+  RESPONSE #100
+    SetGlobal("BA_START_SCENE","MYAREA",1)
+    ClearAllActions()
+    StartCutSceneMode()
+    StartCutScene("CUTBA01")
+END

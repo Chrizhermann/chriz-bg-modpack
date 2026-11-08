@@ -1,0 +1,382 @@
+// Shared format readers. These locate fields; they never approve old builds.
+// Bundled progressions fill absent cells for calculations. Installed cells are
+// read by their labels, independently of row/column order and table width.
+DEFINE_PATCH_FUNCTION cbmo_parse_table STR_VAR table = ~~
+  RET_ARRAY cbmo_cell cbmo_column cbmo_cols BEGIN
+  SET cbmo_line = 0
+  CLEAR_ARRAY cbmo_map
+  REPLACE_EVALUATE ~\([^%LNL%%MNL%]+\)~ BEGIN
+    INNER_PATCH ~%MATCH1%~ BEGIN
+      REPLACE_TEXTUALLY ~//.*~ ~~
+      COUNT_2DA_COLS cbmo_width
+      PATCH_IF cbmo_width > 0 BEGIN
+        PATCH_IF cbmo_line = 2 BEGIN
+          FOR (cbmo_c = 0; cbmo_c < cbmo_width; ++cbmo_c) BEGIN
+            READ_2DA_ENTRY 0 cbmo_c 1 cbmo_label
+            TO_UPPER cbmo_label
+            PATCH_IF NOT VARIABLE_IS_SET $cbmo_column(~%table%~ ~%cbmo_label%~) BEGIN
+              SET $cbmo_column(~%table%~ ~%cbmo_label%~) = $cbmo_cols(~%table%~)
+              SET $cbmo_cols(~%table%~) += 1
+            END
+            SET $cbmo_map(~%cbmo_c%~) = $cbmo_column(~%table%~ ~%cbmo_label%~)
+          END
+        END ELSE PATCH_IF cbmo_line > 2 BEGIN
+          READ_2DA_ENTRY 0 0 1 cbmo_key
+          TO_UPPER cbmo_key
+          FOR (cbmo_c = 1; cbmo_c < cbmo_width; ++cbmo_c) BEGIN
+            SET cbmo_h = cbmo_c - 1
+            PATCH_IF VARIABLE_IS_SET $cbmo_map(~%cbmo_h%~) BEGIN
+              READ_2DA_ENTRY 0 cbmo_c 1 cbmo_value
+              SET cbmo_to = $cbmo_map(~%cbmo_h%~)
+              // A nonnumeric cell cannot supply a numeric progression value.
+              // Decode it using the bundled cell already loaded for this label.
+              PATCH_IF VARIABLE_IS_SET $cbmo_cell(~%table%~ ~%cbmo_key%~ ~%cbmo_to%~) BEGIN
+                SPRINT cbmo_fallback $cbmo_cell(~%table%~ ~%cbmo_key%~ ~%cbmo_to%~)
+                PATCH_IF IS_AN_INT ~%cbmo_fallback%~ AND NOT IS_AN_INT ~%cbmo_value%~ BEGIN SPRINT cbmo_value ~%cbmo_fallback%~ END
+              END
+              SPRINT $cbmo_cell(~%table%~ ~%cbmo_key%~ ~%cbmo_to%~) ~%cbmo_value%~
+            END
+          END
+        END
+        SET cbmo_line += 1
+      END
+    END
+  END ~%MATCH1%~
+END
+
+DEFINE_ACTION_FUNCTION cbmo_read_table STR_VAR table = ~~
+  RET_ARRAY cbmo_cell cbmo_column cbmo_cols BEGIN
+  OUTER_SPRINT table EVAL ~%table%~
+  ACTION_TO_UPPER table
+  ACTION_IF NOT VARIABLE_IS_SET $cbmo_cols(~%table%~) BEGIN
+    OUTER_SET $cbmo_cols(~%table%~) = 1
+  END
+  OUTER_SPRINT cbmo_default ~%cbmo_data_root%/%table%.2da~
+  ACTION_IF FILE_EXISTS ~%cbmo_default%~ BEGIN
+    COPY - ~%cbmo_default%~ ~%cbmo_default%~
+      LPF cbmo_parse_table STR_VAR table RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
+  END
+  ACTION_IF FILE_EXISTS_IN_GAME ~%table%.2DA~ BEGIN
+    COPY_EXISTING - ~%table%.2DA~ ~override~
+      LPF cbmo_parse_table STR_VAR table RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
+  END ELSE BEGIN
+    PRINT ~CBM: %table%.2DA is absent; using the bundled progression for this calculation.~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbmo_number
+  INT_VAR fallback = 0
+  STR_VAR table = ~~ row = ~~ column = ~~
+  RET number BEGIN
+  SET number = fallback
+  PATCH_IF VARIABLE_IS_SET $cbmo_column(~%table%~ ~%column%~) BEGIN
+    SET cbmo_ncol = $cbmo_column(~%table%~ ~%column%~)
+    PATCH_IF VARIABLE_IS_SET $cbmo_cell(~%table%~ ~%row%~ ~%cbmo_ncol%~) BEGIN
+      SPRINT cbmo_nvalue $cbmo_cell(~%table%~ ~%row%~ ~%cbmo_ncol%~)
+      // Decode a numeric cell for the calculation, using its fallback for '*'.
+      PATCH_IF IS_AN_INT ~%cbmo_nvalue%~ BEGIN SET number = cbmo_nvalue END
+    END
+  END
+END
+
+// A truncated indexed block cannot be read. Only that resource is left alone.
+DEFINE_PATCH_FUNCTION cbmo_cre_writable RET cbmo_writable BEGIN
+  SET cbmo_writable = BUFFER_LENGTH >= 0x2d4
+  PATCH_IF cbmo_writable BEGIN
+    READ_ASCII 0 cbmo_signature (8)
+    SET cbmo_writable = (~%cbmo_signature%~ STRING_EQUAL ~CRE V1.0~) AND BYTE_AT 0x33 <= 1
+    PATCH_FOR_EACH cbmo_ptr IN 0x2a0 0x2a8 0x2b0 0x2bc 0x2c4 BEGIN
+      READ_LONG cbmo_ptr cbmo_at
+      READ_LONG (cbmo_ptr + 4) cbmo_count
+      SET cbmo_stride = cbmo_ptr = 0x2a8 ? 16 : cbmo_ptr = 0x2bc ? 20 :
+                       cbmo_ptr = 0x2c4 ? (BYTE_AT 0x33 = 0 ? 48 : 264) : 12
+      PATCH_IF cbmo_count < 0 OR cbmo_count > BUFFER_LENGTH / cbmo_stride BEGIN
+        SET cbmo_writable = 0
+      END ELSE PATCH_IF cbmo_count > 0 BEGIN
+        PATCH_IF cbmo_at < 0x2d4 OR cbmo_at > BUFFER_LENGTH - cbmo_count * cbmo_stride BEGIN
+          SET cbmo_writable = 0
+        END
+      END
+    END
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbmo_replace_cre_block
+  INT_VAR pointer = 0 count_pointer = 0 stride = 0 new_count = 0
+  STR_VAR replacement = ~~ BEGIN
+  READ_LONG pointer cbmo_old_at
+  READ_LONG count_pointer cbmo_old_count
+  SET cbmo_old_size = cbmo_old_count * stride
+  PATCH_IF cbmo_old_count = 0 OR cbmo_old_at < 0x2d4 OR cbmo_old_at > BUFFER_LENGTH BEGIN SET cbmo_old_at = BUFFER_LENGTH END
+  PATCH_IF cbmo_old_size > 0 BEGIN
+    DELETE_BYTES cbmo_old_at cbmo_old_size
+    PATCH_FOR_EACH cbmo_p IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+      PATCH_IF cbmo_p != pointer AND (cbmo_p = 0x2b8 OR LONG_AT (cbmo_p + 4) > 0) AND LONG_AT cbmo_p >= cbmo_old_at + cbmo_old_size BEGIN
+        WRITE_LONG cbmo_p (LONG_AT cbmo_p - cbmo_old_size)
+      END
+    END
+  END
+  SET cbmo_new_size = new_count * stride
+  INSERT_BYTES cbmo_old_at cbmo_new_size
+  WRITE_ASCIIE cbmo_old_at ~%replacement%~ (cbmo_new_size)
+  PATCH_FOR_EACH cbmo_p IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2bc 0x2c4 BEGIN
+    PATCH_IF cbmo_p != pointer AND (cbmo_p = 0x2b8 OR LONG_AT (cbmo_p + 4) > 0) AND LONG_AT cbmo_p >= cbmo_old_at BEGIN
+      WRITE_LONG cbmo_p (LONG_AT cbmo_p + cbmo_new_size)
+    END
+  END
+  WRITE_LONG pointer cbmo_old_at
+  WRITE_LONG count_pointer new_count
+END
+
+// SPL/ITM bounds are format information, never a content fingerprint.
+DEFINE_PATCH_FUNCTION cbmo_spell_layout
+  RET cbmo_writable cbmo_headers cbmo_count cbmo_effects cbmo_cast_first
+      cbmo_cast_count cbmo_end cbmo_header_size BEGIN
+  SET cbmo_writable = BUFFER_LENGTH >= 0x72
+  SET cbmo_count = 0
+  SET cbmo_headers = 0 SET cbmo_effects = 0 SET cbmo_header_size = 40
+  SET cbmo_cast_first = 0 SET cbmo_cast_count = 0 SET cbmo_end = BUFFER_LENGTH
+  PATCH_IF cbmo_writable BEGIN
+    READ_ASCII 0 cbmo_signature (8)
+    SET cbmo_writable = (~%cbmo_signature%~ STRING_EQUAL ~SPL V1  ~) OR
+                       (~%cbmo_signature%~ STRING_EQUAL ~ITM V1  ~)
+    SET cbmo_header_size = (~%cbmo_signature%~ STRING_EQUAL ~ITM V1  ~) ? 0x38 : 0x28
+    READ_LONG 0x64 cbmo_headers
+    READ_SHORT 0x68 cbmo_count
+    READ_LONG 0x6a cbmo_effects
+    READ_SHORT 0x6e cbmo_cast_first
+    READ_SHORT 0x70 cbmo_cast_count
+    SET cbmo_end = 0x72
+    PATCH_IF cbmo_count > 0 BEGIN
+      PATCH_IF cbmo_headers < 0x72 OR cbmo_headers > BUFFER_LENGTH - cbmo_count * cbmo_header_size BEGIN
+        SET cbmo_writable = 0
+      END ELSE BEGIN SET cbmo_end = cbmo_headers + cbmo_count * cbmo_header_size END
+    END
+    SET cbmo_fxend = cbmo_cast_count > 0 ? cbmo_cast_first + cbmo_cast_count : 0
+    PATCH_IF cbmo_writable BEGIN
+      FOR (cbmo_i = 0; cbmo_i < cbmo_count; ++cbmo_i) BEGIN
+        SET cbmo_h = cbmo_headers + cbmo_i * cbmo_header_size
+        SET cbmo_n = SHORT_AT (cbmo_h + 0x1e)
+        SET cbmo_f = SHORT_AT (cbmo_h + 0x20)
+        PATCH_IF cbmo_n > 0 AND cbmo_f + cbmo_n > cbmo_fxend BEGIN SET cbmo_fxend = cbmo_f + cbmo_n END
+      END
+    END
+    PATCH_IF cbmo_fxend > 0 BEGIN
+      PATCH_IF cbmo_effects < 0x72 OR cbmo_effects > BUFFER_LENGTH - cbmo_fxend * 0x30 BEGIN
+        SET cbmo_writable = 0
+      END ELSE PATCH_IF cbmo_effects + cbmo_fxend * 0x30 > cbmo_end BEGIN
+        SET cbmo_end = cbmo_effects + cbmo_fxend * 0x30
+      END
+    END
+  END
+END
+
+// Rebuild the owned ability effect while retaining casting effects and every
+// unrelated ability effect. Canonical indexing also supports empty/shared
+// lists and an ability table stored after its effects. Binary words are copied
+// without evaluating their bytes as WeiDU variables.
+DEFINE_PATCH_FUNCTION cbmo_own_spell_effect
+  INT_VAR opcode = 0 param1 = (0 - 1) param2 = (0 - 1) timing = (0 - 1) duration = (0 - 1)
+          tiers = 0 projectile = (0 - 1) default_target = 1
+  STR_VAR match1 = ~~ match2 = ~~ resource = ~~ default_resource = ~~ BEGIN
+  LPF cbmo_spell_layout RET cbmo_writable cbmo_headers cbmo_count cbmo_effects
+      cbmo_cast_first cbmo_cast_count cbmo_end END
+  PATCH_IF cbmo_writable BEGIN
+    CLEAR_ARRAY cbmo_words
+    CLEAR_ARRAY cbmo_heads
+    CLEAR_ARRAY cbmo_owned
+    CLEAR_ARRAY cbmo_firsts
+    CLEAR_ARRAY cbmo_counts
+    SET cbmo_new_count = tiers > 0 ? tiers : (cbmo_count > 0 ? cbmo_count : 1)
+    SET cbmo_total = cbmo_cast_count
+    FOR (cbmo_j = 0; cbmo_j < cbmo_cast_count; ++cbmo_j) BEGIN
+      FOR (cbmo_b = 0; cbmo_b < 48; cbmo_b += 4) BEGIN
+        READ_LONG (cbmo_effects + (cbmo_cast_first + cbmo_j) * 48 + cbmo_b) $cbmo_words(~%cbmo_j%~ ~%cbmo_b%~)
+      END
+    END
+    FOR (cbmo_a = 0; cbmo_a < cbmo_new_count; ++cbmo_a) BEGIN
+      SET cbmo_src = tiers > 0 ? 0 : cbmo_a
+      PATCH_IF tiers > 0 BEGIN
+        SET cbmo_best = (0 - 1)
+        FOR (cbmo_j = 0; cbmo_j < cbmo_count; ++cbmo_j) BEGIN
+          SET cbmo_level = SHORT_AT (cbmo_headers + cbmo_j * 40 + 0x10)
+          PATCH_IF cbmo_level <= cbmo_a + 1 AND cbmo_level > cbmo_best BEGIN
+            SET cbmo_src = cbmo_j SET cbmo_best = cbmo_level
+          END
+        END
+      END
+      FOR (cbmo_b = 0; cbmo_b < 40; cbmo_b += 4) BEGIN
+        SET $cbmo_heads(~%cbmo_a%~ ~%cbmo_b%~) = 0
+        PATCH_IF cbmo_count > 0 BEGIN
+          READ_LONG (cbmo_headers + cbmo_src * 40 + cbmo_b) $cbmo_heads(~%cbmo_a%~ ~%cbmo_b%~)
+        END
+      END
+      SET $cbmo_firsts(~%cbmo_a%~) = cbmo_total
+      SET $cbmo_owned(~%cbmo_a%~) = (0 - 1)
+      SET cbmo_n = 0 SET cbmo_f = 0
+      PATCH_IF cbmo_count > 0 BEGIN
+        SET cbmo_n = SHORT_AT (cbmo_headers + cbmo_src * 40 + 0x1e)
+        SET cbmo_f = SHORT_AT (cbmo_headers + cbmo_src * 40 + 0x20)
+      END
+      FOR (cbmo_j = 0; cbmo_j < cbmo_n; ++cbmo_j) BEGIN
+        SET cbmo_fx = cbmo_effects + (cbmo_f + cbmo_j) * 48
+        READ_ASCII (cbmo_fx + 0x14) cbmo_rr (8) NULL
+        SET cbmo_mine = SHORT_AT cbmo_fx = opcode AND
+          ((~%match1%~ STRING_EQUAL ~~) OR (~%cbmo_rr%~ STRING_EQUAL_CASE ~%match1%~) OR
+           (~%cbmo_rr%~ STRING_EQUAL_CASE ~%match2%~))
+        PATCH_IF NOT cbmo_mine OR $cbmo_owned(~%cbmo_a%~) < 0 BEGIN
+          FOR (cbmo_b = 0; cbmo_b < 48; cbmo_b += 4) BEGIN
+            READ_LONG (cbmo_fx + cbmo_b) $cbmo_words(~%cbmo_total%~ ~%cbmo_b%~)
+          END
+          PATCH_IF cbmo_mine BEGIN SET $cbmo_owned(~%cbmo_a%~) = cbmo_total END
+          SET cbmo_total += 1
+        END
+      END
+      PATCH_IF $cbmo_owned(~%cbmo_a%~) < 0 BEGIN
+        FOR (cbmo_b = 0; cbmo_b < 48; cbmo_b += 4) BEGIN SET $cbmo_words(~%cbmo_total%~ ~%cbmo_b%~) = 0 END
+        SET $cbmo_words(~%cbmo_total%~ ~0~) = opcode BOR (default_target BLSL 16)
+        SET $cbmo_words(~%cbmo_total%~ ~16~) = 100 BLSL 16
+        INNER_PATCH ~%default_resource%~ BEGIN
+          INSERT_BYTES BUFFER_LENGTH (8 - BUFFER_LENGTH)
+          READ_LONG 0 $cbmo_words(~%cbmo_total%~ ~20~)
+          READ_LONG 4 $cbmo_words(~%cbmo_total%~ ~24~)
+        END
+        SET $cbmo_owned(~%cbmo_a%~) = cbmo_total
+        SET cbmo_total += 1
+      END
+      SET $cbmo_counts(~%cbmo_a%~) = cbmo_total - $cbmo_firsts(~%cbmo_a%~)
+    END
+    // Preserve bytes beyond both indexed tables. Gaps between the old tables
+    // become unnecessary when those tables are laid out canonically.
+    SET cbmo_tail = BUFFER_LENGTH - cbmo_end
+    CLEAR_ARRAY cbmo_tail_bytes
+    FOR (cbmo_b = 0; cbmo_b < cbmo_tail; ++cbmo_b) BEGIN
+      READ_BYTE (cbmo_end + cbmo_b) $cbmo_tail_bytes(~%cbmo_b%~)
+    END
+    DELETE_BYTES 0x72 (BUFFER_LENGTH - 0x72)
+    SET cbmo_new_fx = 0x72 + cbmo_new_count * 40
+    INSERT_BYTES 0x72 (cbmo_new_count * 40 + cbmo_total * 48 + cbmo_tail)
+    WRITE_LONG 0x64 0x72 WRITE_SHORT 0x68 cbmo_new_count
+    WRITE_LONG 0x6a cbmo_new_fx WRITE_SHORT 0x6e 0
+    FOR (cbmo_a = 0; cbmo_a < cbmo_new_count; ++cbmo_a) BEGIN
+      SET cbmo_h = 0x72 + cbmo_a * 40
+      FOR (cbmo_b = 0; cbmo_b < 40; cbmo_b += 4) BEGIN WRITE_LONG (cbmo_h + cbmo_b) $cbmo_heads(~%cbmo_a%~ ~%cbmo_b%~) END
+      PATCH_IF cbmo_count = 0 BEGIN WRITE_SHORT cbmo_h 1 WRITE_BYTE (cbmo_h + 0xc) (tiers > 0 ? 4 : 5) WRITE_BYTE (cbmo_h + 0xd) 1 END
+      WRITE_SHORT (cbmo_h + 0x1e) $cbmo_counts(~%cbmo_a%~)
+      WRITE_SHORT (cbmo_h + 0x20) $cbmo_firsts(~%cbmo_a%~)
+      PATCH_IF tiers > 0 BEGIN WRITE_SHORT (cbmo_h + 0x10) (cbmo_a + 1) END
+      PATCH_IF projectile >= 0 BEGIN WRITE_SHORT (cbmo_h + 0x26) projectile END
+    END
+    FOR (cbmo_j = 0; cbmo_j < cbmo_total; ++cbmo_j) BEGIN
+      FOR (cbmo_b = 0; cbmo_b < 48; cbmo_b += 4) BEGIN WRITE_LONG (cbmo_new_fx + cbmo_j * 48 + cbmo_b) $cbmo_words(~%cbmo_j%~ ~%cbmo_b%~) END
+    END
+    FOR (cbmo_a = 0; cbmo_a < cbmo_new_count; ++cbmo_a) BEGIN
+      SET cbmo_fx = cbmo_new_fx + $cbmo_owned(~%cbmo_a%~) * 48
+      PATCH_IF tiers > 0 BEGIN WRITE_LONG (cbmo_fx + 4) ((cbmo_a + 1) * 3 / 2)
+      END ELSE PATCH_IF param1 >= 0 BEGIN WRITE_LONG (cbmo_fx + 4) param1 END
+      PATCH_IF param2 >= 0 BEGIN WRITE_LONG (cbmo_fx + 8) param2 END
+      PATCH_IF timing >= 0 BEGIN WRITE_BYTE (cbmo_fx + 12) timing END
+      PATCH_IF duration >= 0 BEGIN WRITE_LONG (cbmo_fx + 14) duration END
+      PATCH_IF NOT (~%resource%~ STRING_EQUAL ~~) BEGIN WRITE_ASCIIE (cbmo_fx + 20) ~%resource%~ #8 END
+    END
+    FOR (cbmo_b = 0; cbmo_b < cbmo_tail; ++cbmo_b) BEGIN
+      WRITE_BYTE (cbmo_new_fx + cbmo_total * 48 + cbmo_b) $cbmo_tail_bytes(~%cbmo_b%~)
+    END
+  END ELSE BEGIN PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~ END
+END
+
+// BCS framing is format data. An incomplete script costs only that file.
+DEFINE_PATCH_FUNCTION cbmo_bcs_writable RET cbmo_bcs_ok BEGIN
+  SET cbmo_bcs_ok = BUFFER_LENGTH >= 6
+  PATCH_IF cbmo_bcs_ok BEGIN
+    READ_ASCII 0 cbmo_bcs_head (2)
+    SET cbmo_bcs_tail = BUFFER_LENGTH
+    WHILE cbmo_bcs_tail > 2 AND (BYTE_AT (cbmo_bcs_tail - 1) = 10 OR BYTE_AT (cbmo_bcs_tail - 1) = 13 OR BYTE_AT (cbmo_bcs_tail - 1) = 32 OR BYTE_AT (cbmo_bcs_tail - 1) = 9) BEGIN
+      SET cbmo_bcs_tail -= 1
+    END
+    READ_ASCII (cbmo_bcs_tail - 2) cbmo_bcs_end (2)
+    SET cbmo_bcs_ok = ~%cbmo_bcs_head%~ STRING_EQUAL ~SC~ AND ~%cbmo_bcs_end%~ STRING_EQUAL ~SC~
+  END
+END
+
+// Replace the block we own, or prepend it when it is absent. Removing the
+// authored replacement first makes a repeated application stable as well.
+DEFINE_PATCH_FUNCTION cbmo_script_block
+  STR_VAR original = ~~ replacement = ~~ marker = ~~ BEGIN
+  LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+  PATCH_IF cbmo_bcs_ok BEGIN
+  // Compiled scripts use line records; canonical LF also accepts CRLF input.
+  REPLACE_TEXTUALLY ~%MNL%~ ~~
+  SPRINT cbmo_old ~~
+  INNER_ACTION BEGIN
+    ACTION_IF NOT (~%original%~ STRING_EQUAL ~~) BEGIN
+      COPY - ~%original%~ ~.../cbmo-old-script~
+        COMPILE_BAF_TO_BCS
+        DELETE_BYTES (BUFFER_LENGTH - 3) 3
+        DELETE_BYTES 0 3
+        READ_ASCII 0 cbmo_old (BUFFER_LENGTH)
+    END
+    COPY - ~%replacement%~ ~.../cbmo-new-script~
+      COMPILE_BAF_TO_BCS
+      DELETE_BYTES (BUFFER_LENGTH - 3) 3
+      DELETE_BYTES 0 3
+      READ_ASCII 0 cbmo_new (BUFFER_LENGTH)
+  END
+  SET cbmo_place = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_new%~)
+  PATCH_IF cbmo_place < 0 BEGIN SET cbmo_place = 3 END
+  PATCH_IF NOT (~%cbmo_old%~ STRING_EQUAL ~~) BEGIN
+    SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_old%~)
+    PATCH_IF cbmo_found >= 0 BEGIN SET cbmo_place = cbmo_found END
+  END
+  // Keep the insertion point in the edited buffer's coordinate system. An
+  // existing replacement can precede the old block; every deletion before
+  // the selected boundary moves that boundary to the left.
+  PATCH_FOR_EACH cbmo_remove IN ~%cbmo_old%~ ~%cbmo_new%~ BEGIN
+    SET cbmo_length = STRING_LENGTH ~%cbmo_remove%~
+    PATCH_IF cbmo_length > 0 BEGIN
+      SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_remove%~)
+      WHILE cbmo_found >= 0 BEGIN
+        PATCH_IF cbmo_found < cbmo_place BEGIN
+          SET cbmo_place = cbmo_found + cbmo_length <= cbmo_place ? cbmo_place - cbmo_length : cbmo_found
+        END
+        DELETE_BYTES cbmo_found cbmo_length
+        SET cbmo_found = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%cbmo_remove%~)
+      END
+    END
+  END
+  // A changed instance of our one-shot block still belongs to this component.
+  // Strip it by its owned variable, independently of old conditions/actions.
+  PATCH_IF NOT (~%marker%~ STRING_EQUAL ~~) AND INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~%marker%~) >= 0 BEGIN
+    DECOMPILE_BCS_TO_BAF
+    SET cbmo_block_start = INDEX_BUFFER (~^IF~)
+    WHILE cbmo_block_start >= 0 BEGIN
+      SET cbmo_block_end = INDEX_BUFFER (~^END~ cbmo_block_start)
+      PATCH_IF cbmo_block_end < 0 BEGIN SET cbmo_block_end = BUFFER_LENGTH - 3 END
+      READ_ASCII cbmo_block_start cbmo_block (cbmo_block_end + 3 - cbmo_block_start)
+      SET cbmo_owns_block = 0
+      INNER_PATCH ~%cbmo_block%~ BEGIN
+        SET cbmo_owns_block = INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~"%marker%"~) >= 0
+      END
+      PATCH_IF cbmo_owns_block BEGIN
+        DELETE_BYTES cbmo_block_start (cbmo_block_end + 3 - cbmo_block_start)
+      END ELSE BEGIN SET cbmo_block_start = cbmo_block_end + 3 END
+      SET cbmo_block_start = INDEX_BUFFER (~^IF~ cbmo_block_start)
+    END
+    COMPILE_BAF_TO_BCS
+    SET cbmo_place = 3
+  END
+  SET cbmo_place = cbmo_place > BUFFER_LENGTH - 3 ? 3 : cbmo_place
+  INSERT_BYTES cbmo_place (STRING_LENGTH ~%cbmo_new%~)
+  WRITE_ASCIIE cbmo_place ~%cbmo_new%~
+  END ELSE BEGIN PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write.~ END
+END
+
+INCLUDE ~%cbmo_data_root%/../descriptions.tpa~
+
+// Once per installer run, outside a patch function's local variable scope.
+ACTION_IF VARIABLE_IS_SET EE_LANGUAGE BEGIN
+  ACTION_IF NOT (~%EE_LANGUAGE%~ STRING_EQUAL_CASE ~en_US~) AND NOT VARIABLE_IS_SET cbmo_translation_logged BEGIN
+    PRINT ~CBM: no bundled descriptions in %EE_LANGUAGE%; retaining current descriptions.~
+    OUTER_SET cbmo_translation_logged = 1
+  END
+END

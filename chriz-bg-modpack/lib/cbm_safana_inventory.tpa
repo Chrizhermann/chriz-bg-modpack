@@ -6,15 +6,7 @@
 // Install before this arrival has run in the save. There is no retroactive
 // cleanup: that could destroy equipment acquired legitimately during SoA.
 //
-// A full compiled-block match intentionally supports only this audited hook.
-// Source drift and duplicate hooks fail before publishing any game resource.
-
-ACTION_IF NOT (GAME_IS ~eet~) BEGIN
-  FAIL ~cbm_safana_inventory: requires EET.~
-END
-ACTION_IF NOT (MOD_IS_INSTALLED ~Safana.tp2~ 0) BEGIN
-  FAIL ~cbm_safana_inventory: requires Safana in Amn component 0.~
-END
+// Replace the arrival block, or add the owned arrival when it is absent.
 
 <<<<<<<< .../cbm_safana_arrival_old.baf
 IF
@@ -51,14 +43,7 @@ COPY - ~.../cbm_safana_arrival_old.baf~ ~.../cbm_safana_arrival_new.baf~
     ActionOverride("SAFANA",DestroyAllEquipment())~
 
 COPY_EXISTING ~ar0311.bcs~ ~override~
-  COUNT_REGEXP_INSTANCES ~bd_safana_spawn~ cbm_safana_spawn_mentions
-  PATCH_IF cbm_safana_spawn_mentions != 2 BEGIN
-    PATCH_FAIL ~cbm_safana_inventory: expected one Safana arrival hook in ar0311.bcs; found an unsupported or duplicate hook. No files changed.~
-  END
-  REPLACE_BCS_BLOCK CASE_INSENSITIVE ~.../cbm_safana_arrival_old.baf~ ~.../cbm_safana_arrival_new.baf~
-    ON_MISMATCH
-      PATCH_FAIL ~cbm_safana_inventory: Safana arrival hook in ar0311.bcs differs from the supported v0.5 block. No files changed.~
-    END
+  LPF cbmo_script_block STR_VAR original = ~.../cbm_safana_arrival_old.baf~ replacement = ~.../cbm_safana_arrival_new.baf~ marker = ~bd_safana_spawn~ END
 BUT_ONLY
 
 PRINT ~[cbm_safana_inventory] Safana's existing one-shot SoA arrival now clears her carried and equipped items. Existing character development is preserved.~

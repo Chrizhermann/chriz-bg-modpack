@@ -84,39 +84,30 @@ public:
         std::copy(wire.begin(), wire.end(), row.wire.begin());
         decoded_.push_back(std::move(row));
     }
-    // Returns nothing once ownership is restored. A well-formed envelope that
-    // no longer describes these decoded records (count or bytes) is stale: the
-    // records changed after it was written, as when a process with overrides
-    // off kept it unparsed and saved it again. Then nothing is restored and the
-    // reason is returned; only this actor loses that saved ancestry, its
-    // records keep their saved levels. Anything else that cannot be trusted
-    // (schema, ancestry, scalars, origins, lifetimes) throws, as before.
+    // Bad saved metadata costs only this actor's association. Native lifetime
+    // violations still throw before any ownership is restored.
     std::optional<std::string> restore(const SavedEffectArchive& saved) {
         if (committed_) throw std::logic_error("effect archive imported twice");
-        // Caller keeps unknown schemas in actor-owned storage; this refuses
-        // without destroying, normalizing or silently dropping that envelope.
-        if (saved.schema != 1) throw std::logic_error("unsupported effect archive schema; retain actor metadata");
-        // Checked on its own first: malformed or internally inconsistent data
-        // refuses here. A well-formed mismatch below is outdated, damaged or not.
+        for (const auto& row : decoded_)
+            if (registry_.context(row.effect)) throw std::logic_error("decoded effect acquired ancestry before import");
+        if (saved.schema != 1) return "unsupported effect archive schema";
         std::map<std::uint64_t, SavedEffectContext> definitions;
         for (const auto& row : saved.rows) {
             if (!row.context) continue;
             const auto& value = *row.context;
-            if (!value.origin_key || !value.reader_uuid || !value.item.bytes[0] || value.depth > 64 ||
+            if (!value.origin_key || !value.reader_uuid || !value.item.bytes[0] ||
                 (value.applied_level && (!*value.applied_level || *value.applied_level > 32767)))
-                throw std::logic_error("invalid saved effect ancestry");
+                return "invalid saved effect ancestry";
             if (value.applied_level) {
                 std::uint32_t native_level{};
                 std::memcpy(&native_level, row.wire.data() + 0xC0, sizeof native_level);
-                if (native_level != *value.applied_level) throw std::logic_error("saved effect scalar mismatch");
+                if (native_level != *value.applied_level) return "saved effect scalar mismatch";
             }
             auto [it, inserted] = definitions.emplace(value.origin_key, value);
             if (!inserted && (it->second.reader_uuid != value.reader_uuid || it->second.item != value.item ||
                                it->second.ability != value.ability))
-                throw std::logic_error("conflicting saved scroll origin definitions");
+                return "conflicting saved scroll origin definitions";
         }
-        for (const auto& row : decoded_)
-            if (registry_.context(row.effect)) throw std::logic_error("decoded effect acquired ancestry before import");
         if (saved.rows.size() != decoded_.size())
             return "saved effect record count mismatch (saved " + std::to_string(saved.rows.size()) +
                    ", loaded " + std::to_string(decoded_.size()) + ")";

@@ -135,7 +135,7 @@ def test_latched_override_faults_report_unhealthy(startup_exe,latch):
 
 
 LOG='[CBM scroll] '
-VERIFIED=LOG+'Native carrier groups and installed resources verified.'
+VERIFIED=LOG+'Native carrier groups verified; installed reader policy applied.'
 DUPLICATE=LOG+'Duplicate startup refused; restart this process.'
 SINGLE='scroll startup is single-attempt; restart the process after refusal'
 RETAINED_CAUSE=('Scroll startup rollback could not safely remove every hook. Exit this process; '

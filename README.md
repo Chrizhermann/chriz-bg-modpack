@@ -3,12 +3,13 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.15`
+**Release:** `v0.2.0-alpha.16`
 
-Alpha.15 adds **670**: both Marek creatures carry the Boomerang Dagger +2, BG1's
-only source of it when BG1 NPC Project's Kivan quest is not installed. With that
-quest, it changes nothing. Collection selection is decided separately. See the
-[release notes](docs/releases/v0.2.0-alpha.15.md).
+Alpha.16 makes every component write its decided result regardless of hand edits
+or another mod's version of the same game files. Genuine game, prerequisite and
+runtime requirements remain; an absent optional target leaves out only that
+target. See the [release notes](docs/releases/v0.2.0-alpha.16.md) and the
+[overwrite scope](docs/we-overwrite.md).
 
 Alpha.14 kept reader-level scroll casting (**430**) on for the whole session;
 alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or
@@ -54,8 +55,9 @@ live-game acceptance pass across all components has not yet been performed.
    content is installed.
 
 Install this mod after the NPC, kit, spell, and tactical mods whose resources it
-patches. Each component validates its prerequisites and resource structure
-before writing; missing prerequisites are reported by the installer.
+patches. Selected components write their owned fields and behavior. Missing
+optional targets and unreadable files are logged individually; present targets
+still receive the selected changes. Native memory signatures remain required.
 Exception: **236** belongs immediately after Artisan NPC 5102 and before Spell
 Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 
@@ -95,7 +97,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
 | 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
 | 238 | `cbm_evandra_recruitment_xp` | Evandra: one-time SoA recruitment XP catch-up, capped at 1.25m |
-| 239 | `cbm_eet_join_xp` | EET: add EET's SoA join-XP ladder and ToB raise where a joinable NPC's scripts lack them |
+| 239 | `cbm_eet_join_xp` | EET: write EET's SoA join-XP ladder and ToB raise for joinable NPCs |
 | 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
 | 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
 | 430 | `cbm_uai_caster_level` | Reader-level scroll casting; half the highest active class level when no applicable caster level exists; Windows EEex |
@@ -111,7 +113,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650; alternative to 652 |
 | 652 (experimental) | `cbm_campaign_xp_chapters` | Chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (plus Baeloth Chapter 5+ spawn gate); requires 650; alternative to 651 |
 | 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
-| 670 | `cbm_marek_boomerang_dagger` | Both Marek creatures carry the Boomerang Dagger +2 in BG1, unless BG1 NPC Project's Kivan quest already gives it; BG:EE or EET |
+| 670 | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1; BG:EE or EET |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
@@ -128,8 +130,9 @@ Randomiser's cursed-appearance option; normal loot randomization can remain.
 **640** follows LeUI/Dragonspear UI and precedes Bubb's Spell Menu; it does not
 depend on Hidden Gameplay Options.
 **235** stays optional as a planned Challenge choice. **236** is the recommended
-correction only when Artisan's Red Wizard conversion (5102) is selected; it does
-not enable or change vanilla Edwin on its own.
+correction when Artisan's Red Wizard conversion (5102) is selected; it also
+writes the installed Red Wizard kit when explicitly selected, including templates
+that an earlier conversion missed.
 Collection recipe integration is delivered separately from this mod release.
 See [Evandra](docs/evandra.md), [story utility XP](docs/story-utility-xp.md) and
 [unidentified artwork](docs/unidentified-items.md), plus
@@ -167,15 +170,16 @@ installation, progression and compatibility details.
 
 The stat options (`230`-`234`) are independent of each other and of any class or
 kit choice. Each sets only its listed base scores in every known recruitment and
-later-campaign variant that exists; missing variants are named in installer
-warnings and skipped. They do not change stored HP or repair saved actors. See
+later-campaign variant that exists; missing variants are named in the installer
+log without warnings. They do not change stored HP or repair saved actors. See
 the [companion stat guide](docs/companion-stats.md).
 
 ## Dependencies and ordering
 
 - Install **188** only with YeslickNPC **1**, after its kit/progression providers
   and before **199/EET_end** and Yeslick's first creation. Omit it for vanilla
-  companions; YeslickNPC 0 also skips it. The [Yeslick guide](docs/yeslick-alaghor.md)
+  companions. Selecting 188 applies the installed Alaghor kit regardless of
+  earlier Yeslick component choices. The [Yeslick guide](docs/yeslick-alaghor.md)
   explains native priest-level grants and the separate existing-save/410 proposals.
 
 - Install all selected companion/content/class/kit changes before **199**, then
@@ -192,17 +196,15 @@ the [companion stat guide](docs/companion-stats.md).
 
 - Install Fade before `110`, the BG1NPC Kivan quest before `130`, and Sarah ToB v8
   before `190`. Install `130` after SCS and `190` after other kit/proficiency edits.
-- `160`, `170`, and `192`-`198` target EET resources. Component `160` requires Skie
-  to already be a Swashbuckler; `195` performs that conversion and applies the skill
-  correction atomically.
-- `196` and `197` patch each Faldorn or Dynaheir variant that exists and name missing
-  variants in installer warnings; with none present they change nothing.
-- `170` requires Artisan's Kitpack component `20000` and Artisan's NPC component
-  `20002` to be installed first.
-- `192` preserves Viconia's existing memorized spells, including when an earlier
-  mod left a stale count on the final populated priest spell level. It corrects
-  only unambiguous trailing metadata; other stale layouts with overlapping or gapped ranges
-  remain installation errors.
+- `160`, `170`, and `192`-`198` target EET resources. Component `160` transfers
+  Move Silently to Open Locks; `195` also writes the Swashbuckler kit.
+- `196` and `197` patch each Faldorn or Dynaheir variant that exists and log
+  missing variants individually.
+- `170` needs the installed Eldritch Knight kit; component-log versions do not
+  decide whether its owned build is applied.
+- `192` reconstructs the priest memorization groups from the indexed records,
+  preserving spent casts and unrelated spell types.
+
 - When the collection uses Artisan's Kitpack with `194`, install Artisan's corrected
   `v1.3.1` release before this component so the Dwarven Defender Shield Bash grant is
   present.
@@ -237,8 +239,8 @@ the [companion stat guide](docs/companion-stats.md).
 - Install `135` after mods that change Dorn's ambush cutscene `CUTDN1B.BCS` or
   Senjak's script, such as EET. See the [Dorn ambush guide](docs/dorn-ambush-camera.md).
 - Install `660` after mods that change Degrodel's dialog. It finds the helm hand-in
-  by what it does and skips with a reason, changing nothing, when that is
-  ambiguous. See the [Degrodel guide](docs/degrodel-fight.md).
+  by what it does and writes the owned hand-in/refusal states, including when
+  the previous hand-in is absent. See the [Degrodel guide](docs/degrodel-fight.md).
 - Install `670` after mods that change Marek's creature files `MAREK.CRE` and
   `MAREK1.CRE`, such as SCS, and before mods that read creature items, such as
   the Item Randomiser. See the [Marek guide](docs/marek-boomerang-dagger.md).
@@ -249,8 +251,8 @@ The additions 188, 189, 199 and 620 have focused synthetic installer/runtime cov
 Their native transitions, recruitment, level-ups and save/reload remain pending
 in the combined fresh EET playtest. See the component guides for exact limits.
 
-The automated suite covers guarded transformation behavior, malformed-input
-rejection, idempotence, public installer paths, and byte-exact uninstall restoration
+The automated suite covers decided outputs on changed inputs, isolation of
+unreadable files, repeat application, public installers, and resource restoration
 on generated fixtures and synthetic games. That evidence does not substitute for
 live play: recruitment, combat and spell visuals remain to be accepted across the
 collection. Component 610's native smoke test covered startup, load/save and one

@@ -31,7 +31,8 @@ BEGIN
   PATCH_IF (cbmci_fx_count > 0) AND
       ((cbmci_fx_start < 0) OR (cbmci_fx_start > BUFFER_LENGTH) OR
        (cbmci_fx_count > (BUFFER_LENGTH - cbmci_fx_start) / cbmci_stride)) BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: invalid effect bounds in %SOURCE_FILE%.~
+    SET cbmci_fx_count = 0
+    PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable effect list.~
   END
   FOR (cbmci_fx_i = 0; cbmci_fx_i < cbmci_fx_count; ++cbmci_fx_i) BEGIN
     SET cbmci_fx = cbmci_fx_start + cbmci_fx_i * cbmci_stride
@@ -72,43 +73,47 @@ END
 DEFINE_PATCH_FUNCTION cbmci_creature
   INT_VAR cbmci_cre_start = 0 cbmci_cre_size = 0
 BEGIN
-  PATCH_IF (cbmci_cre_size < 0x2d4) OR (cbmci_cre_start < 0) OR
-      (cbmci_cre_size > BUFFER_LENGTH - cbmci_cre_start) BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: invalid creature bounds in %SOURCE_FILE%.~
-  END
+  PATCH_IF cbmci_cre_size >= 0x2d4 AND cbmci_cre_start >= 0
+      AND cbmci_cre_size <= BUFFER_LENGTH - cbmci_cre_start BEGIN
   READ_ASCII cbmci_cre_start cbmci_signature (8)
   PATCH_IF NOT (~%cbmci_signature%~ STRING_EQUAL_CASE ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: unsupported embedded creature in %SOURCE_FILE%.~
-  END
+    PATCH_PRINT ~Identity: %SOURCE_FILE% has an unsupported embedded creature.~
+  END ELSE BEGIN
   LPF cbmci_field INT_VAR cbmci_offset = cbmci_cre_start + 0x280 END
   READ_LONG (cbmci_cre_start + 0x2c4) cbmci_effect_start
   READ_LONG (cbmci_cre_start + 0x2c8) cbmci_effect_count
   READ_BYTE (cbmci_cre_start + 0x33) cbmci_effect_version
   PATCH_IF cbmci_effect_version > 1 BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: unsupported CRE effect version in %SOURCE_FILE%.~
+    SET cbmci_effect_count = 0
+    PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable effect format.~
   END
   SET cbmci_effect_stride = (cbmci_effect_version = 0 ? 0x30 : 0x108)
   PATCH_IF (cbmci_effect_count > 0) AND
       ((cbmci_effect_start < 0x2d4) OR (cbmci_effect_start > cbmci_cre_size) OR
        (cbmci_effect_count > (cbmci_cre_size - cbmci_effect_start) / cbmci_effect_stride)) BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: invalid CRE effects in %SOURCE_FILE%.~
+    SET cbmci_effect_count = 0
+    PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable creature effect list.~
   END
   LPF cbmci_effects INT_VAR cbmci_fx_start = cbmci_cre_start + cbmci_effect_start
       cbmci_fx_count = cbmci_effect_count cbmci_fx_version = cbmci_effect_version END
+  END
+  END ELSE BEGIN PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable creature header.~ END
 END
 
 DEFINE_PATCH_FUNCTION cbmci_binary
 BEGIN
+  PATCH_IF BUFFER_LENGTH >= 8 BEGIN
   READ_ASCII 0 cbmci_signature (8)
   PATCH_IF ~%cbmci_signature%~ STRING_EQUAL_CASE ~CRE V1.0~ BEGIN
     LPF cbmci_creature INT_VAR cbmci_cre_size = BUFFER_LENGTH END
-  END ELSE PATCH_IF ~%cbmci_signature%~ STRING_EQUAL_CASE ~AREAV1.0~ BEGIN
+  END ELSE PATCH_IF (~%cbmci_signature%~ STRING_EQUAL_CASE ~AREAV1.0~) AND BUFFER_LENGTH >= 0x11c BEGIN
     READ_LONG 0x54 cbmci_actors
     READ_SHORT 0x58 cbmci_actor_count
     PATCH_IF (cbmci_actor_count > 0) AND ((cbmci_actors < 0x11c) OR
         (cbmci_actors > BUFFER_LENGTH) OR
         (cbmci_actor_count > (BUFFER_LENGTH - cbmci_actors) / 0x110)) BEGIN
-      PATCH_FAIL ~cbm_continuity_identity: invalid ARE actors in %SOURCE_FILE%.~
+      SET cbmci_actor_count = 0
+      PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable actor list.~
     END
     FOR (cbmci_actor_i = 0; cbmci_actor_i < cbmci_actor_count; ++cbmci_actor_i) BEGIN
       SET cbmci_actor = cbmci_actors + cbmci_actor_i * 0x110
@@ -128,7 +133,8 @@ BEGIN
     PATCH_IF (cbmci_variable_count > 0) AND ((cbmci_variables < 0x11c) OR
         (cbmci_variables > BUFFER_LENGTH) OR
         (cbmci_variable_count > (BUFFER_LENGTH - cbmci_variables) / 0x54)) BEGIN
-      PATCH_FAIL ~cbm_continuity_identity: invalid ARE variables in %SOURCE_FILE%.~
+      SET cbmci_variable_count = 0
+      PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable variable list.~
     END
     FOR (cbmci_var_i = 0; cbmci_var_i < cbmci_variable_count; ++cbmci_var_i) BEGIN
       LPF cbmci_field INT_VAR cbmci_offset = cbmci_variables + cbmci_var_i * 0x54
@@ -139,6 +145,7 @@ BEGIN
         cbmci_fx_version = 1 END
   END ELSE PATCH_IF (~%cbmci_signature%~ STRING_EQUAL_CASE ~ITM V1  ~) OR
       (~%cbmci_signature%~ STRING_EQUAL_CASE ~SPL V1  ~) BEGIN
+    PATCH_IF BUFFER_LENGTH >= 0x72 BEGIN
     READ_LONG 0x64 cbmci_abilities
     READ_SHORT 0x68 cbmci_ability_count
     READ_LONG 0x6a cbmci_effects
@@ -149,7 +156,8 @@ BEGIN
     PATCH_IF (cbmci_ability_count > 0) AND ((cbmci_abilities < 0x72) OR
         (cbmci_abilities > BUFFER_LENGTH) OR
         (cbmci_ability_count > (BUFFER_LENGTH - cbmci_abilities) / cbmci_ability_size)) BEGIN
-      PATCH_FAIL ~cbm_continuity_identity: invalid abilities in %SOURCE_FILE%.~
+      SET cbmci_ability_count = 0
+      PATCH_PRINT ~Identity: %SOURCE_FILE% has an unreadable ability list.~
     END
     FOR (cbmci_ability_i = 0; cbmci_ability_i < cbmci_ability_count; ++cbmci_ability_i) BEGIN
       READ_SHORT (cbmci_abilities + cbmci_ability_i * cbmci_ability_size + 0x1e) cbmci_count
@@ -160,9 +168,11 @@ BEGIN
     END
     LPF cbmci_effects INT_VAR cbmci_fx_start = cbmci_effects
         cbmci_fx_count = cbmci_effect_count END
+    END ELSE BEGIN PATCH_PRINT ~Identity: %SOURCE_FILE% is too short to read.~ END
   END ELSE BEGIN
-    PATCH_FAIL ~cbm_continuity_identity: unsupported candidate resource %SOURCE_FILE%.~
+    PATCH_PRINT ~Identity: %SOURCE_FILE% has an unsupported resource format.~
   END
+  END ELSE BEGIN PATCH_PRINT ~Identity: %SOURCE_FILE% is too short to read.~ END
 END
 
 DEFINE_PATCH_FUNCTION cbmci_table
@@ -193,12 +203,13 @@ BEGIN
           ++cbmci_new_count
         END
       END
-      PATCH_IF (cbmci_old_count > 1) OR (cbmci_new_count > 1) OR
-          ((cbmci_old_count > 0) AND (cbmci_new_count > 0)) BEGIN
-        PATCH_FAIL ~cbm_continuity_identity: conflicting %cbmci_old%/%cbmci_new% rows in %SOURCE_FILE%.~
-      END
-      PATCH_IF cbmci_apply AND (cbmci_old_row >= 0) BEGIN
-        SET_2DA_ENTRY cbmci_old_row 0 cbmci_columns ~%cbmci_new%~
+      PATCH_IF cbmci_apply BEGIN
+        FOR (cbmci_row = 0; cbmci_row < cbmci_rows; ++cbmci_row) BEGIN
+          READ_2DA_ENTRY cbmci_row 0 cbmci_columns cbmci_value
+          PATCH_IF ~%cbmci_value%~ STR_EQ ~%cbmci_old%~ BEGIN
+            SET_2DA_ENTRY cbmci_row 0 cbmci_columns ~%cbmci_new%~
+          END
+        END
       END
     END
     PATCH_IF cbmci_matrix BEGIN
@@ -217,12 +228,13 @@ BEGIN
             ++cbmci_new_count
           END
         END
-        PATCH_IF (cbmci_old_count > 1) OR (cbmci_new_count > 1) OR
-            ((cbmci_old_count > 0) AND (cbmci_new_count > 0)) BEGIN
-          PATCH_FAIL ~cbm_continuity_identity: conflicting %cbmci_old%/%cbmci_new% columns in %SOURCE_FILE%.~
-        END
-        PATCH_IF cbmci_apply AND (cbmci_old_column >= 0) BEGIN
-          SET_2DA_ENTRY cbmci_header_row cbmci_old_column (cbmci_columns - 1) ~%cbmci_new%~
+        PATCH_IF cbmci_apply BEGIN
+          FOR (cbmci_col = 0; cbmci_col < cbmci_columns - 1; ++cbmci_col) BEGIN
+            READ_2DA_ENTRY cbmci_header_row cbmci_col (cbmci_columns - 1) cbmci_heading
+            PATCH_IF ~%cbmci_heading%~ STR_EQ ~%cbmci_old%~ BEGIN
+              SET_2DA_ENTRY cbmci_header_row cbmci_col (cbmci_columns - 1) ~%cbmci_new%~
+            END
+          END
         END
       END
     END
@@ -247,9 +259,9 @@ BEGIN
       OUTER_SPRINT $cbmci_var(~SPRITE_IS_DEADYESLICK~) ~SPRITE_IS_DEADLK#YESLK~
     END
 
-    // Preflight all tables before publishing any resource. Resource/string
+    // Normalize the table keys. Resource/string
     // cells remain untouched; only documented DV keys (or ITEM_USE USER) move.
-    ACTION_FOR_EACH cbmci_pass IN 0 1 BEGIN
+    ACTION_FOR_EACH cbmci_pass IN 1 BEGIN
       ACTION_FOR_EACH cbmci_table IN BGDIALOG BDDIALOG BGBANTER BDBANTER
           PARTYAI NPCLEVEL NPCLVLDS INTERACT SODINTER ITEM_USE BEGIN
         ACTION_IF FILE_EXISTS_IN_GAME ~%cbmci_table%.2da~ BEGIN

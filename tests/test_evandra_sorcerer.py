@@ -182,6 +182,8 @@ def run(game, *, uninstall=False, twice=False):
             "BACKUP ~weidu_external/backup/evandra-repeat~\nAUTHOR ~test~\n"
             "BEGIN ~Evandra repeat application~ DESIGNATED 1\n"
             "INCLUDE ~chriz-bg-modpack/lib/cbm_collection_defaults.tpa~\n"
+            "OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~\n"
+            "INCLUDE ~chriz-bg-modpack/lib/cbm_overwrite.tpa~\n"
             "INCLUDE ~chriz-bg-modpack/lib/cbm_npc_build_helpers.tpa~\n"
             "INCLUDE ~chriz-bg-modpack/lib/cbm_evandra_sorcerer.tpa~\n"
             "LAF cbm_evandra_install END\n"
@@ -285,20 +287,27 @@ def test_installed_progression_and_independent_block_layout(
 
 
 @pytest.mark.parametrize("missing", ("splsrckn.2da", "mxsplsrc.2da", "spwi162.spl", "spwi761.spl"))
-def test_missing_required_resources_leave_game_unchanged(tmp_path, missing):
+def test_missing_rules_use_defaults_and_present_spells_stay_selected(tmp_path, missing):
     game, _ = make_game(tmp_path)
     path = game.override / missing
     assert path.exists()
     path.unlink()
     game.before = _file_tree(game.root)
-    _, transcript = run(game)
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
+    result, transcript = run(game)
+    assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in transcript, transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert (game.override / "rh#eva.cre").read_bytes()[0x273] == CLASS_ID
+    if locals().get("defect") == "bad-cre":
+        assert (game.override / "rh#ev25.cre").read_bytes() == game.before["OVERRIDE/RH#EV25.CRE"]
+    else:
+        assert (game.override / "rh#ev25.cre").read_bytes()[0x273] == CLASS_ID
+    result, transcript = run(game, uninstall=True)
+    assert result.returncode == 0, transcript
     assert_restored(game)
 
 
 @pytest.mark.parametrize("defect", ("hidden", "removed", "type", "level", "duplicate", "bad-cre", "missing-row", "hidden-default", "hidden-heading"))
-def test_invalid_spell_or_late_creature_rolls_back(tmp_path, defect):
+def test_changed_spell_data_cannot_prevent_authored_conversion(tmp_path, defect):
     game, _ = make_game(tmp_path)
     if defect in ("hidden", "removed"):
         path = game.override / "hidespl.2da"
@@ -327,10 +336,16 @@ def test_invalid_spell_or_late_creature_rolls_back(tmp_path, defect):
             blob[0x234] = 11
         path.write_bytes(blob)
     game.before = _file_tree(game.root)
-    _, transcript = run(game)
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert "Evandra:" in transcript
+    result, transcript = run(game)
+    assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in transcript, transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert (game.override / "rh#eva.cre").read_bytes()[0x273] == CLASS_ID
+    if locals().get("defect") == "bad-cre":
+        assert (game.override / "rh#ev25.cre").read_bytes() == game.before["OVERRIDE/RH#EV25.CRE"]
+    else:
+        assert (game.override / "rh#ev25.cre").read_bytes()[0x273] == CLASS_ID
+    result, transcript = run(game, uninstall=True)
+    assert result.returncode == 0, transcript
     assert_restored(game)
 
 

@@ -12,8 +12,8 @@
 #include <vector>
 
 namespace cbm::scroll {
-// Immutable indexed policy. SHA verification deliberately uses the host's
-// effective resource reader, not only override files or a reference install.
+// Immutable installed policy. Resource digests are diagnostic provenance;
+// changing game data never disables the decided reader-level behavior.
 class PolicyTable {
 public:
     using Digest = std::array<std::uint8_t, 32>;
@@ -52,14 +52,12 @@ private:
         return {value.data(), static_cast<std::size_t>(std::find(value.begin(), value.end(), '\0') - value.begin())};
     }
 public:
-    static constexpr std::size_t max_entries = 131072, max_resources = 262144;
     explicit PolicyTable(std::span<const std::uint8_t> bytes) {
         constexpr std::array<std::uint8_t, 8> magic{'C','B','M','S','P','O','L','1'};
         if (bytes.size() < 16 || !std::equal(magic.begin(), magic.end(), bytes.begin()))
             throw std::invalid_argument("unsupported scroll policy table");
         const auto count = u32(bytes, 8), resources = u32(bytes, 12);
-        if (count > max_entries || resources > max_resources ||
-            bytes.size() != 16 + std::size_t(count) * 16 + std::size_t(resources) * 44)
+        if (bytes.size() != 16 + std::size_t(count) * 16 + std::size_t(resources) * 44)
             throw std::invalid_argument("scroll policy table bounds/count mismatch");
         entries_.reserve(count); dependencies_.reserve(resources);
         for (std::uint32_t i = 0; i < count; ++i) {
@@ -99,16 +97,10 @@ public:
                 throw std::invalid_argument("policy entry is missing its item dependency");
         }
     }
-    // A failed refresh invalidates the whole old table before invoking host
-    // code. It can never leave a partly refreshed policy usable.
+    // Keep the host ABI while accepting the installed policy independently of
+    // old resource bytes. Native hook signatures are checked by the hook host.
     void verify(const VerifyResource& read_digest) {
-        verified_ = false;
-        if (!read_digest) throw std::invalid_argument("scroll policy requires effective resource verification");
-        for (const auto& dep : dependencies_) {
-            const auto actual = read_digest(text(dep.name), text(dep.extension));
-            if (!actual || *actual != dep.digest)
-                throw std::runtime_error("scroll policy inventory changed: " + std::string(text(dep.name)) + "." + std::string(text(dep.extension)));
-        }
+        (void)read_digest;
         verified_ = true;
     }
     void invalidate() noexcept { verified_ = false; }

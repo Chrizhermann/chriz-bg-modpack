@@ -162,7 +162,7 @@ def check(condition, state):
     negate, name, args = call(condition)
     if name == "global":
         answer = state.globals.get((args[0].lower(), args[1].lower()), 0) == int(args[2])
-    elif name == "inparty":
+    elif name in {"inparty", "isvalidforpartydialogue", "isvalidforpartydialog", "ifvalidforpartydialogue", "ifvalidforpartydialog"}:
         assert args == ["Myself"]
         answer = state.in_party
     elif name in {"xp", "xpgt", "xplt"}:
@@ -353,14 +353,15 @@ def test_missing_target_is_reported_without_unused_script_dependencies(tmp_path,
     result, transcript = install(game, component)
     assert result.returncode in (0, 3), transcript
     assert "NOT INSTALLED DUE TO ERRORS" not in transcript
-    assert "no resources changed" in transcript.lower() or "recruitment xp was not changed" in transcript.lower()
+    assert "absent" in transcript.lower()
+    assert "INSTALLED WITH WARNINGS" not in transcript
     assert target in transcript.upper()
     assert tree(game) == game.before
 
 
 @pytest.mark.parametrize("component", COMPONENTS)
 @pytest.mark.parametrize("defect", ("signature", "short-header", "missing-script", "empty-script", "foreign-clone"))
-def test_invalid_inputs_and_foreign_private_clone_fail_without_changes(tmp_path, component, defect):
+def test_changed_inputs_get_the_ladder_and_damaged_creatures_are_isolated(tmp_path, component, defect):
     game = make_game(tmp_path)
     target, clone, _ = COMPONENTS[component]
     target_path = game.override / f"{target.lower()}.cre"
@@ -378,17 +379,26 @@ def test_invalid_inputs_and_foreign_private_clone_fail_without_changes(tmp_path,
     target_path.write_bytes(creature_data)
     game.before = tree(game)
     result, transcript = install(game, component)
-    assert result.returncode != 0, transcript
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert "Fade" in transcript if component == 237 else "Evandra" in transcript
-    assert tree(game) == game.before
+    assert result.returncode == 0, transcript
+    assert "SUCCESSFULLY INSTALLED" in transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    if defect in {"signature", "short-header"}:
+        assert tree(game) == game.before
+        assert "too damaged" in transcript
+    else:
+        blocks = script_blocks(decompile_script(game, clone))
+        actor = ActorState(1_500_000, 42)
+        execute_pass(blocks, actor)
+        assert actor.npc_xp == 1_250_000
+        assert target_path.read_bytes()[0x248:0x250].rstrip(b"\0").decode() == clone
+    assert_uninstalled(game, component)
 
 
 @pytest.mark.parametrize("component", COMPONENTS)
 @pytest.mark.parametrize("reordered", (False, True))
 @pytest.mark.parametrize("marker", ("ProviderHasJoined", "Provider.Once"))
 @pytest.mark.parametrize("party_aliases", (False, True))
-def test_existing_one_shot_protagonist_xp_provider_is_preserved(tmp_path, component, reordered, marker,
+def test_changed_provider_cannot_overwrite_our_final_join_xp(tmp_path, component, reordered, marker,
                                                                  party_aliases):
     # With EET's TRIGGER.IDS the installed provider reads IsValidForPartyDialogue(Myself).
     conditions = [f'Global("{marker}","LOCALS",0)', 'InParty(Myself)', 'XPGT(Player1,599999)']
@@ -404,14 +414,21 @@ def test_existing_one_shot_protagonist_xp_provider_is_preserved(tmp_path, compon
     result, transcript = install(game, component)
     assert result.returncode in (0, 3), transcript
     assert "NOT INSTALLED DUE TO ERRORS" not in transcript
-    assert "provider" in transcript.lower()
-    assert game.before == tree(game)
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    blocks = script_blocks(decompile_script(game, COMPONENTS[component][1]))
+    actor = ActorState(1_500_000, 10)
+    for _ in range(4):
+        execute_pass(blocks, actor)
+        assert actor.npc_xp == 1_250_000
+    assert actor.globals[(marker.lower(), "locals")] == 1
+    assert actor.globals[("questalpha", "locals")] == 1
+    assert actor.globals[("questbeta", "locals")] == 1
     assert_uninstalled(game, component)
 
 
 @pytest.mark.parametrize("component", COMPONENTS)
 @pytest.mark.parametrize("reordered", (False, True))
-def test_scs_level_zero_actor_setup_retains_ownership_of_recruitment_xp(tmp_path, component, reordered):
+def test_level_zero_reset_keeps_setup_actions_but_cannot_clear_authored_xp(tmp_path, component, reordered):
     provider_blocks = (
         'IF\n Global("DWSCS_Setup","LOCALS",0)\n CheckStat(Myself,0,LEVEL)\n'
         'THEN\n RESPONSE #100\n SetGlobal("DWSCS_Setup","LOCALS",1)\n'
@@ -425,8 +442,13 @@ def test_scs_level_zero_actor_setup_retains_ownership_of_recruitment_xp(tmp_path
     result, transcript = install(game, component)
     assert result.returncode in (0, 3), transcript
     assert "NOT INSTALLED DUE TO ERRORS" not in transcript
-    assert "SCS" in transcript
-    assert game.before == tree(game)
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    source = decompile_script(game, COMPONENTS[component][1])
+    assert 'ChangeStat(Myself,XP,0,SET)' not in source
+    assert 'ApplySpellRES("dw#aulel",Myself)' in source
+    assert 'SetGlobal("DWSCS_Reset","LOCALS",1)' in source
+    assert 'ChangeStat(Myself,XP,1250000,SET)' in source
+    assert tree(game)[f"OVERRIDE/{game.source_script}.BCS"] == game.before[f"OVERRIDE/{game.source_script}.BCS"]
     assert_uninstalled(game, component)
 
 
@@ -474,5 +496,12 @@ def test_an_isolated_scs_like_action_does_not_claim_full_xp_setup(tmp_path, comp
     provider = ('IF\n Global("OtherSetup","LOCALS",0)\n CheckStat(Myself,0,LEVEL)\n'
                 'THEN\n RESPONSE #100\n' + action + '\n SetGlobal("OtherSetup","LOCALS",1)\nEND\n')
     game = make_game(tmp_path, provider=provider)
-    assert_installed(game, component)
+    if piece == "setup-only":
+        assert_installed(game, component)
+    else:
+        result, transcript = install(game, component)
+        assert result.returncode == 0, transcript
+        source = decompile_script(game, COMPONENTS[component][1])
+        assert 'ChangeStat(Myself,XP,0,SET)' not in source
+        assert 'SetGlobal("OtherSetup","LOCALS",1)' in source
     assert_uninstalled(game, component)

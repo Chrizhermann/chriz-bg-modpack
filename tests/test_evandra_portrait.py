@@ -51,7 +51,7 @@ class EvandraPortraitTests(unittest.TestCase):
                 self.assertEqual(baseline, file_tree(game.override))
                 game.assert_stable_inputs(self)
 
-    def test_missing_evandra_does_not_publish_artwork(self):
+    def test_missing_evandra_still_publishes_owned_artwork(self):
         weidu = find_weidu()
         if not weidu:
             self.skipTest("Set WEIDU_BIN to run the real installer")
@@ -61,10 +61,12 @@ class EvandraPortraitTests(unittest.TestCase):
             game = SyntheticSarahGame(TempRoot(), complete=True)
             baseline = file_tree(game.override)
             result = game.run(weidu, "--force-install-list", 225)
-            self.assertIn("SKIPPING", game.transcript(result))
-            self.assertEqual(baseline, file_tree(game.override))
+            self.assertIn("SUCCESSFULLY INSTALLED", game.transcript(result))
+            self.assertEqual({**baseline,"RH#EVAL.BMP":ARTWORK.read_bytes()},file_tree(game.override))
+            game.run(weidu,"--force-uninstall-list",225)
+            self.assertEqual(baseline,file_tree(game.override))
 
-    def test_malformed_second_template_rolls_back_first_template(self):
+    def test_unreadable_second_template_does_not_block_first_portrait(self):
         weidu = find_weidu()
         if not weidu:
             self.skipTest("Set WEIDU_BIN to run the real installer")
@@ -76,8 +78,13 @@ class EvandraPortraitTests(unittest.TestCase):
             (game.override / "rh#ev25.cre").write_bytes(b"CRE V1.0")
             baseline = file_tree(game.override)
             result = game.run(weidu, "--force-install-list", 225)
-            self.assertIn("NOT INSTALLED DUE TO ERRORS", game.transcript(result))
-            self.assertEqual(baseline, file_tree(game.override))
+            self.assertEqual(0,result.returncode,game.transcript(result))
+            after=file_tree(game.override)
+            self.assertEqual(baseline["RH#EV25.CRE"],after["RH#EV25.CRE"])
+            self.assertEqual(b"rh#evaL\0"*2,after["RH#EVA.CRE"][0x34:0x44])
+            self.assertEqual(ARTWORK.read_bytes(),after["RH#EVAL.BMP"])
+            game.run(weidu,"--force-uninstall-list",225)
+            self.assertEqual(baseline,file_tree(game.override))
 
     def test_vampire_variant_is_optional(self):
         weidu = find_weidu()

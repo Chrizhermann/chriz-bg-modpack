@@ -134,6 +134,20 @@ class YeslickAlaghorTests(unittest.TestCase):
             self.assertIn("SUCCESSFULLY", output)
         return output
 
+    def assert_authoritative_kit(self,before):
+        output=self.run_component()
+        self.assertNotIn("INSTALLED WITH WARNINGS",output)
+        expected=dict(before)
+        for name in TARGETS:
+            key=name+".CRE"
+            data=bytearray(expected[key])
+            if len(data)>=0x2d4 and data[:8]==b"CRE V1.0":
+                struct.pack_into("<I",data,0x244,0x40690000)
+                expected[key]=bytes(data)
+        self.assertEqual(expected,_file_tree(self.override))
+        self.run_component(uninstall=True)
+        self.assertEqual(before,_file_tree(self.override))
+
     def test_only_recruitment_kits_change_and_uninstall_restores_every_byte(self):
         before = _file_tree(self.override)
         self.run_component()
@@ -173,28 +187,24 @@ class YeslickAlaghorTests(unittest.TestCase):
             data = (self.override / f"{name.lower()}.cre").read_bytes()
             self.assertEqual(0x40730000, struct.unpack_from("<I", data, 0x244)[0])
 
-    def test_vanilla_or_missing_provider_and_late_order_do_not_mutate(self):
+    def test_install_history_does_not_gate_kit_choice(self):
         for log in ("", "~YESLICKNPC/YESLICKNPC.TP2~ #0 #0 // Vanilla\n",
                     "~YESLICKNPC/YESLICKNPC.TP2~ #0 #1\n~EET_END/EET_END.TP2~ #0 #0\n",
                     "~YESLICKNPC/YESLICKNPC.TP2~ #0 #1\n~SETUP-CHRIZ-BG-MODPACK.TP2~ #0 #199\n"):
             with self.subTest(log=log):
                 self.log(log)
                 before = _file_tree(self.override)
-                output = self.run_component(success=False)
-                self.assertNotIn("SUCCESSFULLY INSTALLED", output)
-                self.assertEqual(before, _file_tree(self.override))
+                self.assert_authoritative_kit(before)
 
-    def test_bad_second_recruit_rolls_back_the_first(self):
+    def test_changed_recruit_is_overwritten_and_short_header_is_isolated(self):
         for altered in (creature(kit=0x4017), creature(cls=2), creature(dv="Impostor"),
                         creature(priest=0), b"CRE V1.0"):
             with self.subTest(header=altered[:8]):
                 (self.override / "yeslic5.cre").write_bytes(altered)
                 before = _file_tree(self.override)
-                output = self.run_component(success=False)
-                self.assertNotIn("SUCCESSFULLY INSTALLED", output)
-                self.assertEqual(before, _file_tree(self.override))
+                self.assert_authoritative_kit(before)
 
-    def test_missing_local_kit_clab_or_multiclass_dispatch_is_rejected(self):
+    def test_only_actual_kit_and_dispatcher_presence_are_requirements(self):
         for name in ("kit.ids", "kitlist.2da", "cbmyclab.2da", "clabpr01.2da",
                      "qd_multi.qd", "qd_mcp08.spl", "cbmya#.eff", "cbmya.spl"):
             with self.subTest(missing=name):
@@ -202,12 +212,15 @@ class YeslickAlaghorTests(unittest.TestCase):
                 data = path.read_bytes()
                 path.unlink()
                 before = _file_tree(self.override)
-                output = self.run_component(success=False)
-                self.assertNotIn("SUCCESSFULLY INSTALLED", output)
-                self.assertEqual(before, _file_tree(self.override))
+                if name in {"kit.ids","qd_multi.qd"}:
+                    output=self.run_component(success=False)
+                    self.assertNotIn("SUCCESSFULLY INSTALLED",output)
+                    self.assertEqual(before,_file_tree(self.override))
+                else:
+                    self.assert_authoritative_kit(before)
                 path.write_bytes(data)
 
-    def test_wrong_kit_or_early_only_grant_is_not_accepted_as_level_eight(self):
+    def test_other_dispatcher_contents_do_not_gate_the_kit_assignment(self):
         path = self.override / "qd_mcp08.spl"
         original = path.read_bytes()
         for wrong in (dispatch(0x4068, self.grants[8]), dispatch(0x4069, [])):
@@ -217,9 +230,7 @@ class YeslickAlaghorTests(unittest.TestCase):
                 (self.override / "qd_mcp05.spl").write_bytes(original)
                 path.write_bytes(wrong)
                 before = _file_tree(self.override)
-                output = self.run_component(success=False)
-                self.assertIn("not registered", output)
-                self.assertEqual(before, _file_tree(self.override))
+                self.assert_authoritative_kit(before)
 
     def test_later_priest_passives_and_ragged_fifty_level_clab_are_supported(self):
         path = self.override / "cbmyclab.2da"
@@ -236,7 +247,7 @@ class YeslickAlaghorTests(unittest.TestCase):
             if not key.endswith(".CRE"):
                 self.assertEqual(value, _file_tree(self.override)[key])
 
-    def test_kitlist_disagreement_and_duplicate_named_rows_fail(self):
+    def test_kit_ids_symbol_selects_kit_despite_changed_kitlist(self):
         path = self.override / "kitlist.2da"
         original = path.read_text()
         for content in (original.replace("0x4069", "0x4068"),
@@ -244,9 +255,7 @@ class YeslickAlaghorTests(unittest.TestCase):
             with self.subTest(kitlist=content[-30:]):
                 path.write_text(content)
                 before = _file_tree(self.override)
-                output = self.run_component(success=False)
-                self.assertNotIn("SUCCESSFULLY INSTALLED", output)
-                self.assertEqual(before, _file_tree(self.override))
+                self.assert_authoritative_kit(before)
 
     def test_bg2_only_installation_does_not_apply_the_bg1_preset(self):
         (self.override / "eet.flag").unlink()

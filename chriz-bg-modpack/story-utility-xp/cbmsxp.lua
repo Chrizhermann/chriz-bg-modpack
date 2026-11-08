@@ -8,10 +8,8 @@ function M.Phase(campaign, endBG1, inToB)
         and campaign ~= "SOA" and campaign ~= "TOB" then
         return nil, "Unsupported campaign: " .. tostring(campaign)
     end
-    if (endBG1 ~= 0 and endBG1 ~= 1 and endBG1 ~= 2)
-        or (inToB ~= 0 and inToB ~= 1) then
-        return nil, "Unsupported EET campaign flags."
-    end
+    endBG1 = math.max(0, math.min(2, math.floor(tonumber(endBG1) or 0)))
+    inToB = math.max(0, math.min(1, math.floor(tonumber(inToB) or 0)))
     -- Story progress wins even when revisiting earlier campaign areas.
     if inToB == 1 or endBG1 == 2 then return "bg2" end
     if campaign == "BG1" or campaign == "SOD" then return "bg1" end

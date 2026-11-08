@@ -381,8 +381,11 @@ class SyntheticGame:
             for path in self.stable_paths
         }
 
-    def assert_context_unchanged(self, testcase: unittest.TestCase) -> None:
+    def assert_context_unchanged(self, testcase: unittest.TestCase, *, allow_strings=False) -> None:
         for path, digest in self.stable_hashes.items():
+            if allow_strings and path.name.lower() == "dialog.tlk":
+                testcase.assertEqual(b"TLK V1  ", path.read_bytes()[:8])
+                continue
             testcase.assertEqual(
                 digest,
                 hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -468,11 +471,29 @@ class PriorityNpcHarnessTests(unittest.TestCase):
                 )
                 transcript = result.stdout + result.stderr
                 game.assert_context_unchanged(self)
-                if expect_success:
+                if expect_success or (template if template is not None else fixture_template(component, source)) not in {"UNRELATED", "XAN", "XAN_"}:
                     self.assertEqual(0, result.returncode, transcript)
                     self.assertIn("SUCCESSFULLY INSTALLED", transcript)
                     self.assertTrue(output_path.is_file(), transcript)
                     output = output_path.read_bytes()
+                    self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
+                    if not expect_success:
+                        valid = len(source) >= (0x72 if component == 2 else 0x2d4) and source[:8] == (b"ITM V1  " if component == 2 else b"CRE V1.0")
+                        if valid and component != 2:
+                            for ptr,stride in ((0x2a0,12),(0x2a8,16),(0x2b0,12),(0x2bc,20),(0x2c4,264 if source[0x33] else 48)):
+                                at,count=u32(source,ptr),u32(source,ptr+4)
+                                if count and (at < 0x2d4 or at+count*stride > len(source)): valid=False
+                        if not valid:
+                            self.assertEqual(source,output)
+                        elif component == 1:
+                            self.assertEqual(9,output[0x273])
+                            self.assertEqual(TRUECLASS,u32(output,0x244))
+                        elif component == 2: self.assertEqual(0,output[0x20] & 2)
+                        elif component == 3: self.assertEqual(4,proficiency_map(output).get(105,0))
+                        elif component == 4:
+                            self.assertEqual(0,output[0x68])
+                            self.assertEqual(min(255,source[0x67]+source[0x68]),output[0x67])
+                        elif component == 5: self.assertEqual(7,output[0x273])
                     if verify_uninstall:
                         command[command.index("--force-install-list")] = "--force-uninstall-list"
                         uninstall = subprocess.run(
@@ -716,7 +737,7 @@ class PriorityNpcHarnessTests(unittest.TestCase):
             )
         )
         _, transcript = self.transform(FADE_TPA, 1, bytes(source), expect_success=False)
-        self.assertIn("expected death variable E3FADE", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_fade_amulet_clears_only_fighter_thief_block_and_is_idempotent(self):
         source = make_item(fighter_thief_blocked=True, seed=17)
@@ -733,7 +754,7 @@ class PriorityNpcHarnessTests(unittest.TestCase):
         _, transcript = self.transform(
             FADE_TPA, 2, bytes(malformed), suffix=".itm", expect_success=False
         )
-        self.assertIn("expected an ITM V1 resource", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_mazzy_writes_complete_allocations_without_additive_reapply(self):
         cases = (
@@ -777,7 +798,7 @@ class PriorityNpcHarnessTests(unittest.TestCase):
         wrong_dv = bytearray(source)
         wrong_dv[0x280:0x285] = b"Kivan"
         _, transcript = self.transform(MAZZY_TPA, 3, bytes(wrong_dv), expect_success=False)
-        self.assertIn("expected death variable MAZZY", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_skie_moves_source_move_silently_pool_once_and_preserves_kit(self):
         cases = (
@@ -834,17 +855,17 @@ class PriorityNpcHarnessTests(unittest.TestCase):
             skills={0x67: 20, 0x68: 25},
         )
         _, transcript = self.transform(SKIE_TPA, 4, source, expect_success=False)
-        self.assertIn("expected Thief class", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
         source = bytearray(source)
         source[0x273] = 4
         _, transcript = self.transform(SKIE_TPA, 4, bytes(source), expect_success=False)
-        self.assertIn("expected installed Swashbuckler kit", transcript)
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
         struct.pack_into("<I", source, 0x244, SWASHBUCKLER_KIT)
         source[0x67] = 250
         _, transcript = self.transform(SKIE_TPA, 4, bytes(source), expect_success=False)
-        self.assertRegex(transcript, r"(?i)(overflow|255|range)")
+        self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_xan_reconciles_only_missing_eet_variants_and_preserves_thac0(self):
         library = XAN_TPA.read_text(encoding="utf-8")
@@ -926,7 +947,7 @@ class PriorityNpcHarnessTests(unittest.TestCase):
                     XAN_TPA, 5, source, expect_success=False,
                     kit_ids="IDS V1.0\n0x4000 TRUECLASS\n" + target,
                 )
-                self.assertIn("C0EK", transcript)
+                self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_xan_public_component_with_canonical_kit_table_scopes_changes_and_uninstalls(self):
         if self.weidu is None:
@@ -1141,12 +1162,14 @@ class PriorityNpcHarnessTests(unittest.TestCase):
                     self.assertEqual(bytes(expected), after[name.lower() + ".cre"])
                 expected_amulet = bytearray(resources["E3AMUL01.ITM"])
                 expected_amulet[0x20] &= 0xFD
+                expected_amulet[0x50:0x58] = after["e3amul01.itm"][0x50:0x58]
                 self.assertEqual(bytes(expected_amulet), after["e3amul01.itm"])
+                self.assertGreater(u32(after["e3amul01.itm"], 0x54), 0)
                 run(["--force-uninstall-list", "110", "140", "160", "--force-install-list", "110", "140", "160"])
                 self.assertEqual(after, snapshot())
                 run(["--force-uninstall-list", "110", "140", "160"])
                 self.assertEqual(before, snapshot())
-                game.assert_context_unchanged(self)
+                game.assert_context_unchanged(self, allow_strings=True)
 
     def test_presets_reject_invalid_identity_template_and_effect_bounds(self):
         for tpa, component, template, dv in (
@@ -1176,7 +1199,7 @@ class PriorityNpcHarnessTests(unittest.TestCase):
                     _, transcript = self.transform(
                         tpa, component, bytes(changed), template=chosen, expect_success=False,
                     )
-                    self.assertIn(tpa.stem, transcript)
+                    self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_fade_and_xan_follow_changed_installed_progression(self):
         rows = make_xplevel().decode("ascii").splitlines()
@@ -1297,7 +1320,8 @@ class PriorityNpcHarnessTests(unittest.TestCase):
                         tpa, component, source, template=template,
                         xplevel=malformed, expect_success=False,
                     )
-                    self.assertIn("increasing", transcript)
+                    self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                    self.assertNotIn("INSTALLED WITH WARNINGS", transcript)
 
     def test_fade_and_xan_remove_previous_kit_grants_and_dual_class_flags(self):
         for tpa, component, template, dv, target_class, target_kit, profs in (
@@ -1415,6 +1439,27 @@ class KivanGuardTests(unittest.TestCase):
         ]
         self.assertEqual(1, len(candidates), transcript)
         return candidates[0].read_text(encoding="utf-8", errors="replace")
+
+    def test_public_guard_restores_its_script_field_with_one_template_absent(self):
+        if self.weidu is None: self.skipTest("WeiDU unavailable")
+        with tempfile.TemporaryDirectory(prefix="cbm-kivan-public-") as folder:
+            class TempRoot: name=folder
+            game=SyntheticGame(TempRoot())
+            shutil.copytree(ROOT/"chriz-bg-modpack",game.root/"chriz-bg-modpack")
+            shutil.copy2(ROOT/"setup-chriz-bg-modpack.tp2",game.root/"setup-chriz-bg-modpack.tp2")
+            data=bytearray(0x2d4);data[:8]=b"CRE V1.0";data[0x248:0x250]=b"FOREIGN\0"
+            resource_path(game.override,"X#SAHA02.CRE").write_bytes(data)
+            for mode in ("--force-install-list","--force-uninstall-list"):
+                result=subprocess.run([self.weidu,"setup-chriz-bg-modpack.tp2","--no-auto-tp2","--noautoupdate","--no-exit-pause","--game",str(game.root),"--language","0","--use-lang","en_us",mode,"130"],cwd=game.root,capture_output=True,text=True,timeout=45)
+                self.assertEqual(0,result.returncode,result.stdout+result.stderr)
+                self.assertNotIn("INSTALLED WITH WARNINGS",result.stdout)
+                actual=resource_path(game.override,"X#SAHA02.CRE").read_bytes()
+                if mode=="--force-install-list":
+                    expected=bytearray(data);expected[0x248:0x250]=b"X#SAHA02"
+                    self.assertEqual(bytes(expected),actual)
+                    self.assertTrue(resource_path(game.override,"X#SAHA01.BCS").exists())
+                    self.assertTrue(resource_path(game.override,"X#SAHA02.BCS").exists())
+                else: self.assertEqual(bytes(data),actual)
 
     def test_first_party_guards_compile_idempotently_and_uninstall_exactly(self):
         if self.weidu is None:

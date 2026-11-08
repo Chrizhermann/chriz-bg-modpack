@@ -1,5 +1,12 @@
 # Campaign XP caps with banking
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Missing or invalid installed retired-class thresholds now use the bundled stock
+table. Conflicting class flags, campaign progress and saved balance ownership
+still need the reconciliation decisions recorded in that review.
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Experimental and optional in alpha.11. On October 12, 650 (without 651) was
 added to one existing private run at the author's request; adoption kept that
 run's existing XP and levels. That run has not yet exercised a cap crossing,
@@ -21,10 +28,9 @@ Component **652** also gates Baeloth's Larswood entrance scene (`BAINVI.BCS`) to
 Chapter 5+ (`GlobalGT("Chapter","GLOBAL",4)`) when `BAINVI.BCS` is present, so
 his 40,000 starting XP fits under Chapter 5's 64,000 XP cap without altering
 `BAELOTH.CRE`. The gate patches the blocks that start his entrance (they name
-`BA_START_SCENE` or `CUTBA01`). If another mod replaced the scene, or
-`BAINVI.BCS` is not a valid script, 652 still installs the caps, leaves the
-script unchanged and warns. Baeloth can then join earlier; banking keeps his
-starting XP and banks what he earns until the chapter cap passes it.
+`BA_START_SCENE` or `CUTBA01`). When those blocks are absent, the authored
+entrance block is added. A missing or unreadable script is logged individually;
+the cap policy still installs. Banking retains Baeloth's starting XP.
 
 To reach the 8,900,000 cap in ToB Finale (Ch. 10 / EET Ch. 22), use an XP cap remover such as Tweaks Anthology (`cdtweaks`) component 2090;
 other installed total caps and level tables still apply.

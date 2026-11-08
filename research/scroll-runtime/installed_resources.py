@@ -155,12 +155,10 @@ class Inventory:
     All SPL ability headers are visited (the original native selector remains
     responsible for choosing one). Repeated edges retain their graph record,
     including native repeating spell chains; each resource is expanded once.
-    Budgets constrain hostile or pathological
-    graphs rather than requiring reference-install counts/order.
+    Worklist traversal visits each resource once; loops and dead ends end only
+    their own branch. The optional legacy budget arguments are ignored.
     """
     def __init__(self, load, *, max_nodes=4096, max_depth=64):
-        if max_nodes < 1 or max_depth < 1:
-            raise ValueError("resource traversal budgets must be positive")
         self.load, self.max_nodes, self.max_depth = load, max_nodes, max_depth
         self.cache = {}
 
@@ -182,6 +180,7 @@ class Inventory:
             report.resources[root.name + ".ITM"] = root.sha256
             visited = set()
             saw_dispatch = False
+            pending = []
 
             def visit(target, extension, path):
                 key = (target, extension)
@@ -190,16 +189,10 @@ class Inventory:
                                               " -> ".join(n + "." + e for n, e in (*path, key)))
                 if key in visited:
                     return
-                if len(path) >= self.max_depth:
-                    raise ResourceError(f"{target}.{extension}: dispatch depth exceeds {self.max_depth}")
-                if len(visited) >= self.max_nodes:
-                    raise ResourceError(f"{target}.{extension}: graph exceeds {self.max_nodes} resources")
                 resource = self.get(target, extension)
                 visited.add(key)
                 report.resources[target + "." + extension] = resource.sha256
                 if extension == "SPL":
-                    if resource.kind not in (0, 1, 2, 3, 4, 5):
-                        raise ResourceError(f"{target}.SPL: unknown installed spell type {resource.kind}")
                     report.spells[target] = {"installed_type": resource.kind,
                                              "policy": {1: "arcane", 2: "divine"}.get(resource.kind, "native_untyped"),
                                              "ability_levels": [a.minimum_level for a in resource.abilities]}
@@ -214,42 +207,48 @@ class Inventory:
                     report.mechanics.append({"owner": owner, "index": effect.index, "opcode": op,
                                              "parameter1": effect.parameter1, "parameter2": effect.parameter2})
                     if op == 147:
-                        report.learned.append(resref(effect.resource))
+                        try:
+                            report.learned.append(resref(effect.resource))
+                        except ResourceError as error:
+                            report.diagnostics.append(f"{owner}: {error}")
                     elif op in (146, 148, 177, 232, 272, 326):
-                        if op in (146, 148) and effect.parameter2 not in (0, 1, 2):
-                            raise ResourceError(f"{owner}: opcode{op} unsupported mode {effect.parameter2}")
                         extension = "EFF" if op in (177, 272) else "SPL"
                         references = (effect.resource, *effect.extra_resources) if op == 232 else (effect.resource,)
                         for reference in references:
                             if op == 232 and not reference.split(b"\0", 1)[0]:
                                 continue  # Native contingent spell slots may be empty.
-                            target = resref(reference)
+                            try:
+                                target = resref(reference)
+                            except ResourceError as error:
+                                report.diagnostics.append(f"{owner}: {error}")
+                                continue
                             report.edges.append({"owner": owner, "index": effect.index, "opcode": op,
                                              "parameter1": effect.parameter1, "parameter2": effect.parameter2,
                                              "target": target + "." + extension})
                             saw_dispatch = True
-                            visit(target, extension, path)
+                            pending.append((target, extension, path))
 
-            try:
-                examine(ability.effects, root.name + f".ITM:ability{ability.index}", ())
-                if report.learned:
-                    report.classification = "mixed_learning_cast" if saw_dispatch else "learning"
-                    if saw_dispatch:
-                        report.diagnostics.append("learning and casting share an ability; preserve until attribution is resolved")
-                elif any(s["policy"] in ("arcane", "divine") for s in report.spells.values()):
-                    report.classification = "typed_cast_candidate"
-                else:
-                    report.classification = "native_only"
-                fixed = FIXED_FAMILIES.get(root.name)
-                if fixed and not report.learned:
-                    family, anchors = fixed
-                    if any(protection_anchor(root.name, e, anchors) for e in report.mechanics):
-                        report.classification = "native_exception"
-                        report.exception = family
-                    else:
-                        report.classification = "unresolved"
-                        report.diagnostics.append(f"known {family} scroll lacks its protection mechanic; provider review required")
-            except (ResourceError, FileNotFoundError, KeyError) as error:
-                report.diagnostics.append(str(error))
+            examine(ability.effects, root.name + f".ITM:ability{ability.index}", ())
+            while pending:
+                target, extension, path = pending.pop()
+                try:
+                    visit(target, extension, path)
+                except (ResourceError, FileNotFoundError, KeyError, OSError) as error:
+                    visited.add((target, extension))
+                    report.diagnostics.append(str(error))
+            if report.learned:
+                report.classification = "mixed_learning_cast" if saw_dispatch else "learning"
+                if saw_dispatch:
+                    report.diagnostics.append("learning and casting share an ability; retain native learning behavior")
+            elif any(s["policy"] in ("arcane", "divine") for s in report.spells.values()):
+                report.classification = "typed_cast_candidate"
+            elif saw_dispatch and not report.spells:
+                report.classification = "unresolved"
+            else:
+                report.classification = "native_only"
+            fixed = FIXED_FAMILIES.get(root.name)
+            if fixed and not report.learned:
+                report.classification = "native_exception"
+                report.exception = fixed[0]
             result.append(report)
         return result

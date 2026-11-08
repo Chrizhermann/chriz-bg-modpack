@@ -1,16 +1,22 @@
-// UTIL is the engine's UI bootstrap, before provider menus and M_ wrappers use t.
-// LeUI 4.9.1 and Dragonspear UI++ 22.01.3 retain the pre-2.7 helper name.
-// Do not replace an older game's helper or a function installed by another mod,
-// and do not fetch any translated text while the engine is still starting up.
+// Component 640 owns the legacy alias. Resolve the engine API at startup.
+COPY_EXISTING ~UTIL.LUA~ ~override~
+  SET cbmui_start = INDEX_BUFFER (EXACT_MATCH ~-- CBM_LEGACY_UI_STRINGS_BEGIN~)
+  WHILE cbmui_start >= 0 BEGIN
+    SET cbmui_end = INDEX_BUFFER (EXACT_MATCH ~-- CBM_LEGACY_UI_STRINGS_END~ cbmui_start)
+    SET cbmui_end = cbmui_end >= 0 ? cbmui_end + STRING_LENGTH ~-- CBM_LEGACY_UI_STRINGS_END~ : BUFFER_LENGTH
+    DELETE_BYTES cbmui_start (cbmui_end - cbmui_start)
+    SET cbmui_start = INDEX_BUFFER (EXACT_MATCH ~-- CBM_LEGACY_UI_STRINGS_BEGIN~)
+  END
+BUT_ONLY
 APPEND ~UTIL.LUA~ ~~~~~
 -- CBM_LEGACY_UI_STRINGS_BEGIN
 if type(_G.t) ~= "function" then
-  if type(_G.getUiString) ~= "function" then
-    error("chriz-bg-modpack component 640: UTIL.LUA provides neither a callable t nor getUiString UI string helper")
+  if type(_G.getUiString) == "function" then
+    _G.t = _G.getUiString
+  else
+    print("chriz-bg-modpack component 640: no UI string helper is available; the alias cannot be provided")
   end
-  _G.t = _G.getUiString
 end
 -- CBM_LEGACY_UI_STRINGS_END
 ~~~~~
-  UNLESS ~CBM_LEGACY_UI_STRINGS_BEGIN~
   KEEP_CRLF

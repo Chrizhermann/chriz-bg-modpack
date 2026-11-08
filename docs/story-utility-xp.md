@@ -1,5 +1,9 @@
 # Story-based utility XP — component 611
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 **Available from v0.2.0-alpha.8:** the BG1/SoD level-16+ lock reward is **155 XP**, using the EE
 Fixpack correction approved by Christopher on September 29, 2026. Collection
 integration remains separate.
@@ -62,16 +66,17 @@ so transition initialization and loading another campaign cannot leave an old
 phase cached merely because XP or a table pointer is unchanged. No marker or
 state is written into a save.
 
-Black Pits, tutorial, unknown campaign names, invalid flags and unsupported table
-layouts produce a diagnostic. Unsupported campaign/flag states do not publish a
-new reward schedule. If this runtime previously applied one, it restores the
-installed on-disk XPBONUS values in memory, rather than leaving those rewards in
-an unsupported session. Malformed tables are rejected before writing any cells.
+Black Pits, tutorial and unknown campaign names have no authored schedule and
+restore the installed baseline after leaving a supported campaign. Invalid flag
+values use the campaign's authored phase; direct starts still wait for their
+normal initialization. Owned table rows and columns are supplied by a private
+complete table when missing; reordered headers are addressed by label.
 
 ## Installation and scope
 
 Install **611 after EEex, EET finalization and other utility-XP tweaks**. It only
-publishes its own Lua/menu files; `XPBONUS.2DA` stays unchanged on disk. Launch
+publishes its Lua/menu files and a complete private XP table. It supplies a
+baseline `XPBONUS.2DA` only if that file is absent. Launch
 through InfinityLoader. Uninstall while the game is closed and restart when
 switching modes. WeiDU restores preexisting files through normal backups.
 

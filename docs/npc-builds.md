@@ -1,5 +1,9 @@
 # NPC build overrides
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Selecting these components applies the chosen build to the named recruitment
 templates. They replace the complete standard weapon and fighting-style
 allocation, so unlisted proficiencies become zero even when another mod assigned
@@ -32,7 +36,7 @@ Fade becomes a true-class Fighter/Thief with split levels calculated from half
 her stored total XP. Her Hide/Open Locks/Move Silently/Find Traps preset is
 70/70/70/80 for `E3FADE13`, and 85/80/80/95 for `E3FADE25`. Other thief skills,
 HP and THAC0 are preserved. The amulet change still only clears its
-Fighter/Thief usability restriction.
+Fighter/Thief usability restriction and writes its full bundled English description.
 
 Both conversions clear former dual-class flags. When the installed kit table
 identifies a previous kit's ability table, they remove its granted spells and
@@ -42,8 +46,8 @@ this is not a general reconstruction of every earlier mod's changes.
 
 Skie's 160/195 repair is a narrow transfer, rather than a complete thief-skill
 preset: add her existing Move Silently points to Open Locks, then set Move
-Silently to zero. She must be a Swashbuckler. A total above the CRE field's 255
-limit cannot be represented and aborts without discarding points.
+Silently to zero. Component 195 also assigns Swashbuckler. A sum above the byte
+field's limit is written as 255; no old kit or skill value blocks the transfer.
 
 The shared clearing code removes both set and increment forms of weapon pips.
 It preserves EE's repurposed spell-state slots, including stats 109 and 110.

@@ -265,6 +265,16 @@ class UtilityXPPublicInstallerTests(unittest.TestCase):
                 expected[f"OVERRIDE/{name.upper()}"] = (game.source_dir / name.lower()).read_bytes()
         actual = _file_tree(game.root)
         actual = {name: data for name, data in actual.items() if not _is_weidu_artifact(name)}
+        if installed:
+            table = actual["OVERRIDE/CBMXPB.2DA"]
+            self.assertTrue(table.startswith(b"2DA V1.0"))
+            self.assertTrue(all(label in table for label in (b"PICK_LOCK", b"DISARM_TRAP", b"LEARN_SPELL")))
+            expected["OVERRIDE/CBMXPB.2DA"] = table
+            for resource in ("XPBONUS", "XPLEVEL"):
+                key=f"OVERRIDE/{resource}.2DA"
+                if key in actual and key not in expected:
+                    self.assertTrue(actual[key].startswith(b"2DA V1.0"))
+                    expected[key]=actual[key]
         self.assertEqual(set(expected), set(actual), "installer wrote outside its allowlist")
         for name, payload in expected.items():
             self.assertEqual(payload, actual[name], f"unexpected bytes in {name}")
@@ -334,15 +344,22 @@ class UtilityXPPublicInstallerTests(unittest.TestCase):
     def test_missing_eeex_is_skipped_without_changes(self) -> None:
         self._assert_skipped(self._make_game(eeex=False), r"(?i)EEex")
 
-    def test_missing_xpbonus_is_skipped_without_changes(self) -> None:
-        self._assert_skipped(
-            self._make_game(missing_tables=("XPBONUS.2DA",)), r"(?i)XPBONUS"
-        )
+    @staticmethod
+    def _override_has(game, name: str) -> bool:
+        # Linux WeiDU writes override names in lowercase; Windows keeps the case it was given.
+        return any(path.name.lower() == name.lower() for path in game.override.iterdir())
 
-    def test_missing_xplevel_is_skipped_without_changes(self) -> None:
-        self._assert_skipped(
-            self._make_game(missing_tables=("XPLEVEL.2DA",)), r"(?i)XPLEVEL"
-        )
+    def test_missing_xpbonus_is_created_from_authored_rows(self) -> None:
+        game=self._make_game(missing_tables=("XPBONUS.2DA",))
+        self._assert_installed(game)
+        self.assertTrue(self._override_has(game, "XPBONUS.2DA"))
+        self._assert_uninstalled(game)
+
+    def test_missing_xplevel_is_created_for_dual_class_progression(self) -> None:
+        game=self._make_game(missing_tables=("XPLEVEL.2DA",))
+        self._assert_installed(game)
+        self.assertTrue(self._override_has(game, "XPLEVEL.2DA"))
+        self._assert_uninstalled(game)
 
 
 if __name__ == "__main__":

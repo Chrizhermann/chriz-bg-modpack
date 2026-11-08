@@ -13,7 +13,7 @@
   "files": {
     "bank_recruitment_patch.tpa": {
       "source": "research/xp-banking-native/bank_recruitment_patch.tpa",
-      "sha256": "86977d7fec6206659df70a2226d2a3d924e656d193b181c22b2989b575adaa14"
+      "sha256": "e0212bba31fc3638b038fe45742867d995cd2252e62dfddd814a9a6c85812aec"
     },
     "cbmdold.menu": {
       "source": "research/xp-banking-native/dual_retired_menu.menu",
@@ -221,7 +221,7 @@
     },
     "runtime/xp-banking-native/bank_runtime.lua": {
       "source": "research/xp-banking-native/bank_runtime.lua",
-      "sha256": "db073b23481b5200f9092d22499c9f12bf906dab88aac6f92a9134f94e24dc2e"
+      "sha256": "dd9855f8b87c1349cc4436efb2560d0051299d8e326efab387aa0072b1a106a9"
     },
     "runtime/xp-banking-native/callback_abi.lua": {
       "source": "research/xp-banking-native/callback_abi.lua",

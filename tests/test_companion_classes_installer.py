@@ -280,6 +280,19 @@ def _assert_restored(game: SyntheticGame) -> None:
               if not _is_weidu_artifact(name)}
     expected = {name: data for name, data in game.before.items()
                 if not _is_weidu_artifact(name)}
+    # WeiDU retains newly allocated TLK strings on uninstall. Existing strings
+    # and every other file must be restored exactly.
+    for name in list(expected):
+        if name.endswith("DIALOG.TLK"):
+            old,new=expected.pop(name),actual.pop(name)
+            old_count=struct.unpack_from("<I",old,10)[0]
+            old_base,new_base=struct.unpack_from("<I",old,14)[0],struct.unpack_from("<I",new,14)[0]
+            assert struct.unpack_from("<I",new,10)[0]>=old_count
+            for index in range(old_count):
+                pos=18+index*26
+                old_at,old_len=struct.unpack_from("<II",old,pos+18)
+                new_at,new_len=struct.unpack_from("<II",new,pos+18)
+                assert old[old_base+old_at:old_base+old_at+old_len]==new[new_base+new_at:new_base+new_at+new_len]
     assert actual == expected
 
 
@@ -356,7 +369,7 @@ def _assert_installed_choice(
                if after.get(name) != game.before.get(name) and not _is_weidu_artifact(name)}
     expected_changes = {f"OVERRIDE/{name}.CRE" for name in expected_targets}
     if component == 220:
-        expected_changes.add("OVERRIDE/NPSW02.ITM")
+        expected_changes.update({"OVERRIDE/NPSW02.ITM", "LANG/EN_US/DIALOG.TLK"})
         assert after["OVERRIDE/NPSW02.ITM"][0x2B] == 0xA0
     if component == 222:
         expected_changes.update(("OVERRIDE/HEXXAT.BCS", "OVERRIDE/HEXXA25.BCS"))
@@ -422,12 +435,33 @@ def test_public_choices_preserve_character_state_and_uninstall_exactly(
 
 
 @pytest.mark.parametrize("component,kit,class_id", CHOICES)
-def test_absent_companion_is_skipped_without_writes(tmp_path, component, kit, class_id):
-    game = _make_game(tmp_path, absent=YOSHIMO if component == 220 else HEXXAT)
-    _, transcript = _run(game, component)
-    assert "SKIPPING:" in transcript
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    assert "NOT INSTALLED DUE TO ERRORS" not in transcript
+def test_absent_companion_templates_do_not_block_owned_item_and_script_changes(tmp_path,component,kit,class_id):
+    game=_make_game(tmp_path,absent=YOSHIMO if component==220 else HEXXAT)
+    result,transcript=_run(game,component)
+    assert result.returncode==0,transcript
+    assert "SUCCESSFULLY INSTALLED" in transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    assert "no supported companion CREs" in transcript
+    after=_file_tree(game.root)
+    assert not any(f"OVERRIDE/{name}.CRE" in after for name in (YOSHIMO if component==220 else HEXXAT))
+    if component==220: assert after["OVERRIDE/NPSW02.ITM"][0x2b]==0xa0
+    if component==222: assert b'"LOCALSohh_dom"' in after["OVERRIDE/HEXXAT.BCS"]
+    _run(game,component,uninstall=True)
+    _assert_restored(game)
+
+
+@pytest.mark.parametrize("component,kit,class_id",CHOICES)
+def test_missing_first_variant_does_not_block_later_variants(tmp_path,component,kit,class_id):
+    family=YOSHIMO if component==220 else HEXXAT
+    game=_make_game(tmp_path,absent=family[:1])
+    result,transcript=_run(game,component)
+    assert result.returncode==0,transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    after=_file_tree(game.root)
+    for name in family[1:]:
+        assert after[f"OVERRIDE/{name}.CRE"][0x273]==class_id
+        assert struct.unpack_from("<I",after[f"OVERRIDE/{name}.CRE"],0x244)[0]==KIT_IDS[kit]<<16
+    _run(game,component,uninstall=True)
     _assert_restored(game)
 
 
@@ -439,7 +473,7 @@ def test_unsupported_game_is_skipped_without_writes(tmp_path):
     _assert_restored(game)
 
 
-def test_late_wrong_class_rolls_back_every_already_patched_companion(tmp_path):
+def test_changed_class_is_overwritten_with_chosen_build(tmp_path):
     game = _make_game(tmp_path)
     path = game.override / "ohhex25.cre"
     creature = bytearray(path.read_bytes())
@@ -447,19 +481,23 @@ def test_late_wrong_class_rolls_back_every_already_patched_companion(tmp_path):
     path.write_bytes(creature)
     game.before = _file_tree(game.root)
     _, transcript = _run(game, 221)
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    assert "single-class thief" in transcript
+    assert "SUCCESSFULLY INSTALLED" in transcript
+    _assert_installed_choice(game,tmp_path,221,"SHADOWDANCER",4)
+    _run(game,221,uninstall=True)
     _assert_restored(game)
 
 
-def test_missing_progression_table_fails_cleanly(tmp_path):
+def test_missing_progression_table_uses_bundled_values(tmp_path):
     game = _make_game(tmp_path)
     (game.override / "thiefskl.2da").unlink()
     game.before = _file_tree(game.root)
     _, transcript = _run(game, 221)
-    assert "THIEFSKL" in transcript.upper()
-    assert "SUCCESSFULLY INSTALLED" not in transcript
+    assert "SUCCESSFULLY INSTALLED" in transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    for name in HEXXAT:
+        data=(game.override / f"{name.lower()}.cre").read_bytes()
+        assert struct.unpack_from("<I",data,0x244)[0]==KIT_IDS["SHADOWDANCER"]<<16
+    _run(game,221,uninstall=True)
     _assert_restored(game)
 
 
@@ -611,13 +649,28 @@ def test_fighter_thief_replaces_all_incoming_pips_using_installed_rules(
     _assert_restored(game)
 
 
-def test_changed_domination_script_rolls_back_creatures_and_first_script(tmp_path):
+def test_changed_domination_block_gets_the_authored_xp_conditions(tmp_path):
     game = _make_game(tmp_path)
     altered = _compile(game, SCRIPT.replace("LevelGT(Myself,23)", "LevelGT(Myself,22)", 1),
                        tmp_path / "compiled-altered")
     (game.override / "hexxa25.bcs").write_bytes(altered)
     game.before = _file_tree(game.root)
     _, transcript = _run(game, 222)
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert "second Domination progression block" in transcript
+    assert "SUCCESSFULLY INSTALLED" in transcript
+    _assert_installed_choice(game,tmp_path,222,"TRUECLASS",9)
+    _run(game,222,uninstall=True)
     _assert_restored(game)
+
+
+def test_fighter_thief_direct_second_application_preserves_owned_stats(tmp_path):
+    game=_make_game(tmp_path)
+    result,transcript=_run(game,222)
+    assert result.returncode==0,transcript
+    first=_file_tree(game.override)
+    result,transcript=_run(game,222,uninstall=True)
+    assert result.returncode==0,transcript
+    for name,data in first.items():
+        (game.override / name.lower()).write_bytes(data)
+    result,transcript=_run(game,222)
+    assert result.returncode==0,transcript
+    assert _file_tree(game.override)==first

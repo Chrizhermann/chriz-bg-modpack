@@ -1,5 +1,9 @@
 # Generic artwork for unidentified items
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Component **630**, label `cbm_unidentified_appearance`, marker `CBMID.MRK`.
 Available from **v0.2.0-alpha.8**. Native in-game acceptance remains pending.
 
@@ -40,11 +44,11 @@ their unique image.
   is not a released CEBG hotpatch; do not overlay it onto a running installation.
   Install/uninstall with WeiDU and the game closed.
 
-The installer reads a small donor catalog from the installed game, validates the
-art resources, and writes `CBMIDCFG.lua`. Missing nonessential donors use the
-neutral fallback. Invalid present donors or a missing fallback fail before any
-component files are published. Mod-added items automatically inherit their type's
-artwork at runtime; they do not need a list of individual resrefs.
+The installer reads a donor catalog and writes `CBMIDCFG.lua`. Missing or
+unreadable donors use bundled neutral artwork, without preventing the other
+categories from being written. Mod-added items inherit their type's artwork at
+runtime; they do not need a list of individual resrefs. Native hook signatures
+remain required before memory is patched.
 
 Uninstallation restores the original loader database and any replaced component
 files through normal WeiDU backups. The executable on disk, ITMs, UI.menu,

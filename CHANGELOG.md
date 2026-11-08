@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.2.0-alpha.16 - 2026-11-08
+
+Alpha.16 makes every component write the result it decided, whatever the game
+files held before. Hand-edited values, another mod's version of the same file,
+changed text, and missing or extra old pieces no longer stop the install, print
+a compatibility warning, or skip a component.
+
+Components still need their supported game type and any kit, resource, or
+component they genuinely build on; EEex features still need EEex. A truly absent
+optional target or one resource too damaged to change leaves out only that
+piece. Native Windows features still check the game executable before changing
+memory. See the [overwrite scope and evidence](docs/we-overwrite.md).
+
 ## v0.2.0-alpha.15 - 2026-11-03
 
 Alpha.15 adds one optional component: Marek carries the Boomerang Dagger +2 in

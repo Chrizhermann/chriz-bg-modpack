@@ -114,17 +114,31 @@ def test_uuid_uses_two_exact_local_fields_before_existing_callbacks(lua):
 
 @pytest.mark.parametrize("definition", [
     '{schema=99,payload="future",unknown={x=1}}',
-    '{schema=1,payload="future",unknown={x=1}}',
     '{schema=1,payload=17}',
 ])
-def test_unknown_envelope_kept_by_reference(lua, definition):
+def test_unreadable_envelope_stages_actor_local_drop_and_later_import_continues(lua, definition):
     lua.execute(f'envelope={definition}')
     lua.execute('''
         handler.importer(actor,envelope)
+        assert(staged=="" and health and #rejects==0)
+        finished,dropped=true,"unreadable actor payload"
+        listeners[1](actor)
+        assert(actor.aux.CBMS_ScrollMarshal.raw==nil and health)
+        assert(handler.exporter(actor).payload==exported)
+        local later={aux={}}
+        handler.importer(later,{schema=1,payload="valid",extra=true})
+        assert(staged=="valid" and health and #rejects==0)
+    ''')
+
+
+def test_extra_fields_do_not_prevent_supported_payload_import(lua):
+    lua.execute('''
+        handler.importer(actor,{schema=1,payload="supported",unknown={x=1}})
+        assert(staged=="supported" and health and #rejects==0)
         finished=true
         listeners[1](actor)
-        assert(handler.exporter(actor)==envelope)
-        assert(staged==nil and #rejects==1 and not health)
+        assert(actor.aux.CBMS_ScrollMarshal.raw==nil)
+        assert(handler.exporter(actor).payload==exported)
     ''')
 
 
@@ -144,20 +158,28 @@ def test_fallback_is_not_exported_twice_or_adopted_after_decode(lua):
         actor.aux.EEex_Sprite_FallbackMarshalStorage={CBM_SCROLL_CONTEXT=envelope}
         assert(handler.exporter(actor)==nil)
         assert(actor.aux.EEex_Sprite_FallbackMarshalStorage.CBM_SCROLL_CONTEXT==envelope)
-        assert(#rejects==1 and not health)
+        assert(#rejects==0 and health and #printed==1)
+        assert(handler.exporter(actor)==nil and #printed==1)
     ''')
 
 
-def test_exporter_failure_and_duplicate_import_are_latched(lua):
+def test_native_exporter_failure_still_latches(lua):
     lua.execute('''
         exported=nil
         assert(handler.exporter(actor)==nil and #rejects==1)
-        health=true
+        assert(not health)
+    ''')
+
+
+def test_duplicate_imports_reach_native_actor_local_resolution(lua):
+    lua.execute('''
         one={schema=1,payload="one"}; two={schema=1,payload="two"}
         handler.importer(actor,one); handler.importer(actor,two)
-        local v=actor.aux.CBMS_ScrollMarshal
-        assert(v.raw==one and v.conflicts[1]==one and v.conflicts[2]==two)
-        assert(#rejects==2 and not health)
+        assert(staged=="two" and health and #rejects==0)
+        finished,dropped=true,"duplicate actor envelope"
+        listeners[1](actor)
+        assert(actor.aux.CBMS_ScrollMarshal.raw==nil and #printed==1)
+        assert(handler.exporter(actor).payload==exported and health)
     ''')
 
 

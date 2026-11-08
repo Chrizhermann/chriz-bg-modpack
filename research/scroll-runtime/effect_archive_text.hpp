@@ -1,5 +1,5 @@
 // NUL-free ASCII envelope for EEex actor marshal strings. UUIDs never pass
-// through a Lua floating-point number. Unknown schemas remain caller-owned.
+// through a Lua floating-point number. Unreadable envelopes are isolated to their actor.
 #pragma once
 #include "effect_archive.hpp"
 #include <string_view>
@@ -34,7 +34,7 @@ inline std::string archive_text(const SavedEffectArchive& saved) {
 
 inline SavedEffectArchive read_archive_text(std::string_view text) {
     if (!text.starts_with("CBMSFX01:") || (text.size() - 9) % 2)
-        throw std::invalid_argument("unknown/malformed effect envelope; retain original actor data");
+        throw std::invalid_argument("unknown/malformed effect envelope");
     std::vector<std::byte> bytes;
     bytes.reserve((text.size() - 9) / 2);
     const auto digit = [](char c) -> unsigned {

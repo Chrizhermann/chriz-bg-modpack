@@ -1,12 +1,16 @@
 # Edwin: Red Wizard slots and amulet
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 **Component 236** — `cbm_edwin_redwizard`.
 
 When Artisan's Red Wizard conversion is selected, Edwin receives the kit's
 promised **two extra wizard slots per accessible spell level**: one from native
 specialization and one from the kit. His amulet adds no slots and can be removed.
-This corrects the selected kit; it does not enable Red Wizard or rebalance
-ordinary Conjurer Edwin by itself.
+Selecting the component assigns the installed Red Wizard kit to its recruitment
+templates and writes the agreed slot correction.
 
 ## Installation
 
@@ -14,7 +18,8 @@ Install **immediately after Artisan's NPC component 5102**, before Spell Revisio
 component **60** if used, and before other later NPC spellbook writers. SR's main
 component can already be installed. The missed EET template receives the same
 original spell removals as Artisan's conversion, at that conversion's stage;
-the final SR spellbook pass must come afterward. Installing after SR 60 is refused.
+the final SR spellbook pass should come afterward. Component-log order does not
+prevent the selected changes from being written.
 
 This component does not require EEex. It requires the installed `C0REDWIZ` kit
 and `C0REDWIZ.2DA`. The kit ID is resolved from the installed `KIT.IDS`.
@@ -28,15 +33,14 @@ and `C0REDWIZ.2DA`. The kit ID is resolved from the installed `KIT.IDS`.
 - Edwin's 11 known recruitment templates: remove only source-less permanent
   +2 single-spell-level effects inherited from vanilla. Preserve unrelated
   effects, stats, XP, level, inventory, identity and scripts.
-- EET's `EDWIN7_`: extend the selected Artisan conversion if this template is
-  still a mage/Conjurer. A different explicit class/kit conversion is preserved.
+- Assign the installed Red Wizard kit to all 11 recruitment templates, including
+  EET's `EDWIN7_`, regardless of the previous kit.
 - Add one level-one Red Wizard CLAB grant, `AP_CBMEDSL`. The generated spell
   gives +1 for each wizard spell level; it does not unlock inaccessible levels.
 
-The repair does not normalize arbitrary slot bonuses from other mods. An older
-private `C0REDW4` correction or a conflicting `CBMEDSL` resource is refused, not
-overwritten or stacked. Uninstall that older correction using its own installer
-before choosing this component. Do not remove resources or fake WeiDU log rows.
+The repair removes the owned former slot grants and writes `AP_CBMEDSL` and its
+spell afresh. Existing private correction resources do not veto the write.
+Unrelated effects remain. Amulets receive complete bundled English descriptions.
 
 ## Existing saves
 

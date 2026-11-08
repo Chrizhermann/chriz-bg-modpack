@@ -354,7 +354,7 @@ class CompanionStatTests(unittest.TestCase):
                 for resref in resources[:-1]:
                     self.assertRegex(
                         transcript,
-                        rf"(?im)^.*WARNING.*{re.escape(resref)}\.CRE.*missing.*$",
+                        rf"(?im)^.*{re.escape(resref)}\.CRE.*missing.*$",
                     )
                 self.assertRegex(transcript, r"(?i)renamed variants may remain unpatched")
                 self.assert_uninstall_restores(game, component, before)
@@ -371,11 +371,11 @@ class CompanionStatTests(unittest.TestCase):
                 for resref in resources:
                     self.assertRegex(
                         transcript,
-                        rf"(?im)^.*WARNING.*{re.escape(resref)}\.CRE.*missing.*$",
+                        rf"(?im)^.*{re.escape(resref)}\.CRE.*missing.*$",
                     )
                 self.assert_uninstall_restores(game, component, before)
 
-    def test_malformed_targets_fail_clearly_and_roll_back_prior_valid_variants(self):
+    def test_unreadable_variant_does_not_block_other_stat_presets(self):
         valid = source_cre(5)
         malformed = (
             (b"BAD V1.0" + valid[8:], r"signature|cre v1\.0"),
@@ -391,11 +391,16 @@ class CompanionStatTests(unittest.TestCase):
                     before = file_tree(game.override)
                     result = self.run_component(game, component)
                     transcript = result.stdout + result.stderr
-                    self.assertNotEqual(0, result.returncode, transcript)
-                    self.assertIn("NOT INSTALLED DUE TO ERRORS", transcript)
-                    self.assertIn(f"{damaged}.CRE", transcript.upper())
-                    self.assertRegex(transcript.lower(), error)
-                    self.assertEqual(before, file_tree(game.override))
+                    self.assert_success(result)
+                    self.assertIn(f"{damaged}.CRE",transcript.upper())
+                    self.assertIn("too damaged",transcript)
+                    expected=dict(before)
+                    for name in resources[:-1]:
+                        key=f"{name}.CRE"
+                        expected[key]=apply_allocation(before[key],component)
+                    self.assertEqual(expected,file_tree(game.override))
+                    self.assert_uninstall_restores(game,component,before)
+
 
 
 if __name__ == "__main__":

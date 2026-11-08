@@ -436,7 +436,7 @@ def test_absent_targets_are_reported_without_loading_spell_dependencies(tmp_path
     "missing-spell", "spell-type", "spell-level", "hidden", "duplicate-resolution",
     "missing-allowance", "bad-signature", "short-header", "bad-block", "wrong-class",
 ))
-def test_invalid_spell_rules_or_late_target_fail_with_complete_rollback(tmp_path, defect):
+def test_changed_spell_rules_write_the_book_and_damage_costs_one_target(tmp_path, defect):
     game, spells = make_game(tmp_path)
     spell_path = game.override / f"{spells['FIREBALL'].lower()}.spl"
     if defect == "missing-spell":
@@ -469,9 +469,16 @@ def test_invalid_spell_rules_or_late_target_fail_with_complete_rollback(tmp_path
         path.write_bytes(data)
     game.before = game_files(game)
     result, transcript = run(game)
-    assert result.returncode != 0, transcript
-    assert "NOT INSTALLED DUE TO ERRORS" in transcript
-    assert "baeloth" in transcript.lower()
+    assert result.returncode == 0 and "SUCCESSFULLY INSTALLED" in transcript, transcript
+    assert "INSTALLED WITH WARNINGS" not in transcript
+    after = game_files(game)
+    assert wizard_known(after["OVERRIDE/BAELOTH.CRE"])
+    if defect in ("bad-signature", "short-header", "bad-block"):
+        assert after["OVERRIDE/BAELOT7.CRE"] == game.before["OVERRIDE/BAELOT7.CRE"]
+    else:
+        assert wizard_known(after["OVERRIDE/BAELOT7.CRE"])
+    result, transcript = run(game, uninstall=True)
+    assert result.returncode == 0, transcript
     assert game.before == game_files(game)
 
 

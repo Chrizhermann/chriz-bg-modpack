@@ -132,6 +132,8 @@ class SafanaInventoryInstallerTests(unittest.TestCase):
         # guards or patch. Compiler and installer run with cwd inside this game.
         (self.game / "safana-harness.tp2").write_text(
             'BACKUP ~backup~\nAUTHOR ~test~\nBEGIN ~Safana fixture~\n'
+            f'OUTER_SPRINT cbmo_data_root ~{(REPO / "chriz-bg-modpack/data/progression").as_posix()}~\n'
+            f'INCLUDE ~{(LIBRARY.parent / "cbm_overwrite.tpa").as_posix()}~\n'
             f'INCLUDE ~{LIBRARY.as_posix()}~\n'
         )
         self.protected = {
@@ -202,7 +204,7 @@ class SafanaInventoryInstallerTests(unittest.TestCase):
         self.install()
         self.assert_only_inventory_action_added(before, self.decompile())
 
-    def test_drift_missing_duplicate_and_prepatched_hooks_fail_atomically(self):
+    def test_changed_missing_duplicate_and_prepatched_arrivals_get_owned_block(self):
         cases = {
             "missing": OTHER_BLOCK,
             "duplicate": ARRIVAL + ARRIVAL,
@@ -217,26 +219,53 @@ class SafanaInventoryInstallerTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.compile_fixture(body)
                 before = snapshot(self.override)
-                output = self.install(expected_success=False)
-                self.assertIn("NOT INSTALLED DUE TO ERRORS", output)
-                self.assertIn("cbm_safana_inventory:", output)
-                self.assertEqual(snapshot(self.override), before)
+                output = self.install()
+                self.assertNotIn("INSTALLED WITH WARNINGS", output)
+                text=self.decompile()
+                self.assertEqual(1,text.lower().count("destroyallequipment()"))
+                self.assertIn('[250.350]',text)
+                self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
+                self.assertEqual(snapshot(self.override),before)
 
-    def test_wrong_game_fails_without_resource_changes(self):
+    def test_library_owns_arrival_without_a_game_marker(self):
         self.compile_fixture()
         (self.override / "eet.flag").unlink()
         before = snapshot(self.override)
-        output = self.install(expected_success=False)
-        self.assertIn("requires EET", output)
-        self.assertEqual(snapshot(self.override), before)
+        before_baf=self.decompile()
+        output=self.install()
+        self.assert_only_inventory_action_added(before_baf,self.decompile())
+        self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
+        self.assertEqual(snapshot(self.override),before)
 
-    def test_missing_mod_fails_without_resource_changes(self):
+    def test_replacement_before_original_keeps_unrelated_block_boundaries(self):
+        replacement = ARRIVAL.replace("SmallWait(1)",
+            'SmallWait(1)\nActionOverride("SAFANA",DestroyAllEquipment())')
+        # Enough trailing compiled object records to keep the stale old offset
+        # inside the buffer, where the previous code inserted into an object.
+        tail = "".join(OTHER_BLOCK.replace("CBMOtherQuest", f"CBMQuest{i}") for i in range(20))
+        self.compile_fixture(replacement + OTHER_BLOCK + ARRIVAL + tail)
+        before = snapshot(self.override)
+        self.install()
+        after = snapshot(self.override)
+        normalize = lambda text: re.sub(r"\s+", "", re.sub(r"//[^\n]*", "", text)).lower()
+        self.assertEqual(normalize(self.decompile()), normalize(OTHER_BLOCK + replacement + tail))
+        self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
+        self.assertEqual(snapshot(self.override), before)
+        # Apply to an already normalized script, independently of WeiDU's
+        # reinstall rollback, and require byte-for-byte stability.
+        find_resource(self.override, "ar0311.bcs").write_bytes(after["ar0311.bcs"])
+        self.install()
+        self.assertEqual(snapshot(self.override), after)
+
+    def test_install_history_does_not_gate_arrival(self):
         self.compile_fixture()
         (self.game / "weidu.log").write_text("")
         before = snapshot(self.override)
-        output = self.install(expected_success=False)
-        self.assertIn("requires Safana in Amn component 0", output)
-        self.assertEqual(snapshot(self.override), before)
+        before_baf=self.decompile()
+        output=self.install()
+        self.assert_only_inventory_action_added(before_baf,self.decompile())
+        self.run_weidu("safana-harness.tp2", "--force-uninstall-list", "0", "--quick-log")
+        self.assertEqual(snapshot(self.override),before)
 
     @unittest.skipUnless(os.environ.get("CBM_SAFANA_GAME"), "Optional installed-source copy")
     def test_read_only_copy_of_effective_installed_script(self):

@@ -12,7 +12,6 @@ def lua(request):
     runtime = import_module("lupa." + request.param).LuaRuntime(unpack_returned_tuples=True)
     for name in ("CBMUXPC.lua", "CBMUXP.lua"):
         runtime.execute((SOURCE / name.lower()).read_text(encoding="utf-8"))
-    runtime.globals().CBM_UtilityXP.Validate(runtime.globals().CBM_UtilityXP_Config)
     return runtime
 
 
@@ -57,7 +56,6 @@ def test_configurable_rounding_happens_after_spell_level_multiplication(
     g = lua.globals()
     config = g.CBM_UtilityXP_Config
     config.roundingStep, config.roundingMode = step, mode
-    g.CBM_UtilityXP.Validate(config)
     result = g.CBM_UtilityXP.Rewards(config, 290500)
     assert (result.spells[1], result.spells[5]) == (spell1, spell5)
 
@@ -97,10 +95,13 @@ def test_rewards_never_drop_at_boundaries(lua):
     "roundingMode = 'down'", "roundingMode = false",
     "anchors[7].lock = 2147483640.5",  # only rounding overflows the engine integer
 ])
-def test_invalid_custom_config_is_rejected(lua, change):
+def test_changed_custom_config_produces_bounded_rewards(lua, change):
     lua.execute("CBM_UtilityXP_Config." + change)
-    ok, _ = lua.eval("pcall(CBM_UtilityXP.Validate, CBM_UtilityXP_Config)")
-    assert not ok
+    for xp in (0, 161000, 1320000):
+        rewards = lua.globals().CBM_UtilityXP.Rewards(lua.globals().CBM_UtilityXP_Config, xp)
+        assert 0 <= rewards.lock <= 2147483647
+        assert 0 <= rewards.trap <= 2147483647
+        assert all(0 <= rewards.spells[level] <= 2147483647 for level in range(1,10))
 
 
 @pytest.mark.parametrize("class_id,levels", [
@@ -156,11 +157,11 @@ def test_dual_downtime_and_reactivation_share_same_progression(lua):
     assert (downtime, active) == (260000, 410000)
 
 
-def test_missing_dual_threshold_fails_instead_of_resetting_progression(lua):
+def test_missing_dual_threshold_keeps_current_progression(lua):
     ok, error = lua.eval("""pcall(function()
         return CBM_UtilityXP.LifetimeXP(161000, 64, 13, {9, 4, 0}, function() return nil end)
     end)""")
-    assert not ok and "threshold" in error
+    assert ok and error == 161000
 
 
 # A row-major C2DArray double with native zero-based indexing and bounds checks.
@@ -178,10 +179,11 @@ EEex_Menu_LoadFile = function(name) loadedMenu = name end
 Infinity_PushMenu = function(name) pushedMenu = name end
 EEex_UDToPtr = function(array) return array.pointer end
 
-function makeTable(width, pointer, levelColumns)
+function makeTable(width, pointer, levelColumns, existing)
     levelColumns = levelColumns or width
     local labels = { 'PICK_LOCK', 'DISARM_TRAP', 'LEARN_SPELL', 'FOREIGN_ROW' }
-    local t = { m_nSizeX = width, m_nSizeY = 4, writes = 0, cells = {} }
+    local t = existing or {}
+    t.m_nSizeX, t.m_nSizeY, t.writes, t.cells = width, 4, 0, {}
     t.m_pArray = { pointer = pointer }
     for i = 0, width * 4 - 1 do
         local cell = { value = i % width < levelColumns and tostring(100000 + i) or '' }
@@ -204,7 +206,14 @@ function makeTable(width, pointer, levelColumns)
         assert(index >= 0 and index < width, 'out of bounds native column label')
         return index < levelColumns and tostring(index + 1) or ''
     end
+    function t:Load(resref)
+        assert(resref == 'CBMXPB')
+        makeTable(50, pointer, 50, self)
+    end
     return t
+end
+EEex_RunWithStackManager = function(spec, callback)
+    callback({getUD=function() return spec[1].constructor.args[1] end})
 end
 
 xpLoads = 0
@@ -277,7 +286,7 @@ def test_adapter_uses_allocated_row_stride_but_preserves_trailing_blank_columns(
 
 
 @pytest.mark.parametrize("column,label", [(0, ""), (8, ""), (24, ""), (24, "27")])
-def test_adapter_rejects_interior_blank_or_gapped_columns_before_any_write(
+def test_adapter_repairs_missing_required_columns_and_uses_other_labels(
         lua, column, label):
     g = start_adapter(lua)
     lua.execute("""
@@ -295,10 +304,16 @@ def test_adapter_rejects_interior_blank_or_gapped_columns_before_any_write(
 
     g.CBM_UtilityXP_Runtime.Refresh()
 
-    assert table.writes == 0
-    assert [table.cells[index].value for index in range(53 * 4)] == before
-    assert len(g.logs) == 1
-    assert "columns" in g.CBM_UtilityXP_Runtime.lastError
+    assert table.writes > 0
+    assert len(g.logs) == 0
+    assert g.CBM_UtilityXP_Runtime.lastError is None
+    width = table.m_nSizeX
+    for i in range(width):
+        level = table.getColumnLabel(table,i)
+        if level.isdigit():
+            assert table.cells[i].value == "400"
+            assert table.cells[width+i].value == "1750"
+    assert table.cells[3*width].value == "100150" if width == 50 else before[3*width] == table.cells[3*width].value
 
 
 def test_frame_and_action_refreshes_do_not_accumulate_awards_or_writes(lua):
@@ -389,14 +404,14 @@ def test_no_party_or_unavailable_player1_leaves_table_alone(lua):
     assert g.game.m_ruleTables.m_tXPBonus.writes == 0
 
 
-def test_bad_table_is_rejected_before_any_write_and_reported_once(lua):
+def test_bad_column_labels_reload_prepared_table_and_write_rewards(lua):
     g = start_adapter(lua)
     lua.execute("game.m_ruleTables.m_tXPBonus.getColumnLabel = function() return 'BAD' end")
     g.CBM_UtilityXP_Runtime.Refresh()
     g.CBM_UtilityXP_Runtime.Refresh()
-    assert g.game.m_ruleTables.m_tXPBonus.writes == 0
-    assert len(g.logs) == 1
-    assert "columns" in g.CBM_UtilityXP_Runtime.lastError
+    assert g.game.m_ruleTables.m_tXPBonus.writes == 109
+    assert len(g.logs) == 0
+    assert g.CBM_UtilityXP_Runtime.lastError is None
 
 
 def test_menu_load_and_reload_use_namespaced_hidden_menu(lua):
@@ -423,6 +438,28 @@ def test_bootstrap_reports_unavailable_runtime_or_bad_config_without_publishing(
 
     g.Infinity_DoFile = include
     lua.execute((SOURCE / "m_cbmuxp.lua").read_text(encoding="utf-8"))
-    assert len(g.logs) == 1
-    assert g.game.m_ruleTables.m_tXPBonus.writes == 0
-    assert g.listeners.menu is None
+    if mode == "invalid_config":
+        assert len(g.logs) == 0
+        assert g.listeners.menu is not None
+        g.CBM_UtilityXP_Runtime.Refresh()
+        assert g.game.m_ruleTables.m_tXPBonus.cells[50].value == "1750"
+    else:
+        assert len(g.logs) == 1
+        assert g.game.m_ruleTables.m_tXPBonus.writes == 0
+        assert g.listeners.menu is None
+
+
+def test_active_empty_reward_table_receives_authored_fallback(lua):
+    g = start_adapter(lua)
+    table = g.game.m_ruleTables.m_tXPBonus
+    lua.execute("game.m_ruleTables.m_tXPBonus.m_nSizeX=0; game.m_ruleTables.m_tXPBonus.m_nSizeY=0")
+    g.CBM_UtilityXP_Runtime.Refresh()
+    assert table.m_nSizeX == 50 and table.m_nSizeY == 4
+    assert table.cells[0].value == "400"
+    assert table.cells[50].value == "1750"
+    assert table.cells[100].value == "500"
+    assert g.CBM_UtilityXP_Runtime.lastError is None
+    assert len(g.logs) == 0
+    writes = table.writes
+    g.CBM_UtilityXP_Runtime.Refresh()
+    assert table.writes == writes

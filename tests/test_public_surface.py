@@ -185,7 +185,12 @@ class PublicSurfaceTests(unittest.TestCase):
         )
         for path in files:
             with self.subTest(path=path):
-                self.assertFalse(any(fragment in path.lower() for fragment in forbidden_fragments))
+                stock_saves = {f"chriz-bg-modpack/data/progression/save{kind}.2da"
+                               for kind in ("prs", "rog", "war")}
+                for fragment in forbidden_fragments:
+                    if fragment == "save" and path in stock_saves:
+                        continue  # Stock saving-throw tables, not saved games.
+                    self.assertNotIn(fragment, path.lower())
                 if "portraits/" in path.lower():
                     self.assertEqual("chriz-bg-modpack/portraits/evandra/rh#eval.bmp", path)
         self.assertEqual(
@@ -210,7 +215,8 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.15.md",
+                "docs/releases/v0.2.0-alpha.16.md",
+                "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},
             "Only public component guides and current release notes belong in release docs",

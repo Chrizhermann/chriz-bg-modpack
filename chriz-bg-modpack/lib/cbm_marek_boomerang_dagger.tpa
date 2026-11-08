@@ -1,297 +1,56 @@
-// Marek carries the Boomerang Dagger +2 (DAGG11) in BG1.
-//
-// BG1 NPC Project's Kivan sea-elf quest was the only BG1 or SoD source of
-// DAGG11: its Shipwreck's Coast area script puts the dagger into Container1
-// once X#KivanSea reaches 7. Without that quest, BG1 has no DAGG11 at all.
-// This component adds one to each of Marek's two creature files, both with
-// the script name Marek:
-// - MAREK, placed in the north-east district (AR0300 in BG:EE, BG0300 in
-//   EET), where he and Lothander first accost the party;
-// - MAREK1, created once at the Blushing Mermaid (AR0115/BG0115) for the
-//   antidote fight in Lothander's side quest. If Marek dies at the first
-//   meeting, or the party rejects Lothander, MAREK1 never appears.
-// So at most one dagger can ever drop. It goes into a free backpack slot,
-// unequipped and droppable; nothing else in the creature changes, and other
-// mods' items, scripts and effects stay as they are. The Item Randomiser
-// reads it as an ordinary inventory entry of each file.
-//
-// No second dagger:
-// - When the Shipwreck's Coast area script already creates DAGG11 (BG1 NPC
-//   Project's Kivan reward), neither file is changed and the installer says
-//   so. The area is BG3100 in EET and AR3100 in BG:EE. The script checked is
-//   the one the area file names, wherever BG1 NPC Project was installed (on
-//   the BG:EE side before EET, or on EET itself). WeiDU.log is not read: on
-//   EET, BG1 NPC Project is logged in the BG:EE game's log, not this one.
-// - A file that already carries DAGG11 is left unchanged.
-//
-// The component is aborted (rolled back, nothing written, not logged as
-// installed) when a Marek file, the Shipwreck's Coast area file or its script
-// is not a valid resource of its type, or when a Marek file that still needs
-// the dagger has no free backpack slot. Both files are checked before either
-// is written. A missing Marek file is skipped with a note; without either
-// file, or without DAGG11.ITM, the TP2 skips the component.
-//
-// Later work may let Marek wield the dagger; this component only adds it.
-
-// Scan a CRE V1.0 buffer; nothing is changed.
-// status:  0 valid, 1 not a valid CRE V1.0 creature file
-// daggers: item records whose resref is DAGG11
-// free:    empty backpack slots (slot words 21-36)
-DEFINE_PATCH_FUNCTION cbm_mbd_scan_cre
-  RET
-    status
-    reason
-    daggers
-    free
-BEGIN
-  SET status = 0
-  TEXT_SPRINT reason ~~
-  SET daggers = 0
-  SET free = 0
-  PATCH_IF BUFFER_LENGTH < 0x2d4 BEGIN
-    SET status = 1
-    TEXT_SPRINT reason ~the file is shorter than a creature header~
-  END ELSE BEGIN
-    READ_ASCII 0 signature (8)
-    PATCH_IF NOT (~%signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~it is not a CRE V1.0 creature file~
-    END
-  END
-  PATCH_IF status = 0 BEGIN
-    READ_LONG 0x2b8 slots_offset
-    READ_LONG 0x2bc items_offset
-    READ_LONG 0x2c0 items_count
-    PATCH_IF slots_offset < 0x2d4 OR slots_offset + 80 > BUFFER_LENGTH BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~its item slot table lies outside the file~
-    END ELSE PATCH_IF items_count < 0 OR items_count > 0xffff BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~its item count is out of range~
-    END ELSE PATCH_IF items_count > 0 AND (items_offset < 0x2d4 OR items_offset + items_count * 20 > BUFFER_LENGTH) BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~its item list lies outside the file~
-    END
-  END
-  // The other indexed blocks move when the item list grows, so they must be
-  // readable too: known spells, spell levels, memorized spells, effects.
-  PATCH_IF status = 0 BEGIN
-    READ_BYTE 0x33 effect_version
-    SET effect_size = (effect_version = 1) ? 264 : 48
-    FOR (block = 0; block < 4 AND status = 0; ++block) BEGIN
-      PATCH_MATCH block WITH
-        0 BEGIN SET pointer = 0x2a0 SET block_size = 12 TEXT_SPRINT block_name ~known spell~ END
-        1 BEGIN SET pointer = 0x2a8 SET block_size = 16 TEXT_SPRINT block_name ~spell level~ END
-        2 BEGIN SET pointer = 0x2b0 SET block_size = 12 TEXT_SPRINT block_name ~memorized spell~ END
-        DEFAULT SET pointer = 0x2c4 SET block_size = effect_size TEXT_SPRINT block_name ~effect~
-      END
-      READ_LONG pointer block_offset
-      READ_LONG (pointer + 4) block_count
-      PATCH_IF block_count < 0 OR (block_count > 0 AND (block_offset < 0x2d4 OR block_offset + block_count * block_size > BUFFER_LENGTH)) BEGIN
-        SET status = 1
-        TEXT_SPRINT reason ~its %block_name% list lies outside the file~
-      END
-    END
-  END
-  PATCH_IF status = 0 BEGIN
-    FOR (i = 0; i < items_count; ++i) BEGIN
-      READ_ASCII (items_offset + i * 20) item (8) NULL
-      PATCH_IF ~%item%~ STRING_EQUAL_CASE ~DAGG11~ BEGIN
-        SET daggers += 1
-      END
-    END
-    // Words 0-37 refer to item records; 38 and 39 are the weapon selection.
-    // A reference past the item list would point at the new dagger.
-    FOR (slot = 0; slot < 38 AND status = 0; ++slot) BEGIN
-      READ_SHORT (slots_offset + slot * 2) ref
-      PATCH_IF ref = 0xffff BEGIN
-        PATCH_IF slot >= 21 AND slot <= 36 BEGIN
-          SET free += 1
-        END
-      END ELSE PATCH_IF ref >= items_count BEGIN
-        SET status = 1
-        TEXT_SPRINT reason ~item slot %slot% refers to item %ref%, but the creature has %items_count% items~
-      END
-    END
-  END
-END
-
-// Read the script an ARE V1.0 file names; nothing is changed.
-// status: 0 valid, 1 not a valid ARE V1.0 area file
-DEFINE_PATCH_FUNCTION cbm_mbd_area_script
-  RET
-    status
-    reason
-    script
-BEGIN
-  SET status = 0
-  TEXT_SPRINT reason ~~
-  TEXT_SPRINT script ~~
-  PATCH_IF BUFFER_LENGTH < 0x11c BEGIN
-    SET status = 1
-    TEXT_SPRINT reason ~the file is shorter than an area header~
-  END ELSE BEGIN
-    READ_ASCII 0 signature (8)
-    PATCH_IF NOT (~%signature%~ STRING_EQUAL ~AREAV1.0~) BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~it is not an ARE V1.0 area file~
-    END ELSE BEGIN
-      READ_ASCII 0x94 script (8) NULL
-    END
-  END
-END
-
-// Scan a compiled BCS buffer; nothing is changed.
-// status: 0 valid, 1 not a compiled BCS
-// gifts:  action records with DAGG11 as a string parameter. An action's
-//         parameter line ends with its two strings and the closing AC; a
-//         trigger's ends with OB, so HasItem("DAGG11",...) is not counted.
-DEFINE_PATCH_FUNCTION cbm_mbd_scan_bcs
-  RET
-    status
-    reason
-    gifts
-BEGIN
-  SET status = 0
-  TEXT_SPRINT reason ~~
-  SET gifts = 0
-  PATCH_IF BUFFER_LENGTH < 6 BEGIN
-    SET status = 1
-    TEXT_SPRINT reason ~the file is shorter than an empty script~
-  END ELSE BEGIN
-    READ_ASCII 0 signature (2)
-    READ_BYTE 2 first
-    READ_BYTE 3 second
-    PATCH_IF NOT (~%signature%~ STRING_EQUAL ~SC~) OR NOT (first = 10 OR (first = 13 AND second = 10)) BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~the SC script header is missing~
-    END
-  END
-  PATCH_IF status = 0 BEGIN
-    SET tail_end = BUFFER_LENGTH
-    SET trimming = 1
-    WHILE trimming AND tail_end > 0 BEGIN
-      READ_BYTE (tail_end - 1) ch
-      PATCH_IF ch = 10 OR ch = 13 OR ch = 32 OR ch = 9 BEGIN
-        SET tail_end -= 1
-      END ELSE BEGIN
-        SET trimming = 0
-      END
-    END
-    PATCH_IF tail_end < 4 BEGIN
-      SET status = 1
-      TEXT_SPRINT reason ~the SC script footer is missing~
-    END ELSE BEGIN
-      READ_ASCII (tail_end - 2) footer (2)
-      PATCH_IF NOT (~%footer%~ STRING_EQUAL ~SC~) BEGIN
-        SET status = 1
-        TEXT_SPRINT reason ~the SC script footer is missing~
-      END
-    END
-  END
-  PATCH_IF status = 0 BEGIN
-    COUNT_REGEXP_INSTANCES CASE_INSENSITIVE ~"DAGG11"\( "[^"%MNL%%LNL%]*"\)?[ %TAB%]*AC[ %TAB%]*%MNL%?%LNL%~ gifts
-  END
-END
-
-// 1. Does the Shipwreck's Coast area script already create the dagger?
-OUTER_SET cbm_mbd_quest = 0
-OUTER_TEXT_SPRINT cbm_mbd_quest_script ~~
-ACTION_FOR_EACH cbm_mbd_area IN ~BG3100~ ~AR3100~ BEGIN
-  ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_mbd_area%.ARE~ BEGIN
-    COPY_EXISTING ~%cbm_mbd_area%.ARE~ ~override~
-      LPF cbm_mbd_area_script
-        RET
-          cbm_mbd_status = status
-          cbm_mbd_reason = reason
-          cbm_mbd_script = script
-      END
-    BUT_ONLY_IF_IT_CHANGES
-    ACTION_IF cbm_mbd_status != 0 BEGIN
-      OUTER_TEXT_SPRINT cbm_mbd_file ~%cbm_mbd_area%.ARE~
-      ABORT @6703
-    END
-    ACTION_IF NOT (~%cbm_mbd_script%~ STRING_EQUAL ~~) BEGIN
-      ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_mbd_script%.BCS~ BEGIN
-        COPY_EXISTING ~%cbm_mbd_script%.BCS~ ~override~
-          LPF cbm_mbd_scan_bcs
-            RET
-              cbm_mbd_status = status
-              cbm_mbd_reason = reason
-              cbm_mbd_gifts = gifts
+// Own one droppable DAGG11 entry on each named Marek template. Another
+// source of the item does not cancel the selected placement component.
+ACTION_FOR_EACH cbm_mbd_cre IN ~MAREK~ ~MAREK1~ BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_mbd_cre%.CRE~ BEGIN
+    COPY_EXISTING ~%cbm_mbd_cre%.CRE~ ~override~
+      LPF cbmo_cre_writable RET cbmo_writable END
+      PATCH_IF cbmo_writable BEGIN
+        READ_LONG 0x2b8 cbmo_slots
+        SET cbmo_writable = cbmo_slots >= 0x2d4 AND cbmo_slots <= BUFFER_LENGTH - 80
+        PATCH_IF cbmo_writable BEGIN
+          FOR (cbmm_slot = 0; cbmm_slot < 38; ++cbmm_slot) BEGIN
+            READ_SHORT (cbmo_slots + cbmm_slot * 2) cbmm_index
+            PATCH_IF cbmm_index != 0xffff AND cbmm_index >= LONG_AT 0x2c0 BEGIN SET cbmo_writable = 0 END
           END
-        BUT_ONLY_IF_IT_CHANGES
-        ACTION_IF cbm_mbd_status != 0 BEGIN
-          OUTER_TEXT_SPRINT cbm_mbd_file ~%cbm_mbd_script%.BCS~
-          ABORT @6703
-        END
-        ACTION_IF cbm_mbd_gifts > 0 AND cbm_mbd_quest = 0 BEGIN
-          OUTER_SET cbm_mbd_quest = 1
-          OUTER_TEXT_SPRINT cbm_mbd_quest_script ~%cbm_mbd_script%~
         END
       END
-    END
-  END
-END
-
-ACTION_IF cbm_mbd_quest BEGIN
-  PRINT @6704
-END ELSE BEGIN
-  // 2. Check both Marek files before writing either.
-  ACTION_FOR_EACH cbm_mbd_cre IN ~MAREK~ ~MAREK1~ BEGIN
-    ACTION_IF FILE_EXISTS_IN_GAME ~%cbm_mbd_cre%.CRE~ BEGIN
-      COPY_EXISTING ~%cbm_mbd_cre%.CRE~ ~override~
-        LPF cbm_mbd_scan_cre
-          RET
-            cbm_mbd_status = status
-            cbm_mbd_reason = reason
-            cbm_mbd_daggers = daggers
-            cbm_mbd_free = free
+      PATCH_IF cbmo_writable BEGIN
+        READ_LONG 0x2bc cbmm_items
+        READ_LONG 0x2c0 cbmm_count
+        SET cbmm_first = 0 - 1
+        FOR (cbmm_i = 0; cbmm_i < cbmm_count; ++cbmm_i) BEGIN
+          READ_ASCII (cbmm_items + cbmm_i * 20) cbmm_name (8) NULL
+          PATCH_IF ~%cbmm_name%~ STRING_EQUAL_CASE ~DAGG11~ AND cbmm_first < 0 BEGIN SET cbmm_first = cbmm_i END
         END
-      BUT_ONLY_IF_IT_CHANGES
-      ACTION_IF cbm_mbd_status != 0 BEGIN
-        OUTER_TEXT_SPRINT cbm_mbd_file ~%cbm_mbd_cre%.CRE~
-        ABORT @6703
-      END
-      ACTION_IF cbm_mbd_daggers = 0 AND cbm_mbd_free < 1 BEGIN
-        ABORT @6706
-      END
-    END
-  END
-
-  // 3. Add one dagger to the first free backpack slot of each file without
-  //    one, then verify: one dagger, one free slot fewer, a valid creature.
-  OUTER_SET cbm_mbd_added = 0
-  ACTION_FOR_EACH cbm_mbd_cre IN ~MAREK~ ~MAREK1~ BEGIN
-    ACTION_IF NOT FILE_EXISTS_IN_GAME ~%cbm_mbd_cre%.CRE~ BEGIN
-      PRINT @6708
-    END ELSE BEGIN
-      COPY_EXISTING ~%cbm_mbd_cre%.CRE~ ~override~
-        LPF cbm_mbd_scan_cre RET cbm_mbd_daggers = daggers cbm_mbd_free = free END
-      BUT_ONLY_IF_IT_CHANGES
-      ACTION_IF cbm_mbd_daggers > 0 BEGIN
-        PRINT @6705
-      END ELSE BEGIN
-        COPY_EXISTING ~%cbm_mbd_cre%.CRE~ ~override~
-          ADD_CRE_ITEM ~DAGG11~ #0 #0 #0 ~NONE~ ~INV1 INV2 INV3 INV4 INV5 INV6 INV7 INV8 INV9 INV10 INV11 INV12 INV13 INV14 INV15 INV16~
-        BUT_ONLY_IF_IT_CHANGES
-        COPY_EXISTING ~%cbm_mbd_cre%.CRE~ ~override~
-          LPF cbm_mbd_scan_cre
-            RET
-              cbm_mbd_check = status
-              cbm_mbd_check_daggers = daggers
-              cbm_mbd_check_free = free
+        PATCH_IF cbmm_first >= 0 BEGIN
+          FOR (cbmm_i = cbmm_count - 1; cbmm_i > cbmm_first; --cbmm_i) BEGIN
+            SET cbmm_at = cbmm_items + cbmm_i * 20
+            READ_ASCII cbmm_at cbmm_name (8) NULL
+            PATCH_IF ~%cbmm_name%~ STRING_EQUAL_CASE ~DAGG11~ BEGIN
+              DELETE_BYTES cbmm_at 20
+              PATCH_FOR_EACH cbmm_p IN 0x2a0 0x2a8 0x2b0 0x2b8 0x2c4 BEGIN
+                PATCH_IF LONG_AT cbmm_p >= cbmm_at + 20 BEGIN WRITE_LONG cbmm_p (LONG_AT cbmm_p - 20) END
+              END
+              WRITE_LONG 0x2c0 (LONG_AT 0x2c0 - 1)
+              READ_LONG 0x2b8 cbmo_slots
+              FOR (cbmm_slot = 0; cbmm_slot < 38; ++cbmm_slot) BEGIN
+                READ_SHORT (cbmo_slots + cbmm_slot * 2) cbmm_index
+                PATCH_IF cbmm_index = cbmm_i BEGIN WRITE_SHORT (cbmo_slots + cbmm_slot * 2) 0xffff END
+                ELSE PATCH_IF cbmm_index > cbmm_i AND cbmm_index < cbmm_count BEGIN WRITE_SHORT (cbmo_slots + cbmm_slot * 2) (cbmm_index - 1) END
+              END
+            END
           END
-        BUT_ONLY_IF_IT_CHANGES
-        ACTION_IF cbm_mbd_check != 0 OR cbm_mbd_check_daggers != 1 OR cbm_mbd_check_free != cbm_mbd_free - 1 BEGIN
-          FAIL ~cbm_marek_boomerang_dagger: %cbm_mbd_cre%.CRE did not verify after adding the dagger (status %cbm_mbd_check%, %cbm_mbd_check_daggers% daggers, %cbm_mbd_check_free% free backpack slots). The component was rolled back.~
+          SET cbmm_at = cbmm_items + cbmm_first * 20
+          WRITE_ASCII cbmm_at ~DAGG11~ #8
+          WRITE_SHORT (cbmm_at + 10) 0 WRITE_SHORT (cbmm_at + 12) 0 WRITE_SHORT (cbmm_at + 14) 0
+          WRITE_LONG (cbmm_at + 16) 0
+        END ELSE BEGIN
+          // Additional unused equipment slots allow a full backpack to retain all items.
+          ADD_CRE_ITEM ~DAGG11~ #0 #0 #0 ~NONE~ ~INV1 INV2 INV3 INV4 INV5 INV6 INV7 INV8 INV9 INV10 INV11 INV12 INV13 INV14 INV15 INV16 QITEM1 QITEM2 QITEM3 WEAPON4 WEAPON3 WEAPON2~
         END
-        OUTER_SET cbm_mbd_added += 1
-        PRINT @6707
-      END
-    END
-  END
-  ACTION_IF cbm_mbd_added > 0 BEGIN
-    PRINT @6709
-  END
+        PATCH_PRINT @6707
+      END ELSE BEGIN PATCH_PRINT ~Marek: %SOURCE_FILE% is too damaged to write.~ END
+    BUT_ONLY
+  END ELSE BEGIN PRINT @6708 END
 END
+PRINT @6709

@@ -1,5 +1,8 @@
 # Imoen's Spellhold recruitment XP (component 620)
 
+The alpha.16 [overwrite update](we-overwrite.md) replaces or inserts the owned
+recruitment block. Earlier dated checks below apply to their original builds.
+
 Imoen receives the other current party members' average XP when she joins in
 the Spellhold maze, capped at **3,000,000 mage XP**. The adjustment happens once,
 on her first script update after recruitment. Fractional XP rounds down.

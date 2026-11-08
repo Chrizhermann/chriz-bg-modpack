@@ -2,15 +2,10 @@
 DEFINE_PATCH_FUNCTION cbm_mazzy_move_bow_pip
   STR_VAR cbm_mazzy_template = ~~
 BEGIN
-  PATCH_IF (SOURCE_SIZE < 0x2d4) BEGIN PATCH_FAIL ~cbm_mazzy_prof_fix: truncated CRE~ END
+  LPF cbmo_cre_writable RET cbmo_writable END
+  PATCH_IF cbmo_writable BEGIN
   READ_ASCII 0x00 cbm_mazzy_signature (8)
   READ_ASCII 0x280 cbm_mazzy_dv (32) NULL
-  PATCH_IF NOT (~%cbm_mazzy_signature%~ STRING_EQUAL ~CRE V1.0~) BEGIN
-    PATCH_FAIL ~cbm_mazzy_prof_fix: expected a CRE V1.0 resource~
-  END
-  PATCH_IF NOT (~%cbm_mazzy_dv%~ STRING_EQUAL_CASE ~MAZZY~) BEGIN
-    PATCH_FAIL ~cbm_mazzy_prof_fix: expected death variable MAZZY~
-  END
   SPRINT cbm_mazzy_template EVALUATE_BUFFER ~%cbm_mazzy_template%~
   PATCH_IF (~%cbm_mazzy_template%~ STRING_EQUAL_CASE ~MAZZY9~) BEGIN
     SET cbm_mazzy_target_sword = 3
@@ -26,14 +21,11 @@ BEGIN
   READ_LONG 0x2c4 cbm_mazzy_effect_offset
   READ_LONG 0x2c8 cbm_mazzy_effect_count
   SET cbm_mazzy_effect_size = cbm_mazzy_effect_version = 1 ? 0x108 : 0x30
-  PATCH_IF ((cbm_mazzy_effect_version > 1) OR (cbm_mazzy_effect_count < 0)
-         OR (cbm_mazzy_effect_count > SOURCE_SIZE / cbm_mazzy_effect_size)
-         OR ((cbm_mazzy_effect_count > 0) AND ((cbm_mazzy_effect_offset < 0x2d4)
-           OR (cbm_mazzy_effect_offset > SOURCE_SIZE - cbm_mazzy_effect_count * cbm_mazzy_effect_size)))) BEGIN
-    PATCH_FAIL ~cbm_mazzy_prof_fix: invalid embedded effect table~
-  END
   // SET_BG2_PROFICIENCY removes old/duplicate records before setting the value.
   LPF cbm_npc_clear_proficiencies END
   SET_BG2_PROFICIENCY 105 4
   SET_BG2_PROFICIENCY 91 cbm_mazzy_target_sword
+  END ELSE BEGIN
+    PATCH_PRINT ~CBM: %SOURCE_FILE% is too damaged to write; leaving this resource alone.~
+  END
 END

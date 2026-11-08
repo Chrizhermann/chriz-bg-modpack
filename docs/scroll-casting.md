@@ -1,8 +1,20 @@
 # Scroll casting at the reader's level
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Replacement for component **430** since alpha.11. Alpha.11 to alpha.13 stop their
 scroll runtime soon after a game starts (see [Earlier versions](#earlier-versions)).
-This version was checked in a lab game, not yet in an ongoing playthrough.
+The released alpha.14 implementation was checked in a lab game. Alpha.16
+started and loaded a save in the release lab; its changed content has not been
+played.
+
+The alpha.16 DLL is SHA-256
+`b8763231bcc5bce1a0551d8ea3e70d0194895c3e7439b74dfb2c8ec82b6a426f`.
+It removes resource fingerprints and fixed ancestry limits, and isolates unreadable
+saved metadata to the actor that owns it. The native and save-bridge tests cover
+those paths; it started and loaded a save in the alpha.16 release lab.
 
 Arcane scrolls use the reader's active arcane caster level; divine scrolls use
 their active divine caster level. When the reader has no active caster level
@@ -15,9 +27,9 @@ This replaces the previous fixed-level-15 compromise. The component resolves
 the installed spells and their delivery effects, including Spell Revisions,
 instead of assuming that resource names have vanilla meanings. It preserves
 scroll learning, genuine fixed protection scrolls and unrelated item/spell
-data. Ambiguous mixed learning/casting abilities retain their existing
-behavior and are listed in the install report. In the checked default EET
-installation, only the special tutorial Flame Arrow scroll needed that exception.
+data. Mixed learning/casting abilities keep the same reader-level cast policy.
+Resource traversal follows linked effects without a fixed depth limit; a cycle
+ends only that traversal branch.
 
 ## Installation and current limits
 
@@ -34,7 +46,8 @@ loader log says why. The component can be selected alongside campaign XP
 banking **650/651**.
 
 430 shows nothing in the game, with one exception described below. When it
-finds a problem, at startup or later in a session, it turns itself off for the
+finds a native interface or pointer/lifetime problem, at startup or later in a
+session, it turns itself off for the
 rest of that session: scrolls then cast at their normal level, as without this
 component. Loading its startup script again once it has started also turns it
 off. It writes this line to the loader log (`InfinityLoader.log` in the game
@@ -119,7 +132,7 @@ itself off, after a second load of its startup script and in the fourth case
 under [Known limitations](#known-limitations), the loader log got the two lines
 above and nothing appeared in the game.
 
-The current build (`CBMScroll.dll` SHA-256
+The alpha.14 build (`CBMScroll.dll` SHA-256
 `74ea73d879c906d57497eb7f3d3ec6dc4b890da5a066961ec46e596b2a29aa54`,
 `CBMS_Startup.lua` SHA-256
 `8f1cef80bc362a02a63801567b29e99ca7fa8f3b9f08a8380917a62cde15e3bb`) adds the
@@ -168,15 +181,12 @@ check of the same day found the fourth.
   can still get the reader's level; every later one uses the normal level.
   This needs a game call from another thread at exactly that moment, which was
   never seen. The practical risk is very low, and the effect is that one cast.
-- **A saved scroll effect whose reader is not there.** Some scroll spells cast
-  a later part on their own, such as the fatigue that follows Haste. If a save
-  holds such an effect from a scroll read by a creature outside the party, and
-  after loading that save the reader is not in a loaded area when the later
-  part comes due, 430 turns itself off for that session. That happens when the
-  reader was removed from the game or stayed behind in another area. Back in
-  the reader's area before the later part came due, 430 stayed on. Party
-  members who read a scroll were found after every load, also after leaving the
-  party. The practical risk is low.
+- **A saved scroll effect whose reader is not loaded.** The alpha.16 update
+  leaves that cast at its native level. Once the original reader loads, later
+  casts can use its level without restarting 430. Invalid private saved metadata
+  is dropped only for the affected actor, with a loader-log line; unrelated
+  actors and new scroll casts remain enabled. Native pointer/lifetime violations
+  still disable overrides because they cannot safely be continued.
 
 ## Earlier versions
 

@@ -1,0 +1,35 @@
+// Prepare a complete private XPBONUS table for runtime repair of missing
+// labels. Installed values and unrelated rows are retained by label.
+LAF cbmo_read_table STR_VAR table = ~XPBONUS~ RET_ARRAY cbmo_cell cbmo_column cbmo_cols END
+OUTER_SPRINT cbmo_xp_text ~2DA V1.0%WNL%0%WNL%    ~
+ACTION_CLEAR_ARRAY cbmo_xp_labels
+ACTION_CLEAR_ARRAY cbmo_xp_rows
+ACTION_PHP_EACH cbmo_column AS keys => value BEGIN
+  ACTION_IF ~%keys_0%~ STRING_EQUAL ~XPBONUS~ BEGIN
+    OUTER_SPRINT $cbmo_xp_labels(~%value%~) ~%keys_1%~
+  END
+END
+OUTER_FOR (cbmo_c = 1; cbmo_c < $cbmo_cols(~XPBONUS~); ++cbmo_c) BEGIN
+  OUTER_SPRINT cbmo_label $cbmo_xp_labels(~%cbmo_c%~)
+  OUTER_SPRINT cbmo_xp_text ~%cbmo_xp_text% %cbmo_label%~
+END
+ACTION_PHP_EACH cbmo_cell AS keys => value BEGIN
+  ACTION_IF ~%keys_0%~ STRING_EQUAL ~XPBONUS~ BEGIN OUTER_SET $cbmo_xp_rows(~%keys_1%~) = 1 END
+END
+ACTION_PHP_EACH cbmo_xp_rows AS cbmo_row => ignored BEGIN
+  OUTER_SPRINT cbmo_xp_text ~%cbmo_xp_text%%WNL%%cbmo_row%~
+  OUTER_FOR (cbmo_c = 1; cbmo_c < $cbmo_cols(~XPBONUS~); ++cbmo_c) BEGIN
+    OUTER_SPRINT cbmo_value ~0~
+    ACTION_IF VARIABLE_IS_SET $cbmo_cell(~XPBONUS~ ~%cbmo_row%~ ~%cbmo_c%~) BEGIN
+      OUTER_SPRINT cbmo_value $cbmo_cell(~XPBONUS~ ~%cbmo_row%~ ~%cbmo_c%~)
+    END
+    OUTER_SPRINT cbmo_xp_text ~%cbmo_xp_text% %cbmo_value%~
+  END
+END
+<<<<<<<< .../cbmo-xp-table
+%cbmo_xp_text%
+>>>>>>>>
+COPY ~.../cbmo-xp-table~ ~override/CBMXPB.2DA~ EVALUATE_BUFFER
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~XPBONUS.2DA~ BEGIN
+  COPY ~override/CBMXPB.2DA~ ~override/XPBONUS.2DA~
+END

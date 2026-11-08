@@ -28,8 +28,7 @@ INSTALLER_STAGE = Path("weidu_external/chriz-bg-modpack/scroll-policy-work")
 
 def unique_child(parent, name, *, required=False):
     matches = [p for p in parent.iterdir() if p.name.casefold() == name.casefold()]
-    if len(matches) > 1:
-        raise ResourceError(f"case-insensitive path is ambiguous: {parent / name}")
+    matches.sort(key=lambda p: p.name)
     if matches:
         return matches[0]
     if required:
@@ -51,12 +50,17 @@ class Installed:
         self.helper = (vars(bundled_key_reader) if Path(key_reader).resolve()==DEFAULT_READER
                        else runpy.run_path(str(key_reader)))
         h = self.helper
-        self.key_path = unique_child(self.root, "chitin.key", required=True)
-        self.key_data = self.key_path.read_bytes()
-        self.key_sha256 = hashlib.sha256(self.key_data).hexdigest()
+        self.key_path = unique_child(self.root, "chitin.key")
+        self.key_data = b""
+        self.key_sha256 = ""
+        self.index_errors = []
         self.bifs, self.entries, self.ambiguous, self.overrides = [], {}, set(), {}
         self.sources = {}
         try:
+            if self.key_path is None:
+                raise ResourceError("chitin.key is absent; using available override resources")
+            self.key_data = self.key_path.read_bytes()
+            self.key_sha256 = hashlib.sha256(self.key_data).hexdigest()
             raw = h["_checked_slice"](self.key_data, 0, h["KEY_HEADER"].size, "KEY header")
             signature, version, bif_count, resource_count, bif_offset, resource_offset = h["KEY_HEADER"].unpack(raw)
             if signature != b"KEY " or version != b"V1  ":
@@ -77,11 +81,11 @@ class Installed:
                 name = h["_decode_ascii"](raw_name, f"KEY resref {i}").upper()
                 name_bytes(name)
                 key = name, kinds[kind]
-                if key in self.entries and self.entries[key] != locator:
-                    self.ambiguous.add(key)
                 self.entries.setdefault(key, locator)
-        except h["ExtractionError"] as error:
-            raise ResourceError(str(error)) from error
+        except (h["ExtractionError"], ResourceError, ValueError, OSError) as error:
+            self.entries.clear()
+            self.bifs.clear()
+            self.index_errors.append({"resource":"chitin.key", "diagnostic":str(error)})
         override = unique_child(self.root, "override")
         if override:
             for path in sorted(override.iterdir(), key=lambda p: (p.name.upper(), p.name)):
@@ -103,13 +107,9 @@ class Installed:
         try:
             overrides = self.overrides.get(key)
             if overrides:
-                if len(overrides) != 1:
-                    raise ResourceError(f"{'.'.join(key)}: multiple case-insensitive override files")
                 raw = overrides[0].read_bytes()
                 self.sources['.'.join(key)] = {"kind":"override", "path":str(overrides[0])}
                 return raw
-            if key in self.ambiguous:
-                raise ResourceError(f"{'.'.join(key)}: conflicting KEY locators")
             if key not in self.entries:
                 raise FileNotFoundError(f"{'.'.join(key)}: missing from override and KEY")
             locator = self.entries[key]
@@ -136,7 +136,7 @@ class Installed:
 
 def inventory(installed):
     analyzer = Inventory(installed.load)
-    reports, errors, scrolls = [], [], []
+    reports, errors, scrolls = [], list(installed.index_errors), []
     items = installed.items()
     for name in items:
         try:
@@ -165,7 +165,7 @@ def inventory(installed):
         "inventory_errors":errors,
         "sources":{name:installed.sources[name] for name in sorted({resource for r in reports for resource in r.resources})},
         "limitations":["Mechanical classification reuses installed_resources; author-fixed intent still requires its explicit provider exception.",
-                       "Resources may change during or after inventory; the runtime must verify effective dependency hashes before use.",
+                       "Resource hashes record the install-time input and never gate runtime behavior.",
                        "Malformed roots cannot yield reliable ability indexes and are recorded as inventory_errors, not fabricated policy rows."],
     })
     return binary, manifest
@@ -194,9 +194,6 @@ def write_inventory(game_root, output_dir, *, key_reader=DEFAULT_READER, install
     destination = output_directory(game_root, output_dir,installer_staging=installer_staging)
     installed = Installed(game_root, key_reader)
     binary, manifest = inventory(installed)
-    if installer_staging and manifest["inventory"]["root_errors"]:
-        raise ResourceError("incomplete resource inventory: " + "; ".join(
-            item["diagnostic"] for item in manifest["inventory_errors"]))
     import json
     report = (json.dumps(manifest,indent=2,sort_keys=True)+"\n").encode("utf-8")
     destination.mkdir(parents=True,exist_ok=True)
@@ -250,6 +247,8 @@ def main(argv=None):
     print(f"{summary['items']} effective ITMs; {summary['category11_items']} category11 scrolls; "
           f"{result['entries']} abilities; {result['dependencies']} hashed dependencies")
     print(f"classifications: {summary['classification_counts']}")
+    for error in result["inventory_errors"]:
+        print(f"{error['resource']}: {error['diagnostic']}; only this file was omitted")
     print(f"root errors: {summary['root_errors']}; unresolved abilities: {summary['unresolved_abilities']}")
     print(f"output: {Path(args.output_dir).resolve()}")
     return 2 if summary["requires_review"] else 0

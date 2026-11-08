@@ -517,14 +517,15 @@ void guards_and_unowned_preservation() {
 void depth_and_session_invalidation() {
     Fixture f;
     auto current = f.effect;
-    for (unsigned depth = 0; depth < 64; ++depth) {
+    for (unsigned depth = 0; depth < 512; ++depth) {
         auto child = f.registry.born(Kind::Effect, 0x3000 + depth * 0x100);
         f.registry.linked177(current, child);
         current = child;
     }
-    auto overflow = f.registry.born(Kind::Effect, 0x9000);
-    rejects([&] { f.registry.linked177(current, overflow); });
-    CHECK(!f.registry.context(overflow));
+    CHECK(f.registry.context(current)->depth == 512);
+    auto child = f.registry.born(Kind::Effect, 0x90000);
+    f.registry.linked177(current, child);
+    CHECK(f.registry.context(child)->depth == 513);
     f.registry.clear_session();
     auto new_reader = f.registry.born(Kind::Actor, f.reader.address);
     CHECK(new_reader.generation != f.reader.generation);
@@ -748,13 +749,13 @@ void effect_archive_identity_and_pending_reader() {
     // The envelope is judged on its own first: inconsistent data, unknown
     // versions and conflicting origins still refuse, also when the records changed.
     altered = saved; altered.rows.pop_back(); altered.rows[0].context->applied_level = 13U;
-    rejects_with([&] { imported.restore(altered); }, "saved effect scalar mismatch");
+    CHECK(imported.restore(altered) == Stale("saved effect scalar mismatch"));
     altered = saved; altered.rows.pop_back(); altered.rows[0].context->reader_uuid = 0;
-    rejects_with([&] { imported.restore(altered); }, "invalid saved effect ancestry");
+    CHECK(imported.restore(altered) == Stale("invalid saved effect ancestry"));
     altered = saved; altered.rows[1].wire[0] = std::byte{1}; altered.rows[2].context->ability = 4;
-    rejects_with([&] { imported.restore(altered); }, "conflicting saved scroll origin definitions");
+    CHECK(imported.restore(altered) == Stale("conflicting saved scroll origin definitions"));
     altered = saved; altered.rows.pop_back(); altered.schema = 99;
-    rejects_with([&] { imported.restore(altered); }, "unsupported effect archive schema; retain actor metadata");
+    CHECK(imported.restore(altered) == Stale("unsupported effect archive schema"));
     CHECK(altered.schema == 99 && altered.rows.size() == 2); // caller retains unknown envelope
     CHECK(!restored.context(a) && !restored.context(b) && !restored.context(c));
     {
@@ -778,7 +779,7 @@ void effect_archive_identity_and_pending_reader() {
     CHECK(restored.context(linked)->applied_level == 12U);
     {
         auto pending = restored.enter(a, request());
-        rejects([&] { pending.select(Selector::Fire, 0xD000, [](Handle, const CastRequest&) { return stats(99); }); });
+        CHECK(!pending.select(Selector::Fire, 0xD000, [](Handle, const CastRequest&) { return stats(99); }));
     }
     auto original = restored.born(Kind::Actor, 0xABC0);
     restored.actor_uuid(original, 0x123456789ABCDEF0ULL);

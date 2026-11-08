@@ -132,15 +132,18 @@ def test_missing_prerequisites_make_no_game_changes(tmp_path, missing):
         path = game.override / "action.ids"
         path.write_text(IDS["ACTION.IDS"].replace("472 EEex_LuaAction(S:Chunk*)\n", ""))
     game.before = _file_tree(game.root)
-    # Failed predicate skips; a missing action discovered during install rolls back.
+    # A real missing EEex feature stays out with the component predicate.
     result = subprocess.run(
         [str(WEIDU), SETUP_NAME, "--noautoupdate", "--no-exit-pause", "--game", str(game.root),
          "--use-lang", "en_US", "--language", "0", "--force-install-list", "620"],
         cwd=game.root, capture_output=True, text=True, timeout=60,
     )
     transcript = result.stdout + result.stderr
-    assert "SUCCESSFULLY INSTALLED" not in transcript
-    expected = "NOT INSTALLED DUE TO ERRORS" if missing == "action" else "SKIPPING:"
-    assert expected in transcript
+    if missing=="action":
+        assert "SUCCESSFULLY INSTALLED" in transcript
+        assert "this listener cannot run" in transcript
+    else:
+        assert "SUCCESSFULLY INSTALLED" not in transcript
+        assert "SKIPPING:" in transcript
     assert "EEex" in transcript if missing != "script" else "IMOEN2.BCS" in transcript
     assert_restored(game)

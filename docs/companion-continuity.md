@@ -1,5 +1,9 @@
 # Companion continuity across EET campaigns
 
+Alpha.16 input-handling changes are described in [the overwrite review](we-overwrite.md).
+Dated checks below describe earlier builds and do not establish live acceptance
+for this revision.
+
 Research baseline: 2026-09-06. This document separates existing EET actor continuity
 from gaps caused by companion mods creating a second actor. Source inspection is not
 live transition acceptance. No changes were made to the reference playthrough.
@@ -71,10 +75,11 @@ its movement wait. Safana receives no replacement items. It can affect an ongoin
 campaign whose arrival has not occurred, but deliberately does not strip a Safana
 who has already arrived, since she could now be carrying legitimate BG2 equipment.
 
-Neither component needs EEex. Unexpected spawn code, duplicate hooks, missing
-required resources and conflicting identity-table rows cause installation to fail
-and roll back rather than silently accepting partial support. Component 199 also
-rejects the legacy stat-transfer module described below.
+Neither component needs EEex. The owned arrival blocks replace earlier versions
+or are added when absent. A missing or unreadable target is logged individually;
+other targets continue. Known identity references are rewritten, while unresolved
+identity collisions and unknown hand-edited death variables are listed in the
+[overwrite review](we-overwrite.md). Old module markers do not veto installation.
 
 ## Audited support map
 
