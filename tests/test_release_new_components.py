@@ -219,7 +219,7 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                     expected[f"OVERRIDE/{name.upper()}"] = (
                         game.root / utility.MOD_NAME / "story-utility-xp" / name.lower()
                     ).read_bytes()
-                table = (game.override / "CBMXPB.2DA").read_bytes()
+                table = (game.override / "cbmxpb.2da").read_bytes()  # Linux WeiDU writes lowercase
                 self.assertTrue(table.startswith(b"2DA V1.0"))
                 self.assertTrue(all(row in table for row in (b"PICK_LOCK", b"DISARM_TRAP", b"LEARN_SPELL")))
                 expected["OVERRIDE/CBMXPB.2DA"] = table
