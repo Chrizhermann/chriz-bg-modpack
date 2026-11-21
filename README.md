@@ -3,13 +3,19 @@
 `chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
 compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
 
-**Release:** `v0.2.0-alpha.16`
+**Release:** `v0.2.0-alpha.17`
+
+Alpha.17 adds **680** (`cbm_eet_world_progression`), restoring story-consistent
+EET campaign boundaries across BG1, SoD, SoA, and ToB while fixing SoD
+chapter 8–10 backtracking bugs. See the
+[release notes](docs/releases/v0.2.0-alpha.17.md) and
+[EET world progression guide](docs/eet-world-progression.md).
 
 Alpha.16 makes every component write its decided result regardless of hand edits
 or another mod's version of the same game files. Genuine game, prerequisite and
 runtime requirements remain; an absent optional target leaves out only that
-target. See the [release notes](docs/releases/v0.2.0-alpha.16.md) and the
-[overwrite scope](docs/we-overwrite.md).
+target. See the [v0.2.0-alpha.16 release notes](docs/releases/v0.2.0-alpha.16.md)
+and the [overwrite scope](docs/we-overwrite.md).
 
 Alpha.14 kept reader-level scroll casting (**430**) on for the whole session;
 alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or
@@ -114,6 +120,7 @@ Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
 | 652 (experimental) | `cbm_campaign_xp_chapters` | Chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (plus Baeloth Chapter 5+ spawn gate); requires 650; alternative to 651 |
 | 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
 | 670 | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1; BG:EE or EET |
+| 680 | `cbm_eet_world_progression` | Story-consistent EET campaign boundaries across BG1/SoD/SoA/ToB and SoD backtracking fixes; EET |
 
 Components `191` and `600` are reserved or deferred and are not exposed
 by this release. There are no placeholder components that fail at install time.
@@ -244,6 +251,9 @@ the [companion stat guide](docs/companion-stats.md).
 - Install `670` after mods that change Marek's creature files `MAREK.CRE` and
   `MAREK1.CRE`, such as SCS, and before mods that read creature items, such as
   the Item Randomiser. See the [Marek guide](docs/marek-boomerang-dagger.md).
+- Install `680` after `EET_end` and any worldmap, quest, or SoD mods so every
+  worldmap area is classified and gated cleanly. See the
+  [EET world progression guide](docs/eet-world-progression.md).
 
 ## Testing status
 

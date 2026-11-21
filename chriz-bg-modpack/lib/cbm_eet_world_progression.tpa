@@ -1,0 +1,1168 @@
+// Component 680: Story-consistent EET campaign boundaries and SoD backtracking.
+// Table-driven policy (chriz-bg-modpack/data/eet_world_progression.2da, with
+// optional override/EET_WORLD_PROGRESSION.2DA overlay). Follows We Overwrite:
+// every owned worldmap edge, era icon reset, and SoD camp/chest rule writes
+// its decided result; missing optional targets and damaged single files are
+// logged individually without aborting the install.
+
+// --------------------------------------------------------------------------
+// Policy table loader
+// --------------------------------------------------------------------------
+
+DEFINE_ACTION_FUNCTION cbm_ewp_rule
+  INT_VAR default_val = 1
+  STR_VAR name = ~~
+  RET value
+BEGIN
+  OUTER_SET value = default_val
+  ACTION_IF VARIABLE_IS_SET $rules(~%name%~) BEGIN
+    OUTER_SET value = $rules(~%name%~)
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbm_ewp_parse_policy_table
+  RET_ARRAY rules eras sever_src sever_dst sever_rule add_list add_src add_dst add_dir add_entry add_time add_def add_rule
+BEGIN
+  CLEAR_ARRAY rules
+  CLEAR_ARRAY eras
+  CLEAR_ARRAY sever_src
+  CLEAR_ARRAY sever_dst
+  CLEAR_ARRAY sever_rule
+  CLEAR_ARRAY add_list
+  CLEAR_ARRAY add_src
+  CLEAR_ARRAY add_dst
+  CLEAR_ARRAY add_dir
+  CLEAR_ARRAY add_entry
+  CLEAR_ARRAY add_time
+  CLEAR_ARRAY add_def
+  CLEAR_ARRAY add_rule
+  COUNT_2DA_COLS cbme_cols
+  PATCH_IF cbme_cols >= 5 BEGIN
+    READ_2DA_ENTRIES_NOW cbme_rows 5
+    FOR (cbme_r = 0; cbme_r < cbme_rows; ++cbme_r) BEGIN
+      READ_2DA_ENTRY_FORMER cbme_rows cbme_r 0 cbme_id
+      READ_2DA_ENTRY_FORMER cbme_rows cbme_r 1 cbme_kind
+      READ_2DA_ENTRY_FORMER cbme_rows cbme_r 2 cbme_target
+      READ_2DA_ENTRY_FORMER cbme_rows cbme_r 3 cbme_arg
+      READ_2DA_ENTRY_FORMER cbme_rows cbme_r 4 cbme_extra
+      TO_UPPER cbme_id
+      TO_UPPER cbme_kind
+      TO_UPPER cbme_target
+      PATCH_IF ~%cbme_kind%~ STRING_EQUAL ~RULE~ BEGIN
+        PATCH_IF IS_AN_INT ~%cbme_arg%~ BEGIN
+          SET $rules(~%cbme_target%~) = cbme_arg
+        END
+      END ELSE PATCH_IF ~%cbme_kind%~ STRING_EQUAL ~ERA~ BEGIN
+        TO_UPPER cbme_arg
+        SPRINT $eras(~%cbme_target%~) ~%cbme_arg%~
+      END ELSE PATCH_IF ~%cbme_kind%~ STRING_EQUAL ~LINK_SEVER~ BEGIN
+        TO_UPPER cbme_arg
+        TO_UPPER cbme_extra
+        SPRINT $sever_src(~%cbme_id%~) ~%cbme_target%~
+        SPRINT $sever_dst(~%cbme_id%~) ~%cbme_arg%~
+        SPRINT $sever_rule(~%cbme_id%~) ~%cbme_extra%~
+      END ELSE PATCH_IF ~%cbme_kind%~ STRING_EQUAL ~LINK_ADD~ BEGIN
+        TO_UPPER cbme_arg
+        INNER_PATCH ~%cbme_extra%~ BEGIN
+          REPLACE_EVALUATE ~^\([NWSE]\):\([^:]+\):\([0-9]+\):\([0-9]+\):\([^:]+\)$~ BEGIN
+            SPRINT cbme_d ~%MATCH1%~
+            SET cbme_dn = 3
+            PATCH_IF ~%cbme_d%~ STRING_EQUAL ~N~ BEGIN SET cbme_dn = 0 END
+            ELSE PATCH_IF ~%cbme_d%~ STRING_EQUAL ~W~ BEGIN SET cbme_dn = 1 END
+            ELSE PATCH_IF ~%cbme_d%~ STRING_EQUAL ~S~ BEGIN SET cbme_dn = 2 END
+            SET $add_list(~%cbme_id%~) = 1
+            SPRINT $add_src(~%cbme_id%~) ~%cbme_target%~
+            SPRINT $add_dst(~%cbme_id%~) ~%cbme_arg%~
+            SET $add_dir(~%cbme_id%~) = cbme_dn
+            SPRINT $add_entry(~%cbme_id%~) ~%MATCH2%~
+            SET $add_time(~%cbme_id%~) = MATCH3
+            SET $add_def(~%cbme_id%~) = MATCH4
+            SPRINT cbme_rn ~%MATCH5%~
+            TO_UPPER cbme_rn
+            SPRINT $add_rule(~%cbme_id%~) ~%cbme_rn%~
+          END ~%MATCH0%~
+        END
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_ewp_load_policy
+  RET_ARRAY rules eras sever_src sever_dst sever_rule add_list add_src add_dst add_dir add_entry add_time add_def add_rule
+BEGIN
+  ACTION_CLEAR_ARRAY rules
+  ACTION_CLEAR_ARRAY eras
+  ACTION_CLEAR_ARRAY sever_src
+  ACTION_CLEAR_ARRAY sever_dst
+  ACTION_CLEAR_ARRAY sever_rule
+  ACTION_CLEAR_ARRAY add_list
+  ACTION_CLEAR_ARRAY add_src
+  ACTION_CLEAR_ARRAY add_dst
+  ACTION_CLEAR_ARRAY add_dir
+  ACTION_CLEAR_ARRAY add_entry
+  ACTION_CLEAR_ARRAY add_time
+  ACTION_CLEAR_ARRAY add_def
+  ACTION_CLEAR_ARRAY add_rule
+
+  ACTION_IF FILE_EXISTS ~chriz-bg-modpack/data/eet_world_progression.2da~ BEGIN
+    COPY - ~chriz-bg-modpack/data/eet_world_progression.2da~ ~.../cbm-ewp-policy~
+      LPF cbm_ewp_parse_policy_table
+        RET_ARRAY rules eras sever_src sever_dst sever_rule add_list add_src add_dst add_dir add_entry add_time add_def add_rule
+      END
+  END
+  ACTION_IF FILE_EXISTS_IN_GAME ~EET_WORLD_PROGRESSION.2DA~ BEGIN
+    ACTION_CLEAR_ARRAY cbme_ov_rules
+    ACTION_CLEAR_ARRAY cbme_ov_eras
+    ACTION_CLEAR_ARRAY cbme_ov_sever_src
+    ACTION_CLEAR_ARRAY cbme_ov_sever_dst
+    ACTION_CLEAR_ARRAY cbme_ov_sever_rule
+    ACTION_CLEAR_ARRAY cbme_ov_add_list
+    ACTION_CLEAR_ARRAY cbme_ov_add_src
+    ACTION_CLEAR_ARRAY cbme_ov_add_dst
+    ACTION_CLEAR_ARRAY cbme_ov_add_dir
+    ACTION_CLEAR_ARRAY cbme_ov_add_entry
+    ACTION_CLEAR_ARRAY cbme_ov_add_time
+    ACTION_CLEAR_ARRAY cbme_ov_add_def
+    ACTION_CLEAR_ARRAY cbme_ov_add_rule
+    COPY_EXISTING - ~EET_WORLD_PROGRESSION.2DA~ ~.../cbm-ewp-override~
+      LPF cbm_ewp_parse_policy_table
+        RET_ARRAY cbme_ov_rules = rules cbme_ov_eras = eras
+          cbme_ov_sever_src = sever_src cbme_ov_sever_dst = sever_dst cbme_ov_sever_rule = sever_rule
+          cbme_ov_add_list = add_list cbme_ov_add_src = add_src cbme_ov_add_dst = add_dst
+          cbme_ov_add_dir = add_dir cbme_ov_add_entry = add_entry cbme_ov_add_time = add_time
+          cbme_ov_add_def = add_def cbme_ov_add_rule = add_rule
+      END
+    ACTION_PHP_EACH cbme_ov_rules AS cbme_k => cbme_v BEGIN OUTER_SET $rules(~%cbme_k%~) = cbme_v END
+    ACTION_PHP_EACH cbme_ov_eras AS cbme_k => cbme_v BEGIN OUTER_SPRINT $eras(~%cbme_k%~) ~%cbme_v%~ END
+    ACTION_PHP_EACH cbme_ov_sever_src AS cbme_k => cbme_v BEGIN
+      OUTER_SPRINT $sever_src(~%cbme_k%~) ~%cbme_v%~
+      OUTER_SPRINT $sever_dst(~%cbme_k%~) $cbme_ov_sever_dst(~%cbme_k%~)
+      OUTER_SPRINT $sever_rule(~%cbme_k%~) $cbme_ov_sever_rule(~%cbme_k%~)
+    END
+    ACTION_PHP_EACH cbme_ov_add_list AS cbme_k => cbme_v BEGIN
+      OUTER_SET $add_list(~%cbme_k%~) = cbme_v
+      OUTER_SPRINT $add_src(~%cbme_k%~) $cbme_ov_add_src(~%cbme_k%~)
+      OUTER_SPRINT $add_dst(~%cbme_k%~) $cbme_ov_add_dst(~%cbme_k%~)
+      OUTER_SET $add_dir(~%cbme_k%~) = $cbme_ov_add_dir(~%cbme_k%~)
+      OUTER_SPRINT $add_entry(~%cbme_k%~) $cbme_ov_add_entry(~%cbme_k%~)
+      OUTER_SET $add_time(~%cbme_k%~) = $cbme_ov_add_time(~%cbme_k%~)
+      OUTER_SET $add_def(~%cbme_k%~) = $cbme_ov_add_def(~%cbme_k%~)
+      OUTER_SPRINT $add_rule(~%cbme_k%~) $cbme_ov_add_rule(~%cbme_k%~)
+    END
+  END
+END
+
+// --------------------------------------------------------------------------
+// Binary WORLDMAP.WMP validation, link graph update & era classification
+// --------------------------------------------------------------------------
+
+DEFINE_PATCH_FUNCTION cbm_ewp_wmp_writable
+  RET wmp_ok
+BEGIN
+  SET wmp_ok = BUFFER_LENGTH >= 0x10
+  PATCH_IF wmp_ok BEGIN
+    READ_ASCII 0 cbme_sig (8)
+    SET wmp_ok = ~%cbme_sig%~ STRING_EQUAL ~WMAPV1.0~
+  END
+  PATCH_IF wmp_ok BEGIN
+    READ_LONG 0x08 cbme_mcnt
+    READ_LONG 0x0c cbme_moff
+    SET wmp_ok = cbme_mcnt >= 1 AND cbme_mcnt <= 16 AND cbme_moff >= 0x10
+      AND cbme_moff <= BUFFER_LENGTH - cbme_mcnt * 0xb8
+  END
+  PATCH_IF wmp_ok BEGIN
+    SET cbme_hdr_end = cbme_moff + cbme_mcnt * 0xb8
+    FOR (cbme_m = 0; cbme_m < cbme_mcnt AND wmp_ok; ++cbme_m) BEGIN
+      SET cbme_mh = cbme_moff + cbme_m * 0xb8
+      READ_LONG (cbme_mh + 0x20) cbme_na
+      READ_LONG (cbme_mh + 0x24) cbme_ao
+      READ_LONG (cbme_mh + 0x28) cbme_lo
+      READ_LONG (cbme_mh + 0x2c) cbme_lc
+      PATCH_IF cbme_na < 0 OR cbme_na > 4096 OR cbme_lc < 0 OR cbme_lc > 65536 BEGIN
+        SET wmp_ok = 0
+      END
+      PATCH_IF wmp_ok AND cbme_na > 0 BEGIN
+        PATCH_IF cbme_ao < cbme_hdr_end OR cbme_ao > BUFFER_LENGTH - cbme_na * 0xf0 BEGIN
+          SET wmp_ok = 0
+        END
+      END
+      PATCH_IF wmp_ok AND cbme_lc > 0 BEGIN
+        PATCH_IF cbme_lo < cbme_hdr_end OR cbme_lo > BUFFER_LENGTH - cbme_lc * 0xd8 BEGIN
+          SET wmp_ok = 0
+        END
+      END
+      FOR (cbme_a = 0; cbme_a < cbme_na AND wmp_ok; ++cbme_a) BEGIN
+        SET cbme_ar = cbme_ao + cbme_a * 0xf0
+        FOR (cbme_j = 0; cbme_j < 4 AND wmp_ok; ++cbme_j) BEGIN
+          READ_LONG (cbme_ar + 0x50 + cbme_j * 8) cbme_li
+          READ_LONG (cbme_ar + 0x54 + cbme_j * 8) cbme_nl
+          PATCH_IF cbme_li < 0 OR cbme_nl < 0 OR (cbme_nl > 0 AND cbme_li + cbme_nl > cbme_lc) BEGIN
+            SET wmp_ok = 0
+          END
+        END
+      END
+      FOR (cbme_l = 0; cbme_l < cbme_lc AND wmp_ok; ++cbme_l) BEGIN
+        READ_LONG (cbme_lo + cbme_l * 0xd8) cbme_tgt
+        PATCH_IF cbme_tgt < 0 OR cbme_tgt >= cbme_na BEGIN
+          SET wmp_ok = 0
+        END
+      END
+    END
+  END
+END
+
+// Serialize a 32-byte ASCII entry name plus WMP link fields into a 54-DWORD slice.
+DEFINE_PATCH_FUNCTION cbm_ewp_encode_link
+  INT_VAR target_idx = 0 trv_time = 0 def_entry = 1
+  STR_VAR entry_name = ~~
+  RET_ARRAY out_words
+BEGIN
+  CLEAR_ARRAY out_words
+  FOR (cbme_w = 0; cbme_w < 54; ++cbme_w) BEGIN
+    SET $out_words(~%cbme_w%~) = 0
+  END
+  SET $out_words(~0~) = target_idx
+  INNER_PATCH ~                                ~ BEGIN
+    SET cbme_elen = STRING_LENGTH ~%entry_name%~
+    SET cbme_elen = cbme_elen > 32 ? 32 : cbme_elen
+    FOR (cbme_b = 0; cbme_b < 32; ++cbme_b) BEGIN WRITE_BYTE cbme_b 0 END
+    WRITE_ASCIIE 0 ~%entry_name%~ (cbme_elen)
+    FOR (cbme_b = 0; cbme_b < 8; ++cbme_b) BEGIN
+      SET cbme_lw = cbme_b + 1
+      READ_LONG (cbme_b * 4) $out_words(~%cbme_lw%~)
+    END
+  END
+  SET $out_words(~9~) = trv_time
+  SET $out_words(~10~) = def_entry
+END
+
+DEFINE_ACTION_FUNCTION cbm_ewp_process_wmp
+  RET wmp_present wmp_patched
+  RET_ARRAY area_static area_era adj_src adj_dst
+BEGIN
+  OUTER_SET wmp_present = 0
+  OUTER_SET wmp_patched = 0
+  ACTION_CLEAR_ARRAY area_static
+  ACTION_CLEAR_ARRAY area_era
+  ACTION_CLEAR_ARRAY area_y
+  ACTION_CLEAR_ARRAY adj_src
+  ACTION_CLEAR_ARRAY adj_dst
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~WORLDMAP.WMP~ BEGIN
+    OUTER_SET wmp_present = 1
+    COPY_EXISTING ~WORLDMAP.WMP~ ~override~
+      LPF cbm_ewp_wmp_writable RET cbme_wmp_ok = wmp_ok END
+      PATCH_IF cbme_wmp_ok BEGIN
+        READ_LONG 0x08 cbme_mcnt
+        READ_LONG 0x0c cbme_moff
+        // Precompute active sever pairs as KEY ~SRC>DST~.
+        CLEAR_ARRAY cbme_active_severs
+        PHP_EACH sever_src AS cbme_sid => cbme_ssrc BEGIN
+          SPRINT cbme_sdst $sever_dst(~%cbme_sid%~)
+          SPRINT cbme_srule $sever_rule(~%cbme_sid%~)
+          PATCH_IF VARIABLE_IS_SET $rules(~%cbme_srule%~) AND $rules(~%cbme_srule%~) != 0 BEGIN
+            SET $cbme_active_severs(~%cbme_ssrc%>%cbme_sdst%~) = 1
+          END
+        END
+
+        CLEAR_ARRAY cbme_map_words
+        CLEAR_ARRAY cbme_area_words
+        CLEAR_ARRAY cbme_out_links
+        CLEAR_ARRAY cbme_map_na
+        CLEAR_ARRAY cbme_map_lc
+
+        SET cbme_adj_cnt = 0
+        SET cbme_total_out_links = 0
+
+        FOR (cbme_m = 0; cbme_m < cbme_mcnt; ++cbme_m) BEGIN
+          SET cbme_mh = cbme_moff + cbme_m * 0xb8
+          FOR (cbme_w = 0; cbme_w < 46; ++cbme_w) BEGIN
+            READ_LONG (cbme_mh + cbme_w * 4) $cbme_map_words(~%cbme_m%~ ~%cbme_w%~)
+          END
+          READ_LONG (cbme_mh + 0x20) cbme_na
+          READ_LONG (cbme_mh + 0x24) cbme_ao
+          READ_LONG (cbme_mh + 0x28) cbme_lo
+          READ_LONG (cbme_mh + 0x2c) cbme_lc
+          SET $cbme_map_na(~%cbme_m%~) = cbme_na
+
+          CLEAR_ARRAY cbme_m_names
+          FOR (cbme_a = 0; cbme_a < cbme_na; ++cbme_a) BEGIN
+            SET cbme_ar = cbme_ao + cbme_a * 0xf0
+            READ_ASCII cbme_ar cbme_ares (8) NULL
+            TO_UPPER cbme_ares
+            SPRINT $cbme_m_names(~%cbme_a%~) ~%cbme_ares%~
+            SET $cbme_m_idx(~%cbme_m%~ ~%cbme_ares%~) = cbme_a
+            READ_LONG (cbme_ar + 0x30) cbme_aflags
+            READ_LONG (cbme_ar + 0x3c) cbme_ay
+            SET $area_static(~%cbme_ares%~) = (cbme_aflags BAND 3)
+            SET $area_y(~%cbme_ares%~) = cbme_ay
+            FOR (cbme_w = 0; cbme_w < 60; ++cbme_w) BEGIN
+              READ_LONG (cbme_ar + cbme_w * 4) $cbme_area_words(~%cbme_m%~ ~%cbme_a%~ ~%cbme_w%~)
+            END
+          END
+
+          SET cbme_m_link_base = cbme_total_out_links
+          SET cbme_m_out_lc = 0
+          FOR (cbme_a = 0; cbme_a < cbme_na; ++cbme_a) BEGIN
+            SPRINT cbme_src $cbme_m_names(~%cbme_a%~)
+            SET cbme_ar = cbme_ao + cbme_a * 0xf0
+            FOR (cbme_j = 0; cbme_j < 4; ++cbme_j) BEGIN
+              READ_LONG (cbme_ar + 0x50 + cbme_j * 8) cbme_li
+              READ_LONG (cbme_ar + 0x54 + cbme_j * 8) cbme_nl
+              SET cbme_new_li = cbme_m_out_lc
+              SET cbme_new_nl = 0
+              FOR (cbme_k = 0; cbme_k < cbme_nl; ++cbme_k) BEGIN
+                SET cbme_lpos = cbme_lo + (cbme_li + cbme_k) * 0xd8
+                READ_LONG cbme_lpos cbme_tidx
+                SPRINT cbme_dst $cbme_m_names(~%cbme_tidx%~)
+                PATCH_IF NOT VARIABLE_IS_SET $cbme_active_severs(~%cbme_src%>%cbme_dst%~) BEGIN
+                  SET cbme_out_g = cbme_m_link_base + cbme_m_out_lc
+                  FOR (cbme_w = 0; cbme_w < 54; ++cbme_w) BEGIN
+                    READ_LONG (cbme_lpos + cbme_w * 4) $cbme_out_links(~%cbme_out_g%~ ~%cbme_w%~)
+                  END
+                  SET cbme_m_out_lc += 1
+                  SET cbme_new_nl += 1
+                  SET $cbme_dir_seen(~%cbme_m%~ ~%cbme_a%~ ~%cbme_j%~ ~%cbme_dst%~) = 1
+                  // Record remaining adjacency (excluding AR3000 / SHARED_SOA_TOB cross-hub).
+                  SET cbme_src_shared = (~%cbme_src%~ STRING_EQUAL ~AR3000~)
+                  PATCH_IF NOT cbme_src_shared AND VARIABLE_IS_SET $eras(~%cbme_src%~) BEGIN
+                    SPRINT cbme_se $eras(~%cbme_src%~)
+                    SET cbme_src_shared = (~%cbme_se%~ STRING_EQUAL ~SHARED_SOA_TOB~)
+                  END
+                  SET cbme_dst_shared = (~%cbme_dst%~ STRING_EQUAL ~AR3000~)
+                  PATCH_IF NOT cbme_dst_shared AND VARIABLE_IS_SET $eras(~%cbme_dst%~) BEGIN
+                    SPRINT cbme_de $eras(~%cbme_dst%~)
+                    SET cbme_dst_shared = (~%cbme_de%~ STRING_EQUAL ~SHARED_SOA_TOB~)
+                  END
+                  PATCH_IF NOT cbme_src_shared AND NOT cbme_dst_shared BEGIN
+                    SPRINT $adj_src(~%cbme_adj_cnt%~) ~%cbme_src%~
+                    SPRINT $adj_dst(~%cbme_adj_cnt%~) ~%cbme_dst%~
+                    SET cbme_adj_cnt += 1
+                  END
+                END
+              END
+              // Append missing policy LINK_ADD edges for (cbme_src, cbme_j).
+              PHP_EACH add_list AS cbme_aid => cbme_unused BEGIN
+                SPRINT cbme_asrc $add_src(~%cbme_aid%~)
+                SPRINT cbme_adst $add_dst(~%cbme_aid%~)
+                SET cbme_adir = $add_dir(~%cbme_aid%~)
+                SPRINT cbme_arule $add_rule(~%cbme_aid%~)
+                PATCH_IF ~%cbme_asrc%~ STRING_EQUAL ~%cbme_src%~
+                     AND cbme_adir = cbme_j
+                     AND VARIABLE_IS_SET $cbme_m_idx(~%cbme_m%~ ~%cbme_adst%~)
+                     AND NOT VARIABLE_IS_SET $cbme_dir_seen(~%cbme_m%~ ~%cbme_a%~ ~%cbme_j%~ ~%cbme_adst%~)
+                     AND VARIABLE_IS_SET $rules(~%cbme_arule%~) AND $rules(~%cbme_arule%~) != 0 BEGIN
+                  SET cbme_atidx = $cbme_m_idx(~%cbme_m%~ ~%cbme_adst%~)
+                  SPRINT cbme_aentry $add_entry(~%cbme_aid%~)
+                  SET cbme_atime = $add_time(~%cbme_aid%~)
+                  SET cbme_adef = $add_def(~%cbme_aid%~)
+                  SET cbme_out_g = cbme_m_link_base + cbme_m_out_lc
+                  LPF cbm_ewp_encode_link
+                    INT_VAR target_idx = cbme_atidx trv_time = cbme_atime def_entry = cbme_adef
+                    STR_VAR entry_name = EVAL ~%cbme_aentry%~
+                    RET_ARRAY cbme_new_link_words = out_words
+                  END
+                  FOR (cbme_w = 0; cbme_w < 54; ++cbme_w) BEGIN
+                    SET $cbme_out_links(~%cbme_out_g%~ ~%cbme_w%~) = $cbme_new_link_words(~%cbme_w%~)
+                  END
+                  SET cbme_m_out_lc += 1
+                  SET cbme_new_nl += 1
+                  SET $cbme_dir_seen(~%cbme_m%~ ~%cbme_a%~ ~%cbme_j%~ ~%cbme_adst%~) = 1
+                END
+              END
+              SET cbme_li_word = (0x50 + cbme_j * 8) / 4
+              SET cbme_nl_word = (0x54 + cbme_j * 8) / 4
+              SET $cbme_area_words(~%cbme_m%~ ~%cbme_a%~ ~%cbme_li_word%~) = cbme_new_li
+              SET $cbme_area_words(~%cbme_m%~ ~%cbme_a%~ ~%cbme_nl_word%~) = cbme_new_nl
+            END
+          END
+          SET $cbme_map_lc(~%cbme_m%~) = cbme_m_out_lc
+          SET cbme_total_out_links += cbme_m_out_lc
+        END
+
+        // Rebuild canonical WMAP buffer cleanly via DWORDs.
+        SET cbme_total_size = 0x10 + cbme_mcnt * 0xb8
+        FOR (cbme_m = 0; cbme_m < cbme_mcnt; ++cbme_m) BEGIN
+          SET cbme_total_size += $cbme_map_na(~%cbme_m%~) * 0xf0 + $cbme_map_lc(~%cbme_m%~) * 0xd8
+        END
+        DELETE_BYTES 0x10 (BUFFER_LENGTH - 0x10)
+        INSERT_BYTES 0x10 (cbme_total_size - 0x10)
+        WRITE_LONG 0x0c 0x10
+        SET cbme_cursor = 0x10 + cbme_mcnt * 0xb8
+        SET cbme_link_cursor = 0
+        FOR (cbme_m = 0; cbme_m < cbme_mcnt; ++cbme_m) BEGIN
+          SET cbme_na = $cbme_map_na(~%cbme_m%~)
+          SET cbme_lc = $cbme_map_lc(~%cbme_m%~)
+          SET cbme_ao_new = cbme_cursor
+          SET cbme_lo_new = cbme_cursor + cbme_na * 0xf0
+          SET $cbme_map_words(~%cbme_m%~ ~9~) = cbme_ao_new
+          SET $cbme_map_words(~%cbme_m%~ ~10~) = cbme_lo_new
+          SET $cbme_map_words(~%cbme_m%~ ~11~) = cbme_lc
+          SET cbme_mh_new = 0x10 + cbme_m * 0xb8
+          FOR (cbme_w = 0; cbme_w < 46; ++cbme_w) BEGIN
+            WRITE_LONG (cbme_mh_new + cbme_w * 4) $cbme_map_words(~%cbme_m%~ ~%cbme_w%~)
+          END
+          FOR (cbme_a = 0; cbme_a < cbme_na; ++cbme_a) BEGIN
+            SET cbme_ar_new = cbme_ao_new + cbme_a * 0xf0
+            FOR (cbme_w = 0; cbme_w < 60; ++cbme_w) BEGIN
+              WRITE_LONG (cbme_ar_new + cbme_w * 4) $cbme_area_words(~%cbme_m%~ ~%cbme_a%~ ~%cbme_w%~)
+            END
+          END
+          FOR (cbme_k = 0; cbme_k < cbme_lc; ++cbme_k) BEGIN
+            SET cbme_l_new = cbme_lo_new + cbme_k * 0xd8
+            SET cbme_g = cbme_link_cursor + cbme_k
+            FOR (cbme_w = 0; cbme_w < 54; ++cbme_w) BEGIN
+              WRITE_LONG (cbme_l_new + cbme_w * 4) $cbme_out_links(~%cbme_g%~ ~%cbme_w%~)
+            END
+          END
+          SET cbme_link_cursor += cbme_lc
+          SET cbme_cursor = cbme_lo_new + cbme_lc * 0xd8
+        END
+        SET wmp_patched = 1
+      END ELSE BEGIN
+        PATCH_PRINT ~EET world progression: WORLDMAP.WMP is too damaged to write; leaving worldmap links unchanged.~
+      END
+    BUT_ONLY
+  END ELSE BEGIN
+    PRINT ~EET world progression: WORLDMAP.WMP is absent; skipping worldmap links.~
+  END
+
+  // Classify every area found on WORLDMAP.WMP deterministically.
+  ACTION_PHP_EACH area_static AS cbme_ares => cbme_unused BEGIN
+    ACTION_IF VARIABLE_IS_SET $eras(~%cbme_ares%~) BEGIN
+      OUTER_SPRINT $area_era(~%cbme_ares%~) $eras(~%cbme_ares%~)
+    END ELSE ACTION_IF ~%cbme_ares%~ STRING_MATCHES_REGEXP ~^BD~ = 0 BEGIN
+      OUTER_SPRINT $area_era(~%cbme_ares%~) ~SOD~
+    END ELSE ACTION_IF ~%cbme_ares%~ STRING_MATCHES_REGEXP ~^BG~ = 0 BEGIN
+      OUTER_SPRINT $area_era(~%cbme_ares%~) ~BG1~
+    END
+  END
+
+  // Propagate unambiguous neighbor eras (handles custom mod areas like WIBH13..15 or AR*PB).
+  OUTER_FOR (cbme_pass = 0; cbme_pass < 4; ++cbme_pass) BEGIN
+    ACTION_CLEAR_ARRAY cbme_nbr_keys
+    ACTION_PHP_EACH adj_src AS cbme_idx => cbme_s BEGIN
+      OUTER_SPRINT cbme_d $adj_dst(~%cbme_idx%~)
+      ACTION_IF NOT VARIABLE_IS_SET $area_era(~%cbme_s%~) AND VARIABLE_IS_SET $area_era(~%cbme_d%~) BEGIN
+        OUTER_SPRINT cbme_de $area_era(~%cbme_d%~)
+        ACTION_IF NOT (~%cbme_de%~ STRING_EQUAL ~SHARED_SOA_TOB~) BEGIN
+          ACTION_IF NOT VARIABLE_IS_SET $cbme_nbr_era(~%cbme_pass%~ ~%cbme_s%~) BEGIN
+            OUTER_SPRINT $cbme_nbr_era(~%cbme_pass%~ ~%cbme_s%~) ~%cbme_de%~
+            OUTER_SET $cbme_nbr_keys(~%cbme_s%~) = 1
+          END ELSE BEGIN
+            OUTER_SPRINT cbme_prev $cbme_nbr_era(~%cbme_pass%~ ~%cbme_s%~)
+            ACTION_IF NOT (~%cbme_prev%~ STRING_EQUAL ~%cbme_de%~) BEGIN
+              OUTER_SET $cbme_nbr_mixed(~%cbme_pass%~ ~%cbme_s%~) = 1
+            END
+          END
+        END
+      END
+      ACTION_IF NOT VARIABLE_IS_SET $area_era(~%cbme_d%~) AND VARIABLE_IS_SET $area_era(~%cbme_s%~) BEGIN
+        OUTER_SPRINT cbme_se $area_era(~%cbme_s%~)
+        ACTION_IF NOT (~%cbme_se%~ STRING_EQUAL ~SHARED_SOA_TOB~) BEGIN
+          ACTION_IF NOT VARIABLE_IS_SET $cbme_nbr_era(~%cbme_pass%~ ~%cbme_d%~) BEGIN
+            OUTER_SPRINT $cbme_nbr_era(~%cbme_pass%~ ~%cbme_d%~) ~%cbme_se%~
+            OUTER_SET $cbme_nbr_keys(~%cbme_d%~) = 1
+          END ELSE BEGIN
+            OUTER_SPRINT cbme_prev $cbme_nbr_era(~%cbme_pass%~ ~%cbme_d%~)
+            ACTION_IF NOT (~%cbme_prev%~ STRING_EQUAL ~%cbme_se%~) BEGIN
+              OUTER_SET $cbme_nbr_mixed(~%cbme_pass%~ ~%cbme_d%~) = 1
+            END
+          END
+        END
+      END
+    END
+    ACTION_PHP_EACH cbme_nbr_keys AS cbme_u => cbme_unused BEGIN
+      ACTION_IF NOT VARIABLE_IS_SET $cbme_nbr_mixed(~%cbme_pass%~ ~%cbme_u%~) BEGIN
+        OUTER_SPRINT $area_era(~%cbme_u%~) $cbme_nbr_era(~%cbme_pass%~ ~%cbme_u%~)
+      END
+    END
+  END
+
+  // Fallback for still-unclassified areas: .ARE BG1AREA flag, then WMP Y-band.
+  ACTION_PHP_EACH area_static AS cbme_ares => cbme_unused BEGIN
+    ACTION_IF NOT VARIABLE_IS_SET $area_era(~%cbme_ares%~) BEGIN
+      OUTER_SET cbme_is_bg1 = 0
+      ACTION_IF FILE_EXISTS_IN_GAME ~%cbme_ares%.ARE~ BEGIN
+        COPY_EXISTING - ~%cbme_ares%.ARE~ ~.../cbm-ewp-are~
+          PATCH_IF BUFFER_LENGTH >= 0x4c BEGIN
+            READ_ASCII 0 cbme_asig (8)
+            PATCH_IF ~%cbme_asig%~ STRING_EQUAL ~ARE V1.0~ BEGIN
+              PATCH_IF (SHORT_AT 0x48 BAND 0x100) != 0 BEGIN
+                SET cbme_is_bg1 = 1
+              END
+            END
+          END
+      END
+      ACTION_IF cbme_is_bg1 BEGIN
+        OUTER_SPRINT $area_era(~%cbme_ares%~) ~BG1~
+      END ELSE BEGIN
+        OUTER_SET cbme_ypos = $area_y(~%cbme_ares%~)
+        ACTION_IF cbme_ypos < 2280 BEGIN
+          OUTER_SPRINT $area_era(~%cbme_ares%~) ~BG1~
+        END ELSE ACTION_IF cbme_ypos >= 2980 BEGIN
+          OUTER_SPRINT $area_era(~%cbme_ares%~) ~TOB~
+        END ELSE BEGIN
+          OUTER_SPRINT $area_era(~%cbme_ares%~) ~SOA~
+        END
+      END
+    END
+  END
+END
+
+// --------------------------------------------------------------------------
+// Script rewriting helpers
+// --------------------------------------------------------------------------
+
+DEFINE_PATCH_FUNCTION cbm_ewp_strip_blocks_by_markers
+  STR_VAR markers = ~~
+BEGIN
+  PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~CBM_~) >= 0 BEGIN
+    DECOMPILE_BCS_TO_BAF
+    SET cbme_pos = INDEX_BUFFER (~^IF~)
+    WHILE cbme_pos >= 0 BEGIN
+      SET cbme_end = INDEX_BUFFER (~^END~ cbme_pos)
+      PATCH_IF cbme_end < cbme_pos BEGIN SET cbme_end = BUFFER_LENGTH - 3 END
+      SET cbme_len = cbme_end + 3 - cbme_pos
+      READ_ASCII cbme_pos cbme_blk (cbme_len)
+      SET cbme_owned = 0
+      INNER_PATCH ~%markers%~ BEGIN
+        REPLACE_EVALUATE ~\([^ %TAB%%MNL%%LNL%]+\)~ BEGIN
+          INNER_PATCH ~%cbme_blk%~ BEGIN
+            PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~"%MATCH1%"~) >= 0 BEGIN
+              SET cbme_owned = 1
+            END
+          END
+        END ~%MATCH0%~
+      END
+      PATCH_IF cbme_owned BEGIN
+        DELETE_BYTES cbme_pos cbme_len
+      END ELSE BEGIN
+        SET cbme_pos = cbme_end + 3
+      END
+      SET cbme_pos = INDEX_BUFFER (~^IF~ cbme_pos)
+    END
+    COMPILE_BAF_TO_BCS
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_ewp_prepend_baf
+  STR_VAR script = ~~ baf_text = ~~ strip_markers = ~~
+BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%script%.BCS~ BEGIN
+    OUTER_SET cbme_can_write = 0
+    COPY_EXISTING - ~%script%.BCS~ ~.../cbm-ewp-chk~
+      LPF cbmo_bcs_writable RET cbme_can_write = cbmo_bcs_ok END
+    ACTION_IF cbme_can_write BEGIN
+      <<<<<<<< .../cbm-ewp-gen.baf
+%baf_text%
+>>>>>>>>
+      COPY - ~.../cbm-ewp-gen.baf~ ~.../cbm-ewp-eval.baf~ EVALUATE_BUFFER
+      COPY - ~.../cbm-ewp-eval.baf~ ~.../cbm-ewp-compiled~
+        COMPILE_BAF_TO_BCS
+        DELETE_BYTES (BUFFER_LENGTH - 3) 3
+        DELETE_BYTES 0 3
+        READ_ASCII 0 cbme_new_bytes (BUFFER_LENGTH)
+
+      COPY_EXISTING ~%script%.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
+          PATCH_IF NOT (~%strip_markers%~ STRING_EQUAL ~~) BEGIN
+            LPF cbm_ewp_strip_blocks_by_markers STR_VAR markers = EVAL ~%strip_markers%~ END
+          END
+          REPLACE_TEXTUALLY ~%MNL%~ ~~
+          SET cbme_len = STRING_LENGTH ~%cbme_new_bytes%~
+          PATCH_IF cbme_len > 0 BEGIN
+            INSERT_BYTES 3 cbme_len
+            WRITE_ASCIIE 3 ~%cbme_new_bytes%~ (cbme_len)
+          END
+        END ELSE BEGIN
+          PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~
+        END
+      BUT_ONLY
+    END ELSE BEGIN
+      PRINT ~EET world progression: %script%.BCS is too damaged to write.~
+    END
+  END ELSE BEGIN
+    PRINT ~EET world progression: %script%.BCS is absent; skipping.~
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbm_ewp_build_flag_actions
+  INT_VAR do_clear_bg1 = 0 do_clear_sod = 0 do_clear_soa = 0 do_clear_tob = 0
+          do_clear_shared = 0 do_clear_city = 0
+          do_restore_sod = 0 do_restore_soa = 0 do_restore_tob = 0 do_restore_shared = 0
+  RET actions
+BEGIN
+  OUTER_SPRINT actions ~~
+  ACTION_CLEAR_ARRAY cbme_city_areas
+  ACTION_FOR_EACH cbme_ca IN BG0100 BG0200 BG0300 BG0400 BG0600 BG0700 BG0800 BG1100 BG1200 BG1300 BEGIN
+    OUTER_SET $cbme_city_areas(~%cbme_ca%~) = 1
+  END
+  ACTION_PHP_EACH area_era AS cbme_ares => cbme_era BEGIN
+    OUTER_SET cbme_st = $area_static(~%cbme_ares%~)
+    ACTION_IF ~%cbme_era%~ STRING_EQUAL ~BG1~ BEGIN
+      ACTION_IF do_clear_bg1 OR (do_clear_city AND VARIABLE_IS_SET $cbme_city_areas(~%cbme_ares%~)) BEGIN
+        OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("%cbme_ares%",15)%LNL%~
+      END
+    END ELSE ACTION_IF ~%cbme_era%~ STRING_EQUAL ~SOD~ BEGIN
+      ACTION_IF do_clear_sod BEGIN
+        OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("%cbme_ares%",15)%LNL%~
+      END ELSE ACTION_IF do_restore_sod BEGIN
+        ACTION_IF cbme_st > 0 BEGIN
+          OUTER_SPRINT actions ~%actions%    AddWorldmapAreaFlag("%cbme_ares%",%cbme_st%)%LNL%~
+        END ELSE ACTION_IF ~%cbme_ares%~ STRING_EQUAL ~BD7000~ BEGIN
+          OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("BD7000",15)%LNL%~
+        END
+      END
+    END ELSE ACTION_IF ~%cbme_era%~ STRING_EQUAL ~SOA~ BEGIN
+      ACTION_IF do_clear_soa BEGIN
+        OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("%cbme_ares%",15)%LNL%~
+      END ELSE ACTION_IF do_restore_soa AND cbme_st > 0 BEGIN
+        OUTER_SPRINT actions ~%actions%    AddWorldmapAreaFlag("%cbme_ares%",%cbme_st%)%LNL%~
+      END
+    END ELSE ACTION_IF ~%cbme_era%~ STRING_EQUAL ~TOB~ BEGIN
+      ACTION_IF do_clear_tob BEGIN
+        OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("%cbme_ares%",15)%LNL%~
+      END ELSE ACTION_IF do_restore_tob AND cbme_st > 0 BEGIN
+        OUTER_SPRINT actions ~%actions%    AddWorldmapAreaFlag("%cbme_ares%",%cbme_st%)%LNL%~
+      END
+    END ELSE ACTION_IF ~%cbme_era%~ STRING_EQUAL ~SHARED_SOA_TOB~ BEGIN
+      ACTION_IF do_clear_shared BEGIN
+        OUTER_SPRINT actions ~%actions%    RemoveWorldmapAreaFlag("%cbme_ares%",15)%LNL%~
+      END ELSE ACTION_IF do_restore_shared BEGIN
+        OUTER_SPRINT actions ~%actions%    AddWorldmapAreaFlag("%cbme_ares%",3)%LNL%~
+      END
+    END
+  END
+END
+
+// --------------------------------------------------------------------------
+// Campaign entry & transition scripts
+// --------------------------------------------------------------------------
+
+DEFINE_ACTION_FUNCTION cbm_ewp_patch_campaign_scripts BEGIN
+  LAF cbm_ewp_rule STR_VAR name = ~BLOCK_SOA_TO_BG1_SOD~ RET cbme_r_soa_bg1 = value END
+  LAF cbm_ewp_rule STR_VAR name = ~BLOCK_TOB_TO_SOA~ RET cbme_r_tob_soa = value END
+  LAF cbm_ewp_rule STR_VAR name = ~WATCHERS_KEEP_IN_SOA~ RET cbme_r_wk_soa = value END
+  LAF cbm_ewp_rule STR_VAR name = ~BLOCK_SOD_TO_BG1~ RET cbme_r_sod_bg1 = value END
+  LAF cbm_ewp_rule STR_VAR name = ~CLEAN_OUT_OF_ERA_ICONS~ RET cbme_r_icons = value END
+
+  // 1. BG2600.BCS (New Game BG1): hide SoD, SoA, ToB, and AR3000 icons.
+  ACTION_IF cbme_r_icons BEGIN
+    LAF cbm_ewp_build_flag_actions
+      INT_VAR do_clear_sod = 1 do_clear_soa = 1 do_clear_tob = 1 do_clear_shared = 1
+      RET cbme_bg1_acts = actions
+    END
+    ACTION_IF NOT (~%cbme_bg1_acts%~ STRING_EQUAL ~~) BEGIN
+      OUTER_SPRINT cbme_bg1_baf ~IF
+  Global("CBM_EWP_BG1","BG2600",0)
+  Global("ENDOFBG1","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_EWP_BG1","BG2600",1)
+%cbme_bg1_acts%    Continue()
+END
+~
+      LAF cbm_ewp_prepend_baf STR_VAR script = ~BG2600~ baf_text = EVAL ~%cbme_bg1_baf%~ strip_markers = ~CBM_EWP_BG1~ END
+    END
+  END
+
+  // 2. SoD transition cutscenes (BDCUT08, BDDEBUG) + BD1000 fallback.
+  LAF cbm_ewp_build_flag_actions
+    INT_VAR
+      do_restore_sod = 1
+      do_clear_bg1 = cbme_r_sod_bg1
+      do_clear_city = (cbme_r_sod_bg1 = 0 ? 1 : 0)
+      do_clear_soa = cbme_r_icons
+      do_clear_tob = cbme_r_icons
+      do_clear_shared = cbme_r_icons
+    RET cbme_sod_acts = actions
+  END
+  ACTION_IF NOT (~%cbme_sod_acts%~ STRING_EQUAL ~~) BEGIN
+    // Strip trailing Continue/formatting noise: BDCUT08/BDDEBUG insert inline after SetWorldmap("WORLDMAP").
+    ACTION_FOR_EACH cbme_cut IN BDCUT08 BDDEBUG BEGIN
+      ACTION_IF FILE_EXISTS_IN_GAME ~%cbme_cut%.BCS~ BEGIN
+        COPY_EXISTING ~%cbme_cut%.BCS~ ~override~
+          LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+          PATCH_IF cbmo_bcs_ok BEGIN
+            DECOMPILE_BCS_TO_BAF
+            SET cbme_p = INDEX_BUFFER (~^IF~)
+            WHILE cbme_p >= 0 BEGIN
+              SET cbme_e = INDEX_BUFFER (~^END~ cbme_p)
+              PATCH_IF cbme_e < cbme_p BEGIN SET cbme_e = BUFFER_LENGTH - 3 END
+              SET cbme_l = cbme_e + 3 - cbme_p
+              READ_ASCII cbme_p cbme_b (cbme_l)
+              INNER_PATCH_SAVE cbme_b2 ~%cbme_b%~ BEGIN
+                PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE EXACT_MATCH ~SetWorldmap("WORLDMAP")~) >= 0 BEGIN
+                  // Overwrite any prior EET BG0100..BG1300 flag-12 or previous CBM_EWP_SOD actions cleanly.
+                  REPLACE_TEXTUALLY ~^[ %TAB%]*SetGlobal("CBM_EWP_SOD","GLOBAL",1)[ %TAB%]*%MNL%?%LNL%~ ~~
+                  REPLACE_TEXTUALLY ~^[ %TAB%]*RemoveWorldmapAreaFlag("[^"]+",12)[ %TAB%]*%MNL%?%LNL%~ ~~
+                  REPLACE_TEXTUALLY ~^[ %TAB%]*RemoveWorldmapAreaFlag("[^"]+",15)[ %TAB%]*%MNL%?%LNL%~ ~~
+                  REPLACE_TEXTUALLY ~^[ %TAB%]*AddWorldmapAreaFlag("[^"]+",[0-9]+)[ %TAB%]*%MNL%?%LNL%~ ~~
+                  REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH ~SetWorldmap("WORLDMAP")~ ~SetWorldmap("WORLDMAP")%LNL%    SetGlobal("CBM_EWP_SOD","GLOBAL",1)%LNL%%cbme_sod_acts%~
+                END
+              END
+              PATCH_IF NOT (~%cbme_b%~ STRING_EQUAL ~%cbme_b2%~) BEGIN
+                DELETE_BYTES cbme_p cbme_l
+                SET cbme_nl = STRING_LENGTH ~%cbme_b2%~
+                INSERT_BYTES cbme_p cbme_nl
+                WRITE_ASCIIE cbme_p ~%cbme_b2%~ (cbme_nl)
+                SET cbme_e = cbme_p + cbme_nl - 3
+              END
+              SET cbme_p = INDEX_BUFFER (~^IF~ (cbme_e + 3))
+            END
+            COMPILE_BAF_TO_BCS
+          END ELSE BEGIN PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~ END
+        BUT_ONLY
+      END ELSE BEGIN PRINT ~EET world progression: %cbme_cut%.BCS is absent; skipping.~ END
+    END
+  END
+
+  // 3. AR0602.BCS (SoA Start & Continuous BG1/SoD -> SoA):
+  //    Hide BG1/SoD (when blocked), hide ToB (when icon cleanup on), restore Athkatla, set WK policy.
+  LAF cbm_ewp_build_flag_actions
+    INT_VAR
+      do_clear_bg1 = cbme_r_soa_bg1
+      do_clear_sod = cbme_r_soa_bg1
+      do_clear_tob = cbme_r_icons
+      do_restore_soa = 1
+      do_restore_shared = cbme_r_wk_soa
+      do_clear_shared = (cbme_r_wk_soa = 0 ? 1 : 0)
+    RET cbme_soa_acts = actions
+  END
+  ACTION_IF NOT (~%cbme_soa_acts%~ STRING_EQUAL ~~) BEGIN
+    OUTER_SPRINT cbme_soa_baf ~IF
+  Global("CBM_EWP_SOA","AR0602",0)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_EWP_SOA","AR0602",1)
+%cbme_soa_acts%    Continue()
+END
+~
+    LAF cbm_ewp_prepend_baf STR_VAR script = ~AR0602~ baf_text = EVAL ~%cbme_soa_baf%~ strip_markers = ~CBM_EWP_SOA~ END
+  END
+
+  // 4. AR4000.BCS (ToB Start & Continuous SoA -> ToB):
+  //    Hide BG1/SoD, hide SoA (so AR3000 cannot bridge back to Amn/BG1), keep AR3000 active.
+  LAF cbm_ewp_build_flag_actions
+    INT_VAR
+      do_clear_bg1 = cbme_r_soa_bg1
+      do_clear_sod = cbme_r_soa_bg1
+      do_clear_soa = cbme_r_tob_soa
+      do_restore_tob = 1
+      do_restore_shared = 1
+    RET cbme_tob_acts = actions
+  END
+  ACTION_IF NOT (~%cbme_tob_acts%~ STRING_EQUAL ~~) BEGIN
+    OUTER_SPRINT cbme_tob_baf ~IF
+  Global("CBM_EWP_TOB","AR4000",0)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_EWP_TOB","AR4000",1)
+%cbme_tob_acts%    Continue()
+END
+~
+    LAF cbm_ewp_prepend_baf STR_VAR script = ~AR4000~ baf_text = EVAL ~%cbme_tob_baf%~ strip_markers = ~CBM_EWP_TOB~ END
+  END
+END
+
+// --------------------------------------------------------------------------
+// Within-SoD story-consistent locks & abandoned camp / chest / NPC fixes
+// --------------------------------------------------------------------------
+
+DEFINE_ACTION_FUNCTION cbm_ewp_patch_sod_progression BEGIN
+  LAF cbm_ewp_rule STR_VAR name = ~BLOCK_SOA_TO_BG1_SOD~ RET cbme_r_soa_bg1 = value END
+  LAF cbm_ewp_rule STR_VAR name = ~BLOCK_SOD_TO_BG1~ RET cbme_r_sod_bg1 = value END
+  LAF cbm_ewp_rule STR_VAR name = ~CLEAN_OUT_OF_ERA_ICONS~ RET cbme_r_icons = value END
+  LAF cbm_ewp_rule STR_VAR name = ~SOD_KEEP_PRE_ASSAULT_OPEN~ RET cbme_r_pre_assault = value END
+  LAF cbm_ewp_rule STR_VAR name = ~SOD_FIX_BACKTRACK_CAMPS~ RET cbme_r_fix_camps = value END
+
+  // A. BD4000.BCS: strip EET's post-SoD travel/worldmap reopening when BG2->SoD is closed.
+  ACTION_IF cbme_r_soa_bg1 BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~BD4000.BCS~ BEGIN
+      COPY_EXISTING ~BD4000.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
+          DECOMPILE_BCS_TO_BAF
+          SET cbme_p = INDEX_BUFFER (~^IF~)
+          WHILE cbme_p >= 0 BEGIN
+            SET cbme_e = INDEX_BUFFER (~^END~ cbme_p)
+            PATCH_IF cbme_e < cbme_p BEGIN SET cbme_e = BUFFER_LENGTH - 3 END
+            SET cbme_l = cbme_e + 3 - cbme_p
+            READ_ASCII cbme_p cbme_b (cbme_l)
+            INNER_PATCH_SAVE cbme_b2 ~%cbme_b%~ BEGIN
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~GlobalGT("Chapter","GLOBAL",13)~) >= 0 BEGIN
+                REPLACE_TEXTUALLY ~^[ %TAB%]*RemoveAreaFlag(NOTRAVEL)[ %TAB%]*%MNL%?%LNL%~ ~~
+              END
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~AddAreaFlag(NOTRAVEL)~) >= 0 BEGIN
+                REPLACE_TEXTUALLY ~^[ %TAB%]*AddWorldmapAreaFlag("\(BD5000\|BD7400\|BD2000\)",[0-9A-Za-z_]+)[ %TAB%]*%MNL%?%LNL%~ ~~
+              END
+            END
+            PATCH_IF NOT (~%cbme_b%~ STRING_EQUAL ~%cbme_b2%~) BEGIN
+              DELETE_BYTES cbme_p cbme_l
+              SET cbme_nl = STRING_LENGTH ~%cbme_b2%~
+              INSERT_BYTES cbme_p cbme_nl
+              WRITE_ASCIIE cbme_p ~%cbme_b2%~ (cbme_nl)
+              SET cbme_e = cbme_p + cbme_nl - 3
+            END
+            SET cbme_p = INDEX_BUFFER (~^IF~ (cbme_e + 3))
+          END
+          COMPILE_BAF_TO_BCS
+        END ELSE BEGIN PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~ END
+      BUT_ONLY
+    END ELSE BEGIN PRINT ~EET world progression: BD4000.BCS is absent; skipping.~ END
+  END
+
+  // B. BD3000.BCS: keep Ch.8-10 road + BD5000/BD7400 open after camp siege (bd_plot=402)
+  //    until the party actually enters BD4000 (Dragonspear assault).
+  ACTION_IF cbme_r_pre_assault BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~BD3000.BCS~ BEGIN
+      COPY_EXISTING ~BD3000.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
+          DECOMPILE_BCS_TO_BAF
+          SET cbme_p = INDEX_BUFFER (~^IF~)
+          WHILE cbme_p >= 0 BEGIN
+            SET cbme_e = INDEX_BUFFER (~^END~ cbme_p)
+            PATCH_IF cbme_e < cbme_p BEGIN SET cbme_e = BUFFER_LENGTH - 3 END
+            SET cbme_l = cbme_e + 3 - cbme_p
+            READ_ASCII cbme_p cbme_b (cbme_l)
+            INNER_PATCH_SAVE cbme_b2 ~%cbme_b%~ BEGIN
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~SetGlobal("bd_plot","global",405)~) >= 0
+                   AND INDEX_BUFFER (CASE_INSENSITIVE ~RemoveAreaFlag(NOTRAVEL)~) >= 0 BEGIN
+                REPLACE_TEXTUALLY ~^[ %TAB%]*RemoveWorldmapAreaFlag("\(BD5000\|BD7400\|BD2000\)",[0-9A-Za-z_]+)[ %TAB%]*%MNL%?%LNL%~ ~~
+              END
+            END
+            PATCH_IF NOT (~%cbme_b%~ STRING_EQUAL ~%cbme_b2%~) BEGIN
+              DELETE_BYTES cbme_p cbme_l
+              SET cbme_nl = STRING_LENGTH ~%cbme_b2%~
+              INSERT_BYTES cbme_p cbme_nl
+              WRITE_ASCIIE cbme_p ~%cbme_b2%~ (cbme_nl)
+              SET cbme_e = cbme_p + cbme_nl - 3
+            END
+            SET cbme_p = INDEX_BUFFER (~^IF~ (cbme_e + 3))
+          END
+          COMPILE_BAF_TO_BCS
+        END ELSE BEGIN PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~ END
+      BUT_ONLY
+    END ELSE BEGIN PRINT ~EET world progression: BD3000.BCS is absent; skipping.~ END
+  END
+
+  // C. BD1000.BCS fallback worldmap enforcement + SoD camp/chest/Baeloth fixes.
+  LAF cbm_ewp_build_flag_actions
+    INT_VAR
+      do_restore_sod = 1
+      do_clear_bg1 = cbme_r_sod_bg1
+      do_clear_city = (cbme_r_sod_bg1 = 0 ? 1 : 0)
+      do_clear_soa = cbme_r_icons
+      do_clear_tob = cbme_r_icons
+      do_clear_shared = cbme_r_icons
+    RET cbme_bd1000_acts = actions
+  END
+  OUTER_SPRINT cbme_bd1000_baf ~~
+  ACTION_IF NOT (~%cbme_bd1000_acts%~ STRING_EQUAL ~~) BEGIN
+    OUTER_SPRINT cbme_bd1000_baf ~%cbme_bd1000_baf%IF
+  Global("CBM_EWP_SOD","GLOBAL",0)
+  GlobalLT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_EWP_SOD","GLOBAL",1)
+%cbme_bd1000_acts%    Continue()
+END
+~
+  END
+  ACTION_IF cbme_r_sod_bg1 = 0 BEGIN
+    LAF cbm_ewp_build_flag_actions INT_VAR do_clear_bg1 = 1 RET cbme_bg1_only = actions END
+    ACTION_IF NOT (~%cbme_bg1_only%~ STRING_EQUAL ~~) BEGIN
+      OUTER_SPRINT cbme_bd1000_baf ~%cbme_bd1000_baf%IF
+  Global("CBM_EWP_SOD_NEW","BD1000",0)
+  Global("NEWGAME_SOD","GLOBAL",1)
+  GlobalLT("Chapter","GLOBAL",13)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_EWP_SOD_NEW","BD1000",1)
+%cbme_bg1_only%    Continue()
+END
+~
+    END
+  END
+  ACTION_IF cbme_r_fix_camps BEGIN
+    OUTER_SPRINT cbme_bd1000_baf ~%cbme_bd1000_baf%IF
+  Global("CBM_OldCamp","MYAREA",0)
+  GlobalGT("Chapter","GLOBAL",8)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_OldCamp","MYAREA",1)
+    Continue()
+END
+IF
+  Global("CBM_ChestLock9","BD1000",0)
+  Global("Chapter","GLOBAL",9)
+  GlobalGT("BD_PlayerChest","GLOBAL",1)
+THEN
+  RESPONSE #100
+    MoveContainerContents("BD1000*PlayerChest00","BD7100*PlayerChest00")
+    ContainerEnable("PlayerChest00",FALSE)
+    SetGlobal("CBM_ChestLock9","BD1000",1)
+    Continue()
+END
+IF
+  Global("CBM_ChestLock10","BD1000",0)
+  GlobalGT("Chapter","GLOBAL",9)
+  GlobalGT("BD_PlayerChest","GLOBAL",2)
+THEN
+  RESPONSE #100
+    MoveContainerContents("BD1000*PlayerChest00","BD3000*PlayerChest00")
+    ContainerEnable("PlayerChest00",FALSE)
+    SetGlobal("CBM_ChestLock10","BD1000",1)
+    Continue()
+END
+IF
+  Global("CBM_CleanPit","BD1000",0)
+  GlobalGT("Chapter","GLOBAL",8)
+  OR(4)
+    GlobalGT("BD_Baeloth_Intro","GLOBAL",5)
+    GlobalGT("Chapter","GLOBAL",13)
+    StateCheck("Baeloth",STATE_REALLY_DEAD)
+    InPartyAllowDead("Baeloth")
+THEN
+  RESPONSE #100
+    ActionOverride("BDBANNO",DestroySelf())
+    ActionOverride("BDTCRWD1",DestroySelf())
+    ActionOverride("BDTCRWD2",DestroySelf())
+    ActionOverride("BDTCRWD3",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD4",DestroySelf())
+    ActionOverride("BDTCRWD5",DestroySelf())
+    ActionOverride("BDTCRWD5",DestroySelf())
+    ActionOverride("BDTCRWD5",DestroySelf())
+    ActionOverride("BDTCRWD5",DestroySelf())
+    ActionOverride("BDTCRWD6",DestroySelf())
+    ActionOverride("BDTCRWD6",DestroySelf())
+    ActionOverride("BDTCRWD6",DestroySelf())
+    ActionOverride("Brown Chicken Fight",DestroySelf())
+    ActionOverride("White Chicken Fight",DestroySelf())
+    RemoveMapNote([2000.540],267515)
+    SetGlobal("CBM_CleanPit","BD1000",1)
+    Continue()
+END
+~
+    // First preserve un-triggered Baeloth pit in BD1000.BCS K#CleanArea / K#CleanAreaNote.
+    ACTION_IF FILE_EXISTS_IN_GAME ~BD1000.BCS~ BEGIN
+      COPY_EXISTING ~BD1000.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
+          DECOMPILE_BCS_TO_BAF
+          SET cbme_p = INDEX_BUFFER (~^IF~)
+          WHILE cbme_p >= 0 BEGIN
+            SET cbme_e = INDEX_BUFFER (~^END~ cbme_p)
+            PATCH_IF cbme_e < cbme_p BEGIN SET cbme_e = BUFFER_LENGTH - 3 END
+            SET cbme_l = cbme_e + 3 - cbme_p
+            READ_ASCII cbme_p cbme_b (cbme_l)
+            INNER_PATCH_SAVE cbme_b2 ~%cbme_b%~ BEGIN
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~Global("K#CleanAreaNote","BD1000",0)~) >= 0 BEGIN
+                REPLACE_TEXTUALLY ~^[ %TAB%]*OR(3)[ %TAB%]*%MNL%?%LNL%[ %TAB%]*GlobalGT("Chapter","GLOBAL",8)[ %TAB%]*%MNL%?%LNL%~ ~  OR(4)%LNL%    GlobalGT("BD_Baeloth_Intro","GLOBAL",5)%LNL%    GlobalGT("Chapter","GLOBAL",13)%LNL%~
+              END
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~Global("K#CleanArea","BD1000",0)~) >= 0 BEGIN
+                REPLACE_TEXTUALLY ~^[ %TAB%]*ActionOverride("\(BDBANNO\|BDTCRWD[1-6]\|Brown Chicken Fight\|White Chicken Fight\)",DestroySelf())[ %TAB%]*%MNL%?%LNL%~ ~~
+              END
+            END
+            PATCH_IF NOT (~%cbme_b%~ STRING_EQUAL ~%cbme_b2%~) BEGIN
+              DELETE_BYTES cbme_p cbme_l
+              SET cbme_nl = STRING_LENGTH ~%cbme_b2%~
+              INSERT_BYTES cbme_p cbme_nl
+              WRITE_ASCIIE cbme_p ~%cbme_b2%~ (cbme_nl)
+              SET cbme_e = cbme_p + cbme_nl - 3
+            END
+            SET cbme_p = INDEX_BUFFER (~^IF~ (cbme_e + 3))
+          END
+          COMPILE_BAF_TO_BCS
+        END ELSE BEGIN PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~ END
+      BUT_ONLY
+    END
+  END
+  ACTION_IF NOT (~%cbme_bd1000_baf%~ STRING_EQUAL ~~) BEGIN
+    LAF cbm_ewp_prepend_baf
+      STR_VAR script = ~BD1000~ baf_text = EVAL ~%cbme_bd1000_baf%~
+              strip_markers = ~CBM_EWP_SOD CBM_EWP_SOD_NEW CBM_OldCamp CBM_ChestLock9 CBM_ChestLock10 CBM_CleanPit~
+    END
+  END
+
+  ACTION_IF cbme_r_fix_camps BEGIN
+    // D. BDPARTY.BCS: guard ff_camp checks so abandoned camps never trap dismissed NPCs.
+    ACTION_IF FILE_EXISTS_IN_GAME ~BDPARTY.BCS~ BEGIN
+      COPY_EXISTING ~BDPARTY.BCS~ ~override~
+        LPF cbmo_bcs_writable RET cbmo_bcs_ok END
+        PATCH_IF cbmo_bcs_ok BEGIN
+          DECOMPILE_BCS_TO_BAF
+          // Normalize first so repeated runs produce identical bytes.
+          REPLACE_TEXTUALLY CASE_INSENSITIVE ~OR(3)\([ %TAB%]*%MNL%?%LNL%[ %TAB%]*\)Global("CBM_OldCamp","MYAREA",1)[ %TAB%]*%MNL%?%LNL%[ %TAB%]*~ ~OR(2)\1~
+          REPLACE_TEXTUALLY CASE_INSENSITIVE ~^[ %TAB%]*Global("CBM_OldCamp","MYAREA",0)[ %TAB%]*%MNL%?%LNL%~ ~~
+          SET cbme_p = INDEX_BUFFER (~^IF~)
+          WHILE cbme_p >= 0 BEGIN
+            SET cbme_e = INDEX_BUFFER (~^END~ cbme_p)
+            PATCH_IF cbme_e < cbme_p BEGIN SET cbme_e = BUFFER_LENGTH - 3 END
+            SET cbme_l = cbme_e + 3 - cbme_p
+            READ_ASCII cbme_p cbme_b (cbme_l)
+            INNER_PATCH_SAVE cbme_b2 ~%cbme_b%~ BEGIN
+              PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~"ff_camp"~) >= 0 BEGIN
+                PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~Global("bd_npc_camp","locals",1)~) >= 0 BEGIN
+                  REPLACE_TEXTUALLY ~OR(2)[ %TAB%]*%MNL%?%LNL%[ %TAB%]*!Range("ff_camp"~ ~OR(3)%LNL%    Global("CBM_OldCamp","MYAREA",1)%LNL%    !Range("ff_camp"~
+                END ELSE PATCH_IF INDEX_BUFFER (CASE_INSENSITIVE ~GlobalLT("bd_npc_camp","locals",2)~) >= 0 BEGIN
+                  REPLACE_TEXTUALLY ~TriggerOverride("ff_camp"~ ~Global("CBM_OldCamp","MYAREA",0)%LNL%  TriggerOverride("ff_camp"~
+                END
+              END
+            END
+            PATCH_IF NOT (~%cbme_b%~ STRING_EQUAL ~%cbme_b2%~) BEGIN
+              DELETE_BYTES cbme_p cbme_l
+              SET cbme_nl = STRING_LENGTH ~%cbme_b2%~
+              INSERT_BYTES cbme_p cbme_nl
+              WRITE_ASCIIE cbme_p ~%cbme_b2%~ (cbme_nl)
+              SET cbme_e = cbme_p + cbme_nl - 3
+            END
+            SET cbme_p = INDEX_BUFFER (~^IF~ (cbme_e + 3))
+          END
+          COMPILE_BAF_TO_BCS
+        END ELSE BEGIN PATCH_PRINT ~EET world progression: %SOURCE_FILE% is too damaged to write.~ END
+      BUT_ONLY
+    END ELSE BEGIN PRINT ~EET world progression: BDPARTY.BCS is absent; skipping.~ END
+
+    // E. BD7100.BCS: OldCamp + PlayerChest00 forwarding/lock + Otilia & camp note cleanup at Ch.10.
+    OUTER_SPRINT cbme_bd7100_baf ~IF
+  Global("CBM_OldCamp","MYAREA",0)
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    SetGlobal("CBM_OldCamp","MYAREA",1)
+    Continue()
+END
+IF
+  Global("CBM_ChestLock10","BD7100",0)
+  GlobalGT("Chapter","GLOBAL",9)
+  GlobalGT("BD_PlayerChest","GLOBAL",2)
+THEN
+  RESPONSE #100
+    MoveContainerContents("BD7100*PlayerChest00","BD3000*PlayerChest00")
+    ContainerEnable("PlayerChest00",FALSE)
+    SetGlobal("CBM_ChestLock10","BD7100",1)
+    Continue()
+END
+IF
+  Global("CBM_CleanOtil","BD7100",0)
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    ActionOverride("BDOTILDA",DestroySelf())
+    RemoveMapNote([418.3320],267517)
+    RemoveMapNote([745.3247],267517)
+    SetGlobal("CBM_CleanOtil","BD7100",1)
+    Continue()
+END
+~
+    LAF cbm_ewp_prepend_baf
+      STR_VAR script = ~BD7100~ baf_text = EVAL ~%cbme_bd7100_baf%~
+              strip_markers = ~CBM_OldCamp CBM_ChestLock10 CBM_CleanOtil~
+    END
+
+    // F. BDFIST.BCS: shared Ch.8-9 Flaming Fist sentry cleanup after their camp moves on.
+    OUTER_SPRINT cbme_bdfist_baf ~IF
+  !Global("CBM_EWP_FistOff","GLOBAL",1)
+  AreaCheck("BD1000")
+  GlobalGT("Chapter","GLOBAL",8)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+IF
+  !Global("CBM_EWP_FistOff","GLOBAL",1)
+  OR(2)
+    AreaCheck("BD7100")
+    AreaCheck("BD2000")
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    DestroySelf()
+END
+~
+    LAF cbm_ewp_prepend_baf
+      STR_VAR script = ~BDFIST~ baf_text = EVAL ~%cbme_bdfist_baf%~
+              strip_markers = ~CBM_EWP_FistOff~
+    END
+
+    // G. BD2100.BCS: prevent duplicate Jegg when Bridgefort was defended and Ch.10 moves Jegg to BD3000.
+    OUTER_SPRINT cbme_bd2100_baf ~IF
+  Global("CBM_CleanJegg","BD2100",0)
+  GlobalGT("Chapter","GLOBAL",9)
+  Global("bd_bridgefort_saved","GLOBAL",1)
+THEN
+  RESPONSE #100
+    ActionOverride("BDJEGG",DestroySelf())
+    SetGlobal("CBM_CleanJegg","BD2100",1)
+    Continue()
+END
+~
+    LAF cbm_ewp_prepend_baf
+      STR_VAR script = ~BD2100~ baf_text = EVAL ~%cbme_bd2100_baf%~
+              strip_markers = ~CBM_CleanJegg~
+    END
+
+    // H. BD2000.BCS: remove Dugraff, generic FF mercenaries, battle audio & battle notes at Ch.10.
+    OUTER_SPRINT cbme_bd2000_baf ~IF
+  Global("CBM_CleanCh10","BD2000",0)
+  GlobalGT("Chapter","GLOBAL",9)
+THEN
+  RESPONSE #100
+    ActionOverride("BDDUGRAF",DestroySelf())
+    ActionOverride("BDFFMERC",DestroySelf())
+    SoundActivate("AM_Distant_Battle",FALSE)
+    SoundActivate("AMB_Distant_Seige",FALSE)
+    SoundActivate("SS_Magic_Battle",FALSE)
+    SoundActivate("SS_Rumble_Battle",FALSE)
+    RemoveMapNote([1384.1862],268887)
+    RemoveMapNote([2434.2616],267526)
+    SetGlobal("CBM_CleanCh10","BD2000",1)
+    Continue()
+END
+IF
+  Global("CBM_CleanSkie","BD2000",0)
+  GlobalGT("Chapter","GLOBAL",9)
+  !InPartyAllowDead("skie")
+  !InPartyAllowDead("BDSKIE")
+THEN
+  RESPONSE #100
+    ActionOverride("BDSKIE",DestroySelf())
+    ActionOverride("SKIE",DestroySelf())
+    SetGlobal("CBM_CleanSkie","BD2000",1)
+    Continue()
+END
+~
+    LAF cbm_ewp_prepend_baf
+      STR_VAR script = ~BD2000~ baf_text = EVAL ~%cbme_bd2000_baf%~
+              strip_markers = ~CBM_CleanCh10 CBM_CleanSkie~
+    END
+  END
+END
+
+// --------------------------------------------------------------------------
+// Public component entrypoint
+// --------------------------------------------------------------------------
+
+DEFINE_ACTION_FUNCTION cbm_eet_world_progression_install BEGIN
+  LAF cbm_ewp_load_policy
+    RET_ARRAY rules eras sever_src sever_dst sever_rule add_list add_src add_dst add_dir add_entry add_time add_def add_rule
+  END
+  LAF cbm_ewp_process_wmp
+    RET cbme_wmp_present = wmp_present cbme_wmp_patched = wmp_patched
+    RET_ARRAY area_static area_era adj_src adj_dst
+  END
+  ACTION_IF cbme_wmp_patched BEGIN
+    LAF cbm_ewp_patch_campaign_scripts END
+  END
+  LAF cbm_ewp_patch_sod_progression END
+  PRINT @6804
+END

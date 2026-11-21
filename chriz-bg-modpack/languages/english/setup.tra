@@ -133,6 +133,10 @@ I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leav
 @6708 = ~[Marek Boomerang Dagger] %cbm_mbd_cre%.CRE is not in this game and was skipped.~
 @6709 = ~[Marek Boomerang Dagger] Marek drops the dagger when he dies, at his first meeting with the party (MAREK) or at the Blushing Mermaid (MAREK1); only one of them can die. Saves from before that Marek appears get the dagger too.~
 
+@680 = ~EET: story-consistent campaign boundaries and SoD backtracking fixes~
+@6801 = ~Story-consistent EET campaign boundaries require Enhanced Edition Trilogy (EET).~
+@6804 = ~EET world progression and SoD backtracking rules installed.~
+
 @650 = ~Campaign XP caps - keep excess XP for later (BG1/SoD; experimental)~
 @651 = ~Campaign XP caps - also cap SoA until ToB (requires 650; experimental)~
 @652 = ~Campaign XP caps - chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (requires 650; experimental)~

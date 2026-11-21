@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.16~
+VERSION ~v0.2.0-alpha.17~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
@@ -553,6 +553,13 @@ BEGIN @670 DESIGNATED 670 GROUP @1600 LABEL ~cbm_marek_boomerang_dagger~
   REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~MAREK.CRE~ OR FILE_EXISTS_IN_GAME ~MAREK1.CRE~) @6701
   REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~DAGG11.ITM~ @6702
 INCLUDE ~chriz-bg-modpack/lib/cbm_marek_boomerang_dagger.tpa~
+
+// Keep EET's unified install and four campaign start points while restoring
+// story-consistent campaign boundaries and fixing SoD camp backtracking.
+BEGIN @680 DESIGNATED 680 GROUP @1600 LABEL ~cbm_eet_world_progression~
+  REQUIRE_PREDICATE GAME_IS ~eet~ @6801
+INCLUDE ~chriz-bg-modpack/lib/cbm_eet_world_progression.tpa~
+LAF cbm_eet_world_progression_install END
 
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~

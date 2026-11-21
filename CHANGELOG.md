@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.2.0-alpha.17 - 2026-11-22
+
+Alpha.17 adds **680: EET story-consistent campaign boundaries and SoD
+backtracking fixes**. EET keeps one unified install, continuous campaigns, and
+all four starting campaigns (BG1, SoD, SoA, ToB), while eliminating
+cross-campaign backtracking exploits and fixing SoD chapter 8–10 backtracking
+side effects:
+
+- **680 (`cbm_eet_world_progression`)**: Table-driven via
+  `chriz-bg-modpack/data/eet_world_progression.2da` (with optional override in
+  `override/EET_WORLD_PROGRESSION.2DA`). Severs `AR0020 <-> BG4800` and
+  `BD1000 <-> BG0900`, clears out-of-era worldmap flags (`15`) on all four
+  campaign start/transition scripts while restoring active campaign static
+  flags (`BD7200`, `BD3000`, `BD4000`, Athkatla, `AR4000`), keeps Watcher's Keep
+  (`AR3000`) open in both SoA and ToB without allowing ToB-to-SoA travel, keeps
+  Dragonspear closed from SoA/ToB, preserves Ch. 8–10 road backtracking past the
+  Coalition Camp siege until entering `BD4000`, guards `BDPARTY.BCS` `ff_camp`
+  checks against abandoned camps, forwards/locks abandoned `PlayerChest00`
+  chests, protects un-triggered Baeloth pit scenes in `BD1000`, and cleans up
+  leftover camp guards, `BDOTILDA`, `BD2000` siege audio/actors, and duplicate
+  `BDJEGG` in defended `BD2100`. See the
+  [EET world progression guide](docs/eet-world-progression.md).
+
 ## v0.2.0-alpha.16 - 2026-11-08
 
 Alpha.16 makes every component write the result it decided, whatever the game
