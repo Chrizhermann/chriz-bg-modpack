@@ -333,7 +333,7 @@ END
 def compile_bafs(weidu: Path, root: Path, bafs: dict[str, str]) -> None:
     staging = root / "_baf_stage"
     staging.mkdir(exist_ok=True)
-    args = [str(weidu), "--noautoupdate", "--no-exit-pause", "--log", str(staging / "weidu.log"), "--game", str(root), "--use-lang", "en_us"]
+    args = [str(weidu), "--no-auto-tp2", "--noautoupdate", "--no-exit-pause", "--log", str(staging / "weidu.log"), "--game", str(root), "--use-lang", "en_us"]
     for name, text in bafs.items():
         p = staging / f"{name.lower()}.baf"
         p.write_text(text, encoding="utf-8")
@@ -349,7 +349,7 @@ def decompile_bcs(weidu: Path, root: Path, name: str) -> str:
     with tempfile.TemporaryDirectory(prefix="cbm-ewp-dec-") as td:
         bcs = root / "override" / f"{name.lower()}.bcs"
         res = subprocess.run(
-            [str(weidu), "--noautoupdate", "--no-exit-pause", "--log", str(Path(td) / "weidu.log"), "--game", str(root), "--use-lang", "en_us", str(bcs), "--out", td],
+            [str(weidu), "--no-auto-tp2", "--noautoupdate", "--no-exit-pause", "--log", str(Path(td) / "weidu.log"), "--game", str(root), "--use-lang", "en_us", str(bcs), "--out", td],
             cwd=root, capture_output=True, text=True, timeout=60, check=False,
         )
         out = res.stdout + res.stderr
@@ -468,6 +468,7 @@ def run_680(weidu: Path, game_dir: Path, *, uninstall: bool = False) -> subproce
     return subprocess.run(
         [
             str(weidu),
+            "--no-auto-tp2",
             SETUP_NAME,
             "--game",
             str(game_dir),
