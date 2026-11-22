@@ -1,8 +1,9 @@
 # Chriz BG Modpack (`chriz-bg-modpack`)
 
 First-party companion builds, EET world and companion continuity, reader-level scroll
-casting, scaling utility XP, Challenge Mode XP banking, and engine/quest fixes for
-**Baldur's Gate II: Enhanced Edition** and **EET**.
+casting, scaling utility XP, Challenge Mode XP banking, Fast Traps (`690`), and
+engine/quest fixes for **Baldur's Gate II: Enhanced Edition** and **EET** (with
+standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`** support for Fast Traps).
 
 **Release:** `v0.2.0-alpha.17`
 
@@ -37,11 +38,35 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
 - **Challenge Mode XP banking & chapter caps (`650`–`652`, experimental, Windows EEex):**
   Preserves excess XP past BG1/SoD caps (`650`) with optional SoA (`651`) or
   chapter-by-chapter (`652`) progression caps.
+- **Fast Traps (`690`, Windows EEex):** Speeds up active Find Traps checks on doors,
+  containers, and floor traps to once per second (~15 AI ticks instead of ~6.67s)
+  across **BG:EE, SoD, BG2:EE, EET, and IWD:EE `2.7.3.0`** without touching Detect
+  Illusion or secret doors.
 - **Targeted quest & engine fixes:** Fixes Dorn's BG1 ambush camera lock/crash
   (`135`), repairs Ascension/SCS/EE Fixpack Slayer & Shapechange links (`440`/`450`),
   guards party AI Defensive Stance (`460`), restores legacy UI strings on EE 2.7
   (`640`), adds the Degrodel Helm fight choice (`660`), and equips Marek with a
   Boomerang Dagger +2 (`670`).
+
+### Fast Traps (Component 690)
+
+In vanilla Infinity Engine games, active **Find Traps** checks run only once every
+100 AI ticks (~6.67 seconds at normal speed), so moving thieves often walk onto traps
+or miss locked chests before the next sweep runs. Component **`690`** (`cbm_fast_traps`)
+integrates *Chriz Fast Traps* directly into the modpack:
+
+- **What changes:** Active **Find Traps** sweeps doors, containers, and floor trap
+  regions every **15 AI ticks** (~1 second at normal game speed, scaling naturally with
+  speed/haste).
+- **What stays native:** **Detect Illusion** on creatures, passive secret-door searches,
+  skill requirements, detection range, line of sight, incapacitation checks, and **Time
+  Stop** keep their exact native engine timing and rules.
+- **Supported games & EEex:** Targets Windows x64 `2.7.3.0` builds of **BG:EE
+  (including SoD)**, **BG2:EE**, **EET**, and **IWD:EE** with **EEex `v1.2.0` or
+  `v1.3.1`** (LuaJIT is optional). Overwrites any earlier standalone `override/M_CZFT.lua`
+  cleanly; if EEex is missing at install time, it logs an inactive notice without
+  failing the setup, and checks executable guard bytes at startup before touching memory.
+- **Details:** See the [Fast Traps Guide](docs/fast-traps.md).
 
 ### Simple Install
 
@@ -55,7 +80,8 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
      **before `EET_end`** (with `236` directly after Artisan NPC `5102` and before
      Spell Revisions `60`).
    - Install post-`EET_end` rules and fixes (`430`, `610`/`611`, `620`, `630`,
-     `650`–`652`, `680`) **after `EET_end`**.
+     `650`–`652`, `680`, `690`) **after `EET_end`** (on standalone **BG:EE**, **SoD**,
+     or **IWD:EE**, install `690` anytime after EEex).
 5. Launch through `InfinityLoader.exe` when using EEex components.
 
 ---
@@ -126,15 +152,16 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
 | `660` | `cbm_degrodel_fight` | Helm of Balduran hand-in: give Degrodel the helm or keep it and fight him (BG:EE/EET) |
 | `670` | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1 (BG:EE/EET) |
 | `680` | `cbm_eet_world_progression` | Story-consistent EET campaign boundaries across BG1/SoD/SoA/ToB and SoD backtracking fixes (EET) |
+| `690` | `cbm_fast_traps` | Fast Traps: check doors, containers, and floor traps every ~1s instead of ~6.7s (BG:EE/SoD/BG2:EE/EET/IWD:EE + Windows EEex) |
 
 > Component IDs `191` and `600` are reserved and are not exposed by this release.
 
 ### Key Load Order & We Overwrite Policy
 
 - **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
-- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, and `680` (after worldmap, quest, and SoD mods).
+- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), and `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE).
 - **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
-- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 

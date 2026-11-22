@@ -1,0 +1,10 @@
+// Component 690: Fast Traps (Windows x64 EE 2.7.3.0 + EEex).
+// Speeds up active Find Traps checks to 15 AI ticks (~1 second) while keeping
+// Detect Illusion, passive secret-door searches, and native rules untouched.
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/fast-traps/m_czft.lua~ ~override/M_CZFT.lua~
+  PRINT @6902
+END ELSE BEGIN
+  PRINT @6901
+END

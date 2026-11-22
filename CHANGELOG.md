@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- **690 (`cbm_fast_traps`)**: Integrated *Chriz Fast Traps* into the modpack.
+  While **Find Traps** is active, checks doors, containers, and floor traps
+  every **15 AI ticks** (~1 second at normal game speed) instead of every 100
+  (~6.67 seconds) across Windows x64 **BG:EE (including SoD), BG2:EE, EET, and
+  IWD:EE `2.7.3.0`** with EEex (`v1.2.0` / `v1.3.1`), while leaving Detect
+  Illusion, passive secret-door searches, skill thresholds, range, visibility,
+  incapacitation, and Time Stop native. Installs `override/M_CZFT.lua` when
+  `override/M___EEex.lua` is present (and logs a clean inactive notice without
+  aborting if EEex is missing). See the
+  [Fast Traps guide](docs/fast-traps.md).
+
 ## v0.2.0-alpha.17 - 2026-11-22
 
 Alpha.17 adds **680: EET story-consistent campaign boundaries and SoD
