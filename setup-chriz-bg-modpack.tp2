@@ -500,6 +500,12 @@ BEGIN @460 DESIGNATED 460 GROUP @1400 LABEL ~cbm_defensive_stance_ai~
 INCLUDE ~chriz-bg-modpack/lib/cbm_defensive_stance_ai.tpa~
 LAF cbm_defensive_stance_ai_install END
 
+// Restrict the +/-15% specialist scroll-learning modifier to the 8 specialist
+// mage schools (RAW); bards (Blade/Jester/Skald), Wild Mages, and kitted
+// dual-class mages learn at their unmodified INT chance (0%).
+BEGIN @470 DESIGNATED 470 GROUP @1400 LABEL ~cbm_scroll_learn_fix~
+INCLUDE ~chriz-bg-modpack/lib/cbm_scroll_learn_fix.tpa~
+
 // =====================================================================
 // Gameplay tweaks (600-699)
 // =====================================================================

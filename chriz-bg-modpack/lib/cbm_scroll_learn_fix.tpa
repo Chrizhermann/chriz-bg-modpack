@@ -1,0 +1,11 @@
+// Component 470: Fix spell scroll learning specialist penalty (Windows x64 EE 2.7.3.0 + EEex).
+// Applies the +15%/-15% specialist modifier only to Mage-class characters carrying
+// one of the 8 wizard specialist school bits (0x0040..0x2000). Bards (Blade, Jester,
+// Skald, mod kits), Wild Mages, Trueclass Mages, and kitted dual-class Mages get 0%.
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/scroll-learn/m_czsl.lua~ ~override/M_CZSL.lua~
+  PRINT @4702
+END ELSE BEGIN
+  PRINT @4701
+END

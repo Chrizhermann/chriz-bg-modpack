@@ -54,6 +54,8 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 "chriz-bg-modpack/lib/cbm_eet_world_progression.tpa",
                 "chriz-bg-modpack/lib/cbm_fast_traps.tpa",
                 "chriz-bg-modpack/fast-traps/m_czft.lua",
+                "chriz-bg-modpack/lib/cbm_scroll_learn_fix.tpa",
+                "chriz-bg-modpack/scroll-learn/m_czsl.lua",
                 "chriz-bg-modpack/data/eet_world_progression.2da",
                 "chriz-bg-modpack/lib/cbm_join_xp_blocks.tpa",
                 "chriz-bg-modpack/baf/cbm_eet_join_xp_soa.baf",
@@ -63,6 +65,7 @@ class ReleaseArchiveAcceptanceTests(unittest.TestCase):
                 "docs/eet-join-xp.md",
                 "docs/eet-world-progression.md",
                 "docs/fast-traps.md",
+                "docs/scroll-learn-fix.md",
                 "docs/imoen-spellhold-xp.md",
                 "docs/yeslick-alaghor.md",
             ):

@@ -54,6 +54,7 @@ PUBLIC_COMPONENTS = {
     440,
     450,
     460,
+    470,
     610,
     611,
     620,
@@ -130,6 +131,7 @@ class PublicSurfaceTests(unittest.TestCase):
             670: "cbm_marek_boomerang_dagger",
             680: "cbm_eet_world_progression",
             690: "cbm_fast_traps",
+            470: "cbm_scroll_learn_fix",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -178,6 +180,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/yeslick-alaghor.md",
             "docs/evandra.md",
             "docs/fast-traps.md",
+            "docs/scroll-learn-fix.md",
             "docs/eet-join-xp.md",
         ):
             self.assertIn(required, files)
@@ -222,6 +225,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/eet-join-xp.md",
                 "docs/eet-world-progression.md",
                 "docs/legacy-ui-strings.md",
+                "docs/scroll-learn-fix.md",
                 "docs/releases/v0.2.0-alpha.17.md",
                 "docs/we-overwrite.md",
             },

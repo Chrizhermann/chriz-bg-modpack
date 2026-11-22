@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **470 (`cbm_scroll_learn_fix`)**: Restricts the ±15% specialist
+  spell-learning modifier (`opcode 147`, `CGameEffectLearnSpell::ApplyEffect`)
+  to Mage-class characters carrying one of the 8 wizard specialist school
+  masks (`0x0040`–`0x2000`), fixing the vanilla EE engine bug where kitted
+  Bards (**Blade**, **Jester**, **Skald**, mod kits), **Wild Mages**, and
+  kitted dual-class Mages suffered −15% on all regular scrolls, and custom
+  specialists (such as Red Wizard) failed to match their own school(s). Supports
+  Windows x64 **BG:EE (including SoD), BG2:EE, EET, and IWD:EE `2.7.3.0`**
+  with EEex (`v1.2.0` / `v1.3.1`). Installs `override/M_CZSL.lua` when
+  `override/M___EEex.lua` is present (and logs a clean inactive notice without
+  aborting if EEex is missing). See the
+  [Spell Learning RAW Fix guide](docs/scroll-learn-fix.md).
 - **690 (`cbm_fast_traps`)**: Integrated *Chriz Fast Traps* into the modpack.
   While **Find Traps** is active, checks doors, containers, and floor traps
   every **15 AI ticks** (~1 second at normal game speed) instead of every 100

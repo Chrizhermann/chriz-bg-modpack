@@ -3,7 +3,8 @@
 First-party companion builds, EET world and companion continuity, reader-level scroll
 casting, scaling utility XP, Challenge Mode XP banking, Fast Traps (`690`), and
 engine/quest fixes for **Baldur's Gate II: Enhanced Edition** and **EET** (with
-standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`** support for Fast Traps).
+standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`** support for `470` and
+Fast Traps `690`).
 
 **Release:** `v0.2.0-alpha.17`
 
@@ -42,6 +43,11 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
   containers, and floor traps to once per second (~15 AI ticks instead of ~6.67s)
   across **BG:EE, SoD, BG2:EE, EET, and IWD:EE `2.7.3.0`** without touching Detect
   Illusion or secret doors.
+- **RAW spell-scroll learning (`470`, Windows EEex):** Restricts the ±15%
+  specialist scroll-learning modifier to the 8 specialist mage schools across
+  **BG:EE, SoD, BG2:EE, EET, and IWD:EE `2.7.3.0`**, removing the unintended
+  −15% engine penalty from kitted Bards (Blade, Jester, Skald), Wild Mages, and
+  kitted dual-class Mages while fixing custom specialist school matching.
 - **Targeted quest & engine fixes:** Fixes Dorn's BG1 ambush camera lock/crash
   (`135`), repairs Ascension/SCS/EE Fixpack Slayer & Shapechange links (`440`/`450`),
   guards party AI Defensive Stance (`460`), restores legacy UI strings on EE 2.7
@@ -79,9 +85,9 @@ integrates *Chriz Fast Traps* directly into the modpack:
    - Install companion kits, conversions, stats, and continuity (`188`, `199`)
      **before `EET_end`** (with `236` directly after Artisan NPC `5102` and before
      Spell Revisions `60`).
-   - Install post-`EET_end` rules and fixes (`430`, `610`/`611`, `620`, `630`,
+   - Install post-`EET_end` rules and fixes (`430`, `470`, `610`/`611`, `620`, `630`,
      `650`–`652`, `680`, `690`) **after `EET_end`** (on standalone **BG:EE**, **SoD**,
-     or **IWD:EE**, install `690` anytime after EEex).
+     or **IWD:EE**, install `470` and `690` anytime after EEex).
 5. Launch through `InfinityLoader.exe` when using EEex components.
 
 ---
@@ -136,6 +142,7 @@ integrates *Chriz Fast Traps* directly into the modpack:
 | `440` | `cbm_ascension_slayer_eefp_fix` | Repair Ascension / EE Fixpack upgraded-Slayer subspell links |
 | `450` | `cbm_scs_shapechange_eefp_fix` | Repair the SCS / EE Fixpack arcane shapechange interaction |
 | `460` | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is enabled |
+| `470` | `cbm_scroll_learn_fix` | Restrict ±15% specialist scroll-learning modifier to specialist mages (BG:EE/SoD/BG2:EE/EET/IWD:EE + Windows EEex) |
 
 ### XP, UI, Items, Campaign Progression & Quests (`6xx`)
 
@@ -159,9 +166,9 @@ integrates *Chriz Fast Traps* directly into the modpack:
 ### Key Load Order & We Overwrite Policy
 
 - **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
-- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), and `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE).
+- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), and `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE).
 - **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
-- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 
