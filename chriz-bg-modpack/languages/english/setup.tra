@@ -68,6 +68,9 @@
 @440 = ~Ascension Improved Slayer Transformation: repair EE Fixpack subspell links~
 @450 = ~SCS shapechange spells: repair the EE Fixpack interaction~
 @460 = ~Party AI Defensive Stance: obey the "Use special abilities" option~
+@470 = ~Spell Learning: restrict +/-15% specialist modifier to specialist mages (BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex)~
+@4701 = ~[CBM scroll learn fix] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 470.~
+@4702 = ~[CBM scroll learn fix] Installed override/M_CZSL.lua (RAW specialist-only scroll-learning modifier on Windows x64 EE 2.7.3.0 + EEex).~
 
 @610 = ~Progressive XP for locks, traps and spell scribing (multiclass/dual-class aware; requires EEex)~
 @1610 = ~Progressive utility XP requires BG2:EE or EET.~

@@ -30,6 +30,7 @@ tests/test_imoen_spellhold_xp.py
 tests/test_imoen_spellhold_xp_installer.py
 tests/test_legacy_ui_strings.py
 tests/test_recruitment_xp.py
+tests/test_scroll_learn_fix.py
 tests/test_scroll_runtime_resources.py
 tests/test_story_utility_xp.py
 tests/test_unidentified_items.py
