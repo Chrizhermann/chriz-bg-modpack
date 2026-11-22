@@ -23,13 +23,13 @@ In the vanilla Infinity Engine (`2.6.6.0` and `2.7.3.0`), `CGameEffectLearnSpell
 - **No `GAME_IS` gate:** Installs cleanly in standalone **BG:EE**, **SoD**, **BG2:EE**, **EET**, and **IWD:EE**.
 - **Installer behavior (`We Overwrite`):** If `override/M___EEex.lua` is present, component `470` copies `chriz-bg-modpack/scroll-learn/m_czsl.lua` to `override/M_CZSL.lua`, overwriting any prior file cleanly. If `override/M___EEex.lua` is absent, WeiDU logs one notice and skips writing `M_CZSL.lua` without failing the install; install EEex first and reinstall component `470` to activate it.
 
-Checked from local executables (PE signatures, guard bytes, and offline x64 CPU emulation on 2026-11-23):
+Checked from local executables (PE signatures, guard bytes, offline x64 CPU emulation, and quiet-lab runs on 2026-11-23):
 
 | Game `2.7.3.0` | EEex v1.2.0 / v1.3.1 | In-game evidence |
 |---|---|---|
-| **BG:EE / SoD** | Signatures + guard bytes verified | Pending live lab pass |
-| **BG2:EE / EET** | Signatures + guard bytes verified | Pending live lab pass |
-| **IWD:EE** | Signatures + guard bytes verified | Pending live lab pass |
+| **BG:EE / SoD** | Signatures + guard bytes verified (offline PE + CPU emulation) | Pending live lab pass |
+| **BG2:EE / EET** | Signatures + guard bytes verified (`EEex v1.3.1`) | Live quiet-lab verified (`2026-11-23`, `BuffBot-Dev` BG2:EE, 6×80 `op147` `SPWI112` trials: Blade/Wild Mage/Kensai→Mage `80/80` at INT 23, Invoker `80/80` at INT 18, Abjurer `70/80` at INT 23, Blade control `72/80` at INT 18) |
+| **IWD:EE** | Signatures + guard bytes verified (`EEex v1.3.1`) | Live quiet-lab verified (`2026-11-23`, `IWD-MP-Lab-20261122` IWD:EE, 6×80 `op147` `SPWI112` trials: Blade/Wild Mage/Kensai→Mage `80/80` at INT 23, Invoker `80/80` at INT 18, Abjurer `74/80` at INT 23, Blade control `68/80` at INT 18) |
 
 ---
 
