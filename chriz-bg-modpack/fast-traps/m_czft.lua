@@ -182,8 +182,7 @@ local function install()
     if not ok then
         for _,p in ipairs(plans) do
             for i=1,#p.original do
-                local b=p.original:byte(i)
-                EEex_Write8(p.at+i-1,b>=128 and b-256 or b)
+                EEex_WriteU8(p.at+i-1,p.original:byte(i))
             end
         end
     end
@@ -200,7 +199,7 @@ if not EEex_Active then
 end
 for _,name in ipairs({
     'EEex_GameState_AddInitializedListener','EEex_GetImageBase','EEex_ReadLString',
-    'EEex_Read8','EEex_Read16','EEex_Read32','EEex_Write8','EEex_JITNear','EEex_JITAt',
+    'EEex_Read8','EEex_Read16','EEex_Read32','EEex_WriteU8','EEex_JITNear','EEex_JITAt',
     'EEex_DisableCodeProtection','EEex_EnableCodeProtection',
 }) do
     if type(_G[name])~='function' then

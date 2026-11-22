@@ -31,9 +31,9 @@ function EEex_ReadLString(a,n)
     end
     return value:match('^[^%z]*') -- actual native binding truncates at NUL
 end
-function EEex_Write8(a,v)
+function EEex_WriteU8(a,v)
     bounds(a,1)
-    assert(v>=-128 and v<=127,'Write8 requires a signed byte')
+    assert(v>=0 and v<=255,'WriteU8 requires an unsigned byte')
     Meter.writes=Meter.writes+1
     edits[a]=v%256
 end
@@ -49,7 +49,7 @@ function EEex_JITNear(t)
     return at
 end
 local function write_unsigned(a,v)
-    EEex_Write8(a,v>=128 and v-256 or v)
+    EEex_WriteU8(a,v)
 end
 function EEex_JITAt(a,t)
     Meter.jit=Meter.jit+1
