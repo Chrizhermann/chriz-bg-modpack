@@ -1,308 +1,146 @@
-# chriz-bg-modpack
+# Chriz BG Modpack (`chriz-bg-modpack`)
 
-`chriz-bg-modpack` is a small WeiDU collection of first-party NPC, spell, and
-compatibility fixes for Baldur's Gate II: Enhanced Edition and EET.
+First-party companion builds, EET world and companion continuity, reader-level scroll
+casting, scaling utility XP, Challenge Mode XP banking, and engine/quest fixes for
+**Baldur's Gate II: Enhanced Edition** and **EET**.
 
 **Release:** `v0.2.0-alpha.17`
 
-Alpha.17 adds **680** (`cbm_eet_world_progression`), restoring story-consistent
-EET campaign boundaries across BG1, SoD, SoA, and ToB while fixing SoD
-chapter 8–10 backtracking bugs. See the
-[release notes](docs/releases/v0.2.0-alpha.17.md) and
-[EET world progression guide](docs/eet-world-progression.md).
+**[Chriz Easy BG](https://bg.chrizfader.org/collection)** · **[Rules & Balance](https://bg.chrizfader.org/rules)** · **[Latest Release](https://github.com/Chrizhermann/chriz-bg-modpack/releases/latest)**
 
-Alpha.16 makes every component write its decided result regardless of hand edits
-or another mod's version of the same game files. Genuine game, prerequisite and
-runtime requirements remain; an absent optional target leaves out only that
-target. See the [v0.2.0-alpha.16 release notes](docs/releases/v0.2.0-alpha.16.md)
-and the [overwrite scope](docs/we-overwrite.md).
+---
 
-Alpha.14 kept reader-level scroll casting (**430**) on for the whole session;
-alpha.11 to alpha.13 turned it off after a load, a new game, an NPC joining or
-an opened container. With campaign XP banking (**650**), a character's script
-variables no longer went missing from saves after the bank could not take one of
-that character's XP changes. Both write technical information to the loader log
-only, except one 430 message box in a case never seen in a game. See the
-[scroll casting guide](docs/scroll-casting.md).
+## Part 1 — For Players
 
-Alpha.13 made campaign XP banking (**650/651**) work on EEex 1.2.0 and v1.3.1.
-It added optional chapter-by-chapter XP caps (**652**, experimental), EET's
-join-XP ladder for NPCs that lack it (**239**), a fix for the crash after
-Dorn's ambush (**135**) and a party-AI Defensive Stance fix (**460**). See the
-[banking guide](docs/campaign-xp-banking.md).
+*Chriz BG Modpack* collects first-party companion options, campaign-boundary fixes,
+and gameplay/quality-of-life rules for **BG2:EE** and **EET**. It is one of the core
+building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
 
-Alpha.12 added independently selectable **230**-**234**, optional base
-ability-score improvements for Rasaad, Dorn, Eldoth, Garrick and Quayle.
-**196/197** patch the Faldorn and Dynaheir variants present instead of
-requiring every one. See the [companion stat guide](docs/companion-stats.md).
+### Highlights
 
-Alpha.11 added independent Fade/Evandra first-recruitment XP catch-up
-(**237/238**) and replaced **430** with reader-level scroll casting. It also
-ships optional, experimental campaign XP banking (**650/651**), off by default.
-See [recruitment XP](docs/recruitment-xp.md), [scroll casting](docs/scroll-casting.md)
-and the [banking guide](docs/campaign-xp-banking.md).
+- **Companion builds, kits & stats:** Optional kit conversions (`190`–`198`,
+  `220`–`225`), ability score tweaks (`230`–`234`), Baeloth/Edwin spellbook adjustments
+  (`235`/`236`), Fade/Evandra SoA catch-up XP (`237`/`238`), EET join-XP ladder (`239`),
+  and whole-actor BG1→SoA continuity for Xan and Yeslick (`199`).
+- **Story-consistent EET world boundaries (`680`):** Closes cross-campaign
+  backtracking exploits (`AR0020 ↔ BG4800`, `BD1000 ↔ BG0900`, `AR3000 → SoA` from
+  ToB), keeps Watcher's Keep reachable in both SoA and ToB, cleans out-of-era worldmap
+  icons at campaign starts, and fixes SoD chapter 8–10 camp backtracking.
+- **Reader-level scroll casting (`430`, Windows EEex):** Scroll spells scale with
+  the reader's caster level (or half the highest active class level when non-casters
+  cast through Use Any Item).
+- **Unidentified item artwork (`630`, Windows EEex):** Shows generic neutral icons
+  until items are identified so drop art doesn't spoil loot.
+- **Scaling utility XP (`610` / `611`, EEex):** Scales lockpicking, trap disarming,
+  and spell-learning XP with progression (`611` uses BG1-sized rewards through SoD and
+  native BG2 rates from SoA onward).
+- **Challenge Mode XP banking & chapter caps (`650`–`652`, experimental, Windows EEex):**
+  Preserves excess XP past BG1/SoD caps (`650`) with optional SoA (`651`) or
+  chapter-by-chapter (`652`) progression caps.
+- **Targeted quest & engine fixes:** Fixes Dorn's BG1 ambush camera lock/crash
+  (`135`), repairs Ascension/SCS/EE Fixpack Slayer & Shapechange links (`440`/`450`),
+  guards party AI Defensive Stance (`460`), restores legacy UI strings on EE 2.7
+  (`640`), adds the Degrodel Helm fight choice (`660`), and equips Marek with a
+  Boomerang Dagger +2 (`670`).
 
-Alpha.10 added independently selectable **235**, Baeloth's spells-known
-rebalance for the planned Challenge Mode, and **236**, Edwin's Red Wizard slot
-and amulet correction. Baeloth is not an unconditional collection default.
-All alpha.8 components remain available. See the
-[Baeloth guide](docs/baeloth-spellbook.md) and
-[Edwin guide](docs/edwin-redwizard.md).
-
-The installer and focused behavior are tested against generated fixtures and synthetic BG2EE/EET-shaped games. Component 610 also passed
-startup, load/save and scribing checks in a disposable EET install. A complete
-live-game acceptance pass across all components has not yet been performed.
-
-## Installation
+### Simple Install
 
 1. Close the game and any mod manager using the game directory.
-2. Extract the release ZIP into the game directory that contains `chitin.key`.
-3. Run `setup-chriz-bg-modpack.exe` and select only components whose upstream
-   content is installed.
+2. Download the [latest release ZIP](https://github.com/Chrizhermann/chriz-bg-modpack/releases/latest)
+   and extract it into your game folder containing `chitin.key`.
+3. Run `setup-chriz-bg-modpack.exe` and select only components whose upstream content
+   is installed.
+4. Respect the EET split order:
+   - Install companion kits, conversions, stats, and continuity (`188`, `199`)
+     **before `EET_end`** (with `236` directly after Artisan NPC `5102` and before
+     Spell Revisions `60`).
+   - Install post-`EET_end` rules and fixes (`430`, `610`/`611`, `620`, `630`,
+     `650`–`652`, `680`) **after `EET_end`**.
+5. Launch through `InfinityLoader.exe` when using EEex components.
 
-Install this mod after the NPC, kit, spell, and tactical mods whose resources it
-patches. Selected components write their owned fields and behavior. Missing
-optional targets and unreadable files are logged individually; present targets
-still receive the selected changes. Native memory signatures remain required.
-Exception: **236** belongs immediately after Artisan NPC 5102 and before Spell
-Revisions' final NPC spellbook pass (60). **235** belongs after all such passes.
+---
 
-## Public alpha components
+## Part 2 — Component Table, Load Order & License
+
+### Companion Builds, Continuity & Stats (`1xx`–`2xx`)
 
 | ID | Label | Purpose |
 |---:|---|---|
-| 110 | `cbm_fade_ft_fix` | Complete Fade's Fighter/Thief conversion, authored build, and amulet usability |
-| 130 | `cbm_kivan_quest_fix` | Protect the BG1NPC Kivan sea-elf dialogue phase from SCS combat AI |
-| 135 | `cbm_dorn_ambush_camera_fix` | Stop Dorn's BG1 ambush from leaving the camera locked on Senjak, which crashes the game after leaving the area; BG:EE or EET |
-| 140 | `cbm_mazzy_prof_fix` | Replace Mazzy's proficiencies with Short Bow 4 / Short Sword 3-4 |
-| 160 | `cbm_skie_skill_fix` | After a Swashbuckler conversion, move unusable Move Silently points to Open Locks |
-| 170 | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
-| 188 | `cbm_yeslick_alaghor` | Extend selected YeslickNPC Alaghor to the BG1 recruit family; before 199/EET_end |
-| 189 | `cbm_safana_inventory` | Clear Safana's imported gear once at her SoA arrival |
-| 190 | `cbm_sarah_archer` | Optionally convert Sarah to Archer with the selected proficiency build |
-| 192 | `cbm_viconia_cleric_thief` | Permanently convert Viconia to a true-class Cleric/Thief |
-| 193 | `cbm_sharteel_wizard_slayer` | Give joinable Shar-Teel variants the Wizard Slayer kit |
-| 194 | `cbm_kagain_dwarven_defender` | Give Kagain the Dwarven Defender kit |
-| 195 | `cbm_skie_swashbuckler` | Atomically give Skie the Swashbuckler kit and compatible thief skills |
-| 196 | `cbm_faldorn_avenger` | Give Faldorn the Avenger kit |
-| 197 | `cbm_dynaheir_haste` | Add the effective installed Haste spell to Dynaheir once |
-| 198 | `cbm_kivan_archer` | Give joinable Kivan variants the Archer kit |
-| 199 | `cbm_companion_continuity` | Preserve returning Xan and Yeslick actors; new game, before EET_end |
-| 220 | `cbm_yoshimo_swashbuckler` | Give Yoshimo the installed Swashbuckler kit |
-| 221 | `cbm_hexxat_shadowdancer` | Give Hexxat the installed Shadowdancer kit |
-| 222 | `cbm_hexxat_fighter_thief` | Convert Hexxat to Fighter/Thief with rebuilt stats and preserved vampire powers |
-| 223 | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
-| 224 | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
-| 225 | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait, independently of class |
-| 230 | `cbm_rasaad_stats` | Rasaad: base Dexterity 17 and Constitution 16 |
-| 231 | `cbm_dorn_stats` | Dorn: base Constitution 16 |
-| 232 | `cbm_eldoth_stats` | Eldoth: base Strength 17, Intelligence 14, Wisdom 9 and Constitution 16 |
-| 233 | `cbm_garrick_stats` | Garrick: base Dexterity 17 and Intelligence 15 |
-| 234 | `cbm_quayle_stats` | Quayle: base Constitution 15 |
-| 235 | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth; planned Challenge Mode option |
-| 236 | `cbm_edwin_redwizard` | Correct selected Red Wizard Edwin's slots and removable amulets; after Artisan NPC 5102, before SR 60 |
-| 237 | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25m |
-| 238 | `cbm_evandra_recruitment_xp` | Evandra: one-time SoA recruitment XP catch-up, capped at 1.25m |
-| 239 | `cbm_eet_join_xp` | EET: write EET's SoA join-XP ladder and ToB raise for joinable NPCs |
-| 400 | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
-| 410 | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
-| 430 | `cbm_uai_caster_level` | Reader-level scroll casting; half the highest active class level when no applicable caster level exists; Windows EEex |
-| 440 | `cbm_ascension_slayer_eefp_fix` | Repair Ascension/EE Fixpack upgraded-Slayer subspell links |
-| 450 | `cbm_scs_shapechange_eefp_fix` | Repair the SCS/EE Fixpack arcane shapechange interaction |
-| 460 | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is on |
-| 610 | `cbm_utility_xp` | Scale lock, trap and spell-learning XP with party progression; requires EEex |
-| 611 | `cbm_story_utility_xp` | BG1-sized utility XP through SoD, native BG2 rewards from SoA; requires EET and EEex; alternative to 610 |
-| 620 | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP; requires EEex |
-| 630 | `cbm_unidentified_appearance` | Generic artwork until identification; requires Windows EEex |
-| 640 | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI/Dragonspear UI on EE 2.7 |
-| 650 (experimental) | `cbm_campaign_xp` | Retain excess XP beyond BG1/SoD caps; unbanked duals use vanilla XP accounting; EET and Windows EEex |
-| 651 (experimental) | `cbm_campaign_xp_soa` | Also cap SoA at 2,950,000; requires 650; alternative to 652 |
-| 652 (experimental) | `cbm_campaign_xp_chapters` | Chapter-by-chapter XP caps across BG1, SoD, SoA, and ToB (plus Baeloth Chapter 5+ spawn gate); requires 650; alternative to 651 |
-| 660 | `cbm_degrodel_fight` | At the Helm of Balduran hand-in, give Degrodel the helm or keep it and fight him; EET or BG:EE |
-| 670 | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1; BG:EE or EET |
-| 680 | `cbm_eet_world_progression` | Story-consistent EET campaign boundaries across BG1/SoD/SoA/ToB and SoD backtracking fixes; EET |
+| `110` | `cbm_fade_ft_fix` | Complete Fade's Fighter/Thief conversion, authored build, and amulet usability |
+| `130` | `cbm_kivan_quest_fix` | Protect the BG1NPC Kivan sea-elf dialogue phase from SCS combat AI |
+| `135` | `cbm_dorn_ambush_camera_fix` | Stop Dorn's BG1 ambush from locking the camera on Senjak and crashing on area exit (BG:EE/EET) |
+| `140` | `cbm_mazzy_prof_fix` | Replace Mazzy's proficiencies with Short Bow 4 / Short Sword 3–4 |
+| `160` | `cbm_skie_skill_fix` | Move unusable Move Silently points to Open Locks after a Swashbuckler conversion |
+| `170` | `cbm_xan_ek_fix` | Extend Artisan's Eldritch Knight conversion to EET Xan resources |
+| `188` | `cbm_yeslick_alaghor` | Extend selected YeslickNPC Alaghor to the BG1 recruit family (before `199`/`EET_end`) |
+| `189` | `cbm_safana_inventory` | Clear Safana's imported gear once at her SoA arrival |
+| `190` | `cbm_sarah_archer` | Optionally convert Sarah to Archer with the selected proficiency build |
+| `192` | `cbm_viconia_cleric_thief` | Permanently convert Viconia to a true-class Cleric/Thief |
+| `193` | `cbm_sharteel_wizard_slayer` | Give joinable Shar-Teel variants the Wizard Slayer kit |
+| `194` | `cbm_kagain_dwarven_defender` | Give Kagain the Dwarven Defender kit |
+| `195` | `cbm_skie_swashbuckler` | Atomically give Skie the Swashbuckler kit and compatible thief skills |
+| `196` | `cbm_faldorn_avenger` | Give Faldorn the Avenger kit |
+| `197` | `cbm_dynaheir_haste` | Add the effective installed Haste spell to Dynaheir once |
+| `198` | `cbm_kivan_archer` | Give joinable Kivan variants the Archer kit |
+| `199` | `cbm_companion_continuity` | Preserve returning Xan and Yeslick actors across campaigns (new game, before `EET_end`) |
+| `220` | `cbm_yoshimo_swashbuckler` | Give Yoshimo the installed Swashbuckler kit |
+| `221` | `cbm_hexxat_shadowdancer` | Give Hexxat the installed Shadowdancer kit (choose at most one of `221`–`223`) |
+| `222` | `cbm_hexxat_fighter_thief` | Convert Hexxat to Fighter/Thief with rebuilt stats and preserved vampire powers |
+| `223` | `cbm_hexxat_assassin` | Give Hexxat the installed Assassin kit |
+| `224` | `cbm_evandra_sorcerer` | Give Evandra a Sorcerer starting spellbook, preserving level-up choices |
+| `225` | `cbm_evandra_portrait` | Use Chriz's custom Evandra portrait independently of class |
+| `230` | `cbm_rasaad_stats` | Rasaad: base Dexterity 17 and Constitution 16 |
+| `231` | `cbm_dorn_stats` | Dorn: base Constitution 16 |
+| `232` | `cbm_eldoth_stats` | Eldoth: base Strength 17, Intelligence 14, Wisdom 9, Constitution 16 |
+| `233` | `cbm_garrick_stats` | Garrick: base Dexterity 17 and Intelligence 15 |
+| `234` | `cbm_quayle_stats` | Quayle: base Constitution 15 |
+| `235` | `cbm_baeloth_spellbook` | Major rebalance: standard Sorcerer spells known for Baeloth (Challenge Mode option) |
+| `236` | `cbm_edwin_redwizard` | Fix Red Wizard Edwin's slots and removable amulets (after Artisan `5102`, before SR `60`) |
+| `237` | `cbm_fade_recruitment_xp` | Fade: one-time SoA recruitment XP catch-up, capped at 1.25M |
+| `238` | `cbm_evandra_recruitment_xp` | Evandra: one-time SoA recruitment XP catch-up, capped at 1.25M |
+| `239` | `cbm_eet_join_xp` | EET: write EET's SoA join-XP ladder and ToB raise for joinable NPCs |
 
-Components `191` and `600` are reserved or deferred and are not exposed
-by this release. There are no placeholder components that fail at install time.
+### Spell, AI & Scroll Rules (`4xx`)
 
-## Collection choices
+| ID | Label | Purpose |
+|---:|---|---|
+| `400` | `cbm_branwen_hammer_fix` | Correct Spiritual Hammer's Create Weapon quantity |
+| `410` | `cbm_yeslick_keldorn_dispel_fix` | Make Yeslick/Keldorn dispels hostile-only and correctly scaled |
+| `430` | `cbm_uai_caster_level` | Reader-level scroll casting (half highest active class level via UAI; Windows EEex) |
+| `440` | `cbm_ascension_slayer_eefp_fix` | Repair Ascension / EE Fixpack upgraded-Slayer subspell links |
+| `450` | `cbm_scs_shapechange_eefp_fix` | Repair the SCS / EE Fixpack arcane shapechange interaction |
+| `460` | `cbm_defensive_stance_ai` | Party AI uses Defensive Stance only while "Use special abilities" is enabled |
 
-**650/651/652** are optional, experimental and off by default. This release makes
-no collection selection changes.
+### XP, UI, Items, Campaign Progression & Quests (`6xx`)
 
-**611** is the approved next CEBG default; **610** retains its smooth
-protagonist-XP curve as a mutually exclusive alternative. **224/225** are
-independent defaults when Evandra's core is selected. **630** requires excluding
-Randomiser's cursed-appearance option; normal loot randomization can remain.
-**640** follows LeUI/Dragonspear UI and precedes Bubb's Spell Menu; it does not
-depend on Hidden Gameplay Options.
-**235** stays optional as a planned Challenge choice. **236** is the recommended
-correction when Artisan's Red Wizard conversion (5102) is selected; it also
-writes the installed Red Wizard kit when explicitly selected, including templates
-that an earlier conversion missed.
-Collection recipe integration is delivered separately from this mod release.
-See [Evandra](docs/evandra.md), [story utility XP](docs/story-utility-xp.md) and
-[unidentified artwork](docs/unidentified-items.md), plus
-[legacy UI compatibility](docs/legacy-ui-strings.md), for scope and ordering.
+| ID | Label | Purpose |
+|---:|---|---|
+| `610` | `cbm_utility_xp` | Scale lock, trap, and spell-learning XP with party progression (EEex; excludes `611`) |
+| `611` | `cbm_story_utility_xp` | BG1-sized utility XP through SoD, native BG2 rewards from SoA (EET + EEex; excludes `610`) |
+| `620` | `cbm_imoen_spellhold_xp` | Set Spellhold Imoen to party-average XP, capped at 3M mage XP (EEex) |
+| `630` | `cbm_unidentified_appearance` | Generic artwork until identification (Windows EEex) |
+| `640` | `cbm_legacy_ui_strings` | Restore the legacy text helper for LeUI / Dragonspear UI on EE 2.7 |
+| `650` | `cbm_campaign_xp` | Experimental: retain excess XP beyond BG1/SoD caps (EET + Windows EEex) |
+| `651` | `cbm_campaign_xp_soa` | Experimental: also cap SoA at 2,950,000 XP (requires `650`; excludes `652`) |
+| `652` | `cbm_campaign_xp_chapters` | Experimental: chapter-by-chapter XP caps across BG1/SoD/SoA/ToB + Baeloth Ch.5+ gate (requires `650`; excludes `651`) |
+| `660` | `cbm_degrodel_fight` | Helm of Balduran hand-in: give Degrodel the helm or keep it and fight him (BG:EE/EET) |
+| `670` | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1 (BG:EE/EET) |
+| `680` | `cbm_eet_world_progression` | Story-consistent EET campaign boundaries across BG1/SoD/SoA/ToB and SoD backtracking fixes (EET) |
 
-A normal Sarah installation remains unchanged unless component `190` is selected.
-The collection recommends `190` by default, but it is optional. It converts both
-Sarah ToB v8 CREs to Archer and assigns exactly:
+> Component IDs `191` and `600` are reserved and are not exposed by this release.
 
-- Long Bow: 3
-- Long Sword: 1
-- Short Bow: 2
-- Two-Handed Weapon Style: 0
-- Two-Weapon Style: 2
+### Key Load Order & We Overwrite Policy
 
-The owner's custom Sarah portrait preference is maintained separately in private
-collection configuration. Component `191` is reserved for that preference, but no
-Sarah portrait component or Sarah portrait artwork is included in this public
-repository or release. Evandra's separate component 225 uses owner-created,
-ChatGPT-generated artwork approved for inclusion on September 29, 2026.
-
-The [NPC build guide](docs/npc-builds.md) lists the complete Mazzy, Xan and Fade
-allocations. Those presets replace incoming proficiencies, including earlier
-mod allocations; they do not require particular starting HP or proficiency values.
-
-The collection also recommends components `192` through `198` where their NPCs and
-prerequisites are present. For Garrick's kit, the collection selects Artisan's
-Kitpack component `99001` directly; his optional stat improvement (`233`) is separate.
-
-Yoshimo's Swashbuckler option (`220`) is independent. Hexxat's options
-(`221`-`223`) are mutually exclusive; skip the group to retain her current class.
-They work with vanilla kits or installed Artisan revisions and leave Clara
-unchanged. See the [companion class guide](docs/companion-classes.md) for
-installation, progression and compatibility details.
-
-The stat options (`230`-`234`) are independent of each other and of any class or
-kit choice. Each sets only its listed base scores in every known recruitment and
-later-campaign variant that exists; missing variants are named in the installer
-log without warnings. They do not change stored HP or repair saved actors. See
-the [companion stat guide](docs/companion-stats.md).
-
-## Dependencies and ordering
-
-- Install **188** only with YeslickNPC **1**, after its kit/progression providers
-  and before **199/EET_end** and Yeslick's first creation. Omit it for vanilla
-  companions. Selecting 188 applies the installed Alaghor kit regardless of
-  earlier Yeslick component choices. The [Yeslick guide](docs/yeslick-alaghor.md)
-  explains native priest-level grants and the separate existing-save/410 proposals.
-
-- Install all selected companion/content/class/kit changes before **199**, then
-  run **EET_end**. Start a new BG1 campaign. Split this modpack into separate
-  installation runs so the late patches do not move continuity past finalization.
-  See the [continuity guide](docs/companion-continuity.md) for supported routes,
-  imported equipment policy and the legacy stat-transfer conflict.
-- Install **189** after Safana in Amn and the final AR0311.BCS writer, before her
-  first SoA arrival. It clears imported inventory and equipment once; later BG2
-  equipment remains. No EEex is required for 189 or 199.
-- Install **620** after EEex, EET_end and every IMOEN2.BCS replacer. Install before
-  first Spellhold recruitment for the intended test. It is independent of 610;
-  see the [Imoen XP guide](docs/imoen-spellhold-xp.md).
-
-- Install Fade before `110`, the BG1NPC Kivan quest before `130`, and Sarah ToB v8
-  before `190`. Install `130` after SCS and `190` after other kit/proficiency edits.
-- `160`, `170`, and `192`-`198` target EET resources. Component `160` transfers
-  Move Silently to Open Locks; `195` also writes the Swashbuckler kit.
-- `196` and `197` patch each Faldorn or Dynaheir variant that exists and log
-  missing variants individually.
-- `170` needs the installed Eldritch Knight kit; component-log versions do not
-  decide whether its owned build is applied.
-- `192` reconstructs the priest memorization groups from the indexed records,
-  preserving spent casts and unrelated spell types.
-
-- When the collection uses Artisan's Kitpack with `194`, install Artisan's corrected
-  `v1.3.1` release before this component so the Dwarven Defender Shield Bash grant is
-  present.
-- Install `400`, `410`, and `430` after the spell/item systems they refine. In
-  particular, `430` belongs after all spell/item providers and any scroll-caster-level
-  changes.
-- Install `220`-`223` after kit overhauls and companion/progression-table changes,
-  using them instead of another class conversion or respec component for the
-  same companion. Their CRE changes require a save from before the companion
-  first appeared in the world. They do not require EEex or Artisan's Kitpack.
-- Install `230`-`234` after companion content, EET's BG1 import and other
-  stat/class/kit conversions, before the companion first appears. A later mod
-  that rewrites these scores or replaces the creature file overrides the choice.
-- Install `440` after Ascension's Improved Slayer Transformation and EE Fixpack.
-  Install `450` after the SCS shapechange-spell tweak and EE Fixpack.
-- Install `460` after EET and any mod that adds or changes party AI scripts.
-  It patches the scripts `PARTYAI.2DA` names; existing saves use the fix after
-  a restart.
-- Install `610` after EEex, EET finalization and other utility-XP tweaks, then
-  launch through `InfinityLoader.exe`. It uses the protagonist's total XP plus
-  the retired class's level threshold for dual classes, giving all thieves and
-  spell learners the same progression scale. Scribing reaches native BG2 rates
-  at 440,000 progression XP, including low-level spells learned by new companions.
-  Rewards round up to 10 XP by default. Edit `override/CBMUXPC.lua` and restart
-  to adjust the anchors, multipliers or rounding. See the included
-  [utility-XP guide](docs/utility-xp.md) for values, class coverage and limits.
-- Install `239` after the NPC mods, EET's NPC transitions and NPC customization
-  mods. See the [EET join-XP guide](docs/eet-join-xp.md).
-- Install `650` after EET finalization and the companion XP options you use
-  (`237`/`238`/`239`/`620`), then `651` or `652`, and restart through
-  `InfinityLoader.exe`. See the [banking guide](docs/campaign-xp-banking.md).
-- Install `135` after mods that change Dorn's ambush cutscene `CUTDN1B.BCS` or
-  Senjak's script, such as EET. See the [Dorn ambush guide](docs/dorn-ambush-camera.md).
-- Install `660` after mods that change Degrodel's dialog. It finds the helm hand-in
-  by what it does and writes the owned hand-in/refusal states, including when
-  the previous hand-in is absent. See the [Degrodel guide](docs/degrodel-fight.md).
-- Install `670` after mods that change Marek's creature files `MAREK.CRE` and
-  `MAREK1.CRE`, such as SCS, and before mods that read creature items, such as
-  the Item Randomiser. See the [Marek guide](docs/marek-boomerang-dagger.md).
-- Install `680` after `EET_end` and any worldmap, quest, or SoD mods so every
-  worldmap area is classified and gated cleanly. See the
-  [EET world progression guide](docs/eet-world-progression.md).
-
-## Testing status
-
-The additions 188, 189, 199 and 620 have focused synthetic installer/runtime coverage.
-Their native transitions, recruitment, level-ups and save/reload remain pending
-in the combined fresh EET playtest. See the component guides for exact limits.
-
-The automated suite covers decided outputs on changed inputs, isolation of
-unreadable files, repeat application, public installers, and resource restoration
-on generated fixtures and synthetic games. That evidence does not substitute for
-live play: recruitment, combat and spell visuals remain to be accepted across the
-collection. Component 610's native smoke test covered startup, load/save and one
-paused-inventory scribing award; the maintainer confirmed the throwaway test
-worked. The final rounding adjustment is covered by automated tests. Live
-lock/trap awards and the full class matrix were not exhaustively tested.
-
-Components `220`-`223` passed focused synthetic BG2EE/EET installation tests and
-eight additional disposable installs against copied pristine/modded resources,
-with byte-exact uninstall restoration. Source review found no need for a broad
-live test matrix. A short Fighter/Thief recruitment/level-up/save-reload check
-remains optional additional confidence and has not been performed here.
-
-Components `230`-`234` have focused synthetic and extracted-archive installer
-coverage, plus disposable installs of creature files copied from two EET games,
-with byte-exact uninstall restoration. Recruitment, level-up and save/reload in
-a running game have not been tested.
-
-Component `460` has focused synthetic and extracted-archive installer coverage
-with byte-exact uninstall restoration. The same gate, developed first in the
-Artisan's Kitpack fork, stopped the protagonist's BG1 Defensive Stance with the
-option off in a disposable EET lab; the lab set the option's variable instead of
-clicking the record-screen checkbox.
-
-Components `650`-`652`, `239`, `135` and `460` were checked in game for alpha.13
-on a disposable copy of the collection's Recommended install (2.7.3.0, EEex
-v1.3.1). The component guides list what was covered and what is still open.
-
-For alpha.14, `430` and `650` were checked in game on disposable lab installs
-(2.7.3.0, EEex v1.3.1), also together from the release candidate's package. The
-component guides list what was covered and what is still open.
-
-Component `670` has focused synthetic and extracted-archive installer coverage,
-plus installs on copies of original BG:EE files and of an EET game's files with
-SCS and BG1 NPC Project, with byte-exact uninstall restoration. The Marek fights
-and the drop have not been tested in a game.
+- **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
+- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, and `680` (after worldmap, quest, and SoD mods).
+- **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 
-First-party source and documentation are licensed under the MIT License; see
-`LICENSE`. The bundled WeiDU executable remains under the GNU GPL v2 and ships with
-its own `WEIDU-COPYING.txt`. See `THIRD_PARTY_NOTICES.md` for source and checksum
-details.
+First-party source and documentation are licensed under the **[MIT License](LICENSE)** (`Copyright (c) 2026 Christopher Hermann`).
+
+Third-party notices are documented in **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**, covering:
+- The bundled **WeiDU 249.00** executable (GNU GPL v2, shipped as `WEIDU-COPYING.txt`).
+- PyInstaller / Python license notices for `CBMSPolicy.exe`.
+- Evandra portrait provenance (`chriz-bg-modpack/portraits/evandra/rh#eval.bmp`) and stock game fallback artwork/data.
