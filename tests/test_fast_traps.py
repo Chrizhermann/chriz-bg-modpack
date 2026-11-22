@@ -302,7 +302,7 @@ def test_install_reinstall_uninstall_across_engines(tmp_path, game_type, existin
     game = SyntheticGame(tmp_path / "game", game=game_type, eeex=True)
     if existing is not None:
         (game.override / "m_czft.lua").write_bytes(existing)
-    (game.root / "InfinityLoader.ini").write_text("[General]\nLuaPatchMode=INTERNAL\n", encoding="ascii")
+    (game.root / "infinityloader.ini").write_text("[General]\nLuaPatchMode=INTERNAL\n", encoding="ascii")
     before = _game_files(game.root)
     payload = SOURCE.read_bytes()
 
