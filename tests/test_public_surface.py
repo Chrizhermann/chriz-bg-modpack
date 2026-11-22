@@ -64,6 +64,7 @@ PUBLIC_COMPONENTS = {
     652,
     660,
     670,
+    680,
 }
 
 
@@ -126,6 +127,7 @@ class PublicSurfaceTests(unittest.TestCase):
             652: "cbm_campaign_xp_chapters",
             660: "cbm_degrodel_fight",
             670: "cbm_marek_boomerang_dagger",
+            680: "cbm_eet_world_progression",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -214,8 +216,9 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
+                "docs/eet-world-progression.md",
                 "docs/legacy-ui-strings.md",
-                "docs/releases/v0.2.0-alpha.16.md",
+                "docs/releases/v0.2.0-alpha.17.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},

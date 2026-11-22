@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 import zipfile
@@ -23,6 +24,7 @@ from tests import test_degrodel_fight as degrodel
 from tests import test_dorn_ambush_camera_fix as dorn
 from tests import test_edwin_redwizard as edwin
 from tests import test_eet_join_xp as join_xp
+from tests import test_eet_world_progression as world_prog
 from tests import test_marek_boomerang_dagger as marek
 from tests import test_recruitment_xp as recruitment
 from tests import test_release_archive as release_archive
@@ -489,6 +491,32 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                     self.assertIn('StartCutScene("OMBA01")', patched)
                 self.assert_restored(game, 652, base)
                 self.assert_restored(game, 650, before)
+
+    def test_680_extracted_eet_world_progression_installs_and_restores(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-world-prog-") as raw:
+            weidu = world_prog.WEIDU
+            if weidu is None:
+                with zipfile.ZipFile(self.archive) as archive:
+                    tmp_exe = Path(raw) / "_tmp_weidu.exe"
+                    tmp_exe.write_bytes(archive.read("setup-chriz-bg-modpack.exe"))
+                    weidu = tmp_exe
+            game_dir = world_prog.stage_eet_game(Path(raw), Path(weidu), game="eet")
+            game = types.SimpleNamespace(root=game_dir)
+            game.active_log = lambda: utility.SyntheticGame.active_log(game)
+            before = self.extract_release(game)
+            self.run_component(game, 680)
+            after = self.game_files(game.root)
+            self.assertNotIn("CHITIN.KEY", {k for k in after if after[k] != before.get(k)})
+            bundled = Path(release_archive.ReleaseArchiveAcceptanceTests.installer(self, game.root))
+            areas, edges = world_prog.parse_wmp((game.root / "override" / "worldmap.wmp").read_bytes())
+            by_name = {name: flags for name, flags, _, _ in areas}
+            self.assertEqual(0, by_name["BD7000"])
+            self.assertNotIn("BG4800", {dst for dst, _, _, _ in edges[("AR0020", 0)]})
+            self.assertIn(("BD3000", "ExitN", 5, 1), edges[("BD7400", 2)])
+            self.assertIn('RemoveWorldmapAreaFlag("BG4800",15)', world_prog.decompile_bcs(bundled, game.root, "AR0602"))
+            self.assertIn("RemoveAreaFlag(NOTRAVEL)", world_prog.decompile_bcs(bundled, game.root, "BD3000"))
+            self.assertIn('ActionOverride("BDJEGG",DestroySelf())', world_prog.decompile_bcs(bundled, game.root, "BD2100"))
+            self.assert_restored(game, 680, before)
 
 if __name__ == "__main__":
     unittest.main()
