@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## v0.2.0-alpha.18 - 2026-11-23
+
+Alpha.18 adds **470: Rules-as-Written spell scroll learning fix** and integrates **690: Fast Traps** across Windows x64 `2.7.3.0` EE engines with EEex (`BG:EE/SoD`, `BG2:EE`, `EET`, `IWD:EE`):
 
 - **470 (`cbm_scroll_learn_fix`)**: Restricts the ±15% specialist
   spell-learning modifier (`opcode 147`, `CGameEffectLearnSpell::ApplyEffect`)

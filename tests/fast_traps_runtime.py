@@ -32,7 +32,7 @@ BUILDS = {
 }
 APIS = (
     "EEex_GameState_AddInitializedListener", "EEex_GetImageBase", "EEex_ReadLString",
-    "EEex_Read8", "EEex_Read16", "EEex_Read32", "EEex_Write8",
+    "EEex_Read8", "EEex_Read16", "EEex_Read32", "EEex_WriteU8",
     "EEex_JITNear", "EEex_JITAt", "EEex_DisableCodeProtection", "EEex_EnableCodeProtection",
 )
 SITES = (0xF2C, 0x11C, 0x58)  # main scheduling gate must be last

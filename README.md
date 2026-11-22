@@ -6,7 +6,7 @@ engine/quest fixes for **Baldur's Gate II: Enhanced Edition** and **EET** (with
 standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`** support for `470` and
 Fast Traps `690`).
 
-**Release:** `v0.2.0-alpha.17`
+**Release:** `v0.2.0-alpha.18`
 
 **[Chriz Easy BG](https://bg.chrizfader.org/collection)** · **[Rules & Balance](https://bg.chrizfader.org/rules)** · **[Latest Release](https://github.com/Chrizhermann/chriz-bg-modpack/releases/latest)**
 
@@ -168,7 +168,7 @@ integrates *Chriz Fast Traps* directly into the modpack:
 - **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
 - **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), and `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE).
 - **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
-- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.17 Release Notes](docs/releases/v0.2.0-alpha.17.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.18 Release Notes](docs/releases/v0.2.0-alpha.18.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 
