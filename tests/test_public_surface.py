@@ -65,6 +65,7 @@ PUBLIC_COMPONENTS = {
     660,
     670,
     680,
+    690,
 }
 
 
@@ -128,6 +129,7 @@ class PublicSurfaceTests(unittest.TestCase):
             660: "cbm_degrodel_fight",
             670: "cbm_marek_boomerang_dagger",
             680: "cbm_eet_world_progression",
+            690: "cbm_fast_traps",
         }
         for component, label in expected.items():
             with self.subTest(component=component):
@@ -175,6 +177,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/npc-builds.md",
             "docs/yeslick-alaghor.md",
             "docs/evandra.md",
+            "docs/fast-traps.md",
             "docs/eet-join-xp.md",
         ):
             self.assertIn(required, files)
@@ -213,6 +216,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/npc-builds.md",
                 "docs/yeslick-alaghor.md",
                 "docs/evandra.md",
+                "docs/fast-traps.md",
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",

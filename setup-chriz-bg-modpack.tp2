@@ -561,6 +561,11 @@ BEGIN @680 DESIGNATED 680 GROUP @1600 LABEL ~cbm_eet_world_progression~
 INCLUDE ~chriz-bg-modpack/lib/cbm_eet_world_progression.tpa~
 LAF cbm_eet_world_progression_install END
 
+// Active Find Traps modal checks about once per second (15 AI ticks instead of
+// 100) across BG:EE, SoD, BG2:EE, EET, and IWD:EE 2.7.3.0 on Windows x64 EEex.
+BEGIN @690 DESIGNATED 690 GROUP @1600 LABEL ~cbm_fast_traps~
+INCLUDE ~chriz-bg-modpack/lib/cbm_fast_traps.tpa~
+
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~
   REQUIRE_PREDICATE GAME_IS ~eet~ @1650
