@@ -226,7 +226,7 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/eet-world-progression.md",
                 "docs/legacy-ui-strings.md",
                 "docs/scroll-learn-fix.md",
-                "docs/releases/v0.2.0-alpha.17.md",
+                "docs/releases/v0.2.0-alpha.18.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},
