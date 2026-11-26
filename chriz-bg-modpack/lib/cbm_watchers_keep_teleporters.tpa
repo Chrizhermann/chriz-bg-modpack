@@ -1,0 +1,6 @@
+// Component 697: Watcher's Keep: instant teleporters (BG2:EE and EET).
+// Replaces Watcher's Keep teleporter cutscenes and the AR3001 mirror portal
+// script with clean whole-resource scripts without black-screen fade delays.
+
+COMPILE ~chriz-bg-modpack/watchers-keep-teleporters/baf~
+PRINT @6971

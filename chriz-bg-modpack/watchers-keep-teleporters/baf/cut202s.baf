@@ -1,0 +1,17 @@
+IF
+  True()
+THEN
+  RESPONSE #100
+    CutSceneId(Player1)
+    LeaveAreaLUAPanic("AR3011","",[760.666],NW)
+    LeaveAreaLUA("AR3011","",[760.666],NW)
+    ActionOverride(Player2,LeaveAreaLUA("AR3011","",[717.706],NW))
+    ActionOverride(Player3,LeaveAreaLUA("AR3011","",[785.689],NW))
+    ActionOverride(Player4,LeaveAreaLUA("AR3011","",[745.715],NW))
+    ActionOverride(Player5,LeaveAreaLUA("AR3011","",[793.708],NW))
+    ActionOverride(Player6,LeaveAreaLUA("AR3011","",[760.740],NW))
+    SmallWait(1)
+    MultiPlayerSync()
+    CreateVisualEffectObject("ICRMPARI",Player1)
+    EndCutSceneMode()
+END

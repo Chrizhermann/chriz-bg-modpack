@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.0-alpha.20 - 2026-11-27
+
+Alpha.20 adds **697: Watcher's Keep: instant teleporters (`cbm_watchers_keep_teleporters`)** and **698: Clear lingering room effects when leaving an area or hazard room (`cbm_area_effects_clear_on_leave`)**:
+
+- **697 (`cbm_watchers_keep_teleporters`)**: Overwrites all 36 Watcher's Keep portal cutscenes (`CUT202A`–`CUT202ZH`, `CUT211A`, `CUT246A`) and the `AR3001` mirror-portal script (`ITPORTAL`) from complete authored `.BAF` files (`We Overwrite`), removing `FadeToColor`, `FadeFromColor`, and black-screen `Wait(1)`/`Wait(2)` stalls while preserving every quest/item/statue gate, autosave, exact party placement, `CUT202Z`'s Carston cutscene handoff (`cut207a`), and a crisp portal flash + `M52` audio cue (`ICRMPARI` / `ICRMPAR2`). Supports **BG2:EE** and **EET** without EEex. See the [Watcher's Keep Teleporters guide](docs/watchers-keep-teleporters.md).
+- **698 (`cbm_area_effects_clear_on_leave`)**: Installs `override/M_CZRMFX.lua` for **BG:EE**, **SoD**, **BG2:EE**, and **EET** with EEex (`v1.2.0` / `v1.3.1`), stripping lingering room-pulsed hazard effects the moment you leave their room or area instead of waiting up to 14 seconds: Dead Magic (`SPIN646` in `AR3004`, `AR3008`, `BD0063`), Wild Magic (`SPIN645` in `AR3005`, `AR3009`, `OH6000`–`OH6200`; `SPIN778` dynamic), Vicross (`OHNWILDX` in `OH6400`), and Watcher's Keep Level 2 Ice Library Slow Freeze (`SPIN628` / `SPIN628A` outside Ice Library bounds or `AR3016`), plus custom modded areas pulsing those resrefs. Enemy combat debuffs (`SPIN550B`, `SPIN992B`, `SPIN689D`, `SPIN779`, `SPCL132`, `SPWM128`) and Black Pits II `OHBANTIM` are never stripped, and paused transitions refresh the actionbar on frame 0 so spellcasting buttons un-grey right away. See the [Lingering Room Effects guide](docs/area-effects-clear.md).
+
 ## v0.2.0-alpha.19 - 2026-11-26
 
 Alpha.19 adds **695: Early Party XP Boost for BG1 (`cbm_bg1_early_party_xp`)**:

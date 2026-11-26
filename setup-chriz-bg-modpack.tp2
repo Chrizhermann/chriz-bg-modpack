@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.19~
+VERSION ~v0.2.0-alpha.20~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
@@ -577,6 +577,18 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_fast_traps.tpa~
 BEGIN @695 DESIGNATED 695 GROUP @1600 LABEL ~cbm_bg1_early_party_xp~
   REQUIRE_PREDICATE GAME_IS ~bgee eet~ @6950
 INCLUDE ~chriz-bg-modpack/lib/cbm_bg1_early_party_xp.tpa~
+
+// Watcher's Keep: remove black-screen cutscene fade/wait stalls from all
+// Watcher's Keep teleporters while preserving quest gates and portal VFX.
+BEGIN @697 DESIGNATED 697 GROUP @1600 LABEL ~cbm_watchers_keep_teleporters~
+  REQUIRE_PREDICATE GAME_IS ~bg2ee eet~ @6970
+INCLUDE ~chriz-bg-modpack/lib/cbm_watchers_keep_teleporters.tpa~
+
+// Clear lingering room/area-pulsed effects (Dead Magic, Wild Magic, Vicross,
+// Watcher's Keep Ice Library Slow Freeze) immediately upon leaving the room.
+BEGIN @698 DESIGNATED 698 GROUP @1600 LABEL ~cbm_area_effects_clear_on_leave~
+  REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @6980
+INCLUDE ~chriz-bg-modpack/lib/cbm_area_effects_clear_on_leave.tpa~
 
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~

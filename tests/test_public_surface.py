@@ -68,6 +68,8 @@ PUBLIC_COMPONENTS = {
     680,
     690,
     695,
+    697,
+    698,
 }
 
 
@@ -133,6 +135,8 @@ class PublicSurfaceTests(unittest.TestCase):
             680: "cbm_eet_world_progression",
             690: "cbm_fast_traps",
             695: "cbm_bg1_early_party_xp",
+            697: "cbm_watchers_keep_teleporters",
+            698: "cbm_area_effects_clear_on_leave",
             470: "cbm_scroll_learn_fix",
         }
         for component, label in expected.items():
@@ -185,6 +189,8 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/bg1-early-party-xp.md",
             "docs/scroll-learn-fix.md",
             "docs/eet-join-xp.md",
+            "docs/watchers-keep-teleporters.md",
+            "docs/area-effects-clear.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
@@ -230,7 +236,9 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/eet-world-progression.md",
                 "docs/legacy-ui-strings.md",
                 "docs/scroll-learn-fix.md",
-                "docs/releases/v0.2.0-alpha.19.md",
+                "docs/watchers-keep-teleporters.md",
+                "docs/area-effects-clear.md",
+                "docs/releases/v0.2.0-alpha.20.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},

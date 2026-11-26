@@ -160,3 +160,10 @@ I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leav
 @6950 = ~BG1 early-party XP boost supports BG:EE and EET.~
 @6951 = ~[CBM BG1 early-party XP] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 695.~
 @6952 = ~[CBM BG1 early-party XP] Installed override/M_CZXPBG.lua (+70% BG1 party XP pool per extra companion up to 16,000 XP on Windows x64 + EEex).~
+@697 = ~Watcher's Keep: instant teleporters~
+@6970 = ~Instant Watcher's Keep teleporters require BG2:EE or EET.~
+@6971 = ~[CBM Watcher's Keep teleporters] Installed instant teleporter scripts (CUT202A-CUT202ZH, CUT211A, CUT246A, ITPORTAL).~
+@698 = ~Clear lingering room effects when leaving an area or hazard room (BG:EE, SoD, BG2:EE, EET; Windows EEex)~
+@6980 = ~Clearing lingering room effects supports BG:EE, SoD, BG2:EE, and EET.~
+@6981 = ~[CBM room effects] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 698.~
+@6982 = ~[CBM room effects] Installed override/M_CZRMFX.lua (clears lingering Dead Magic, Wild Magic, Vicross, and Slow Freeze pulses upon leaving their room).~

@@ -25,6 +25,7 @@ from tests import test_dorn_ambush_camera_fix as dorn
 from tests import test_edwin_redwizard as edwin
 from tests import test_eet_join_xp as join_xp
 from tests import test_eet_world_progression as world_prog
+from tests import test_area_effects_clear_on_leave as area_effects
 from tests import test_bg1_early_party_xp as early_xp
 from tests import test_fast_traps as fast_traps
 from tests import test_marek_boomerang_dagger as marek
@@ -33,6 +34,7 @@ from tests import test_release_archive as release_archive
 from tests import test_scroll_learn_fix as scroll_learn_fix
 from tests import test_unidentified_items_installer as unidentified
 from tests import test_utility_xp_installer as utility
+from tests import test_watchers_keep_teleporters as wk_teleports
 from tests.test_evandra_portrait import ARTWORK_SHA256
 from tests.test_story_utility_xp_installer import STORY_PUBLICATIONS
 
@@ -607,6 +609,50 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                 self.assertEqual(expected, after)
                 self.assertEqual(shipped, early_xp.SOURCE.read_bytes())
                 self.assert_restored(game, 695, before)
+
+    def test_697_extracted_watchers_keep_teleporters_installs_and_restores(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="cbm-release-wk-teleports-") as raw:
+            game = utility.SyntheticGame(Path(raw) / "game", game="bg2ee", eeex=False)
+            wk_teleports._stage_ids(game)
+            (game.override / "cut202a.bcs").write_bytes(b"SC\r\nCR\r\n")
+            before = self.extract_release(game)
+            returncode, transcript = self.run_installer(game, 697)
+            self.assertEqual(0, returncode, transcript)
+            self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+            self.assertRegex(game.active_log(), r"(?m)#0\s+#697\b")
+            after = self.game_files(game.root)
+            for name in wk_teleports.EXPECTED_SCRIPTS:
+                self.assertIn(f"OVERRIDE/{name}.BCS", after)
+            self.assert_restored(game, 697, before)
+
+    def test_698_extracted_area_effects_clear_installs_with_and_without_eeex_and_restores(self) -> None:
+        shipped = (
+            Path(__file__).resolve().parents[1] / "chriz-bg-modpack/area-effects-clear/m_czrmfx.lua"
+        ).read_bytes()
+        for eeex, prior in ((True, None), (True, b"-- prior room fix\r\n\xff"), (False, None)):
+            with self.subTest(eeex=eeex, prior=prior is not None), tempfile.TemporaryDirectory(
+                prefix="cbm-release-area-effects-"
+            ) as raw:
+                game = utility.SyntheticGame(Path(raw) / "game", game="eet", eeex=eeex)
+                if prior is not None:
+                    (game.override / "m_czrmfx.lua").write_bytes(prior)
+                before = self.extract_release(game)
+                returncode, transcript = self.run_installer(game, 698)
+                self.assertEqual(0, returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertRegex(game.active_log(), r"(?m)#0\s+#698\b")
+                after = self.game_files(game.root)
+                expected = dict(before)
+                if eeex:
+                    expected["OVERRIDE/M_CZRMFX.LUA"] = shipped
+                else:
+                    self.assertIn(
+                        "[CBM room effects] Inactive: EEex (override/M___EEex.lua) was not found.",
+                        transcript,
+                    )
+                self.assertEqual(expected, after)
+                self.assertEqual(shipped, area_effects.SOURCE.read_bytes())
+                self.assert_restored(game, 698, before)
 
 if __name__ == "__main__":
     unittest.main()
