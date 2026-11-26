@@ -1,0 +1,1 @@
+CZUnpausedInventoryConfig = { mode = 'combat' }

@@ -684,5 +684,43 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                 self.assertEqual(shipped, combat_quickloot.SOURCE.read_bytes())
                 self.assert_restored(game, 696, before)
 
+    def test_699_700_extracted_unpaused_inventory_installs_with_and_without_eeex_and_restores(self) -> None:
+        shipped_runtime = (
+            Path(__file__).resolve().parents[1] / "chriz-bg-modpack/unpaused-inventory/m_czinvu.lua"
+        ).read_bytes()
+        variants = (
+            (699, "czinvu_always.lua"),
+            (700, "czinvu_combat.lua"),
+        )
+        for component, cfg_name in variants:
+            shipped_cfg = (
+                Path(__file__).resolve().parents[1] / "chriz-bg-modpack/unpaused-inventory" / cfg_name
+            ).read_bytes()
+            for eeex, prior in ((True, None), (True, b"-- prior unpaused inv\r\n\xff"), (False, None)):
+                with self.subTest(component=component, eeex=eeex, prior=prior is not None), tempfile.TemporaryDirectory(
+                    prefix=f"cbm-release-unpaused-inv-{component}-"
+                ) as raw:
+                    game = utility.SyntheticGame(Path(raw) / "game", game="bg2ee", eeex=eeex)
+                    if prior is not None:
+                        (game.override / "m_czinvu.lua").write_bytes(prior)
+                        (game.override / "czinvucf.lua").write_bytes(prior)
+                    before = self.extract_release(game)
+                    returncode, transcript = self.run_installer(game, component)
+                    self.assertEqual(0, returncode, transcript)
+                    self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                    self.assertRegex(game.active_log(), rf"(?m)#0\s+#{component}\b")
+                    after = self.game_files(game.root)
+                    expected = dict(before)
+                    if eeex:
+                        expected["OVERRIDE/CZINVUCF.LUA"] = shipped_cfg
+                        expected["OVERRIDE/M_CZINVU.LUA"] = shipped_runtime
+                    else:
+                        self.assertIn(
+                            "[CBM unpaused inventory] Inactive: EEex (override/M___EEex.lua) was not found.",
+                            transcript,
+                        )
+                    self.assertEqual(expected, after)
+                    self.assert_restored(game, component, before)
+
 if __name__ == "__main__":
     unittest.main()

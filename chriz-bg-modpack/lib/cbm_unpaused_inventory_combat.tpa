@@ -1,0 +1,11 @@
+// Component 700: Unpaused inventory: in combat only (BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex).
+// Keeps native Inventory pause outside combat, and unpauses / ignores pause requests
+// while combat is active in singleplayer.
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/unpaused-inventory/czinvu_combat.lua~ ~override/CZINVUCF.lua~
+  COPY ~chriz-bg-modpack/unpaused-inventory/m_czinvu.lua~ ~override/M_CZINVU.lua~
+  PRINT @7002
+END ELSE BEGIN
+  PRINT @7001
+END

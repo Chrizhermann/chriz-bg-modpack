@@ -6,7 +6,7 @@ early-party XP boost (`695`), and engine/quest fixes for **Baldur's Gate II: Enh
 Edition** and **EET** (with standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`**
 support where applicable).
 
-**Release:** `v0.2.0-alpha.21`
+**Release:** `v0.2.0-alpha.22`
 
 **[Chriz Easy BG](https://bg.chrizfader.org/collection)** · **[Rules & Balance](https://bg.chrizfader.org/rules)** · **[Latest Release](https://github.com/Chrizhermann/chriz-bg-modpack/releases/latest)**
 
@@ -48,6 +48,11 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
   EET, and IWD:EE** so items must be looted from corpses/ground piles directly, and
   restores Quick Loot once combat ends. See the
   [Combat Quick Loot guide](docs/combat-quickloot.md).
+- **Unpaused Inventory (`699` / `700`, Windows EEex, mutually exclusive):** Keeps the
+  game unpaused while `Inventory` is open in singleplayer — either **always (`699`)**
+  or **during combat only (`700`)**, automatically unpausing if a fight starts
+  while paused inside Inventory across **BG:EE, SoD, BG2:EE, EET, and IWD:EE**. See
+  the [Unpaused Inventory guide](docs/unpaused-inventory.md).
 - **BG1 Early-Party XP Boost (`695`, Windows EEex):** Scales party-divided XP
   in **Baldur's Gate 1** (`BG:EE` and `EET`) by +70% per additional living
   companion (`1.0×` solo / `1.7×` duo / `2.4×` trio / `3.1×` four / `3.8×` five /
@@ -99,10 +104,11 @@ integrates *Chriz Fast Traps* directly into the modpack:
      **before `EET_end`** (with `236` directly after Artisan NPC `5102` and before
      Spell Revisions `60`).
    - Install post-`EET_end` rules and fixes (`430`, `470`, `610`/`611`, `620`, `630`,
-     `650`–`652`, `680`, `690`, `695`, `696`, `697`, `698`) **after `EET_end`** (on
-     standalone **BG:EE**, install `470`, `690`, `695`, `696`, and `698` anytime
-     after EEex; on **SoD**, install `470`, `690`, `696`, and `698`; on **IWD:EE**,
-     install `470`, `690`, and `696` anytime after EEex).
+     `650`–`652`, `680`, `690`, `695`, `696`, `697`, `698`, and at most one of
+     `699`/`700`) **after `EET_end`** (on standalone **BG:EE**, install `470`, `690`,
+     `695`, `696`, `698`, and `699`/`700` anytime after EEex; on **SoD**, install
+     `470`, `690`, `696`, `698`, and `699`/`700`; on **IWD:EE**, install `470`,
+     `690`, `696`, and `699`/`700` anytime after EEex).
 5. Launch through `InfinityLoader.exe` when using EEex components.
 
 ---
@@ -179,15 +185,17 @@ integrates *Chriz Fast Traps* directly into the modpack:
 | `696` | `cbm_no_combat_quickloot` | Disable Quick Loot in combat: loot corpses on the ground during fights, auto-restore after combat (BG:EE/SoD/BG2:EE/EET/IWD:EE + EEex) |
 | `697` | `cbm_watchers_keep_teleporters` | Watcher's Keep: instant teleporters without black-screen fade/wait stalls (BG2:EE/EET) |
 | `698` | `cbm_area_effects_clear_on_leave` | Clear lingering room-pulsed effects (Dead Magic, Wild Magic, Vicross, Ice Library Slow Freeze) immediately on room/area exit (BG:EE/SoD/BG2:EE/EET + Windows EEex) |
+| `699` | `cbm_unpaused_inventory_always` | Keep singleplayer Inventory unpaused at all times and cancel pause on entry (BG:EE/SoD/BG2:EE/EET/IWD:EE + Windows EEex; excludes `700`) |
+| `700` | `cbm_unpaused_inventory_combat` | Keep singleplayer Inventory unpaused only during combat, auto-unpausing on combat start (BG:EE/SoD/BG2:EE/EET/IWD:EE + Windows EEex; excludes `699`) |
 
 > Component IDs `191` and `600` are reserved and are not exposed by this release.
 
 ### Key Load Order & We Overwrite Policy
 
 - **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
-- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE), `695` (after EEex on EET, or standalone BG:EE), `696` (after EEex on EET/BG:EE/SoD/BG2:EE/IWD:EE), `697` (`BG2:EE`/`EET`), and `698` (after EEex on EET/BG2:EE/BG:EE/SoD).
+- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE), `695` (after EEex on EET, or standalone BG:EE), `696` (after EEex on EET/BG:EE/SoD/BG2:EE/IWD:EE), `697` (`BG2:EE`/`EET`), `698` (after EEex on EET/BG2:EE/BG:EE/SoD), and at most one of `699` or `700` (after EEex on EET/BG:EE/SoD/BG2:EE/IWD:EE).
 - **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
-- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.21 Release Notes](docs/releases/v0.2.0-alpha.21.md), [Alpha.20 Release Notes](docs/releases/v0.2.0-alpha.20.md), [Disable Quick Loot in Combat (696)](docs/combat-quickloot.md), [Watcher's Keep Instant Teleporters (697)](docs/watchers-keep-teleporters.md), [Clear Lingering Room Effects (698)](docs/area-effects-clear.md), [BG1 Early-Party XP Boost (695)](docs/bg1-early-party-xp.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.22 Release Notes](docs/releases/v0.2.0-alpha.22.md), [Alpha.21 Release Notes](docs/releases/v0.2.0-alpha.21.md), [Alpha.20 Release Notes](docs/releases/v0.2.0-alpha.20.md), [Unpaused Inventory (699/700)](docs/unpaused-inventory.md), [Disable Quick Loot in Combat (696)](docs/combat-quickloot.md), [Watcher's Keep Instant Teleporters (697)](docs/watchers-keep-teleporters.md), [Clear Lingering Room Effects (698)](docs/area-effects-clear.md), [BG1 Early-Party XP Boost (695)](docs/bg1-early-party-xp.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 
