@@ -37,5 +37,6 @@ tests/test_scroll_learn_fix.py
 tests/test_scroll_runtime_resources.py
 tests/test_story_utility_xp.py
 tests/test_unidentified_items.py
+tests/test_unpaused_inventory.py
 tests/test_utility_xp.py
 tests/test_watchers_keep_teleporters.py

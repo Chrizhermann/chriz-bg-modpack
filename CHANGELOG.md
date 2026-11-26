@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.0-alpha.22 - 2026-11-27
+
+Alpha.22 adds two mutually exclusive **Unpaused Inventory** components across Windows x64 `BG:EE`, `SoD`, `BG2:EE`, `EET`, and `IWD:EE` (`2.7.3.0` + `2.6.6.0` fallback) with EEex (`v1.2.0` / `v1.3.1`):
+
+- **699 (`cbm_unpaused_inventory_always`)**: Opening `CScreenInventory` in singleplayer cancels any active pause (spacebar, clock, Auto-Pause) without displaying `"Game Paused"` or playing the pause sound, restarts `CInfGame::m_worldTimer` if `CScreenWorld::EngineDeactivated` stopped it, suppresses pause requests while Inventory stays open, and leaves the game unpaused on close (switching directly to another pausing screen such as Record, Spellbook, Map, or Options still pauses natively).
+- **700 (`cbm_unpaused_inventory_combat`)**: Out of combat, keeps 100% native Inventory pause behavior. While in combat (area battle song / combat counter `> 0`, or any living party member seeing `[EVILCUTOFF]`), cancels pause / suppresses pause in Inventory just like `699`, and automatically unpauses on the next asynchronous frame if combat starts while already paused in Inventory. See the [Unpaused Inventory guide](docs/unpaused-inventory.md).
+
 ## v0.2.0-alpha.21 - 2026-11-27
 
 Alpha.21 adds **696: Disable Quick Loot in combat (`cbm_no_combat_quickloot`)**:

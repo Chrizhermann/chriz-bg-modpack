@@ -1,0 +1,11 @@
+// Component 699: Unpaused inventory: always (BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex).
+// Cancels active pause when opening the Inventory screen, keeps world simulation ticking,
+// and ignores pause requests while the Inventory screen stays active in singleplayer.
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/unpaused-inventory/czinvu_always.lua~ ~override/CZINVUCF.lua~
+  COPY ~chriz-bg-modpack/unpaused-inventory/m_czinvu.lua~ ~override/M_CZINVU.lua~
+  PRINT @6992
+END ELSE BEGIN
+  PRINT @6991
+END

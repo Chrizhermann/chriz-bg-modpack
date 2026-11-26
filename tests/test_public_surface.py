@@ -71,6 +71,8 @@ PUBLIC_COMPONENTS = {
     696,
     697,
     698,
+    699,
+    700,
 }
 
 
@@ -192,6 +194,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/eet-join-xp.md",
             "docs/watchers-keep-teleporters.md",
             "docs/area-effects-clear.md",
+            "docs/unpaused-inventory.md",
         ):
             self.assertIn(required, files)
         forbidden_fragments = (
@@ -240,7 +243,8 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/watchers-keep-teleporters.md",
                 "docs/area-effects-clear.md",
                 "docs/combat-quickloot.md",
-                "docs/releases/v0.2.0-alpha.21.md",
+                "docs/unpaused-inventory.md",
+                "docs/releases/v0.2.0-alpha.22.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},

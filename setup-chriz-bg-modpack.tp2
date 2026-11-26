@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.21~
+VERSION ~v0.2.0-alpha.22~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
@@ -594,6 +594,15 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_watchers_keep_teleporters.tpa~
 BEGIN @698 DESIGNATED 698 GROUP @1600 LABEL ~cbm_area_effects_clear_on_leave~
   REQUIRE_PREDICATE GAME_IS ~bgee bg2ee eet~ @6980
 INCLUDE ~chriz-bg-modpack/lib/cbm_area_effects_clear_on_leave.tpa~
+
+// Unpaused Inventory (mutually exclusive 699 / 700; BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex).
+BEGIN @699 DESIGNATED 699 GROUP @1600 LABEL ~cbm_unpaused_inventory_always~
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 700) @6994
+INCLUDE ~chriz-bg-modpack/lib/cbm_unpaused_inventory_always.tpa~
+
+BEGIN @700 DESIGNATED 700 GROUP @1600 LABEL ~cbm_unpaused_inventory_combat~
+  REQUIRE_PREDICATE (NOT MOD_IS_INSTALLED ~setup-chriz-bg-modpack.tp2~ 699) @7004
+INCLUDE ~chriz-bg-modpack/lib/cbm_unpaused_inventory_combat.tpa~
 
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~

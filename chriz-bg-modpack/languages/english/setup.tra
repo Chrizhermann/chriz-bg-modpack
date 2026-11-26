@@ -170,3 +170,11 @@ I refused to hand the Helm of Balduran over to Degrodel. Rather than let us leav
 @6980 = ~Clearing lingering room effects supports BG:EE, SoD, BG2:EE, and EET.~
 @6981 = ~[CBM room effects] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 698.~
 @6982 = ~[CBM room effects] Installed override/M_CZRMFX.lua (clears lingering Dead Magic, Wild Magic, Vicross, and Slow Freeze pulses upon leaving their room).~
+@699 = ~Unpaused inventory: always keep the game unpaused in Inventory (BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex)~
+@6991 = ~[CBM unpaused inventory] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 699.~
+@6992 = ~[CBM unpaused inventory] Installed override/M_CZINVU.lua + CZINVUCF.lua (always unpaused in Inventory on Windows x64 + EEex).~
+@6994 = ~Choose one unpaused-inventory mode: always unpaused 699 or combat only 700. Uninstall 700 before installing 699.~
+@700 = ~Unpaused inventory: keep the game unpaused in Inventory during combat only (BG:EE, SoD, BG2:EE, EET, IWD:EE; Windows EEex)~
+@7001 = ~[CBM unpaused inventory] Inactive: EEex (override/M___EEex.lua) was not found. Install EEex, then reinstall component 700.~
+@7002 = ~[CBM unpaused inventory] Installed override/M_CZINVU.lua + CZINVUCF.lua (unpaused in Inventory during combat only on Windows x64 + EEex).~
+@7004 = ~Choose one unpaused-inventory mode: always unpaused 699 or combat only 700. Uninstall 699 before installing 700.~
