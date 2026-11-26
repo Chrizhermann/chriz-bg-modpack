@@ -1,0 +1,9 @@
+// Component 698: Clear lingering room effects when leaving an area or hazard room
+// (BG:EE, SoD, BG2:EE, EET; Windows x64 EEex v1.2.0 and v1.3.1).
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/area-effects-clear/m_czrmfx.lua~ ~override/M_CZRMFX.lua~
+  PRINT @6982
+END ELSE BEGIN
+  PRINT @6981
+END

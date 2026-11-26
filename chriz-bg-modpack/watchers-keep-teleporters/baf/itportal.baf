@@ -1,0 +1,123 @@
+IF
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+  Global("SetDifficulty","AR3001",0)
+  WalkedToTrigger([ANYONE])
+  Global("PortalOpen","AR3001",1)
+  PartyHasItem("PLOT01B")
+  Dead("gorsta01")
+  Dead("gorsta02")
+  Dead("gorsta03")
+  Dead("gorsta04")
+  Dead("gorsta05")
+  Dead("gorsta06")
+  Dead("gorsta07")
+  Dead("gorsta08")
+  Dead("gorsta09")
+  Dead("gorsta10")
+  Dead("gorsta11")
+  Dead("gorsta12")
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    DisplayString(Myself,62472)
+    StartCutSceneMode()
+    CreateVisualEffect("ICRMPAR2",[1450.1156])
+    StartCutSceneEx("cut202q",FALSE)
+END
+
+IF
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+  Global("SetDifficulty","AR3001",1)
+  WalkedToTrigger([ANYONE])
+  Global("PortalOpen","AR3001",1)
+  PartyHasItem("PLOT01B")
+  Dead("gorsta01")
+  Dead("gorsta02")
+  Dead("gorsta07")
+  Dead("gorsta08")
+  Dead("gorsta09")
+  Dead("gorsta10")
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    DisplayString(Myself,62472)
+    StartCutSceneMode()
+    CreateVisualEffect("ICRMPAR2",[1450.1156])
+    StartCutSceneEx("cut202q",FALSE)
+END
+
+IF
+  WalkedToTrigger([ANYONE])
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+  Global("PortalOpen","AR3001",0)
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    DisplayString(Myself,62471)
+END
+
+IF
+  WalkedToTrigger([ANYONE])
+  Global("SetDifficulty","AR3001",0)
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+  Global("PortalOpen","AR3001",1)
+  OR(12)
+    !Dead("gorsta01")
+    !Dead("gorsta02")
+    !Dead("gorsta03")
+    !Dead("gorsta04")
+    !Dead("gorsta05")
+    !Dead("gorsta06")
+    !Dead("gorsta07")
+    !Dead("gorsta08")
+    !Dead("gorsta09")
+    !Dead("gorsta10")
+    !Dead("gorsta11")
+    !Dead("gorsta12")
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    DisplayString(Myself,71709)
+END
+
+IF
+  WalkedToTrigger([ANYONE])
+  Global("SetDifficulty","AR3001",1)
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+  Global("PortalOpen","AR3001",1)
+  OR(6)
+    !Dead("gorsta01")
+    !Dead("gorsta02")
+    !Dead("gorsta07")
+    !Dead("gorsta08")
+    !Dead("gorsta09")
+    !Dead("gorsta10")
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    DisplayString(Myself,71709)
+END
+
+IF
+  WalkedToTrigger([ANYONE])
+  !PartyHasItem("PLOT01B")
+  !GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+THEN
+  RESPONSE #100
+    DisplayString(Myself,74021)
+    SetGlobalTimer("Entrance3003Timer","AR3001",TWO_MINUTES)
+    ClearActions(LastTrigger)
+END
+
+IF
+  WalkedToTrigger([ANYONE])
+  GlobalTimerNotExpired("Entrance3003Timer","AR3001")
+THEN
+  RESPONSE #100
+    ClearActions(LastTrigger)
+END

@@ -1,6 +1,7 @@
 # pytest files both CI workflows run, through: python -m tools.ci_pytest [extra pytest arguments]
 # One repository-relative path per line, sorted, no duplicates. Every tests/test_campaign_xp_*.py
 # belongs here (tests/test_ci_pytest_selection.py enforces it).
+tests/test_area_effects_clear_on_leave.py
 tests/test_baeloth_spellbook.py
 tests/test_bg1_early_party_xp.py
 tests/test_campaign_xp_absent_handler.py
@@ -36,3 +37,4 @@ tests/test_scroll_runtime_resources.py
 tests/test_story_utility_xp.py
 tests/test_unidentified_items.py
 tests/test_utility_xp.py
+tests/test_watchers_keep_teleporters.py
