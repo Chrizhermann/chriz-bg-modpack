@@ -27,6 +27,7 @@ from tests import test_eet_join_xp as join_xp
 from tests import test_eet_world_progression as world_prog
 from tests import test_area_effects_clear_on_leave as area_effects
 from tests import test_bg1_early_party_xp as early_xp
+from tests import test_combat_quickloot as combat_quickloot
 from tests import test_fast_traps as fast_traps
 from tests import test_marek_boomerang_dagger as marek
 from tests import test_recruitment_xp as recruitment
@@ -653,6 +654,35 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                 self.assertEqual(expected, after)
                 self.assertEqual(shipped, area_effects.SOURCE.read_bytes())
                 self.assert_restored(game, 698, before)
+
+    def test_696_extracted_combat_quickloot_installs_with_and_without_eeex_and_restores(self) -> None:
+        shipped = (
+            Path(__file__).resolve().parents[1] / "chriz-bg-modpack/combat-quickloot/m_czql.lua"
+        ).read_bytes()
+        for eeex, prior in ((True, None), (True, b"-- prior combat quickloot\r\n\xff"), (False, None)):
+            with self.subTest(eeex=eeex, prior=prior is not None), tempfile.TemporaryDirectory(
+                prefix="cbm-release-combat-quickloot-"
+            ) as raw:
+                game = utility.SyntheticGame(Path(raw) / "game", game="bg2ee", eeex=eeex)
+                if prior is not None:
+                    (game.override / "m_czql.lua").write_bytes(prior)
+                before = self.extract_release(game)
+                returncode, transcript = self.run_installer(game, 696)
+                self.assertEqual(0, returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertRegex(game.active_log(), r"(?m)#0\s+#696\b")
+                after = self.game_files(game.root)
+                expected = dict(before)
+                if eeex:
+                    expected["OVERRIDE/M_CZQL.LUA"] = shipped
+                else:
+                    self.assertIn(
+                        "[CBM combat quick loot] Inactive: EEex (override/M___EEex.lua) was not found.",
+                        transcript,
+                    )
+                self.assertEqual(expected, after)
+                self.assertEqual(shipped, combat_quickloot.SOURCE.read_bytes())
+                self.assert_restored(game, 696, before)
 
 if __name__ == "__main__":
     unittest.main()
