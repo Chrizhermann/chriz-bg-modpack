@@ -130,7 +130,11 @@ def _decompile_bcs(game: SyntheticGame, resref: str, out_dir: Path) -> str:
         check=True,
     )
     assert "ERROR:" not in result.stdout + result.stderr, result.stdout + result.stderr
-    return (out_dir / f"{resref.upper()}.BAF").read_text(encoding="latin1")
+    expected_name = f"{resref.upper()}.BAF"
+    for candidate in out_dir.iterdir():
+        if candidate.name.upper() == expected_name:
+            return candidate.read_text(encoding="latin1")
+    raise FileNotFoundError(out_dir / expected_name)
 
 
 def test_all_authored_baf_sources_present_and_stall_free():
