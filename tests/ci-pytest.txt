@@ -2,6 +2,7 @@
 # One repository-relative path per line, sorted, no duplicates. Every tests/test_campaign_xp_*.py
 # belongs here (tests/test_ci_pytest_selection.py enforces it).
 tests/test_baeloth_spellbook.py
+tests/test_bg1_early_party_xp.py
 tests/test_campaign_xp_absent_handler.py
 tests/test_campaign_xp_banking_cap.py
 tests/test_campaign_xp_banking_dual.py

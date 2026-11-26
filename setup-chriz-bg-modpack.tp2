@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.18~
+VERSION ~v0.2.0-alpha.19~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
@@ -571,6 +571,12 @@ LAF cbm_eet_world_progression_install END
 // 100) across BG:EE, SoD, BG2:EE, EET, and IWD:EE 2.7.3.0 on Windows x64 EEex.
 BEGIN @690 DESIGNATED 690 GROUP @1600 LABEL ~cbm_fast_traps~
 INCLUDE ~chriz-bg-modpack/lib/cbm_fast_traps.tpa~
+
+// BG1 early-party XP boost (+70% party pool per extra living companion up to
+// 16,000 total XP per character, dual-class aware) on BG:EE and EET with EEex.
+BEGIN @695 DESIGNATED 695 GROUP @1600 LABEL ~cbm_bg1_early_party_xp~
+  REQUIRE_PREDICATE GAME_IS ~bgee eet~ @6950
+INCLUDE ~chriz-bg-modpack/lib/cbm_bg1_early_party_xp.tpa~
 
 // Experimental/unreleased opt-in source; neither component installs by default.
 BEGIN @650 DESIGNATED 650 GROUP @1600 LABEL ~cbm_campaign_xp~

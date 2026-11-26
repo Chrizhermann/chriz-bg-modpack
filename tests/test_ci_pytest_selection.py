@@ -81,7 +81,7 @@ def test_only_the_windows_policy_test_is_added_outside_the_selection():
 
 EEEX_URL = re.compile(r"raw\.githubusercontent\.com/Bubb13/EEex/(?:\$\{EEEX_COMMIT\}|\$commit)/EEex/copy/EEex_scripts/")
 EEEX_COMMIT = re.compile(r"""(?:EEEX_COMMIT=|\$commit = )["']([0-9a-f]{40})["']""")
-EEEX_PIN = re.compile(r"""(EEex_\w+\.lua)'?\s*=?\s*'?([0-9a-f]{64})\b""")
+EEEX_PIN = re.compile(r"""(EEex_[\w-]+\.lua)'?\s*=?\s*'?([0-9a-f]{64})\b""")
 
 
 def eeex_fetch(text):

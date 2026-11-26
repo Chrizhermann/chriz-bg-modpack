@@ -1,12 +1,12 @@
 # Chriz BG Modpack (`chriz-bg-modpack`)
 
 First-party companion builds, EET world and companion continuity, reader-level scroll
-casting, scaling utility XP, Challenge Mode XP banking, Fast Traps (`690`), and
-engine/quest fixes for **Baldur's Gate II: Enhanced Edition** and **EET** (with
-standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`** support for `470` and
-Fast Traps `690`).
+casting, scaling utility XP, Challenge Mode XP banking, Fast Traps (`690`), BG1
+early-party XP boost (`695`), and engine/quest fixes for **Baldur's Gate II: Enhanced
+Edition** and **EET** (with standalone **BG:EE**, **SoD**, and **IWD:EE `2.7.3.0`**
+support where applicable).
 
-**Release:** `v0.2.0-alpha.18`
+**Release:** `v0.2.0-alpha.19`
 
 **[Chriz Easy BG](https://bg.chrizfader.org/collection)** · **[Rules & Balance](https://bg.chrizfader.org/rules)** · **[Latest Release](https://github.com/Chrizhermann/chriz-bg-modpack/releases/latest)**
 
@@ -43,6 +43,14 @@ building blocks of **[Chriz Easy BG](https://bg.chrizfader.org/collection)**.
   containers, and floor traps to once per second (~15 AI ticks instead of ~6.67s)
   across **BG:EE, SoD, BG2:EE, EET, and IWD:EE `2.7.3.0`** without touching Detect
   Illusion or secret doors.
+- **BG1 Early-Party XP Boost (`695`, Windows EEex):** Scales party-divided XP
+  in **Baldur's Gate 1** (`BG:EE` and `EET`) by +70% per additional living
+  companion (`1.0×` solo / `1.7×` duo / `2.4×` trio / `3.1×` four / `3.8×` five /
+  `4.5×` six → `100% / 85% / 80% / 77.5% / 76% / 75%` per character) up to an
+  individual **16,000 total-XP** cap (including retired dual-class XP for both
+  protagonist and companions). Inactive in solo play, SoD, SoA, ToB, Black Pits,
+  Tutorial, and IWD:EE; works standalone and with `650`/`652`. See the
+  [BG1 Early-Party XP Boost guide](docs/bg1-early-party-xp.md).
 - **RAW spell-scroll learning (`470`, Windows EEex):** Restricts the ±15%
   specialist scroll-learning modifier to the 8 specialist mage schools across
   **BG:EE, SoD, BG2:EE, EET, and IWD:EE `2.7.3.0`**, removing the unintended
@@ -86,8 +94,9 @@ integrates *Chriz Fast Traps* directly into the modpack:
      **before `EET_end`** (with `236` directly after Artisan NPC `5102` and before
      Spell Revisions `60`).
    - Install post-`EET_end` rules and fixes (`430`, `470`, `610`/`611`, `620`, `630`,
-     `650`–`652`, `680`, `690`) **after `EET_end`** (on standalone **BG:EE**, **SoD**,
-     or **IWD:EE**, install `470` and `690` anytime after EEex).
+     `650`–`652`, `680`, `690`, `695`) **after `EET_end`** (on standalone **BG:EE**,
+     install `470`, `690`, and `695` anytime after EEex; on **SoD** or **IWD:EE**,
+     install `470` and `690` anytime after EEex).
 5. Launch through `InfinityLoader.exe` when using EEex components.
 
 ---
@@ -160,15 +169,16 @@ integrates *Chriz Fast Traps* directly into the modpack:
 | `670` | `cbm_marek_boomerang_dagger` | Both Marek creatures carry one Boomerang Dagger +2 in BG1 (BG:EE/EET) |
 | `680` | `cbm_eet_world_progression` | Story-consistent EET campaign boundaries across BG1/SoD/SoA/ToB and SoD backtracking fixes (EET) |
 | `690` | `cbm_fast_traps` | Fast Traps: check doors, containers, and floor traps every ~1s instead of ~6.7s (BG:EE/SoD/BG2:EE/EET/IWD:EE + Windows EEex) |
+| `695` | `cbm_bg1_early_party_xp` | Early Party XP Boost for BG1: +70% pool bonus per additional living companion up to 16,000 total XP per character (BG:EE/EET + Windows EEex) |
 
 > Component IDs `191` and `600` are reserved and are not exposed by this release.
 
 ### Key Load Order & We Overwrite Policy
 
 - **Pre-`EET_end` pass:** Install companion builds, class conversions (`220`–`223`), stats (`230`–`234`), `188`, and `199` continuity after upstream NPC/kit mods and before `EET_end` (`236` goes immediately after Artisan NPC `5102` and before Spell Revisions `60`; `235` after spellbook passes).
-- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), and `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE).
+- **Post-`EET_end` pass:** Install `430` (after spell/item mods), `470` (after EEex, or standalone BG:EE/SoD/IWD:EE), `610` or `611`, `620`, `630` (excluding Item Randomiser's cursed-appearance option), `650`–`652`, `680` (after worldmap, quest, and SoD mods), `690` (after EEex on EET, or standalone BG:EE/SoD/IWD:EE), and `695` (after EEex on EET, or standalone BG:EE).
 - **We Overwrite:** Every component writes its decided fields and behavior directly over pre-existing edits or other mods' versions of the same files ([We Overwrite Scope](docs/we-overwrite.md)). Missing optional targets and unreadable resources are logged individually without blocking remaining components; native memory signatures remain required.
-- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.18 Release Notes](docs/releases/v0.2.0-alpha.18.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
+- **Further Guides & CI:** See [Detailed Load Order & Testing Notes](docs/load-order-and-testing.md), [Alpha.19 Release Notes](docs/releases/v0.2.0-alpha.19.md), [BG1 Early-Party XP Boost (695)](docs/bg1-early-party-xp.md), [Spell Learning Fix (470)](docs/scroll-learn-fix.md), [Fast Traps (690)](docs/fast-traps.md), [EET World Progression (680)](docs/eet-world-progression.md), [Scroll Casting (430)](docs/scroll-casting.md), [Campaign XP Banking (650–652)](docs/campaign-xp-banking.md), [Story Utility XP (611)](docs/story-utility-xp.md), and the other guides in `docs/`. CI runs WeiDU 249 `--parse-check`, generated fixtures, deterministic archive builds (`tools/build_release.py`), and extracted-archive install/uninstall tests.
 
 ## License
 

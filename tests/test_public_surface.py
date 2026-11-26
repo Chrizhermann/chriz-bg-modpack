@@ -67,6 +67,7 @@ PUBLIC_COMPONENTS = {
     670,
     680,
     690,
+    695,
 }
 
 
@@ -131,6 +132,7 @@ class PublicSurfaceTests(unittest.TestCase):
             670: "cbm_marek_boomerang_dagger",
             680: "cbm_eet_world_progression",
             690: "cbm_fast_traps",
+            695: "cbm_bg1_early_party_xp",
             470: "cbm_scroll_learn_fix",
         }
         for component, label in expected.items():
@@ -180,6 +182,7 @@ class PublicSurfaceTests(unittest.TestCase):
             "docs/yeslick-alaghor.md",
             "docs/evandra.md",
             "docs/fast-traps.md",
+            "docs/bg1-early-party-xp.md",
             "docs/scroll-learn-fix.md",
             "docs/eet-join-xp.md",
         ):
@@ -220,13 +223,14 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/yeslick-alaghor.md",
                 "docs/evandra.md",
                 "docs/fast-traps.md",
+                "docs/bg1-early-party-xp.md",
                 "docs/baeloth-spellbook.md",
                 "docs/edwin-redwizard.md",
                 "docs/eet-join-xp.md",
                 "docs/eet-world-progression.md",
                 "docs/legacy-ui-strings.md",
                 "docs/scroll-learn-fix.md",
-                "docs/releases/v0.2.0-alpha.18.md",
+                "docs/releases/v0.2.0-alpha.19.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},
