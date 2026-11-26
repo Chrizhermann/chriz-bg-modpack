@@ -42,6 +42,7 @@ This reference preserves the detailed component-ordering rules, collection selec
 - Install **660** after mods that change Degrodel's dialog (see [Degrodel guide](degrodel-fight.md)).
 - Install **670** after mods that change `MAREK.CRE` / `MAREK1.CRE` (such as SCS) and before mods that read creature items (such as Item Randomiser; see [Marek guide](marek-boomerang-dagger.md)).
 - Install **680** after `EET_end` and any worldmap, quest, or SoD mods (`NTotSC`, `Blackhearts`, `Aura`, `chriz-sod-remix`, `SCS`; see [EET world progression guide](eet-world-progression.md)).
+- Install **695** after EEex and `EET_end` (or anytime after EEex on standalone **BG:EE**); standalone without Challenge Mode (`650`–`652`) or alongside it, never for IWD:EE or plain BG2:EE (see [BG1 early-party XP guide](bg1-early-party-xp.md)).
 
 ## Testing status
 
@@ -54,4 +55,5 @@ This reference preserves the detailed component-ordering rules, collection selec
 - **680 (`v0.2.0-alpha.17`):** Standalone WeiDU parse-checks, synthetic EET install/uninstall + We Overwrite mutation tests, policy-override tests, extracted release-archive tests, and disposable smoke tests on 2.7.3.0 EET `WORLDMAP.WMP` and script files; full campaign-transition playthrough remains pending.
 - **470 (`v0.2.0-alpha.18`):** Synthetic + extracted-archive WeiDU 249 install/uninstall, Keystone/Unicorn emulation (`118,528` runs), real `2.7.3.0` executable checks, and live quiet-lab `op147` verification (`6×80` trials each) on `BG2:EE` (`BuffBot-Dev`) and `IWD:EE` (`IWD-MP-Lab-20261122`) with `EEex v1.3.1`; `BG:EE / SoD` live lab pass remains pending.
 - **690 (`v0.2.0-alpha.18`):** Standalone WeiDU 249 install/uninstall, Keystone/Unicorn emulation (`118,160` runs), and `2.7.3.0` binary/API audits; integrated `0.2.0` live lab pass remains pending (earlier `0.1.0` prototype ran live in IWD:EE).
+- **695 (`v0.2.0-alpha.19`):** Offline Lua 5.1 / 5.2 / LuaJIT 2.1 runtime & cap tests, real `EEex_PreprocessAssembly` + Keystone x64 assembly verification, Unicorn emulation, real `2.7.3.0` / `2.6.6.0` PE byte checks (plus `IWD:EE` rejection), extracted release-ZIP acceptance tests, and synthetic WeiDU 249 install/reinstall/`We Overwrite`/uninstall checks across `BG:EE` and `EET`; live quiet-lab launch was skipped because active OBS streaming software was running, so live in-game verification remains pending.
 - Live playthrough acceptance across the entire combined collection does not follow from synthetic tests alone; see individual component guides in `docs/` for exact coverage boundaries.

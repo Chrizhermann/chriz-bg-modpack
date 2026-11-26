@@ -1,0 +1,10 @@
+// Component 695: BG1 early-party XP boost (BG:EE and EET; Windows x64 EEex).
+// Grants +70% party XP pool per additional living companion in BG1 up to 16,000 total XP
+// per character (counting active + retired dual-class XP for protagonist and companions).
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/bg1-early-party-xp/m_czxpbg.lua~ ~override/M_CZXPBG.lua~
+  PRINT @6952
+END ELSE BEGIN
+  PRINT @6951
+END

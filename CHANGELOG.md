@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.2.0-alpha.19 - 2026-11-26
+
+Alpha.19 adds **695: Early Party XP Boost for BG1 (`cbm_bg1_early_party_xp`)**:
+
+- **695 (`cbm_bg1_early_party_xp`)**: Encourages recruiting a full party early in
+  **Baldur's Gate 1** instead of solo-farming before collecting companions.
+  Adds +70% party-divided XP per additional living companion (`STATE_DEAD`
+  clear) on top of the base share (`1.0×` solo / `1.7×` duo / `2.4×` trio /
+  `3.1×` four / `3.8×` five / `4.5×` six → `100% / 85% / 80% / 77.5% / 76% /
+  75%` per member), rounded before integer division so small early kills/traps
+  still scale. Each living protagonist and companion is capped individually at
+  **16,000 total XP** (active XP + retired dual-class XP via `XPLEVEL.2DA` and
+  `CBMBank.old.total` when `650` is active), never reducing a character's base
+  `1/N` share. Scoped strictly to BG1 in **BG:EE** (`2.7.3.0`) and **EET**
+  (`2.7.3.0` / `2.6.6.0` fallback) with EEex (`v1.2.0` / `v1.3.1`); never
+  active in solo play, SoD, SoA, ToB, Black Pits, Tutorial, or IWD:EE, and
+  coexists cleanly with Challenge Mode XP banking (`650`–`652`). See the
+  [BG1 Early-Party XP Boost guide](docs/bg1-early-party-xp.md).
+
 ## v0.2.0-alpha.18 - 2026-11-23
 
 Alpha.18 adds **470: Rules-as-Written spell scroll learning fix** and integrates **690: Fast Traps** across Windows x64 `2.7.3.0` EE engines with EEex (`BG:EE/SoD`, `BG2:EE`, `EET`, `IWD:EE`):

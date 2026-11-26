@@ -25,6 +25,7 @@ from tests import test_dorn_ambush_camera_fix as dorn
 from tests import test_edwin_redwizard as edwin
 from tests import test_eet_join_xp as join_xp
 from tests import test_eet_world_progression as world_prog
+from tests import test_bg1_early_party_xp as early_xp
 from tests import test_fast_traps as fast_traps
 from tests import test_marek_boomerang_dagger as marek
 from tests import test_recruitment_xp as recruitment
@@ -577,6 +578,35 @@ class NewComponentReleaseAcceptanceTests(unittest.TestCase):
                 self.assertEqual(expected, after)
                 self.assertEqual(shipped, scroll_learn_fix.SOURCE.read_bytes())
                 self.assert_restored(game, 470, before)
+
+    def test_695_extracted_bg1_early_party_xp_installs_with_and_without_eeex_and_restores(self) -> None:
+        shipped = (
+            Path(__file__).resolve().parents[1] / "chriz-bg-modpack/bg1-early-party-xp/m_czxpbg.lua"
+        ).read_bytes()
+        for eeex, prior in ((True, None), (True, b"-- prior early xp\r\n\xff"), (False, None)):
+            with self.subTest(eeex=eeex, prior=prior is not None), tempfile.TemporaryDirectory(
+                prefix="cbm-release-early-xp-"
+            ) as raw:
+                game = utility.SyntheticGame(Path(raw) / "game", game="eet", eeex=eeex)
+                if prior is not None:
+                    (game.override / "m_czxpbg.lua").write_bytes(prior)
+                before = self.extract_release(game)
+                returncode, transcript = self.run_installer(game, 695)
+                self.assertEqual(0, returncode, transcript)
+                self.assertIn("SUCCESSFULLY INSTALLED", transcript)
+                self.assertRegex(game.active_log(), r"(?m)#0\s+#695\b")
+                after = self.game_files(game.root)
+                expected = dict(before)
+                if eeex:
+                    expected["OVERRIDE/M_CZXPBG.LUA"] = shipped
+                else:
+                    self.assertIn(
+                        "[CBM BG1 early-party XP] Inactive: EEex (override/M___EEex.lua) was not found.",
+                        transcript,
+                    )
+                self.assertEqual(expected, after)
+                self.assertEqual(shipped, early_xp.SOURCE.read_bytes())
+                self.assert_restored(game, 695, before)
 
 if __name__ == "__main__":
     unittest.main()
