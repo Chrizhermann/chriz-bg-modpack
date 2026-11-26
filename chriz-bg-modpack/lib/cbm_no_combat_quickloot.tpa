@@ -1,0 +1,10 @@
+// Component 696: Disable Quick Loot in combat (BG:EE, SoD, BG2:EE, EET, IWD:EE; EEex).
+// Hides and blocks the Quick Loot bar while in combat so items must be picked up
+// directly from the ground; restores Quick Loot automatically once combat ends.
+
+ACTION_IF FILE_EXISTS ~override/M___EEex.lua~ BEGIN
+  COPY ~chriz-bg-modpack/combat-quickloot/m_czql.lua~ ~override/M_CZQL.lua~
+  PRINT @6962
+END ELSE BEGIN
+  PRINT @6961
+END

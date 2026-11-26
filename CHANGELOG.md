@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.2.0-alpha.21 - 2026-11-27
+
+Alpha.21 adds **696: Disable Quick Loot in combat (`cbm_no_combat_quickloot`)**:
+
+- **696 (`cbm_no_combat_quickloot`)**: Challenge Mode / optional tactical rule
+  that completely disables **Quick Loot** (`WORLD_QUICKLOOT`) while in combat
+  across **BG:EE, SoD, BG2:EE, EET, and IWD:EE** with EEex (`v1.2.0` /
+  `v1.3.1`), forcing ground/corpse looting at the item's location during fights
+  and automatically restoring Quick Loot once combat ends (when it was active
+  before combat). Covers the actionbar/sidebar toggle (including InfinityUI++
+  `messagesRect` alignment), native Quick Loot hotkey (`OnKeyDown`), slot
+  clicks/mass-pick/scrolling, `[Challenge Mode] NoCombatQuickLoot`, and live
+  `CBRCHM` Challenge Mode toggles. See the
+  [Combat Quick Loot guide](docs/combat-quickloot.md).
+
 ## v0.2.0-alpha.20 - 2026-11-27
 
 Alpha.20 adds **697: Watcher's Keep: instant teleporters (`cbm_watchers_keep_teleporters`)** and **698: Clear lingering room effects when leaving an area or hazard room (`cbm_area_effects_clear_on_leave`)**:

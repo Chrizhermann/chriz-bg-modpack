@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-modpack~
 AUTHOR ~Christopher Hermann (github.com/Chrizhermann/chriz-bg-modpack)~
-VERSION ~v0.2.0-alpha.20~
+VERSION ~v0.2.0-alpha.21~
 
 ALWAYS
   OUTER_SPRINT cbmo_data_root ~chriz-bg-modpack/data/progression~
@@ -577,6 +577,11 @@ INCLUDE ~chriz-bg-modpack/lib/cbm_fast_traps.tpa~
 BEGIN @695 DESIGNATED 695 GROUP @1600 LABEL ~cbm_bg1_early_party_xp~
   REQUIRE_PREDICATE GAME_IS ~bgee eet~ @6950
 INCLUDE ~chriz-bg-modpack/lib/cbm_bg1_early_party_xp.tpa~
+
+// Challenge Mode / tactical option: completely disable Quick Loot during combat
+// across BG:EE, SoD, BG2:EE, EET, and IWD:EE with EEex (ground piles remain usable).
+BEGIN @696 DESIGNATED 696 GROUP @1600 LABEL ~cbm_no_combat_quickloot~
+INCLUDE ~chriz-bg-modpack/lib/cbm_no_combat_quickloot.tpa~
 
 // Watcher's Keep: remove black-screen cutscene fade/wait stalls from all
 // Watcher's Keep teleporters while preserving quest gates and portal VFX.

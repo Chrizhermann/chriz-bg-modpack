@@ -68,6 +68,7 @@ PUBLIC_COMPONENTS = {
     680,
     690,
     695,
+    696,
     697,
     698,
 }
@@ -238,7 +239,8 @@ class PublicSurfaceTests(unittest.TestCase):
                 "docs/scroll-learn-fix.md",
                 "docs/watchers-keep-teleporters.md",
                 "docs/area-effects-clear.md",
-                "docs/releases/v0.2.0-alpha.20.md",
+                "docs/combat-quickloot.md",
+                "docs/releases/v0.2.0-alpha.21.md",
                 "docs/we-overwrite.md",
             },
             {path for path in files if path.startswith("docs/")},
